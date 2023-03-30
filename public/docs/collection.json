@@ -1,0 +1,925 @@
+{
+    "variable": [
+        {
+            "id": "baseUrl",
+            "key": "baseUrl",
+            "type": "string",
+            "name": "string",
+            "value": "http:\/\/localhost"
+        }
+    ],
+    "info": {
+        "name": "Laravel",
+        "_postman_id": "eb385d4a-fdfb-4062-bb4b-bf746a291348",
+        "description": "",
+        "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+    },
+    "item": [
+        {
+            "name": "Projects",
+            "description": "",
+            "item": [
+                {
+                    "name": "Get projects list",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/projects",
+                            "query": [
+                                {
+                                    "key": "size",
+                                    "value": "8",
+                                    "description": "Number of rows. Default: 50",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "4",
+                                    "description": "Number of page (pagination). Default: 1",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/projects?size=8&page=4"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Return projects list.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"total_rows\": 100, \"total_pages\": \"4\", \"current_page\": 1, \"has_more\": true, \"data\": [{\"id\": 1, \"name\": \"Test project\", \"location\": \"Warsaw\", \"description\": \"\", \"owner\": \"john@doe.com\"}]}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Create new project",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/project",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/project"
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"quia\",\"location\":\"nostrum\",\"description\":\"Consectetur quia qui sit nesciunt.\",\"owner\":\"consequatur\"}"
+                        },
+                        "description": "Create new project.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get project details",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/project\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/project\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "13",
+                                    "description": "Project identifier."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Return project details.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"id\": 1, \"name\": \"Test project\", \"location\": \"Warsaw\", \"description\": \"\", \"owner\": \"john@doe.com\"}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"error\":true,\"message\":\"Project does not exist\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Update project",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/project\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/project\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "17",
+                                    "description": "Project identifier."
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"sapiente\",\"location\":\"harum\",\"description\":\"Et tenetur nobis repudiandae minus deleniti libero.\",\"owner\":\"aperiam\"}"
+                        },
+                        "description": "Update project.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete project",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/project\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/project\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "6",
+                                    "description": "Project identifier."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Delete project.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"error\":true,\"message\":\"Project does not exist\"}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "User management",
+            "description": "",
+            "item": [
+                {
+                    "name": "Get users list",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/users",
+                            "query": [
+                                {
+                                    "key": "size",
+                                    "value": "1",
+                                    "description": "Number of rows. Default: 50",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "10",
+                                    "description": "Number of page (pagination). Default: 1",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/users?size=1&page=10"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Return users account list.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"total_rows\": 100, \"total_pages\": \"4\", \"current_page\": 1, \"has_more\": true, \"data\": [{\"id\": 1, \"firstname\": \"John\", \"lastname\": \"Doe\", \"phone\": 123456789, \"email\": \"john@doe.com\", \"activated\": 1, \"owner\": 0}]}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Create user account",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/user",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/user"
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"firstname\":\"tempora\",\"lastname\":\"est\",\"email\":\"cole.brando@example.org\",\"password\":\"y_p7HVg>(\",\"phone\":\"reiciendis\"}"
+                        },
+                        "description": "Create user account. After create account is ready to use.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 409,
+                            "body": "{\"error\":true,\"message\":\"The given e-mail address is already registered\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Invite user",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/invite",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/invite"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"guadalupe.ferry@example.org\"}"
+                        },
+                        "description": "Send invitation to the email address provided.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 409,
+                            "body": "{\"error\":true,\"message\":\"The given e-mail address is already registered\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get user account data",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/user\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/user\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "11",
+                                    "description": "User identifier."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Return user account data.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"id\": 1, \"firstname\": \"John\", \"lastname\": \"Doe\", \"phone\": 123456789, \"email\": \"john@doe.com\", \"activated\": 1, \"owner\": 0}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"error\":true,\"message\":\"User does not exist\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Update user account data",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/user\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/user\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "11",
+                                    "description": "User identifier."
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"firstname\":\"sunt\",\"lastname\":\"porro\",\"email\":\"spencer.elvera@example.com\",\"password\":\"<zj{\\\"'j@(mt-Q#\",\"phone\":\"quis\"}"
+                        },
+                        "description": "Update user account data.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete user account",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/user\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/user\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "2",
+                                    "description": "User identifier."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Delete user account.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"error\":true,\"message\":\"User does not exist\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Validate invite token",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/invite\/:token",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/invite\/:token",
+                            "variable": [
+                                {
+                                    "id": "token",
+                                    "key": "token",
+                                    "value": "eum",
+                                    "description": "Invite token from invitation message."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Check validate invite token.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{'email': 'john@doe.com'}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"error\":true,\"message\":\"The given token is invalid\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Confirm invitation",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/invite\/:token",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/invite\/:token",
+                            "variable": [
+                                {
+                                    "id": "token",
+                                    "key": "token",
+                                    "value": "non",
+                                    "description": "Invite token."
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"firstname\":\"asperiores\",\"lastname\":\"illo\",\"password\":\"2wDO1)3@Rws<-{yY(lsz\",\"phone\":\"quidem\"}"
+                        },
+                        "description": "Confirm invitation and create new user account.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"error\":true,\"message\":\"The given token is invalid\"}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "User registation",
+            "description": "",
+            "item": [
+                {
+                    "name": "Logout",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/logout",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/logout"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Logout.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Register new account",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/register",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/register"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"john@doe.com\"}"
+                        },
+                        "description": "Create new user account. After registration, a confirmation link is sent to the provided e-mail address.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "true",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\"error\":true,\"message\":\"The provided email is already registered.\",\"errors\":{\"email\":[\"The provided email is already registered.\"]}}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Validate register token",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/register\/confirm\/:token",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/register\/confirm\/:token",
+                            "variable": [
+                                {
+                                    "id": "token",
+                                    "key": "token",
+                                    "value": "id",
+                                    "description": "Register token."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Check validate register token from confirmation message.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{'email': 'john@doe.com'}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\"error\":true,\"message\":\"The provided email is already registered.\",\"errors\":{\"email\":[\"The provided email is already registered.\"]}}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Confirm register",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/register\/confirm\/:token",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/register\/confirm\/:token",
+                            "variable": [
+                                {
+                                    "id": "token",
+                                    "key": "token",
+                                    "value": "ipsum",
+                                    "description": "Register token."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"firstname\":\"doloribus\",\"lastname\":\"molestiae\",\"password\":\"hSjZ$|i_$_c<SCHW3!kW\",\"firm_identifier\":\"dolor\",\"phone\":\"magni\"}"
+                        },
+                        "description": "Confirm register and finish registration.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\"error\":true,\"message\":\"Invalid register token.\",\"errors\":{\"token\":[\"Invalid register token.\"]}}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get token",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/login",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/login"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"rickey51@example.org\",\"password\":\"U99D|D:iH0mJA+E+)KR@\",\"device_name\":\"blanditiis\"}"
+                        },
+                        "description": "Return auth bearer Token.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\"error\":true,\"message\":\"The provided credentials are incorrect.\",\"errors\":{\"email\":[\"The provided credentials are incorrect.\"]}}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Forgot password",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/forgot-password",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/forgot-password"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"dubuque.ofelia@example.net\"}"
+                        },
+                        "description": "Send password reset link",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"error\":true,\"message\":\"User does not exist\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Reset password",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/reset-password",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/reset-password"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"token\":\"qui\",\"email\":\"aschimmel@example.org\",\"password\":\",-%[Bs\\\\m.2h)m\"}"
+                        },
+                        "description": "Send password reset link",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": null,
+                "type": "string"
+            }
+        ]
+    }
+}

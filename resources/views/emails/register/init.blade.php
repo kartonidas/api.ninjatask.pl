@@ -1,0 +1,3 @@
+<div>
+    Token: {{ $token }}
+</div>

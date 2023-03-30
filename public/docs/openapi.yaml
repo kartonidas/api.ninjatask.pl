@@ -1,0 +1,1374 @@
+openapi: 3.0.3
+info:
+  title: Laravel
+  description: ''
+  version: 1.0.0
+servers:
+  -
+    url: 'http://localhost'
+paths:
+  /api/projects:
+    get:
+      summary: 'Get projects list'
+      operationId: getProjectsList
+      description: 'Return projects list.'
+      parameters:
+        -
+          in: query
+          name: size
+          description: 'Number of rows. Default: 50'
+          example: 8
+          required: false
+          schema:
+            type: integer
+            description: 'Number of rows. Default: 50'
+            example: 8
+        -
+          in: query
+          name: page
+          description: 'Number of page (pagination). Default: 1'
+          example: 4
+          required: false
+          schema:
+            type: integer
+            description: 'Number of page (pagination). Default: 1'
+            example: 4
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  total_rows: 100
+                  total_pages: '4'
+                  current_page: 1
+                  has_more: true
+                  data:
+                    -
+                      id: 1
+                      name: 'Test project'
+                      location: Warsaw
+                      description: ''
+                      owner: john@doe.com
+                properties:
+                  total_rows:
+                    type: integer
+                    example: 100
+                  total_pages:
+                    type: string
+                    example: '4'
+                  current_page:
+                    type: integer
+                    example: 1
+                  has_more:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        name: 'Test project'
+                        location: Warsaw
+                        description: ''
+                        owner: john@doe.com
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: 'Test project'
+                        location:
+                          type: string
+                          example: Warsaw
+                        description:
+                          type: string
+                          example: ''
+                        owner:
+                          type: string
+                          example: john@doe.com
+      tags:
+        - Projects
+      security: []
+  /api/project:
+    put:
+      summary: 'Create new project'
+      operationId: createNewProject
+      description: 'Create new project.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Projects
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'Project name.'
+                  example: quia
+                location:
+                  type: string
+                  description: 'Project location.'
+                  example: nostrum
+                description:
+                  type: string
+                  description: 'Project description.'
+                  example: 'Consectetur quia qui sit nesciunt.'
+                owner:
+                  type: string
+                  description: 'Project owner.'
+                  example: consequatur
+              required:
+                - name
+      security: []
+  '/api/project/{id}':
+    get:
+      summary: 'Get project details'
+      operationId: getProjectDetails
+      description: 'Return project details.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  id: 1
+                  name: 'Test project'
+                  location: Warsaw
+                  description: ''
+                  owner: john@doe.com
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  name:
+                    type: string
+                    example: 'Test project'
+                  location:
+                    type: string
+                    example: Warsaw
+                  description:
+                    type: string
+                    example: ''
+                  owner:
+                    type: string
+                    example: john@doe.com
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'Project does not exist'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Project does not exist'
+      tags:
+        - Projects
+      security: []
+    put:
+      summary: 'Update project'
+      operationId: updateProject
+      description: 'Update project.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Projects
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'Project name.'
+                  example: sapiente
+                location:
+                  type: string
+                  description: 'Project location.'
+                  example: harum
+                description:
+                  type: string
+                  description: 'Project description.'
+                  example: 'Et tenetur nobis repudiandae minus deleniti libero.'
+                owner:
+                  type: string
+                  description: 'Project owner.'
+                  example: aperiam
+      security: []
+    delete:
+      summary: 'Delete project'
+      operationId: deleteProject
+      description: 'Delete project.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'Project does not exist'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Project does not exist'
+      tags:
+        - Projects
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'Project identifier.'
+        example: 13
+        required: true
+        schema:
+          type: integer
+  /api/users:
+    get:
+      summary: 'Get users list'
+      operationId: getUsersList
+      description: 'Return users account list.'
+      parameters:
+        -
+          in: query
+          name: size
+          description: 'Number of rows. Default: 50'
+          example: 1
+          required: false
+          schema:
+            type: integer
+            description: 'Number of rows. Default: 50'
+            example: 1
+        -
+          in: query
+          name: page
+          description: 'Number of page (pagination). Default: 1'
+          example: 10
+          required: false
+          schema:
+            type: integer
+            description: 'Number of page (pagination). Default: 1'
+            example: 10
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  total_rows: 100
+                  total_pages: '4'
+                  current_page: 1
+                  has_more: true
+                  data:
+                    -
+                      id: 1
+                      firstname: John
+                      lastname: Doe
+                      phone: 123456789
+                      email: john@doe.com
+                      activated: 1
+                      owner: 0
+                properties:
+                  total_rows:
+                    type: integer
+                    example: 100
+                  total_pages:
+                    type: string
+                    example: '4'
+                  current_page:
+                    type: integer
+                    example: 1
+                  has_more:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        firstname: John
+                        lastname: Doe
+                        phone: 123456789
+                        email: john@doe.com
+                        activated: 1
+                        owner: 0
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        firstname:
+                          type: string
+                          example: John
+                        lastname:
+                          type: string
+                          example: Doe
+                        phone:
+                          type: integer
+                          example: 123456789
+                        email:
+                          type: string
+                          example: john@doe.com
+                        activated:
+                          type: integer
+                          example: 1
+                        owner:
+                          type: integer
+                          example: 0
+      tags:
+        - 'User management'
+      security: []
+  /api/user:
+    put:
+      summary: 'Create user account'
+      operationId: createUserAccount
+      description: 'Create user account. After create account is ready to use.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        409:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'The given e-mail address is already registered'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'The given e-mail address is already registered'
+      tags:
+        - 'User management'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstname:
+                  type: string
+                  description: 'User first name.'
+                  example: tempora
+                lastname:
+                  type: string
+                  description: 'User last name.'
+                  example: est
+                email:
+                  type: string
+                  description: 'User e-mail address.'
+                  example: cole.brando@example.org
+                password:
+                  type: string
+                  description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
+                  example: y_p7HVg>(
+                phone:
+                  type: string
+                  description: 'User phone number.'
+                  example: reiciendis
+              required:
+                - firstname
+                - lastname
+                - email
+                - password
+      security: []
+  /api/invite:
+    post:
+      summary: 'Invite user'
+      operationId: inviteUser
+      description: 'Send invitation to the email address provided.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        409:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'The given e-mail address is already registered'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'The given e-mail address is already registered'
+      tags:
+        - 'User management'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'User e-mail address.'
+                  example: guadalupe.ferry@example.org
+              required:
+                - email
+      security: []
+  '/api/user/{id}':
+    get:
+      summary: 'Get user account data'
+      operationId: getUserAccountData
+      description: 'Return user account data.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  id: 1
+                  firstname: John
+                  lastname: Doe
+                  phone: 123456789
+                  email: john@doe.com
+                  activated: 1
+                  owner: 0
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  firstname:
+                    type: string
+                    example: John
+                  lastname:
+                    type: string
+                    example: Doe
+                  phone:
+                    type: integer
+                    example: 123456789
+                  email:
+                    type: string
+                    example: john@doe.com
+                  activated:
+                    type: integer
+                    example: 1
+                  owner:
+                    type: integer
+                    example: 0
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'User does not exist'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'User does not exist'
+      tags:
+        - 'User management'
+      security: []
+    put:
+      summary: 'Update user account data'
+      operationId: updateUserAccountData
+      description: 'Update user account data.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - 'User management'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstname:
+                  type: string
+                  description: 'User first name.'
+                  example: sunt
+                lastname:
+                  type: string
+                  description: 'User last name.'
+                  example: porro
+                email:
+                  type: string
+                  description: 'User e-mail address.'
+                  example: spencer.elvera@example.com
+                password:
+                  type: string
+                  description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
+                  example: '<zj{"''j@(mt-Q#'
+                phone:
+                  type: string
+                  description: 'User phone number.'
+                  example: quis
+      security: []
+    delete:
+      summary: 'Delete user account'
+      operationId: deleteUserAccount
+      description: 'Delete user account.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'User does not exist'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'User does not exist'
+      tags:
+        - 'User management'
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'User identifier.'
+        example: 11
+        required: true
+        schema:
+          type: integer
+  '/api/invite/{token}':
+    get:
+      summary: 'Validate invite token'
+      operationId: validateInviteToken
+      description: 'Check validate invite token.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{'email': 'john@doe.com'}"
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'The given token is invalid'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'The given token is invalid'
+      tags:
+        - 'User management'
+      security: []
+    put:
+      summary: 'Confirm invitation'
+      operationId: confirmInvitation
+      description: 'Confirm invitation and create new user account.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'The given token is invalid'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'The given token is invalid'
+      tags:
+        - 'User management'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstname:
+                  type: string
+                  description: 'User first name.'
+                  example: asperiores
+                lastname:
+                  type: string
+                  description: 'User last name.'
+                  example: illo
+                password:
+                  type: string
+                  description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
+                  example: '2wDO1)3@Rws<-{yY(lsz'
+                phone:
+                  type: string
+                  description: 'User phone number.'
+                  example: quidem
+              required:
+                - firstname
+                - lastname
+                - password
+      security: []
+    parameters:
+      -
+        in: path
+        name: token
+        description: 'Invite token from invitation message.'
+        example: eum
+        required: true
+        schema:
+          type: string
+  /api/logout:
+    get:
+      summary: Logout
+      operationId: logout
+      description: Logout.
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - 'User registation'
+      security: []
+  /api/register:
+    post:
+      summary: 'Register new account'
+      operationId: registerNewAccount
+      description: 'Create new user account. After registration, a confirmation link is sent to the provided e-mail address.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: boolean
+                example: true
+        422:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'The provided email is already registered.'
+                  errors:
+                    email:
+                      - 'The provided email is already registered.'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'The provided email is already registered.'
+                  errors:
+                    type: object
+                    properties:
+                      email:
+                        type: array
+                        example:
+                          - 'The provided email is already registered.'
+                        items:
+                          type: string
+      tags:
+        - 'User registation'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'The email address.'
+                  example: john@doe.com
+              required:
+                - email
+      security: []
+  '/api/register/confirm/{token}':
+    get:
+      summary: 'Validate register token'
+      operationId: validateRegisterToken
+      description: 'Check validate register token from confirmation message.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "{'email': 'john@doe.com'}"
+        422:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'The provided email is already registered.'
+                  errors:
+                    email:
+                      - 'The provided email is already registered.'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'The provided email is already registered.'
+                  errors:
+                    type: object
+                    properties:
+                      email:
+                        type: array
+                        example:
+                          - 'The provided email is already registered.'
+                        items:
+                          type: string
+      tags:
+        - 'User registation'
+      security: []
+    post:
+      summary: 'Confirm register'
+      operationId: confirmRegister
+      description: 'Confirm register and finish registration.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        422:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'Invalid register token.'
+                  errors:
+                    token:
+                      - 'Invalid register token.'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Invalid register token.'
+                  errors:
+                    type: object
+                    properties:
+                      token:
+                        type: array
+                        example:
+                          - 'Invalid register token.'
+                        items:
+                          type: string
+      tags:
+        - 'User registation'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstname:
+                  type: string
+                  description: 'User first name.'
+                  example: doloribus
+                lastname:
+                  type: string
+                  description: 'User last name.'
+                  example: molestiae
+                password:
+                  type: string
+                  description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
+                  example: hSjZ$|i_$_c<SCHW3!kW
+                firm_identifier:
+                  type: string
+                  description: 'User firm name.'
+                  example: dolor
+                phone:
+                  type: string
+                  description: 'User phone number.'
+                  example: magni
+              required:
+                - firstname
+                - lastname
+                - password
+                - firm_identifier
+                - phone
+      security: []
+    parameters:
+      -
+        in: path
+        name: token
+        description: 'Register token.'
+        example: id
+        required: true
+        schema:
+          type: string
+  /api/login:
+    post:
+      summary: 'Get token'
+      operationId: getToken
+      description: 'Return auth bearer Token.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        422:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'The provided credentials are incorrect.'
+                  errors:
+                    email:
+                      - 'The provided credentials are incorrect.'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'The provided credentials are incorrect.'
+                  errors:
+                    type: object
+                    properties:
+                      email:
+                        type: array
+                        example:
+                          - 'The provided credentials are incorrect.'
+                        items:
+                          type: string
+      tags:
+        - 'User registation'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'Account e-mail address'
+                  example: rickey51@example.org
+                password:
+                  type: string
+                  description: 'Account password'
+                  example: 'U99D|D:iH0mJA+E+)KR@'
+                device_name:
+                  type: string
+                  description: 'Device name'
+                  example: blanditiis
+              required:
+                - email
+                - password
+                - device_name
+      security: []
+  /api/forgot-password:
+    post:
+      summary: 'Forgot password'
+      operationId: forgotPassword
+      description: 'Send password reset link'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'User does not exist'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'User does not exist'
+      tags:
+        - 'User registation'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'Account e-mail address'
+                  example: dubuque.ofelia@example.net
+              required:
+                - email
+      security: []
+  /api/reset-password:
+    post:
+      summary: 'Reset password'
+      operationId: resetPassword
+      description: 'Send password reset link'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - 'User registation'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: 'forgot password token'
+                  example: qui
+                email:
+                  type: string
+                  description: 'Account e-mail address'
+                  example: aschimmel@example.org
+                password:
+                  type: string
+                  description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
+                  example: ',-%[Bs\m.2h)m'
+              required:
+                - token
+                - email
+                - password
+      security: []
+tags:
+  -
+    name: Projects
+    description: ''
+  -
+    name: 'User management'
+    description: ''
+  -
+    name: 'User registation'
+    description: ''
+components:
+  securitySchemes:
+    default:
+      type: http
+      scheme: bearer
+      description: ''
+security:
+  -
+    default: []

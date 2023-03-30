@@ -1,0 +1,514 @@
+name: 'User management'
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: api/users
+    metadata:
+      groupName: 'User management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get users list'
+      description: 'Return users account list.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      size:
+        name: size
+        description: 'Number of rows. Default: 50'
+        required: false
+        example: 1
+        type: integer
+        custom: []
+      page:
+        name: page
+        description: 'Number of page (pagination). Default: 1'
+        required: false
+        example: 10
+        type: integer
+        custom: []
+    cleanQueryParameters:
+      size: 1
+      page: 10
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "firstname": "John", "lastname": "Doe", "phone": 123456789, "email": "john@doe.com", "activated": 1, "owner": 0}]}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+    uri: api/user
+    metadata:
+      groupName: 'User management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create user account'
+      description: 'Create user account. After create account is ready to use.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      firstname:
+        name: firstname
+        description: 'User first name.'
+        required: true
+        example: tempora
+        type: string
+        custom: []
+      lastname:
+        name: lastname
+        description: 'User last name.'
+        required: true
+        example: est
+        type: string
+        custom: []
+      email:
+        name: email
+        description: 'User e-mail address.'
+        required: true
+        example: cole.brando@example.org
+        type: string
+        custom: []
+      password:
+        name: password
+        description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
+        required: true
+        example: y_p7HVg>(
+        type: string
+        custom: []
+      phone:
+        name: phone
+        description: 'User phone number.'
+        required: false
+        example: reiciendis
+        type: string
+        custom: []
+    cleanBodyParameters:
+      firstname: tempora
+      lastname: est
+      email: cole.brando@example.org
+      password: y_p7HVg>(
+      phone: reiciendis
+    fileParameters: []
+    responses:
+      -
+        status: 409
+        content: '{"error":true,"message":"The given e-mail address is already registered"}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields:
+      id:
+        name: id
+        description: 'The id of the newly created user'
+        required: false
+        example: null
+        type: integer
+        custom: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/invite
+    metadata:
+      groupName: 'User management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Invite user'
+      description: 'Send invitation to the email address provided.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      email:
+        name: email
+        description: 'User e-mail address.'
+        required: true
+        example: guadalupe.ferry@example.org
+        type: string
+        custom: []
+    cleanBodyParameters:
+      email: guadalupe.ferry@example.org
+    fileParameters: []
+    responses:
+      -
+        status: 409
+        content: '{"error":true,"message":"The given e-mail address is already registered"}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields:
+      status:
+        name: status
+        description: Status
+        required: false
+        example: null
+        type: boolean
+        custom: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/user/{id}'
+    metadata:
+      groupName: 'User management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get user account data'
+      description: 'Return user account data.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters:
+      id:
+        name: id
+        description: 'User identifier.'
+        required: true
+        example: 11
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 11
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"id": 1, "firstname": "John", "lastname": "Doe", "phone": 123456789, "email": "john@doe.com", "activated": 1, "owner": 0}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: '{"error":true,"message":"User does not exist"}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+    uri: 'api/user/{id}'
+    metadata:
+      groupName: 'User management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update user account data'
+      description: 'Update user account data.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters:
+      id:
+        name: id
+        description: 'User identifier.'
+        required: true
+        example: 11
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 11
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      firstname:
+        name: firstname
+        description: 'User first name.'
+        required: false
+        example: sunt
+        type: string
+        custom: []
+      lastname:
+        name: lastname
+        description: 'User last name.'
+        required: false
+        example: porro
+        type: string
+        custom: []
+      email:
+        name: email
+        description: 'User e-mail address.'
+        required: false
+        example: spencer.elvera@example.com
+        type: string
+        custom: []
+      password:
+        name: password
+        description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
+        required: false
+        example: '<zj{"''j@(mt-Q#'
+        type: string
+        custom: []
+      phone:
+        name: phone
+        description: 'User phone number.'
+        required: false
+        example: quis
+        type: string
+        custom: []
+    cleanBodyParameters:
+      firstname: sunt
+      lastname: porro
+      email: spencer.elvera@example.com
+      password: '<zj{"''j@(mt-Q#'
+      phone: quis
+    fileParameters: []
+    responses: []
+    responseFields:
+      status:
+        name: status
+        description: 'Update status'
+        required: false
+        example: null
+        type: boolean
+        custom: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/user/{id}'
+    metadata:
+      groupName: 'User management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete user account'
+      description: 'Delete user account.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters:
+      id:
+        name: id
+        description: 'User identifier.'
+        required: true
+        example: 2
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 2
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 404
+        content: '{"error":true,"message":"User does not exist"}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields:
+      status:
+        name: status
+        description: 'Delete status'
+        required: false
+        example: null
+        type: boolean
+        custom: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/invite/{token}'
+    metadata:
+      groupName: 'User management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Validate invite token'
+      description: 'Check validate invite token.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      token:
+        name: token
+        description: 'Invite token from invitation message.'
+        required: true
+        example: eum
+        type: string
+        custom: []
+    cleanUrlParameters:
+      token: eum
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: "{'email': 'john@doe.com'}"
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: '{"error":true,"message":"The given token is invalid"}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+    uri: 'api/invite/{token}'
+    metadata:
+      groupName: 'User management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Confirm invitation'
+      description: 'Confirm invitation and create new user account.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      token:
+        name: token
+        description: 'Invite token.'
+        required: true
+        example: non
+        type: string
+        custom: []
+    cleanUrlParameters:
+      token: non
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      firstname:
+        name: firstname
+        description: 'User first name.'
+        required: true
+        example: asperiores
+        type: string
+        custom: []
+      lastname:
+        name: lastname
+        description: 'User last name.'
+        required: true
+        example: illo
+        type: string
+        custom: []
+      password:
+        name: password
+        description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
+        required: true
+        example: '2wDO1)3@Rws<-{yY(lsz'
+        type: string
+        custom: []
+      phone:
+        name: phone
+        description: 'User phone number.'
+        required: false
+        example: quidem
+        type: string
+        custom: []
+    cleanBodyParameters:
+      firstname: asperiores
+      lastname: illo
+      password: '2wDO1)3@Rws<-{yY(lsz'
+      phone: quidem
+    fileParameters: []
+    responses:
+      -
+        status: 404
+        content: '{"error":true,"message":"The given token is invalid"}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields:
+      id:
+        name: id
+        description: 'The id of the newly created user'
+        required: false
+        example: null
+        type: integer
+        custom: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
