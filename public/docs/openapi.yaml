@@ -17,22 +17,22 @@ paths:
           in: query
           name: size
           description: 'Number of rows. Default: 50'
-          example: 8
+          example: 1
           required: false
           schema:
             type: integer
             description: 'Number of rows. Default: 50'
-            example: 8
+            example: 1
         -
           in: query
           name: page
           description: 'Number of page (pagination). Default: 1'
-          example: 4
+          example: 19
           required: false
           schema:
             type: integer
             description: 'Number of page (pagination). Default: 1'
-            example: 4
+            example: 19
         -
           in: header
           name: Content-Type
@@ -156,19 +156,19 @@ paths:
                 name:
                   type: string
                   description: 'Project name.'
-                  example: quia
+                  example: debitis
                 location:
                   type: string
                   description: 'Project location.'
-                  example: nostrum
+                  example: dolorem
                 description:
                   type: string
                   description: 'Project description.'
-                  example: 'Consectetur quia qui sit nesciunt.'
+                  example: 'Nulla distinctio est qui ipsam omnis itaque non.'
                 owner:
                   type: string
                   description: 'Project owner.'
-                  example: consequatur
+                  example: natus
               required:
                 - name
       security: []
@@ -286,19 +286,19 @@ paths:
                 name:
                   type: string
                   description: 'Project name.'
-                  example: sapiente
+                  example: dolorem
                 location:
                   type: string
                   description: 'Project location.'
-                  example: harum
+                  example: alias
                 description:
                   type: string
                   description: 'Project description.'
-                  example: 'Et tenetur nobis repudiandae minus deleniti libero.'
+                  example: 'Eaque deserunt enim sequi voluptatem itaque.'
                 owner:
                   type: string
                   description: 'Project owner.'
-                  example: aperiam
+                  example: accusantium
       security: []
     delete:
       summary: 'Delete project'
@@ -351,7 +351,7 @@ paths:
         in: path
         name: id
         description: 'Project identifier.'
-        example: 13
+        example: 16
         required: true
         schema:
           type: integer
@@ -365,22 +365,22 @@ paths:
           in: query
           name: size
           description: 'Number of rows. Default: 50'
-          example: 1
+          example: 13
           required: false
           schema:
             type: integer
             description: 'Number of rows. Default: 50'
-            example: 1
+            example: 13
         -
           in: query
           name: page
           description: 'Number of page (pagination). Default: 1'
-          example: 10
+          example: 5
           required: false
           schema:
             type: integer
             description: 'Number of page (pagination). Default: 1'
-            example: 10
+            example: 5
         -
           in: header
           name: Content-Type
@@ -530,23 +530,23 @@ paths:
                 firstname:
                   type: string
                   description: 'User first name.'
-                  example: tempora
+                  example: in
                 lastname:
                   type: string
                   description: 'User last name.'
-                  example: est
+                  example: perferendis
                 email:
                   type: string
                   description: 'User e-mail address.'
-                  example: cole.brando@example.org
+                  example: cassin.sidney@example.org
                 password:
                   type: string
                   description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
-                  example: y_p7HVg>(
+                  example: UnqVG1AbF\;IHJ
                 phone:
                   type: string
                   description: 'User phone number.'
-                  example: reiciendis
+                  example: error
               required:
                 - firstname
                 - lastname
@@ -609,7 +609,7 @@ paths:
                 email:
                   type: string
                   description: 'User e-mail address.'
-                  example: guadalupe.ferry@example.org
+                  example: feeney.jocelyn@example.org
               required:
                 - email
       security: []
@@ -735,23 +735,23 @@ paths:
                 firstname:
                   type: string
                   description: 'User first name.'
-                  example: sunt
+                  example: quia
                 lastname:
                   type: string
                   description: 'User last name.'
-                  example: porro
+                  example: eius
                 email:
                   type: string
                   description: 'User e-mail address.'
-                  example: spencer.elvera@example.com
+                  example: fheathcote@example.com
                 password:
                   type: string
                   description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
-                  example: '<zj{"''j@(mt-Q#'
+                  example: .c5ML=^%5dW
                 phone:
                   type: string
                   description: 'User phone number.'
-                  example: quis
+                  example: tempora
       security: []
     delete:
       summary: 'Delete user account'
@@ -804,7 +804,7 @@ paths:
         in: path
         name: id
         description: 'User identifier.'
-        example: 11
+        example: 4
         required: true
         schema:
           type: integer
@@ -903,19 +903,19 @@ paths:
                 firstname:
                   type: string
                   description: 'User first name.'
-                  example: asperiores
+                  example: qui
                 lastname:
                   type: string
                   description: 'User last name.'
-                  example: illo
+                  example: ut
                 password:
                   type: string
                   description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
-                  example: '2wDO1)3@Rws<-{yY(lsz'
+                  example: R@~y;G
                 phone:
                   type: string
                   description: 'User phone number.'
-                  example: quidem
+                  example: aut
               required:
                 - firstname
                 - lastname
@@ -926,10 +926,522 @@ paths:
         in: path
         name: token
         description: 'Invite token from invitation message.'
-        example: eum
+        example: doloribus
         required: true
         schema:
           type: string
+  /api/permissions:
+    get:
+      summary: 'Get permissions group list'
+      operationId: getPermissionsGroupList
+      description: 'Return permissions list.'
+      parameters:
+        -
+          in: query
+          name: size
+          description: 'Number of rows. Default: 50'
+          example: 14
+          required: false
+          schema:
+            type: integer
+            description: 'Number of rows. Default: 50'
+            example: 14
+        -
+          in: query
+          name: page
+          description: 'Number of page (pagination). Default: 1'
+          example: 20
+          required: false
+          schema:
+            type: integer
+            description: 'Number of page (pagination). Default: 1'
+            example: 20
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  total_rows: 100
+                  total_pages: '4'
+                  current_page: 1
+                  has_more: true
+                  data:
+                    -
+                      id: 1
+                      name: 'Pierwsza testowa grupa'
+                      permissions:
+                        module:
+                          - list
+                          - create
+                properties:
+                  total_rows:
+                    type: integer
+                    example: 100
+                  total_pages:
+                    type: string
+                    example: '4'
+                  current_page:
+                    type: integer
+                    example: 1
+                  has_more:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        name: 'Pierwsza testowa grupa'
+                        permissions:
+                          module:
+                            - list
+                            - create
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: 'Pierwsza testowa grupa'
+                        permissions:
+                          type: object
+                          properties:
+                            module:
+                              type: array
+                              example:
+                                - list
+                                - create
+                              items:
+                                type: string
+      tags:
+        - 'User permissions'
+      security: []
+  /api/permission:
+    put:
+      summary: 'Create new persmission group'
+      operationId: createNewPersmissionGroup
+      description: "Create new persmission group. Permissions should look like this:\nprojects:list,create,update,delete;users:list"
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        422:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: "'projects:' does not contain a list of items."
+                  errors:
+                    permissions:
+                      - "'projects:' does not contain a list of items."
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "'projects:' does not contain a list of items."
+                  errors:
+                    type: object
+                    properties:
+                      permissions:
+                        type: array
+                        example:
+                          - "'projects:' does not contain a list of items."
+                        items:
+                          type: string
+      tags:
+        - 'User permissions'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'Group permission name.'
+                  example: nihil
+                permissions:
+                  type: string
+                  description: Permission.
+                  example: cum
+              required:
+                - name
+                - permissions
+      security: []
+  '/api/permission/{id}':
+    get:
+      summary: 'Get persmission group details'
+      operationId: getPersmissionGroupDetails
+      description: 'Get persmission group details.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  id: 1
+                  name: 'Pierwsza testowa grupa'
+                  permissions:
+                    module:
+                      - list
+                      - create
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  name:
+                    type: string
+                    example: 'Pierwsza testowa grupa'
+                  permissions:
+                    type: object
+                    properties:
+                      module:
+                        type: array
+                        example:
+                          - list
+                          - create
+                        items:
+                          type: string
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'Permission does not exist'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Permission does not exist'
+      tags:
+        - 'User permissions'
+      security: []
+    put:
+      summary: 'Update persmission group'
+      operationId: updatePersmissionGroup
+      description: 'Update persmission group.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - 'User permissions'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'Group permission name.'
+                  example: eius
+                permissions:
+                  type: string
+                  description: Permission.
+                  example: ut
+      security: []
+    delete:
+      summary: 'Delete persmission group'
+      operationId: deletePersmissionGroup
+      description: 'Delete persmission group.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'Permission does not exist'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Permission does not exist'
+      tags:
+        - 'User permissions'
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'Permission group identifier.'
+        example: 7
+        required: true
+        schema:
+          type: integer
+  '/api/permission/{id}/add':
+    put:
+      summary: 'Add permission to persmission group'
+      operationId: addPermissionToPersmissionGroup
+      description: 'Add permission to persmission group.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'Permission does not exist'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Permission does not exist'
+      tags:
+        - 'User permissions'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                object:
+                  type: string
+                  description: 'Object name.'
+                  example: sunt
+                action:
+                  type: string
+                  description: 'Action name (if not set, allow all actions).'
+                  example: eaque
+              required:
+                - object
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'Permission group identifier.'
+        example: 8
+        required: true
+        schema:
+          type: integer
+  '/api/permission/{id}/del':
+    delete:
+      summary: 'Delete permission from persmission group'
+      operationId: deletePermissionFromPersmissionGroup
+      description: 'Delete permission from persmission group.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'Permission does not exist'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Permission does not exist'
+      tags:
+        - 'User permissions'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                object:
+                  type: string
+                  description: 'Object name.'
+                  example: nisi
+                action:
+                  type: string
+                  description: 'Action name (if not set, allow all actions).'
+                  example: aut
+              required:
+                - object
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'Permission group identifier.'
+        example: 11
+        required: true
+        schema:
+          type: integer
   /api/logout:
     get:
       summary: Logout
@@ -1145,23 +1657,23 @@ paths:
                 firstname:
                   type: string
                   description: 'User first name.'
-                  example: doloribus
+                  example: eius
                 lastname:
                   type: string
                   description: 'User last name.'
-                  example: molestiae
+                  example: odit
                 password:
                   type: string
                   description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
-                  example: hSjZ$|i_$_c<SCHW3!kW
+                  example: '|1C8?UYUwf'
                 firm_identifier:
                   type: string
                   description: 'User firm name.'
-                  example: dolor
+                  example: culpa
                 phone:
                   type: string
                   description: 'User phone number.'
-                  example: magni
+                  example: dolorum
               required:
                 - firstname
                 - lastname
@@ -1174,7 +1686,7 @@ paths:
         in: path
         name: token
         description: 'Register token.'
-        example: id
+        example: reiciendis
         required: true
         schema:
           type: string
@@ -1239,15 +1751,15 @@ paths:
                 email:
                   type: string
                   description: 'Account e-mail address'
-                  example: rickey51@example.org
+                  example: vschmeler@example.org
                 password:
                   type: string
                   description: 'Account password'
-                  example: 'U99D|D:iH0mJA+E+)KR@'
+                  example: '/4[t?n<0TmR5<wNz$'
                 device_name:
                   type: string
                   description: 'Device name'
-                  example: blanditiis
+                  example: illum
               required:
                 - email
                 - password
@@ -1302,7 +1814,7 @@ paths:
                 email:
                   type: string
                   description: 'Account e-mail address'
-                  example: dubuque.ofelia@example.net
+                  example: kennith.turcotte@example.org
               required:
                 - email
       security: []
@@ -1339,15 +1851,15 @@ paths:
                 token:
                   type: string
                   description: 'forgot password token'
-                  example: qui
+                  example: quia
                 email:
                   type: string
                   description: 'Account e-mail address'
-                  example: aschimmel@example.org
+                  example: aschultz@example.net
                 password:
                   type: string
                   description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
-                  example: ',-%[Bs\m.2h)m'
+                  example: 'cz7hTd4N,1cB@PI:}Ji'
               required:
                 - token
                 - email
@@ -1359,6 +1871,9 @@ tags:
     description: ''
   -
     name: 'User management'
+    description: ''
+  -
+    name: 'User permissions'
     description: ''
   -
     name: 'User registation'

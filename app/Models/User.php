@@ -61,7 +61,7 @@ class User extends Authenticatable
             return false;
         }
         
-        return false;
+        return true;
     }
     
     public function delete()

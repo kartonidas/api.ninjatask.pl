@@ -3,9 +3,10 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +37,15 @@ Route::middleware('auth:sanctum')->group(function () use($router) {
     $router->get('/user/{id}', [UserController::class, "get"])->where("id", "[0-9]+");
     $router->put('/user/{id}', [UserController::class, "update"])->where("id", "[0-9]+");
     $router->delete('/user/{id}', [UserController::class, "delete"])->where("id", "[0-9]+");
+    
+    // UPRAWNIENIA
+    $router->get('/permissions', [PermissionController::class, "list"]);
+    $router->put('/permission', [PermissionController::class, "create"]);
+    $router->get('/permission/{id}', [PermissionController::class, "get"])->where("id", "[0-9]+");
+    $router->put('/permission/{id}', [PermissionController::class, "update"])->where("id", "[0-9]+");
+    $router->delete('/permission/{id}', [PermissionController::class, "delete"])->where("id", "[0-9]+");
+    $router->put('/permission/{id}/add', [PermissionController::class, "addPermission"])->where("id", "[0-9]+");
+    $router->delete('/permission/{id}/del', [PermissionController::class, "removePermission"])->where("id", "[0-9]+");
     
     // ZADANIA
 });

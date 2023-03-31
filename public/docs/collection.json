@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Laravel",
-        "_postman_id": "eb385d4a-fdfb-4062-bb4b-bf746a291348",
+        "_postman_id": "e1d03569-ba66-44ea-8bf3-2320dbb76090",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -28,18 +28,18 @@
                             "query": [
                                 {
                                     "key": "size",
-                                    "value": "8",
+                                    "value": "1",
                                     "description": "Number of rows. Default: 50",
                                     "disabled": false
                                 },
                                 {
                                     "key": "page",
-                                    "value": "4",
+                                    "value": "19",
                                     "description": "Number of page (pagination). Default: 1",
                                     "disabled": false
                                 }
                             ],
-                            "raw": "{{baseUrl}}\/api\/projects?size=8&page=4"
+                            "raw": "{{baseUrl}}\/api\/projects?size=1&page=19"
                         },
                         "method": "GET",
                         "header": [
@@ -97,7 +97,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"quia\",\"location\":\"nostrum\",\"description\":\"Consectetur quia qui sit nesciunt.\",\"owner\":\"consequatur\"}"
+                            "raw": "{\"name\":\"debitis\",\"location\":\"dolorem\",\"description\":\"Nulla distinctio est qui ipsam omnis itaque non.\",\"owner\":\"natus\"}"
                         },
                         "description": "Create new project.",
                         "auth": {
@@ -118,7 +118,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "13",
+                                    "value": "16",
                                     "description": "Project identifier."
                                 }
                             ]
@@ -171,7 +171,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "17",
+                                    "value": "20",
                                     "description": "Project identifier."
                                 }
                             ]
@@ -193,7 +193,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"sapiente\",\"location\":\"harum\",\"description\":\"Et tenetur nobis repudiandae minus deleniti libero.\",\"owner\":\"aperiam\"}"
+                            "raw": "{\"name\":\"dolorem\",\"location\":\"alias\",\"description\":\"Eaque deserunt enim sequi voluptatem itaque.\",\"owner\":\"accusantium\"}"
                         },
                         "description": "Update project.",
                         "auth": {
@@ -214,7 +214,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "6",
+                                    "value": "15",
                                     "description": "Project identifier."
                                 }
                             ]
@@ -264,18 +264,18 @@
                             "query": [
                                 {
                                     "key": "size",
-                                    "value": "1",
+                                    "value": "13",
                                     "description": "Number of rows. Default: 50",
                                     "disabled": false
                                 },
                                 {
                                     "key": "page",
-                                    "value": "10",
+                                    "value": "5",
                                     "description": "Number of page (pagination). Default: 1",
                                     "disabled": false
                                 }
                             ],
-                            "raw": "{{baseUrl}}\/api\/users?size=1&page=10"
+                            "raw": "{{baseUrl}}\/api\/users?size=13&page=5"
                         },
                         "method": "GET",
                         "header": [
@@ -333,7 +333,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"firstname\":\"tempora\",\"lastname\":\"est\",\"email\":\"cole.brando@example.org\",\"password\":\"y_p7HVg>(\",\"phone\":\"reiciendis\"}"
+                            "raw": "{\"firstname\":\"in\",\"lastname\":\"perferendis\",\"email\":\"cassin.sidney@example.org\",\"password\":\"UnqVG1AbF\\\\;IHJ\",\"phone\":\"error\"}"
                         },
                         "description": "Create user account. After create account is ready to use.",
                         "auth": {
@@ -375,7 +375,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"guadalupe.ferry@example.org\"}"
+                            "raw": "{\"email\":\"feeney.jocelyn@example.org\"}"
                         },
                         "description": "Send invitation to the email address provided.",
                         "auth": {
@@ -403,7 +403,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "11",
+                                    "value": "4",
                                     "description": "User identifier."
                                 }
                             ]
@@ -456,7 +456,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "11",
+                                    "value": "19",
                                     "description": "User identifier."
                                 }
                             ]
@@ -478,7 +478,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"firstname\":\"sunt\",\"lastname\":\"porro\",\"email\":\"spencer.elvera@example.com\",\"password\":\"<zj{\\\"'j@(mt-Q#\",\"phone\":\"quis\"}"
+                            "raw": "{\"firstname\":\"quia\",\"lastname\":\"eius\",\"email\":\"fheathcote@example.com\",\"password\":\".c5ML=^%5dW\",\"phone\":\"tempora\"}"
                         },
                         "description": "Update user account data.",
                         "auth": {
@@ -499,7 +499,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "2",
+                                    "value": "13",
                                     "description": "User identifier."
                                 }
                             ]
@@ -546,7 +546,7 @@
                                 {
                                     "id": "token",
                                     "key": "token",
-                                    "value": "eum",
+                                    "value": "doloribus",
                                     "description": "Invite token from invitation message."
                                 }
                             ]
@@ -595,7 +595,7 @@
                                 {
                                     "id": "token",
                                     "key": "token",
-                                    "value": "non",
+                                    "value": "voluptas",
                                     "description": "Invite token."
                                 }
                             ]
@@ -613,7 +613,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"firstname\":\"asperiores\",\"lastname\":\"illo\",\"password\":\"2wDO1)3@Rws<-{yY(lsz\",\"phone\":\"quidem\"}"
+                            "raw": "{\"firstname\":\"qui\",\"lastname\":\"ut\",\"password\":\"R@~y;G\",\"phone\":\"aut\"}"
                         },
                         "description": "Confirm invitation and create new user account.",
                         "auth": {
@@ -625,6 +625,349 @@
                             "header": [],
                             "code": 404,
                             "body": "{\"error\":true,\"message\":\"The given token is invalid\"}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "User permissions",
+            "description": "",
+            "item": [
+                {
+                    "name": "Get permissions group list",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/permissions",
+                            "query": [
+                                {
+                                    "key": "size",
+                                    "value": "14",
+                                    "description": "Number of rows. Default: 50",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "20",
+                                    "description": "Number of page (pagination). Default: 1",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/permissions?size=14&page=20"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Return permissions list.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"total_rows\": 100, \"total_pages\": \"4\", \"current_page\": 1, \"has_more\": true, \"data\": [{\"id\":1,\"name\":\"Pierwsza testowa grupa\",\"permissions\":{\"module\":[\"list\",\"create\"]}}]}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Create new persmission group",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/permission",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/permission"
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"nihil\",\"permissions\":\"cum\"}"
+                        },
+                        "description": "Create new persmission group. Permissions should look like this:\nprojects:list,create,update,delete;users:list",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 422,
+                            "body": "{\"error\":true,\"message\":\"'projects:' does not contain a list of items.\",\"errors\":{\"permissions\":[\"'projects:' does not contain a list of items.\"]}}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get persmission group details",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/permission\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/permission\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "7",
+                                    "description": "Permission group identifier."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Get persmission group details.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"id\":1,\"name\":\"Pierwsza testowa grupa\",\"permissions\":{\"module\":[\"list\",\"create\"]}}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"error\":true,\"message\":\"Permission does not exist\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Update persmission group",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/permission\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/permission\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "2",
+                                    "description": "Permission group identifier."
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"eius\",\"permissions\":\"ut\"}"
+                        },
+                        "description": "Update persmission group.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete persmission group",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/permission\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/permission\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "11",
+                                    "description": "Permission group identifier."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Delete persmission group.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"error\":true,\"message\":\"Permission does not exist\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Add permission to persmission group",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/permission\/:id\/add",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/permission\/:id\/add",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "8",
+                                    "description": "Permission group identifier."
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"object\":\"sunt\",\"action\":\"eaque\"}"
+                        },
+                        "description": "Add permission to persmission group.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"error\":true,\"message\":\"Permission does not exist\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete permission from persmission group",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/permission\/:id\/del",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/permission\/:id\/del",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "11",
+                                    "description": "Permission group identifier."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"object\":\"nisi\",\"action\":\"aut\"}"
+                        },
+                        "description": "Delete permission from persmission group.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"error\":true,\"message\":\"Permission does not exist\"}",
                             "name": ""
                         }
                     ]
@@ -719,7 +1062,7 @@
                                 {
                                     "id": "token",
                                     "key": "token",
-                                    "value": "id",
+                                    "value": "reiciendis",
                                     "description": "Register token."
                                 }
                             ]
@@ -768,7 +1111,7 @@
                                 {
                                     "id": "token",
                                     "key": "token",
-                                    "value": "ipsum",
+                                    "value": "ut",
                                     "description": "Register token."
                                 }
                             ]
@@ -786,7 +1129,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"firstname\":\"doloribus\",\"lastname\":\"molestiae\",\"password\":\"hSjZ$|i_$_c<SCHW3!kW\",\"firm_identifier\":\"dolor\",\"phone\":\"magni\"}"
+                            "raw": "{\"firstname\":\"eius\",\"lastname\":\"odit\",\"password\":\"|1C8?UYUwf\",\"firm_identifier\":\"culpa\",\"phone\":\"dolorum\"}"
                         },
                         "description": "Confirm register and finish registration.",
                         "auth": {
@@ -824,7 +1167,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"rickey51@example.org\",\"password\":\"U99D|D:iH0mJA+E+)KR@\",\"device_name\":\"blanditiis\"}"
+                            "raw": "{\"email\":\"vschmeler@example.org\",\"password\":\"\\\/4[t?n<0TmR5<wNz$\",\"device_name\":\"illum\"}"
                         },
                         "description": "Return auth bearer Token.",
                         "auth": {
@@ -862,7 +1205,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"dubuque.ofelia@example.net\"}"
+                            "raw": "{\"email\":\"kennith.turcotte@example.org\"}"
                         },
                         "description": "Send password reset link",
                         "auth": {
@@ -900,7 +1243,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"token\":\"qui\",\"email\":\"aschimmel@example.org\",\"password\":\",-%[Bs\\\\m.2h)m\"}"
+                            "raw": "{\"token\":\"quia\",\"email\":\"aschultz@example.net\",\"password\":\"cz7hTd4N,1cB@PI:}Ji\"}"
                         },
                         "description": "Send password reset link",
                         "auth": {

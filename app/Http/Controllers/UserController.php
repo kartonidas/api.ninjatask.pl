@@ -411,5 +411,7 @@ class UserController extends Controller
             throw new ObjectNotExist(__("User does not exist"));
         
         $user->delete();
+        
+        return true;
     }
 }

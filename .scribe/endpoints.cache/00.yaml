@@ -104,11 +104,11 @@ endpoints:
         name: token
         description: 'Register token.'
         required: true
-        example: id
+        example: reiciendis
         type: string
         custom: []
     cleanUrlParameters:
-      token: id
+      token: reiciendis
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -154,11 +154,11 @@ endpoints:
         name: token
         description: 'Register token.'
         required: true
-        example: ipsum
+        example: ut
         type: string
         custom: []
     cleanUrlParameters:
-      token: ipsum
+      token: ut
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -166,43 +166,43 @@ endpoints:
         name: firstname
         description: 'User first name.'
         required: true
-        example: doloribus
+        example: eius
         type: string
         custom: []
       lastname:
         name: lastname
         description: 'User last name.'
         required: true
-        example: molestiae
+        example: odit
         type: string
         custom: []
       password:
         name: password
         description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
         required: true
-        example: hSjZ$|i_$_c<SCHW3!kW
+        example: '|1C8?UYUwf'
         type: string
         custom: []
       firm_identifier:
         name: firm_identifier
         description: 'User firm name.'
         required: true
-        example: dolor
+        example: culpa
         type: string
         custom: []
       phone:
         name: phone
         description: 'User phone number.'
         required: true
-        example: magni
+        example: dolorum
         type: string
         custom: []
     cleanBodyParameters:
-      firstname: doloribus
-      lastname: molestiae
-      password: hSjZ$|i_$_c<SCHW3!kW
-      firm_identifier: dolor
-      phone: magni
+      firstname: eius
+      lastname: odit
+      password: '|1C8?UYUwf'
+      firm_identifier: culpa
+      phone: dolorum
     fileParameters: []
     responses:
       -
@@ -249,27 +249,27 @@ endpoints:
         name: email
         description: 'Account e-mail address'
         required: true
-        example: rickey51@example.org
+        example: vschmeler@example.org
         type: string
         custom: []
       password:
         name: password
         description: 'Account password'
         required: true
-        example: 'U99D|D:iH0mJA+E+)KR@'
+        example: '/4[t?n<0TmR5<wNz$'
         type: string
         custom: []
       device_name:
         name: device_name
         description: 'Device name'
         required: true
-        example: blanditiis
+        example: illum
         type: string
         custom: []
     cleanBodyParameters:
-      email: rickey51@example.org
-      password: 'U99D|D:iH0mJA+E+)KR@'
-      device_name: blanditiis
+      email: vschmeler@example.org
+      password: '/4[t?n<0TmR5<wNz$'
+      device_name: illum
     fileParameters: []
     responses:
       -
@@ -316,11 +316,11 @@ endpoints:
         name: email
         description: 'Account e-mail address'
         required: true
-        example: dubuque.ofelia@example.net
+        example: kennith.turcotte@example.org
         type: string
         custom: []
     cleanBodyParameters:
-      email: dubuque.ofelia@example.net
+      email: kennith.turcotte@example.org
     fileParameters: []
     responses:
       -
@@ -367,27 +367,27 @@ endpoints:
         name: token
         description: 'forgot password token'
         required: true
-        example: qui
+        example: quia
         type: string
         custom: []
       email:
         name: email
         description: 'Account e-mail address'
         required: true
-        example: aschimmel@example.org
+        example: aschultz@example.net
         type: string
         custom: []
       password:
         name: password
         description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
         required: true
-        example: ',-%[Bs\m.2h)m'
+        example: 'cz7hTd4N,1cB@PI:}Ji'
         type: string
         custom: []
     cleanBodyParameters:
-      token: qui
-      email: aschimmel@example.org
-      password: ',-%[Bs\m.2h)m'
+      token: quia
+      email: aschultz@example.net
+      password: 'cz7hTd4N,1cB@PI:}Ji'
     fileParameters: []
     responses: []
     responseFields:
