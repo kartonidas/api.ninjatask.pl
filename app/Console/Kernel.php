@@ -14,6 +14,9 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('auth:clear-resets')->everyFifteenMinutes();
         $schedule->command('sanctum:prune-expired --hours=24')->daily();
+        $schedule->command('app:clear-invitations-token')->daily();
+        $schedule->command('app:clear-registers-token')->daily();
+        $schedule->command('app:clear-unused-access-token')->daily();
     }
 
     /**
