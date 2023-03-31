@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use App\Models\Project;
+use App\Models\User;
 
 class ProjectController extends Controller
 {
@@ -22,6 +23,8 @@ class ProjectController extends Controller
     */
     public function list(Request $request)
     {
+        User::checkAccess("project:list");
+        
         $request->validate([
             "size" => "nullable|integer|gt:0",
             "page" => "nullable|integer|gt:0",
@@ -60,6 +63,8 @@ class ProjectController extends Controller
     */
     public function get(Request $request, $id)
     {
+        User::checkAccess("project:list");
+        
         $project = Project::apiFields()->find($id);
         if(!$project)
             throw new ObjectNotExist(__("Project does not exist"));
@@ -81,6 +86,8 @@ class ProjectController extends Controller
     */
     public function create(Request $request)
     {
+        User::checkAccess("project:create");
+        
         $request->validate([
             "name" => "required|max:250",
             "location" => "nullable|max:5000",
@@ -113,6 +120,8 @@ class ProjectController extends Controller
     */
     public function update(Request $request, $id)
     {
+        User::checkAccess("project:update");
+        
         $project = Project::find($id);
         if(!$project)
             throw new ObjectNotExist(__("Project does not exist"));
@@ -160,6 +169,8 @@ class ProjectController extends Controller
     */
     public function delete(Request $request, $id)
     {
+        User::checkAccess("project:delete");
+        
         $project = Project::find($id);
         if(!$project)
             throw new ObjectNotExist(__("Project does not exist"));

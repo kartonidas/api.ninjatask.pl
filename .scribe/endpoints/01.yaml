@@ -25,19 +25,19 @@ endpoints:
         name: size
         description: 'Number of rows. Default: 50'
         required: false
-        example: 1
+        example: 20
         type: integer
         custom: []
       page:
         name: page
         description: 'Number of page (pagination). Default: 1'
         required: false
-        example: 19
+        example: 2
         type: integer
         custom: []
     cleanQueryParameters:
-      size: 1
-      page: 19
+      size: 20
+      page: 2
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -80,35 +80,35 @@ endpoints:
         name: name
         description: 'Project name.'
         required: true
-        example: debitis
+        example: id
         type: string
         custom: []
       location:
         name: location
         description: 'Project location.'
         required: false
-        example: dolorem
+        example: ratione
         type: string
         custom: []
       description:
         name: description
         description: 'Project description.'
         required: false
-        example: 'Nulla distinctio est qui ipsam omnis itaque non.'
+        example: 'Neque est magni fuga iusto eum minima harum exercitationem.'
         type: string
         custom: []
       owner:
         name: owner
         description: 'Project owner.'
         required: false
-        example: natus
+        example: occaecati
         type: string
         custom: []
     cleanBodyParameters:
-      name: debitis
-      location: dolorem
-      description: 'Nulla distinctio est qui ipsam omnis itaque non.'
-      owner: natus
+      name: id
+      location: ratione
+      description: 'Neque est magni fuga iusto eum minima harum exercitationem.'
+      owner: occaecati
     fileParameters: []
     responses: []
     responseFields:
@@ -197,11 +197,11 @@ endpoints:
         name: id
         description: 'Project identifier.'
         required: true
-        example: 20
+        example: 5
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 20
+      id: 5
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -209,35 +209,35 @@ endpoints:
         name: name
         description: 'Project name.'
         required: false
-        example: dolorem
+        example: aliquam
         type: string
         custom: []
       location:
         name: location
         description: 'Project location.'
         required: false
-        example: alias
+        example: velit
         type: string
         custom: []
       description:
         name: description
         description: 'Project description.'
         required: false
-        example: 'Eaque deserunt enim sequi voluptatem itaque.'
+        example: 'Assumenda vel aut illum eligendi perferendis qui.'
         type: string
         custom: []
       owner:
         name: owner
         description: 'Project owner.'
         required: false
-        example: accusantium
+        example: quisquam
         type: string
         custom: []
     cleanBodyParameters:
-      name: dolorem
-      location: alias
-      description: 'Eaque deserunt enim sequi voluptatem itaque.'
-      owner: accusantium
+      name: aliquam
+      location: velit
+      description: 'Assumenda vel aut illum eligendi perferendis qui.'
+      owner: quisquam
     fileParameters: []
     responses: []
     responseFields:
@@ -275,11 +275,11 @@ endpoints:
         name: id
         description: 'Project identifier.'
         required: true
-        example: 15
+        example: 12
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 15
+      id: 12
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('uuid', 64);
             $table->string('name', 100);
+            $table->tinyInteger('is_default')->default(0);
             $table->text('permissions');
             $table->timestamps();
         });

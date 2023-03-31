@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('firm_id');
             $table->integer('invited_by');
             $table->string('email');
+            $table->integer('user_permission_id')->nullable()->default(null);
             $table->string('token')->unique();
             $table->timestamps();
             

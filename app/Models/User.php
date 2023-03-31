@@ -2,20 +2,24 @@
 
 namespace App\Models;
 
-use Exception;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
+use App\Exceptions\AccessDenied;
+use App\Exceptions\Exception;
+use App\Exceptions\ObjectNotExist;
 use App\Exceptions\Unauthorized;
 use App\Mail\Register\InitMessage;
 use App\Mail\Register\WelcomeMessage;
 use App\Mail\User\ForgotPasswordMessage;
 use App\Models\Firm;
+use App\Models\UserPermission;
 use App\Models\UserRegisterToken;
 
 class User extends Authenticatable
@@ -87,7 +91,7 @@ class User extends Authenticatable
     
     public function scopeApiFields(Builder $query): void
     {
-        $query->select("id", "firstname", "lastname", "phone", "email", "activated", "owner");
+        $query->select("id", "firstname", "lastname", "phone", "email", "activated", "owner", "superuser", "user_permission_id");
     }
     
     public function scopeNoDelete(Builder $query): void
@@ -161,5 +165,49 @@ class User extends Authenticatable
     {
         $firm = $this->getFirm();
         return $firm->uuid;
+    }
+    
+    public function getUserPermissions()
+    {
+        if($this->owner || $this->superuser)
+            return "all";
+        
+        $permission = UserPermission::find($this->user_permission_id);
+        if(!$permission)
+            throw new ObjectNotExist(__("Invalid user permission."));
+        
+        return $permission->getPermission();
+    }
+    
+    public static function checkAccess($perm, $eception = true)
+	{
+        $permission = Auth::user()->getUserPermissions();
+        if($permission == "all")
+            return true;
+        
+        list($object, $action) = explode(":", $perm);
+        
+        if(isset($permission[$object]) && in_array($action, $permission[$object]))
+            return true;
+            
+		if($eception)
+			throw new AccessDenied(__("Access denied"));
+
+		return false;
+	}
+    
+    public function prepareAccount()
+    {
+        $permissions = [];
+        foreach(config("permissions.permission") as $object => $row)
+            $permissions[] = $object . ":list";
+            
+        $defaultPermissions = new UserPermission;
+        $defaultPermissions->withoutGlobalScopes();
+        $defaultPermissions->uuid = $this->getUuid();
+        $defaultPermissions->name = "Read only";
+        $defaultPermissions->is_default = 1;
+        $defaultPermissions->permissions = implode(";", $permissions);
+        $defaultPermissions->saveQuietly();
     }
 }

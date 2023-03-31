@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use App\Exceptions\Exception;
+use App\Models\User;
 
 class UserPermission extends Model
 {
@@ -13,6 +15,20 @@ class UserPermission extends Model
     
     public function canDelete($exception = false)
     {
+        if($this->is_default)
+        {
+            if($exception)
+                throw new Exception(__("Cannot deleted default permission."));
+            return false;
+        }
+        
+        if(User::where("firm_id", $this->uuid)->where("deleted", 0)->where("user_permission_id", $this->id)->count())
+        {
+            if($exception)
+                throw new Exception(__("Cannot deleted. Permissions are used."));
+            return false;
+        }
+        
         return false;
     }
     
@@ -24,7 +40,7 @@ class UserPermission extends Model
     
     public function scopeApiFields(Builder $query): void
     {
-        $query->select("id", "name", "permissions");
+        $query->select("id", "name", "permissions", "is_default");
     }
     
     public function getPermission()
@@ -87,5 +103,31 @@ class UserPermission extends Model
         
         $this->permissions = self::permissionArrayToString($permissions);
         $this->save();
+    }
+    
+    public static function getDefault()
+    {
+        $default = self::select("id")->where("is_default", 1)->first();
+        return $default ? $default->id : false;
+    }
+    
+    public static function getIds()
+    {
+        $ids = [];
+        foreach(self::all() as $row)
+            $ids[] = $row->id;
+        return $ids;
+    }
+    
+    public function isDefaultFlag()
+    {
+        if($this->is_default)
+        {
+            foreach(self::where("id", "!=", $this->id)->get() as $row)
+            {
+                $row->is_default = 0;
+                $row->save();
+            }
+        }
     }
 }

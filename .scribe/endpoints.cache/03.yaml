@@ -34,19 +34,19 @@ endpoints:
         name: page
         description: 'Number of page (pagination). Default: 1'
         required: false
-        example: 20
+        example: 15
         type: integer
         custom: []
     cleanQueryParameters:
       size: 14
-      page: 20
+      page: 15
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
     responses:
       -
         status: 200
-        content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id":1,"name":"Pierwsza testowa grupa","permissions":{"module":["list","create"]}}]}'
+        content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id":1,"name":"Example group name","permissions":{"module":["list","create"]}, "is_default": 0}]}'
         headers: []
         description: ''
         custom: []
@@ -84,19 +84,27 @@ endpoints:
         name: name
         description: 'Group permission name.'
         required: true
-        example: nihil
+        example: qui
         type: string
         custom: []
       permissions:
         name: permissions
         description: Permission.
         required: true
-        example: cum
+        example: consectetur
         type: string
         custom: []
+      is_default:
+        name: is_default
+        description: 'Set permission default.'
+        required: false
+        example: true
+        type: boolean
+        custom: []
     cleanBodyParameters:
-      name: nihil
-      permissions: cum
+      name: qui
+      permissions: consectetur
+      is_default: true
     fileParameters: []
     responses:
       -
@@ -140,11 +148,11 @@ endpoints:
         name: id
         description: 'Permission group identifier.'
         required: true
-        example: 7
+        example: 19
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 7
+      id: 19
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -153,7 +161,7 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"id":1,"name":"Pierwsza testowa grupa","permissions":{"module":["list","create"]}}'
+        content: '{"id":1,"name":"Example group name","permissions":{"module":["list","create"]}, "is_default": 0}'
         headers: []
         description: ''
         custom: []
@@ -191,11 +199,11 @@ endpoints:
         name: id
         description: 'Permission group identifier.'
         required: true
-        example: 2
+        example: 14
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 2
+      id: 14
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -203,19 +211,27 @@ endpoints:
         name: name
         description: 'Group permission name.'
         required: false
-        example: eius
+        example: qui
         type: string
         custom: []
       permissions:
         name: permissions
         description: Permission.
         required: false
-        example: ut
+        example: earum
         type: string
         custom: []
+      is_default:
+        name: is_default
+        description: 'Set permission default.'
+        required: false
+        example: true
+        type: boolean
+        custom: []
     cleanBodyParameters:
-      name: eius
-      permissions: ut
+      name: qui
+      permissions: earum
+      is_default: true
     fileParameters: []
     responses: []
     responseFields:
@@ -253,11 +269,11 @@ endpoints:
         name: id
         description: 'Permission group identifier.'
         required: true
-        example: 11
+        example: 10
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 11
+      id: 10
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -305,11 +321,11 @@ endpoints:
         name: id
         description: 'Permission group identifier.'
         required: true
-        example: 8
+        example: 11
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 8
+      id: 11
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -317,19 +333,19 @@ endpoints:
         name: object
         description: 'Object name.'
         required: true
-        example: sunt
+        example: iure
         type: string
         custom: []
       action:
         name: action
         description: 'Action name (if not set, allow all actions).'
         required: false
-        example: eaque
+        example: et
         type: string
         custom: []
     cleanBodyParameters:
-      object: sunt
-      action: eaque
+      object: iure
+      action: et
     fileParameters: []
     responses:
       -
@@ -373,11 +389,11 @@ endpoints:
         name: id
         description: 'Permission group identifier.'
         required: true
-        example: 11
+        example: 2
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 11
+      id: 2
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -385,19 +401,19 @@ endpoints:
         name: object
         description: 'Object name.'
         required: true
-        example: nisi
+        example: asperiores
         type: string
         custom: []
       action:
         name: action
         description: 'Action name (if not set, allow all actions).'
         required: false
-        example: aut
+        example: ipsa
         type: string
         custom: []
     cleanBodyParameters:
-      object: nisi
-      action: aut
+      object: asperiores
+      action: ipsa
     fileParameters: []
     responses:
       -

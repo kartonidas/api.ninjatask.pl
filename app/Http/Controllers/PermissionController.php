@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use App\Exceptions\ObjectNotExist;
+use App\Models\User;
 use App\Models\UserPermission;
 use App\Rules\Permissions;
 
@@ -19,12 +20,14 @@ class PermissionController extends Controller
     * Return permissions list.
     * @queryParam size integer Number of rows. Default: 50
     * @queryParam page integer Number of page (pagination). Default: 1
-    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id":1,"name":"Pierwsza testowa grupa","permissions":{"module":["list","create"]}}]}
+    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id":1,"name":"Example group name","permissions":{"module":["list","create"]}, "is_default": 0}]}
     * @header Authorization: Bearer {TOKEN}
     * @group User permissions
     */
     public function list(Request $request)
     {
+        User::checkAccess("permission:list");
+        
         $request->validate([
             "size" => "nullable|integer|gt:0",
             "page" => "nullable|integer|gt:0",
@@ -65,6 +68,7 @@ class PermissionController extends Controller
     * projects:list,create,update,delete;users:list
     * @bodyParam name string required Group permission name.
     * @bodyParam permissions string required Permission.
+    * @bodyParam is_default boolean Set permission default.
     * @responseField id integer The id of the newly created permission group
     * @response 422 {"error":true,"message":"'projects:' does not contain a list of items.","errors":{"permissions":["'projects:' does not contain a list of items."]}}
     * @header Authorization: Bearer {TOKEN}
@@ -72,16 +76,21 @@ class PermissionController extends Controller
     */
     public function create(Request $request)
     {
+        User::checkAccess("permission:create");
+        
         $request->validate([
             "name" => "required|max:100",
             "permissions" => ["required", new Permissions],
+            "is_default" => "nullable|boolean",
         ]);
         
         $permission = new UserPermission;
         $permission->name = $request->input("name");
+        $permission->is_default = $request->input("is_default", 0);
         $permission->permissions = $request->input("permissions");
         $permission->save();
         
+        $permission->isDefaultFlag();
         return $permission->id;
     }
     
@@ -90,13 +99,15 @@ class PermissionController extends Controller
     *
     * Get persmission group details.
     * @urlParam id integer required Permission group identifier.
-    * @response 200 {"id":1,"name":"Pierwsza testowa grupa","permissions":{"module":["list","create"]}}
+    * @response 200 {"id":1,"name":"Example group name","permissions":{"module":["list","create"]}, "is_default": 0}
     * @response 404 {"error":true,"message":"Permission does not exist"}
     * @header Authorization: Bearer {TOKEN}
     * @group User permissions
     */
     public function get(Request $request, $id)
     {
+        User::checkAccess("permission:list");
+        
         $permission = UserPermission::apiFields()->find($id);
         if(!$permission)
             throw new ObjectNotExist(__("Permission does not exist"));
@@ -112,12 +123,15 @@ class PermissionController extends Controller
     * @urlParam id integer required Permission group identifier.
     * @bodyParam name string Group permission name.
     * @bodyParam permissions string Permission.
+    * @bodyParam is_default boolean Set permission default.
     * @responseField status boolean Update status
     * @header Authorization: Bearer {TOKEN}
     * @group User permissions
     */
     public function update(Request $request, $id)
     {
+        User::checkAccess("permission:update");
+        
         $permission = UserPermission::apiFields()->find($id);
         if(!$permission)
             throw new ObjectNotExist(__("Permission does not exist"));
@@ -125,10 +139,11 @@ class PermissionController extends Controller
         $rules = [
             "name" => "required|max:100",
             "permissions" => ["required", new Permissions],
+            "is_default" => "nullable|boolean",
         ];
         
         $validate = [];
-        $updateFields = ["name", "permissions"];
+        $updateFields = ["name", "permissions", "is_default"];
         foreach($updateFields as $field)
         {
             if($request->has($field))
@@ -147,6 +162,7 @@ class PermissionController extends Controller
                 $permission->{$field} = $request->input($field);
         }
         $permission->save();
+        $permission->isDefaultFlag();
         
         return true;
     }
@@ -163,7 +179,9 @@ class PermissionController extends Controller
     */
     public function delete(Request $request, $id)
     {
-        $permission = UserPermission::apiFields()->find($id);
+        User::checkAccess("permission:delete");
+        
+        $permission = UserPermission::find($id);
         if(!$permission)
             throw new ObjectNotExist(__("Permission does not exist"));
         
@@ -185,6 +203,8 @@ class PermissionController extends Controller
     */
     public function addPermission(Request $request, $id)
     {
+        User::checkAccess("permission:update");
+        
         $permission = UserPermission::apiFields()->find($id);
         if(!$permission)
             throw new ObjectNotExist(__("Permission does not exist"));
@@ -218,6 +238,8 @@ class PermissionController extends Controller
     */
     public function removePermission(Request $request, $id)
     {
+        User::checkAccess("permission:update");
+        
         $permission = UserPermission::apiFields()->find($id);
         if(!$permission)
             throw new ObjectNotExist(__("Permission does not exist"));

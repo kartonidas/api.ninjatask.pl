@@ -24,6 +24,8 @@ return new class extends Migration
             $table->tinyInteger('activated')->default(0);
             $table->tinyInteger('deleted')->default(0);
             $table->tinyInteger('owner')->default(0);
+            $table->tinyInteger('superuser')->default(0);
+            $table->integer('user_permission_id')->nullable()->default(null);
             $table->rememberToken();
             $table->timestamps();
             

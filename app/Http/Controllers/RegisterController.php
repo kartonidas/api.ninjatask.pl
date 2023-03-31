@@ -45,6 +45,7 @@ class RegisterController extends Controller
             $user->password = "";
             $user->activated = 0;
             $user->owner = 1;
+            $user->superuser = 1;
             $user->save();
         }
         
@@ -124,6 +125,7 @@ class RegisterController extends Controller
             $user->confirm();
             
             $user->ensureFirm($request->input("firm_identifier"));
+            $user->prepareAccount();
         });
         
         return true;

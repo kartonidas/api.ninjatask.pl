@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Laravel",
-        "_postman_id": "e1d03569-ba66-44ea-8bf3-2320dbb76090",
+        "_postman_id": "03dbfb3f-0fd2-4181-8c8b-d233fdcf4845",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -28,18 +28,18 @@
                             "query": [
                                 {
                                     "key": "size",
-                                    "value": "1",
+                                    "value": "20",
                                     "description": "Number of rows. Default: 50",
                                     "disabled": false
                                 },
                                 {
                                     "key": "page",
-                                    "value": "19",
+                                    "value": "2",
                                     "description": "Number of page (pagination). Default: 1",
                                     "disabled": false
                                 }
                             ],
-                            "raw": "{{baseUrl}}\/api\/projects?size=1&page=19"
+                            "raw": "{{baseUrl}}\/api\/projects?size=20&page=2"
                         },
                         "method": "GET",
                         "header": [
@@ -97,7 +97,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"debitis\",\"location\":\"dolorem\",\"description\":\"Nulla distinctio est qui ipsam omnis itaque non.\",\"owner\":\"natus\"}"
+                            "raw": "{\"name\":\"id\",\"location\":\"ratione\",\"description\":\"Neque est magni fuga iusto eum minima harum exercitationem.\",\"owner\":\"occaecati\"}"
                         },
                         "description": "Create new project.",
                         "auth": {
@@ -171,7 +171,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "20",
+                                    "value": "5",
                                     "description": "Project identifier."
                                 }
                             ]
@@ -193,7 +193,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"dolorem\",\"location\":\"alias\",\"description\":\"Eaque deserunt enim sequi voluptatem itaque.\",\"owner\":\"accusantium\"}"
+                            "raw": "{\"name\":\"aliquam\",\"location\":\"velit\",\"description\":\"Assumenda vel aut illum eligendi perferendis qui.\",\"owner\":\"quisquam\"}"
                         },
                         "description": "Update project.",
                         "auth": {
@@ -214,7 +214,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "15",
+                                    "value": "12",
                                     "description": "Project identifier."
                                 }
                             ]
@@ -264,18 +264,18 @@
                             "query": [
                                 {
                                     "key": "size",
-                                    "value": "13",
+                                    "value": "17",
                                     "description": "Number of rows. Default: 50",
                                     "disabled": false
                                 },
                                 {
                                     "key": "page",
-                                    "value": "5",
+                                    "value": "12",
                                     "description": "Number of page (pagination). Default: 1",
                                     "disabled": false
                                 }
                             ],
-                            "raw": "{{baseUrl}}\/api\/users?size=13&page=5"
+                            "raw": "{{baseUrl}}\/api\/users?size=17&page=12"
                         },
                         "method": "GET",
                         "header": [
@@ -302,7 +302,7 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\"total_rows\": 100, \"total_pages\": \"4\", \"current_page\": 1, \"has_more\": true, \"data\": [{\"id\": 1, \"firstname\": \"John\", \"lastname\": \"Doe\", \"phone\": 123456789, \"email\": \"john@doe.com\", \"activated\": 1, \"owner\": 0}]}",
+                            "body": "{\"total_rows\": 100, \"total_pages\": \"4\", \"current_page\": 1, \"has_more\": true, \"data\": [{\"id\": 1, \"firstname\": \"John\", \"lastname\": \"Doe\", \"phone\": 123456789, \"email\": \"john@doe.com\", \"activated\": 1, \"owner\": 0, \"superuser\": 0, \"user_permission_id\": 1}]}",
                             "name": ""
                         }
                     ]
@@ -333,7 +333,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"firstname\":\"in\",\"lastname\":\"perferendis\",\"email\":\"cassin.sidney@example.org\",\"password\":\"UnqVG1AbF\\\\;IHJ\",\"phone\":\"error\"}"
+                            "raw": "{\"firstname\":\"debitis\",\"lastname\":\"consequatur\",\"email\":\"kulas.rebeca@example.org\",\"password\":\"qjnc6OyZ2:3\",\"phone\":\"voluptatibus\",\"permission_id\":1,\"superuser\":false}"
                         },
                         "description": "Create user account. After create account is ready to use.",
                         "auth": {
@@ -375,7 +375,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"feeney.jocelyn@example.org\"}"
+                            "raw": "{\"email\":\"virgie65@example.com\",\"permission_id\":19}"
                         },
                         "description": "Send invitation to the email address provided.",
                         "auth": {
@@ -403,7 +403,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "4",
+                                    "value": "14",
                                     "description": "User identifier."
                                 }
                             ]
@@ -433,7 +433,7 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\"id\": 1, \"firstname\": \"John\", \"lastname\": \"Doe\", \"phone\": 123456789, \"email\": \"john@doe.com\", \"activated\": 1, \"owner\": 0}",
+                            "body": "{\"id\": 1, \"firstname\": \"John\", \"lastname\": \"Doe\", \"phone\": 123456789, \"email\": \"john@doe.com\", \"activated\": 1, \"owner\": 0, \"superuser\": 0, \"user_permission_id\": 1}",
                             "name": ""
                         },
                         {
@@ -456,7 +456,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "19",
+                                    "value": "17",
                                     "description": "User identifier."
                                 }
                             ]
@@ -478,7 +478,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"firstname\":\"quia\",\"lastname\":\"eius\",\"email\":\"fheathcote@example.com\",\"password\":\".c5ML=^%5dW\",\"phone\":\"tempora\"}"
+                            "raw": "{\"firstname\":\"molestias\",\"lastname\":\"quis\",\"email\":\"hagenes.jennyfer@example.com\",\"password\":\"NK\\\/yR`wfCKZ<G0r]7dZG\",\"phone\":\"enim\",\"permission_id\":2,\"superuser\":true}"
                         },
                         "description": "Update user account data.",
                         "auth": {
@@ -499,7 +499,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "13",
+                                    "value": "15",
                                     "description": "User identifier."
                                 }
                             ]
@@ -546,7 +546,7 @@
                                 {
                                     "id": "token",
                                     "key": "token",
-                                    "value": "doloribus",
+                                    "value": "cumque",
                                     "description": "Invite token from invitation message."
                                 }
                             ]
@@ -595,7 +595,7 @@
                                 {
                                     "id": "token",
                                     "key": "token",
-                                    "value": "voluptas",
+                                    "value": "sequi",
                                     "description": "Invite token."
                                 }
                             ]
@@ -613,7 +613,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"firstname\":\"qui\",\"lastname\":\"ut\",\"password\":\"R@~y;G\",\"phone\":\"aut\"}"
+                            "raw": "{\"firstname\":\"consequuntur\",\"lastname\":\"pariatur\",\"password\":\"9N0=FJ=4(\\\\tG[<t9c\",\"phone\":\"ex\"}"
                         },
                         "description": "Confirm invitation and create new user account.",
                         "auth": {
@@ -650,12 +650,12 @@
                                 },
                                 {
                                     "key": "page",
-                                    "value": "20",
+                                    "value": "15",
                                     "description": "Number of page (pagination). Default: 1",
                                     "disabled": false
                                 }
                             ],
-                            "raw": "{{baseUrl}}\/api\/permissions?size=14&page=20"
+                            "raw": "{{baseUrl}}\/api\/permissions?size=14&page=15"
                         },
                         "method": "GET",
                         "header": [
@@ -682,7 +682,7 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\"total_rows\": 100, \"total_pages\": \"4\", \"current_page\": 1, \"has_more\": true, \"data\": [{\"id\":1,\"name\":\"Pierwsza testowa grupa\",\"permissions\":{\"module\":[\"list\",\"create\"]}}]}",
+                            "body": "{\"total_rows\": 100, \"total_pages\": \"4\", \"current_page\": 1, \"has_more\": true, \"data\": [{\"id\":1,\"name\":\"Example group name\",\"permissions\":{\"module\":[\"list\",\"create\"]}, \"is_default\": 0}]}",
                             "name": ""
                         }
                     ]
@@ -713,7 +713,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"nihil\",\"permissions\":\"cum\"}"
+                            "raw": "{\"name\":\"qui\",\"permissions\":\"consectetur\",\"is_default\":true}"
                         },
                         "description": "Create new persmission group. Permissions should look like this:\nprojects:list,create,update,delete;users:list",
                         "auth": {
@@ -741,7 +741,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "7",
+                                    "value": "19",
                                     "description": "Permission group identifier."
                                 }
                             ]
@@ -771,7 +771,7 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\"id\":1,\"name\":\"Pierwsza testowa grupa\",\"permissions\":{\"module\":[\"list\",\"create\"]}}",
+                            "body": "{\"id\":1,\"name\":\"Example group name\",\"permissions\":{\"module\":[\"list\",\"create\"]}, \"is_default\": 0}",
                             "name": ""
                         },
                         {
@@ -794,7 +794,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "2",
+                                    "value": "14",
                                     "description": "Permission group identifier."
                                 }
                             ]
@@ -816,7 +816,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"eius\",\"permissions\":\"ut\"}"
+                            "raw": "{\"name\":\"qui\",\"permissions\":\"earum\",\"is_default\":true}"
                         },
                         "description": "Update persmission group.",
                         "auth": {
@@ -837,7 +837,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "11",
+                                    "value": "10",
                                     "description": "Permission group identifier."
                                 }
                             ]
@@ -884,7 +884,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "8",
+                                    "value": "11",
                                     "description": "Permission group identifier."
                                 }
                             ]
@@ -906,7 +906,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"object\":\"sunt\",\"action\":\"eaque\"}"
+                            "raw": "{\"object\":\"iure\",\"action\":\"et\"}"
                         },
                         "description": "Add permission to persmission group.",
                         "auth": {
@@ -934,7 +934,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "11",
+                                    "value": "2",
                                     "description": "Permission group identifier."
                                 }
                             ]
@@ -956,7 +956,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"object\":\"nisi\",\"action\":\"aut\"}"
+                            "raw": "{\"object\":\"asperiores\",\"action\":\"ipsa\"}"
                         },
                         "description": "Delete permission from persmission group.",
                         "auth": {
@@ -1062,7 +1062,7 @@
                                 {
                                     "id": "token",
                                     "key": "token",
-                                    "value": "reiciendis",
+                                    "value": "officia",
                                     "description": "Register token."
                                 }
                             ]
@@ -1111,7 +1111,7 @@
                                 {
                                     "id": "token",
                                     "key": "token",
-                                    "value": "ut",
+                                    "value": "earum",
                                     "description": "Register token."
                                 }
                             ]
@@ -1129,7 +1129,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"firstname\":\"eius\",\"lastname\":\"odit\",\"password\":\"|1C8?UYUwf\",\"firm_identifier\":\"culpa\",\"phone\":\"dolorum\"}"
+                            "raw": "{\"firstname\":\"facere\",\"lastname\":\"vel\",\"password\":\",5JtcBBGy,)=J}Uqo{\",\"firm_identifier\":\"exercitationem\",\"phone\":\"deleniti\"}"
                         },
                         "description": "Confirm register and finish registration.",
                         "auth": {
@@ -1167,7 +1167,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"vschmeler@example.org\",\"password\":\"\\\/4[t?n<0TmR5<wNz$\",\"device_name\":\"illum\"}"
+                            "raw": "{\"email\":\"pcrooks@example.com\",\"password\":\"F^LS5(\",\"device_name\":\"maiores\"}"
                         },
                         "description": "Return auth bearer Token.",
                         "auth": {
@@ -1205,7 +1205,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"kennith.turcotte@example.org\"}"
+                            "raw": "{\"email\":\"alexis33@example.net\"}"
                         },
                         "description": "Send password reset link",
                         "auth": {
@@ -1243,7 +1243,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"token\":\"quia\",\"email\":\"aschultz@example.net\",\"password\":\"cz7hTd4N,1cB@PI:}Ji\"}"
+                            "raw": "{\"token\":\"quaerat\",\"email\":\"magali95@example.org\",\"password\":\"){p(W-:x2v>,KXS\"}"
                         },
                         "description": "Send password reset link",
                         "auth": {
