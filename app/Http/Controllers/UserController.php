@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
 use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
@@ -13,8 +12,11 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password as RulePassword;
 use Illuminate\Validation\ValidationException;
+use App\Exceptions\Exception;
 use App\Exceptions\ObjectNotExist;
 use App\Exceptions\UserExist;
+use App\Models\Firm;
+use App\Models\PasswordResetToken;
 use App\Models\User;
 use App\Models\UserInvitation;
 use App\Models\UserPermission;
@@ -34,13 +36,23 @@ class UserController extends Controller
     */
     public function login(Request $request)
     {
-        $request->validate([
+        $rule = [
             "email" => "required|email",
             "password" => "required",
             "device_name" => "required",
-        ]);
+        ];
+        $requiredFirm = false;
+        if(User::where("email", $request->email)->active()->count() > 1)
+        {
+            $rule["firm_id"] = "required";
+            $requiredFirm = true;
+        }
+        $request->validate($rule);
         
-        $user = User::where("email", $request->email)->active()->first();
+        $user = User::where("email", $request->email);
+        if($requiredFirm)
+            $user->where("firm_id", $request->input("firm_id"));
+        $user = $user->active()->first();
  
         if(!$user || !Hash::check($request->password, $user->password))
         {
@@ -50,6 +62,40 @@ class UserController extends Controller
         }
         
         return $user->createToken($request->device_name)->plainTextToken;
+    }
+    
+    /**
+    * Get email firm ids
+    *
+    * Get user email assigned firm identifiers
+    * Because e-mail addresses may be repeated within other companies, if the e-mail address exists more than once,
+    * you must enter the company ID when logging in / remembering the password.
+    * @bodyParam email string required Account e-mail address
+    * @responseField status boolean Status
+    * @response 404 {"error":true,"message":"User does not exist"}
+    * @group User registation
+    */
+    public function getUserFirmIds(Request $request)
+    {
+        $request->validate([
+            "email" => "required|email",
+        ]);
+        
+        $users = User::where("email", $request->email)->active()->get();
+        if($users->isEmpty())
+            throw new ObjectNotExist(__("User does not exist."));
+        
+        $ids = [];
+        foreach($users as $user)
+        {
+            $firm = Firm::find($user->firm_id);
+            $ids[] = [
+                "id" => $user->firm_id,
+                "name" => $firm ? $firm->identifier : "",
+            ];
+        }
+            
+        return response()->json($ids);
     }
     
     /**
@@ -68,24 +114,35 @@ class UserController extends Controller
     *
     * Send password reset link
     * @bodyParam email string required Account e-mail address
+    * @bodyParam firm_id integer Firm identifier (if e-mail address exist in more than once firms)
     * @responseField status boolean Status
     * @response 404 {"error":true,"message":"User does not exist"}
     * @group User registation
     */
     public function forgotPassword(Request $request)
     {
-        $request->validate([
+        $rule = [
             "email" => "required|email",
-        ]);
+        ];
         
-        $user = User::where("email", $request->email)->active()->first();
+        $requiredFirm = false;
+        if(User::where("email", $request->email)->active()->count() > 1)
+        {
+            $rule["firm_id"] = "required";
+            $requiredFirm = true;
+        }
+        
+        $request->validate($rule);
+        
+        $user = User::where("email", $request->email);
+        if($requiredFirm)
+            $user->where("firm_id", $request->input("firm_id"));
+        $user = $user->active()->first();
+        
         if(!$user)
             throw new ObjectNotExist(__("User does not exist."));
         
-        $status = Password::sendResetLink(
-            $request->only("email")
-        );
-        
+        $user->userForgotenPassword();
         return true;
     }
     
@@ -107,23 +164,30 @@ class UserController extends Controller
             "password" => "required|min:8|confirmed",
         ]);
         
-        $status = Password::reset(
-            $request->only("email", "password", "password_confirmation", "token"),
-            function (User $user, string $password) {
-                $user->forceFill([
-                    "password" => Hash::make($password)
-                ])->setRememberToken(Str::random(60));
-                $user->save();
-                event(new PasswordReset($user));
-            }
-        );
-        
-        if($status === Password::PASSWORD_RESET)
-            return true;
-        
-        throw ValidationException::withMessages([
-            "email" => [__($status)],
+        return User::userTokenResetPassword($request->only("email", "password", "token"));
+    }
+    
+    /**
+    * Validate token reset password
+    *
+    * Validate token reset password
+    * @bodyParam token string required forgot password token
+    * @bodyParam email string required Account e-mail address
+    * @responseField status boolean Status
+    * @group User registation
+    */
+    public function resetPasswordGet(Request $request)
+    {
+        $request->validate([
+            "token" => "required",
+            "email" => "required|email",
         ]);
+        
+        $resetToken = PasswordResetToken::where("email", $request->input("email"))->where("token", $request->input("token"))->first();
+        if(!$resetToken)
+            throw new Exception(__("Invalid reset token"));
+        
+        return true;
     }
     
     /**

@@ -104,11 +104,11 @@ endpoints:
         name: token
         description: 'Register token.'
         required: true
-        example: officia
+        example: eos
         type: string
         custom: []
     cleanUrlParameters:
-      token: officia
+      token: eos
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -154,11 +154,11 @@ endpoints:
         name: token
         description: 'Register token.'
         required: true
-        example: earum
+        example: vel
         type: string
         custom: []
     cleanUrlParameters:
-      token: earum
+      token: vel
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -166,43 +166,43 @@ endpoints:
         name: firstname
         description: 'User first name.'
         required: true
-        example: facere
+        example: asperiores
         type: string
         custom: []
       lastname:
         name: lastname
         description: 'User last name.'
         required: true
-        example: vel
+        example: totam
         type: string
         custom: []
       password:
         name: password
         description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
         required: true
-        example: ',5JtcBBGy,)=J}Uqo{'
+        example: 'Z$=SfB+9_JOVFM<z]n='
         type: string
         custom: []
       firm_identifier:
         name: firm_identifier
         description: 'User firm name.'
         required: true
-        example: exercitationem
+        example: sunt
         type: string
         custom: []
       phone:
         name: phone
         description: 'User phone number.'
         required: true
-        example: deleniti
+        example: qui
         type: string
         custom: []
     cleanBodyParameters:
-      firstname: facere
-      lastname: vel
-      password: ',5JtcBBGy,)=J}Uqo{'
-      firm_identifier: exercitationem
-      phone: deleniti
+      firstname: asperiores
+      lastname: totam
+      password: 'Z$=SfB+9_JOVFM<z]n='
+      firm_identifier: sunt
+      phone: qui
     fileParameters: []
     responses:
       -
@@ -249,27 +249,27 @@ endpoints:
         name: email
         description: 'Account e-mail address'
         required: true
-        example: pcrooks@example.com
+        example: rowe.zita@example.net
         type: string
         custom: []
       password:
         name: password
         description: 'Account password'
         required: true
-        example: F^LS5(
+        example: 'U#c]kN3;\L'
         type: string
         custom: []
       device_name:
         name: device_name
         description: 'Device name'
         required: true
-        example: maiores
+        example: qui
         type: string
         custom: []
     cleanBodyParameters:
-      email: pcrooks@example.com
-      password: F^LS5(
-      device_name: maiores
+      email: rowe.zita@example.net
+      password: 'U#c]kN3;\L'
+      device_name: qui
     fileParameters: []
     responses:
       -
@@ -316,11 +316,19 @@ endpoints:
         name: email
         description: 'Account e-mail address'
         required: true
-        example: alexis33@example.net
+        example: nkuphal@example.org
         type: string
         custom: []
+      firm_id:
+        name: firm_id
+        description: 'Firm identifier (if e-mail address exist in more than once firms)'
+        required: false
+        example: 17
+        type: integer
+        custom: []
     cleanBodyParameters:
-      email: alexis33@example.net
+      email: nkuphal@example.org
+      firm_id: 17
     fileParameters: []
     responses:
       -
@@ -329,6 +337,59 @@ endpoints:
         headers: []
         description: ''
         custom: []
+    responseFields:
+      status:
+        name: status
+        description: Status
+        required: false
+        example: null
+        type: boolean
+        custom: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/reset-password
+    metadata:
+      groupName: 'User registation'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Validate token reset password'
+      description: 'Validate token reset password'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      token:
+        name: token
+        description: 'forgot password token'
+        required: true
+        example: quaerat
+        type: string
+        custom: []
+      email:
+        name: email
+        description: 'Account e-mail address'
+        required: true
+        example: emely.schuppe@example.org
+        type: string
+        custom: []
+    cleanBodyParameters:
+      token: quaerat
+      email: emely.schuppe@example.org
+    fileParameters: []
+    responses: []
     responseFields:
       status:
         name: status
@@ -367,29 +428,83 @@ endpoints:
         name: token
         description: 'forgot password token'
         required: true
-        example: quaerat
+        example: molestiae
         type: string
         custom: []
       email:
         name: email
         description: 'Account e-mail address'
         required: true
-        example: magali95@example.org
+        example: irodriguez@example.org
         type: string
         custom: []
       password:
         name: password
         description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
         required: true
-        example: '){p(W-:x2v>,KXS'
+        example: 8QFdEgm
         type: string
         custom: []
     cleanBodyParameters:
-      token: quaerat
-      email: magali95@example.org
-      password: '){p(W-:x2v>,KXS'
+      token: molestiae
+      email: irodriguez@example.org
+      password: 8QFdEgm
     fileParameters: []
     responses: []
+    responseFields:
+      status:
+        name: status
+        description: Status
+        required: false
+        example: null
+        type: boolean
+        custom: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/get-email-firm-ids
+    metadata:
+      groupName: 'User registation'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get email firm ids'
+      description: |-
+        Get user email assigned firm identifiers
+        Because e-mail addresses may be repeated within other companies, if the e-mail address exists more than once,
+        you must enter the company ID when logging in / remembering the password.
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      email:
+        name: email
+        description: 'Account e-mail address'
+        required: true
+        example: sincere.klocko@example.com
+        type: string
+        custom: []
+    cleanBodyParameters:
+      email: sincere.klocko@example.com
+    fileParameters: []
+    responses:
+      -
+        status: 404
+        content: '{"error":true,"message":"User does not exist"}'
+        headers: []
+        description: ''
+        custom: []
     responseFields:
       status:
         name: status

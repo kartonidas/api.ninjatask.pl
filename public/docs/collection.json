@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Laravel",
-        "_postman_id": "03dbfb3f-0fd2-4181-8c8b-d233fdcf4845",
+        "_postman_id": "11411a7e-e9d7-485c-99d9-d68605d47917",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -28,18 +28,18 @@
                             "query": [
                                 {
                                     "key": "size",
-                                    "value": "20",
+                                    "value": "15",
                                     "description": "Number of rows. Default: 50",
                                     "disabled": false
                                 },
                                 {
                                     "key": "page",
-                                    "value": "2",
+                                    "value": "14",
                                     "description": "Number of page (pagination). Default: 1",
                                     "disabled": false
                                 }
                             ],
-                            "raw": "{{baseUrl}}\/api\/projects?size=20&page=2"
+                            "raw": "{{baseUrl}}\/api\/projects?size=15&page=14"
                         },
                         "method": "GET",
                         "header": [
@@ -97,7 +97,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"id\",\"location\":\"ratione\",\"description\":\"Neque est magni fuga iusto eum minima harum exercitationem.\",\"owner\":\"occaecati\"}"
+                            "raw": "{\"name\":\"illo\",\"location\":\"non\",\"description\":\"Doloremque est earum nostrum maiores reprehenderit voluptatem laborum aliquid.\",\"owner\":\"nostrum\"}"
                         },
                         "description": "Create new project.",
                         "auth": {
@@ -118,7 +118,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "20",
                                     "description": "Project identifier."
                                 }
                             ]
@@ -171,7 +171,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "5",
+                                    "value": "11",
                                     "description": "Project identifier."
                                 }
                             ]
@@ -193,7 +193,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"aliquam\",\"location\":\"velit\",\"description\":\"Assumenda vel aut illum eligendi perferendis qui.\",\"owner\":\"quisquam\"}"
+                            "raw": "{\"name\":\"reiciendis\",\"location\":\"natus\",\"description\":\"Consequuntur vitae distinctio consequatur ut commodi libero.\",\"owner\":\"odit\"}"
                         },
                         "description": "Update project.",
                         "auth": {
@@ -214,7 +214,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "12",
+                                    "value": "4",
                                     "description": "Project identifier."
                                 }
                             ]
@@ -264,18 +264,18 @@
                             "query": [
                                 {
                                     "key": "size",
-                                    "value": "17",
+                                    "value": "16",
                                     "description": "Number of rows. Default: 50",
                                     "disabled": false
                                 },
                                 {
                                     "key": "page",
-                                    "value": "12",
+                                    "value": "10",
                                     "description": "Number of page (pagination). Default: 1",
                                     "disabled": false
                                 }
                             ],
-                            "raw": "{{baseUrl}}\/api\/users?size=17&page=12"
+                            "raw": "{{baseUrl}}\/api\/users?size=16&page=10"
                         },
                         "method": "GET",
                         "header": [
@@ -333,7 +333,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"firstname\":\"debitis\",\"lastname\":\"consequatur\",\"email\":\"kulas.rebeca@example.org\",\"password\":\"qjnc6OyZ2:3\",\"phone\":\"voluptatibus\",\"permission_id\":1,\"superuser\":false}"
+                            "raw": "{\"firstname\":\"laboriosam\",\"lastname\":\"sint\",\"email\":\"bulah78@example.net\",\"password\":\"2S()sKN\",\"phone\":\"voluptas\",\"permission_id\":7,\"superuser\":true}"
                         },
                         "description": "Create user account. After create account is ready to use.",
                         "auth": {
@@ -375,7 +375,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"virgie65@example.com\",\"permission_id\":19}"
+                            "raw": "{\"email\":\"danny.ortiz@example.net\",\"permission_id\":16}"
                         },
                         "description": "Send invitation to the email address provided.",
                         "auth": {
@@ -403,7 +403,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "14",
+                                    "value": "12",
                                     "description": "User identifier."
                                 }
                             ]
@@ -456,7 +456,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "17",
+                                    "value": "9",
                                     "description": "User identifier."
                                 }
                             ]
@@ -478,7 +478,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"firstname\":\"molestias\",\"lastname\":\"quis\",\"email\":\"hagenes.jennyfer@example.com\",\"password\":\"NK\\\/yR`wfCKZ<G0r]7dZG\",\"phone\":\"enim\",\"permission_id\":2,\"superuser\":true}"
+                            "raw": "{\"firstname\":\"incidunt\",\"lastname\":\"ut\",\"email\":\"ottis33@example.org\",\"password\":\"V&Bop}E\\\\Zyn?\",\"phone\":\"minima\",\"permission_id\":11,\"superuser\":false}"
                         },
                         "description": "Update user account data.",
                         "auth": {
@@ -499,7 +499,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "15",
+                                    "value": "20",
                                     "description": "User identifier."
                                 }
                             ]
@@ -546,7 +546,7 @@
                                 {
                                     "id": "token",
                                     "key": "token",
-                                    "value": "cumque",
+                                    "value": "suscipit",
                                     "description": "Invite token from invitation message."
                                 }
                             ]
@@ -595,7 +595,7 @@
                                 {
                                     "id": "token",
                                     "key": "token",
-                                    "value": "sequi",
+                                    "value": "autem",
                                     "description": "Invite token."
                                 }
                             ]
@@ -613,7 +613,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"firstname\":\"consequuntur\",\"lastname\":\"pariatur\",\"password\":\"9N0=FJ=4(\\\\tG[<t9c\",\"phone\":\"ex\"}"
+                            "raw": "{\"firstname\":\"commodi\",\"lastname\":\"voluptatem\",\"password\":\"!~cTB3|>r8B\\\\fZ<,+\",\"phone\":\"perspiciatis\"}"
                         },
                         "description": "Confirm invitation and create new user account.",
                         "auth": {
@@ -644,18 +644,18 @@
                             "query": [
                                 {
                                     "key": "size",
-                                    "value": "14",
+                                    "value": "5",
                                     "description": "Number of rows. Default: 50",
                                     "disabled": false
                                 },
                                 {
                                     "key": "page",
-                                    "value": "15",
+                                    "value": "6",
                                     "description": "Number of page (pagination). Default: 1",
                                     "disabled": false
                                 }
                             ],
-                            "raw": "{{baseUrl}}\/api\/permissions?size=14&page=15"
+                            "raw": "{{baseUrl}}\/api\/permissions?size=5&page=6"
                         },
                         "method": "GET",
                         "header": [
@@ -713,7 +713,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"qui\",\"permissions\":\"consectetur\",\"is_default\":true}"
+                            "raw": "{\"name\":\"velit\",\"permissions\":\"nisi\",\"is_default\":true}"
                         },
                         "description": "Create new persmission group. Permissions should look like this:\nprojects:list,create,update,delete;users:list",
                         "auth": {
@@ -741,7 +741,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "19",
+                                    "value": "10",
                                     "description": "Permission group identifier."
                                 }
                             ]
@@ -794,7 +794,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "14",
+                                    "value": "5",
                                     "description": "Permission group identifier."
                                 }
                             ]
@@ -816,7 +816,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"qui\",\"permissions\":\"earum\",\"is_default\":true}"
+                            "raw": "{\"name\":\"aspernatur\",\"permissions\":\"distinctio\",\"is_default\":true}"
                         },
                         "description": "Update persmission group.",
                         "auth": {
@@ -837,7 +837,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "10",
+                                    "value": "16",
                                     "description": "Permission group identifier."
                                 }
                             ]
@@ -884,7 +884,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "11",
+                                    "value": "7",
                                     "description": "Permission group identifier."
                                 }
                             ]
@@ -906,7 +906,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"object\":\"iure\",\"action\":\"et\"}"
+                            "raw": "{\"object\":\"fugit\",\"action\":\"nemo\"}"
                         },
                         "description": "Add permission to persmission group.",
                         "auth": {
@@ -934,7 +934,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "2",
+                                    "value": "8",
                                     "description": "Permission group identifier."
                                 }
                             ]
@@ -956,7 +956,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"object\":\"asperiores\",\"action\":\"ipsa\"}"
+                            "raw": "{\"object\":\"rerum\",\"action\":\"quo\"}"
                         },
                         "description": "Delete permission from persmission group.",
                         "auth": {
@@ -1062,7 +1062,7 @@
                                 {
                                     "id": "token",
                                     "key": "token",
-                                    "value": "officia",
+                                    "value": "eos",
                                     "description": "Register token."
                                 }
                             ]
@@ -1111,7 +1111,7 @@
                                 {
                                     "id": "token",
                                     "key": "token",
-                                    "value": "earum",
+                                    "value": "vel",
                                     "description": "Register token."
                                 }
                             ]
@@ -1129,7 +1129,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"firstname\":\"facere\",\"lastname\":\"vel\",\"password\":\",5JtcBBGy,)=J}Uqo{\",\"firm_identifier\":\"exercitationem\",\"phone\":\"deleniti\"}"
+                            "raw": "{\"firstname\":\"asperiores\",\"lastname\":\"totam\",\"password\":\"Z$=SfB+9_JOVFM<z]n=\",\"firm_identifier\":\"sunt\",\"phone\":\"qui\"}"
                         },
                         "description": "Confirm register and finish registration.",
                         "auth": {
@@ -1167,7 +1167,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"pcrooks@example.com\",\"password\":\"F^LS5(\",\"device_name\":\"maiores\"}"
+                            "raw": "{\"email\":\"rowe.zita@example.net\",\"password\":\"U#c]kN3;\\\\L\",\"device_name\":\"qui\"}"
                         },
                         "description": "Return auth bearer Token.",
                         "auth": {
@@ -1205,7 +1205,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"alexis33@example.net\"}"
+                            "raw": "{\"email\":\"nkuphal@example.org\",\"firm_id\":17}"
                         },
                         "description": "Send password reset link",
                         "auth": {
@@ -1220,6 +1220,37 @@
                             "name": ""
                         }
                     ]
+                },
+                {
+                    "name": "Validate token reset password",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/reset-password",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/reset-password"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"token\":\"quaerat\",\"email\":\"emely.schuppe@example.org\"}"
+                        },
+                        "description": "Validate token reset password",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
                 },
                 {
                     "name": "Reset password",
@@ -1243,7 +1274,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"token\":\"quaerat\",\"email\":\"magali95@example.org\",\"password\":\"){p(W-:x2v>,KXS\"}"
+                            "raw": "{\"token\":\"molestiae\",\"email\":\"irodriguez@example.org\",\"password\":\"8QFdEgm\"}"
                         },
                         "description": "Send password reset link",
                         "auth": {
@@ -1251,6 +1282,44 @@
                         }
                     },
                     "response": []
+                },
+                {
+                    "name": "Get email firm ids",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/get-email-firm-ids",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/get-email-firm-ids"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"sincere.klocko@example.com\"}"
+                        },
+                        "description": "Get user email assigned firm identifiers\nBecause e-mail addresses may be repeated within other companies, if the e-mail address exists more than once,\nyou must enter the company ID when logging in \/ remembering the password.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"error\":true,\"message\":\"User does not exist\"}",
+                            "name": ""
+                        }
+                    ]
                 }
             ]
         }

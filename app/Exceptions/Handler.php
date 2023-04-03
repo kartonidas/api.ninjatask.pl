@@ -8,6 +8,8 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\AuthenticationException;
 use Throwable;
 
+use App\Exceptions\AccessDenied;
+use App\Exceptions\Exception;
 use App\Exceptions\ObjectNotExist;
 use App\Exceptions\Unauthorized;
 
@@ -28,6 +30,8 @@ class Handler extends ExceptionHandler
      * @var array<int, class-string<\Throwable>>
      */
     protected $dontReport = [
+        AccessDenied::class,
+        Exception::class,
         ObjectNotExist::class,
         Unauthorized::class,
     ];

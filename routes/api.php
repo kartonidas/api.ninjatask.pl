@@ -48,6 +48,7 @@ Route::middleware('auth:sanctum')->group(function () use($router) {
     $router->delete('/permission/{id}/del', [PermissionController::class, "removePermission"])->where("id", "[0-9]+");
     
     // ZADANIA
+    // todo...
 });
 
 // REJESTRACJA
@@ -62,4 +63,7 @@ Route::put('/invite/{token}', [UserController::class, "inviteConfirm"]);
 // LOGOWANIE / PRZYPOMNIENIE HASŁA
 Route::post("/login", [UserController::class, "login"]);
 Route::post("/forgot-password", [UserController::class, "forgotPassword"]);
+Route::get("/reset-password", [UserController::class, "resetPasswordGet"]);
 Route::post("/reset-password", [UserController::class, "resetPassword"]);
+Route::get("/get-email-firm-ids", [UserController::class, "getUserFirmIds"]);
+

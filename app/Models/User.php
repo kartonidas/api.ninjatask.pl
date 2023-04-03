@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
@@ -19,6 +20,7 @@ use App\Mail\Register\InitMessage;
 use App\Mail\Register\WelcomeMessage;
 use App\Mail\User\ForgotPasswordMessage;
 use App\Models\Firm;
+use App\Models\PasswordResetToken;
 use App\Models\UserPermission;
 use App\Models\UserRegisterToken;
 
@@ -76,13 +78,41 @@ class User extends Authenticatable
         $this->save();
     }
     
-    public function sendPasswordResetNotification($token): void
+    public function userForgotenPassword()
     {
-        $url = 'https://example.com/reset-password?token=' . $token;
+        $key = config("app.key");
+        if(str_starts_with($key, "base64:"))
+            $key = base64_decode(substr($key, 7));
+        $token = hash_hmac("sha256", Str::random(40), $key);
+        
+        PasswordResetToken::where("firm_id", $this->firm_id)->where("email", $this->email)->delete();
+        
+        $tokenRow = new PasswordResetToken;
+        $tokenRow->firm_id = $this->firm_id;
+        $tokenRow->email = $this->email;
+        $tokenRow->token = $token;
+        $tokenRow->save();
+        
+        $url = env("FRONTEND_URL") . "reset-password?token=" . $token . "&email=" . $this->email;
         Mail::to($this->email)->send(new ForgotPasswordMessage($url));
     }
     
-    private static $firm = null;
+    public static function userTokenResetPassword($data)
+    {
+        $resetToken = PasswordResetToken::where("email", $data["email"])->where("token", $data["token"])->first();
+        if(!$resetToken)
+            throw new Exception(__("Invalid reset token"));
+        
+        $user = self::where("email", $data["email"])->where("firm_id", $resetToken->firm_id)->active()->first();
+        if(!$user)
+            throw new ObjectNotExist(__("User not exist"));
+        
+        $user->password = Hash::make($data["password"]);
+        $user->save();
+        
+        PasswordResetToken::where("firm_id", $resetToken->firm_id)->where("email", $resetToken->email)->delete();
+        return true;
+    }
     
     public function scopeActive(Builder $query): void
     {
@@ -148,17 +178,11 @@ class User extends Authenticatable
     
     public function getFirm()
     {
-        if(!static::$firm)
-        {
-            $firm = Firm::find($this->firm_id);
-            if($firm)
-                static::$firm = $firm;
-        }
-        
-        if(!static::$firm)
+        $firm = Firm::find($this->firm_id);
+        if(!$firm)
             throw new Unauthorized("Unauthorized.");
         
-        return static::$firm;
+        return $firm;
     }
     
     public function getUuid()
