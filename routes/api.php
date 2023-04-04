@@ -37,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function () use($router) {
     $router->get('/user/{id}', [UserController::class, "get"])->where("id", "[0-9]+");
     $router->put('/user/{id}', [UserController::class, "update"])->where("id", "[0-9]+");
     $router->delete('/user/{id}', [UserController::class, "delete"])->where("id", "[0-9]+");
+    $router->get('/get-firm-id', [UserController::class, "getFirmId"]);
     
     // UPRAWNIENIA
     $router->get('/permissions', [PermissionController::class, "list"]);

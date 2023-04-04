@@ -6,24 +6,25 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\PasswordResetToken;
+use App\Models\User;
 use App\Models\UserInvitation;
 
 class UserTest extends TestCase
 {
     use RefreshDatabase;
     
+    // Successfull user login
     public function test_login_successfull(): void
     {
-        $this->userRegister();
-        $token = $this->getToken();
+        $token = $this->userRegister();
         
-        $response = $this->post('/api/register/confirm/' . $token, $this->userData);
+        $response = $this->post('/api/register/confirm/' . $token, $this->getAccount(0)['data']);
         $status = $response->getContent();
         if($status == '1')
         {
             $data = [
-                'email' => $this->testEmail,
-                'password' => $this->userData['password'],
+                'email' => $this->getAccount(0)['email'],
+                'password' => $this->getAccount(0)['data']['password'],
                 'device_name' => 'test'
             ];
             $response = $this->postJson('/api/login', $data);
@@ -31,17 +32,17 @@ class UserTest extends TestCase
         }
     }
     
+    // Error user login (invalid password)
     public function test_login_invalid_password(): void
     {
-        $this->userRegister();
-        $token = $this->getToken();
+        $token = $this->userRegister();
         
-        $response = $this->postJson('/api/register/confirm/' . $token, $this->userData);
+        $response = $this->postJson('/api/register/confirm/' . $token, $this->getAccount(0)['data']);
         $status = $response->getContent();
         if($status == '1')
         {
             $data = [
-                'email' => $this->testEmail,
+                'email' => $this->getAccount(0)['email'],
                 'password' => 'INVALID:PASSWORD',
                 'device_name' => 'test'
             ];
@@ -50,26 +51,61 @@ class UserTest extends TestCase
         }
     }
     
+    // Error user login (inactive account)
     public function test_login_inactive_account(): void
     {
         $this->userRegister();
         $data = [
-            'email' => $this->testEmail,
-            'password' => $this->userData['password'],
+            'email' => $this->getAccount(0)['email'],
+            'password' => $this->getAccount(0)['data']['password'],
             'device_name' => 'test'
         ];
         $response = $this->postJson('/api/login', $data);
         $response->assertStatus(422);
     }
     
+    // Error user login (two or more email address in user table - firm_id required)
+    public function test_login_with_firm_id_error(): void
+    {
+        $this->prepareMultipleUserAccount();
+        $data = [
+            'email' => $this->getAccount(0)['email'],
+            'password' => $this->getAccount(0)['data']['password'],
+            'device_name' => 'test',
+        ];
+        $response = $this->postJson('/api/login', $data);
+        $response->assertStatus(422);
+    }
+    
+    // Successfull user login (two or more email address in user table - firm_id required)
+    public function test_login_with_firm_id_successfull(): void
+    {
+        $this->prepareMultipleUserAccount();
+        $user = User::where('email', 'arturpatura@gmail.com')->where('owner', 1)->first();
+        $data = [
+            'email' => 'arturpatura@gmail.com',
+            'password' => $this->getAccount(0)['data']['password'],
+            'device_name' => 'test',
+            'firm_id' => $user->firm_id,
+        ];
+        $response = $this->postJson('/api/login', $data);
+        $response->assertStatus(200);
+        $loginToken = $response->getContent();
+        
+        $response = $this->withToken($loginToken)->getJson('/api/get-firm-id');
+        $response->assertStatus(200)->assertSeeText($user->firm_id);
+    }
+    
+    // Successfull generate forgot password
     public function test_login_forgot_password_successfull(): void
     {
         $this->userRegisterWithConfirmation();
-        $data = ['email' => $this->testEmail];
+        $data = ['email' => $this->getAccount(0)['email']];
         $response = $this->postJson('/api/forgot-password', $data);
         $response->assertStatus(200);
     }
     
+    // Error generate forgot password (invalid email params)
     public function test_login_forgot_invalid_email(): void
     {
         $data = ['email' => 'xxxx'];
@@ -77,6 +113,7 @@ class UserTest extends TestCase
         $response->assertStatus(422);
     }
     
+    // Error generate forgot password (not exist email)
     public function test_login_forgot_not_exist_email(): void
     {
         $data = ['email' => 'invalid@example.com'];
@@ -84,10 +121,11 @@ class UserTest extends TestCase
         $response->assertStatus(404);
     }
     
+    // Error generate forgot password (inactive account)
     public function test_login_forgot_inactive_account(): void
     {
         $this->userRegister();
-        $data = ['email' => $this->testEmail];
+        $data = ['email' => $this->getAccount(0)['email']];
         $response = $this->postJson('/api/forgot-password', $data);
         $response->assertStatus(404);
     }
@@ -95,17 +133,17 @@ class UserTest extends TestCase
     public function test_reset_password_validate_token_successfull(): void
     {
         $this->userRegisterWithConfirmation();
-        $data = ['email' => $this->testEmail];
+        $data = ['email' => $this->getAccount(0)['email']];
         $response = $this->postJson('/api/forgot-password', $data);
         $status = $response->getContent();
         if($status == '1')
         {
-            $tokenRow = PasswordResetToken::where('email', $this->testEmail)->first();
+            $tokenRow = PasswordResetToken::where('email', $this->getAccount(0)['email'])->first();
             if(!$tokenRow)
                 throw new Exception('Token not exist');
             
             $data = [
-                'email' => $this->testEmail,
+                'email' => $this->getAccount(0)['email'],
                 'token' => $tokenRow->token,
             ];
             $response = $this->getJson('/api/reset-password?' . http_build_query($data));
@@ -116,17 +154,17 @@ class UserTest extends TestCase
     public function test_reset_password_validate_token_invalid_token(): void
     {
         $this->userRegisterWithConfirmation();
-        $data = ['email' => $this->testEmail];
+        $data = ['email' => $this->getAccount(0)['email']];
         $response = $this->postJson('/api/forgot-password', $data);
         $status = $response->getContent();
         if($status == '1')
         {
-            $tokenRow = PasswordResetToken::where('email', $this->testEmail)->first();
+            $tokenRow = PasswordResetToken::where('email', $this->getAccount(0)['email'])->first();
             if(!$tokenRow)
                 throw new Exception('Token not exist');
             
             $data = [
-                'email' => $this->testEmail,
+                'email' => $this->getAccount(0)['email'],
                 'token' => 'INVALID:TOKEN',
             ];
             $response = $this->getJson('/api/reset-password?' . http_build_query($data));
@@ -137,12 +175,12 @@ class UserTest extends TestCase
     public function test_reset_password_validate_token_not_exist_email(): void
     {
         $this->userRegisterWithConfirmation();
-        $data = ['email' => $this->testEmail];
+        $data = ['email' => $this->getAccount(0)['email']];
         $response = $this->postJson('/api/forgot-password', $data);
         $status = $response->getContent();
         if($status == '1')
         {
-            $tokenRow = PasswordResetToken::where('email', $this->testEmail)->first();
+            $tokenRow = PasswordResetToken::where('email', $this->getAccount(0)['email'])->first();
             if(!$tokenRow)
                 throw new Exception('Token not exist');
             
@@ -158,19 +196,19 @@ class UserTest extends TestCase
     public function test_reset_password_validate_token_invalid_params(): void
     {
         $this->userRegisterWithConfirmation();
-        $data = ['email' => $this->testEmail];
+        $data = ['email' => $this->getAccount(0)['email']];
         $response = $this->postJson('/api/forgot-password', $data);
         $status = $response->getContent();
         if($status == '1')
         {
-            $tokenRow = PasswordResetToken::where('email', $this->testEmail)->first();
+            $tokenRow = PasswordResetToken::where('email', $this->getAccount(0)['email'])->first();
             if(!$tokenRow)
                 throw new Exception('Token not exist');
             
             $requiredData = ['email', 'token'];
             
             $resetPasswordData = [
-                'email' => $this->testEmail,
+                'email' => $this->getAccount(0)['email'],
                 'token' => $tokenRow->token,
             ];
             
@@ -188,20 +226,20 @@ class UserTest extends TestCase
     public function test_reset_password_successfull(): void
     {
         $this->userRegisterWithConfirmation();
-        $data = ['email' => $this->testEmail];
+        $data = ['email' => $this->getAccount(0)['email']];
         $response = $this->postJson('/api/forgot-password', $data);
         $status = $response->getContent();
         if($status == '1')
         {
-            $tokenRow = PasswordResetToken::where('email', $this->testEmail)->first();
+            $tokenRow = PasswordResetToken::where('email', $this->getAccount(0)['email'])->first();
             if(!$tokenRow)
                 throw new Exception('Token not exist');
             
             $data = [
-                'email' => $this->testEmail,
+                'email' => $this->getAccount(0)['email'],
                 'token' => $tokenRow->token,
-                'password' => $this->userData['password'],
-                'password_confirmation' => $this->userData['password_confirmation'],
+                'password' => $this->getAccount(0)['data']['password'],
+                'password_confirmation' => $this->getAccount(0)['data']['password_confirmation'],
             ];
             $response = $this->postJson('/api/reset-password', $data);
             $response->assertStatus(200);
@@ -215,22 +253,22 @@ class UserTest extends TestCase
     public function test_reset_password_invalid_params(): void
     {
         $this->userRegisterWithConfirmation();
-        $data = ['email' => $this->testEmail];
+        $data = ['email' => $this->getAccount(0)['email']];
         $response = $this->postJson('/api/forgot-password', $data);
         $status = $response->getContent();
         if($status == '1')
         {
-            $tokenRow = PasswordResetToken::where('email', $this->testEmail)->first();
+            $tokenRow = PasswordResetToken::where('email', $this->getAccount(0)['email'])->first();
             if(!$tokenRow)
                 throw new Exception('Token not exist');
             
             $requiredData = ['email', 'token', 'password', 'password_confirmation'];
             
             $resetPasswordData = [
-                'email' => $this->testEmail,
+                'email' => $this->getAccount(0)['email'],
                 'token' => $tokenRow->token,
-                'password' => $this->userData['password'],
-                'password_confirmation' => $this->userData['password_confirmation'],
+                'password' => $this->getAccount(0)['data']['password'],
+                'password_confirmation' => $this->getAccount(0)['data']['password_confirmation'],
             ];
             
             foreach($requiredData as $field)
@@ -251,20 +289,20 @@ class UserTest extends TestCase
     public function test_reset_password_not_exist_email(): void
     {
         $this->userRegisterWithConfirmation();
-        $data = ['email' => $this->testEmail];
+        $data = ['email' => $this->getAccount(0)['email']];
         $response = $this->postJson('/api/forgot-password', $data);
         $status = $response->getContent();
         if($status == '1')
         {
-            $tokenRow = PasswordResetToken::where('email', $this->testEmail)->first();
+            $tokenRow = PasswordResetToken::where('email', $this->getAccount(0)['email'])->first();
             if(!$tokenRow)
                 throw new Exception('Token not exist');
             
             $data = [
                 'email' => 'invalid@example.com',
                 'token' => $tokenRow->token,
-                'password' => $this->userData['password'],
-                'password_confirmation' => $this->userData['password_confirmation'],
+                'password' => $this->getAccount(0)['data']['password'],
+                'password_confirmation' => $this->getAccount(0)['data']['password_confirmation'],
             ];
             
             $response = $this->postJson('/api/reset-password', $data);
@@ -279,20 +317,20 @@ class UserTest extends TestCase
     public function test_reset_password_invalid_token(): void
     {
         $this->userRegisterWithConfirmation();
-        $data = ['email' => $this->testEmail];
+        $data = ['email' => $this->getAccount(0)['email']];
         $response = $this->postJson('/api/forgot-password', $data);
         $status = $response->getContent();
         if($status == '1')
         {
-            $tokenRow = PasswordResetToken::where('email', $this->testEmail)->first();
+            $tokenRow = PasswordResetToken::where('email', $this->getAccount(0)['email'])->first();
             if(!$tokenRow)
                 throw new Exception('Token not exist');
             
             $data = [
-                'email' => $this->testEmail,
+                'email' => $this->getAccount(0)['email'],
                 'token' => 'INVALID:TOKEN',
-                'password' => $this->userData['password'],
-                'password_confirmation' => $this->userData['password_confirmation'],
+                'password' => $this->getAccount(0)['data']['password'],
+                'password_confirmation' => $this->getAccount(0)['data']['password_confirmation'],
             ];
             
             $response = $this->postJson('/api/reset-password', $data);
@@ -336,7 +374,7 @@ class UserTest extends TestCase
     {
         $token = $this->getOwnerLoginToken();
         
-        foreach($this->workerData as $data)
+        foreach($this->getAccount(0)['workers'] as $data)
         {
             $response = $this->withHeaders([
                 'Authorization' => 'Bearer '. $token,
@@ -344,7 +382,7 @@ class UserTest extends TestCase
             $response->assertStatus(200);
         }
         
-        $this->assertDatabaseCount('users', 4);
+        $this->assertDatabaseCount('users', count($this->getAccount(0)['workers']) + 1);
         
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '. $token,
@@ -353,7 +391,7 @@ class UserTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([
-                'total_rows' => 4,
+                'total_rows' => count($this->getAccount(0)['workers']) + 1,
                 'total_pages' => 1,
                 'current_page' => 1,
                 'has_more' => false,
@@ -362,10 +400,11 @@ class UserTest extends TestCase
     
     public function test_delete_user_successfull(): void
     {
+        $totalUsers = count($this->getAccount(0)['workers']) + 1;
         $token = $this->getOwnerLoginToken();
         
         $userIds = [];
-        foreach($this->workerData as $data)
+        foreach($this->getAccount(0)['workers'] as $data)
         {
             $response = $this->withHeaders([
                 'Authorization' => 'Bearer '. $token,
@@ -374,7 +413,7 @@ class UserTest extends TestCase
             $userIds[] = $response->getContent();
         }
         
-        $this->assertDatabaseCount('users', 4);
+        $this->assertDatabaseCount('users', $totalUsers);
         
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '. $token,
@@ -383,7 +422,7 @@ class UserTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([
-                'total_rows' => 4,
+                'total_rows' => $totalUsers,
                 'total_pages' => 1,
                 'current_page' => 1,
                 'has_more' => false,
@@ -401,7 +440,7 @@ class UserTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([
-                'total_rows' => 3,
+                'total_rows' => $totalUsers - 1,
                 'total_pages' => 1,
                 'current_page' => 1,
                 'has_more' => false,
@@ -413,7 +452,7 @@ class UserTest extends TestCase
         $token = $this->getOwnerLoginToken();
         
         $userIds = [];
-        foreach($this->workerData as $data)
+        foreach($this->getAccount(0)['workers'] as $data)
         {
             $response = $this->withHeaders([
                 'Authorization' => 'Bearer '. $token,
@@ -422,7 +461,7 @@ class UserTest extends TestCase
             $userIds[] = $response->getContent();
         }
         
-        $this->assertDatabaseCount('users', 4);
+        $this->assertDatabaseCount('users', count($this->getAccount(0)['workers']) + 1);
         
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '. $token,
@@ -431,7 +470,7 @@ class UserTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([
-                'total_rows' => 4,
+                'total_rows' => count($this->getAccount(0)['workers']) + 1,
                 'total_pages' => 1,
                 'current_page' => 1,
                 'has_more' => false,
@@ -442,7 +481,7 @@ class UserTest extends TestCase
         ])->deleteJson('/api/user/' . time());
         $response->assertStatus(404);
         
-        $this->assertDatabaseCount('users', 4);
+        $this->assertDatabaseCount('users', count($this->getAccount(0)['workers']) + 1);
         
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '. $token,
@@ -451,7 +490,7 @@ class UserTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([
-                'total_rows' => 4,
+                'total_rows' => count($this->getAccount(0)['workers']) + 1,
                 'total_pages' => 1,
                 'current_page' => 1,
                 'has_more' => false,
@@ -463,7 +502,7 @@ class UserTest extends TestCase
         $token = $this->getOwnerLoginToken();
         
         $requiredData = ['firstname', 'lastname', 'email', 'password', 'password_confirmation'];
-        $workerData = $this->workerData[0];
+        $workerData = $this->getAccount(0)['workers'][0];
         
         foreach($requiredData as $field)
         {
@@ -504,7 +543,7 @@ class UserTest extends TestCase
     {
         $token = $this->getOwnerLoginToken();
         
-        $data = $this->workerData[0];
+        $data = $this->getAccount(0)['workers'][0];
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '. $token,
         ])->putJson('/api/user', $data);
@@ -533,7 +572,7 @@ class UserTest extends TestCase
     {
         $token = $this->getOwnerLoginToken();
         
-        $data = $this->workerData[0];
+        $data = $this->getAccount(0)['workers'][0];
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '. $token,
         ])->putJson('/api/user', $data);
@@ -560,7 +599,7 @@ class UserTest extends TestCase
     {
         $token = $this->getOwnerLoginToken();
         
-        $data = $this->workerData[0];
+        $data = $this->getAccount(0)['workers'][0];
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '. $token,
         ])->putJson('/api/user', $data);
@@ -578,7 +617,7 @@ class UserTest extends TestCase
     {
         $token = $this->getOwnerLoginToken();
         
-        $data = $this->workerData[0];
+        $data = $this->getAccount(0)['workers'][0];
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '. $token,
         ])->putJson('/api/user', $data);
@@ -600,7 +639,7 @@ class UserTest extends TestCase
                 'activated' => 1,
             ]);
         
-        $data = $this->workerData[1];
+        $data = $this->getAccount(0)['workers'][1];
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '. $token,
         ])->putJson('/api/user/' . $userId, $data);
@@ -626,7 +665,7 @@ class UserTest extends TestCase
     {
         $token = $this->getOwnerLoginToken();
         
-        $data = $this->workerData[0];
+        $data = $this->getAccount(0)['workers'][0];
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '. $token,
         ])->putJson('/api/user', $data);
@@ -648,7 +687,7 @@ class UserTest extends TestCase
                 'activated' => 1,
             ]);
         
-        $data = $this->workerData[1];
+        $data = $this->getAccount(0)['workers'][1];
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '. $token,
         ])->putJson('/api/user/' . time(), $data);
@@ -658,7 +697,7 @@ class UserTest extends TestCase
             'Authorization' => 'Bearer '. $token,
         ])->getJson('/api/user/' . $userId);
         
-        $data = $this->workerData[0];
+        $data = $this->getAccount(0)['workers'][0];
         $response
             ->assertStatus(200)
             ->assertJson([
@@ -676,7 +715,7 @@ class UserTest extends TestCase
         $token = $this->getOwnerLoginToken();
         
         $userIds = [];
-        foreach($this->workerData as $data)
+        foreach($this->getAccount(0)['workers'] as $data)
         {
             $response = $this->withHeaders([
                 'Authorization' => 'Bearer '. $token,
@@ -685,17 +724,17 @@ class UserTest extends TestCase
             $userIds[] = $response->getContent();
         }
         
-        $data = $this->workerData[1];
+        $data = $this->getAccount(0)['workers'][1];
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '. $token,
-        ])->putJson('/api/user/' . $userIds[0], ['firstname' => $this->workerData[1]['firstname'], 'email' => $this->workerData[1]['email']]);
+        ])->putJson('/api/user/' . $userIds[0], ['firstname' => $this->getAccount(0)['workers'][1]['firstname'], 'email' => $this->getAccount(0)['workers'][1]['email']]);
         $response->assertStatus(409);
         
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '. $token,
         ])->getJson('/api/user/' . $userIds[0]);
         
-        $data = $this->workerData[0];
+        $data = $this->getAccount(0)['workers'][0];
         $response
             ->assertStatus(200)
             ->assertJson([
@@ -728,11 +767,11 @@ class UserTest extends TestCase
         
         // Confirm invitation
         $data = [
-            "firstname" => $this->workerData[0]["firstname"],
-            "lastname" => $this->workerData[0]["lastname"],
-            "password" => $this->workerData[0]["password"],
-            "password_confirmation" => $this->workerData[0]["password"],
-            "phone" => $this->workerData[0]["phone"],
+            "firstname" => $this->getAccount(0)['workers'][0]["firstname"],
+            "lastname" => $this->getAccount(0)['workers'][0]["lastname"],
+            "password" => $this->getAccount(0)['workers'][0]["password"],
+            "password_confirmation" => $this->getAccount(0)['workers'][0]["password"],
+            "phone" => $this->getAccount(0)['workers'][0]["phone"],
         ];
         $response = $this->putJson('/api/invite/' . $invitationRow->token, $data);
         $response->assertStatus(200);
@@ -797,11 +836,11 @@ class UserTest extends TestCase
         
         // Confirm invitation
         $data = [
-            "firstname" => $this->workerData[0]["firstname"],
-            "lastname" => $this->workerData[0]["lastname"],
-            "password" => $this->workerData[0]["password"],
-            "password_confirmation" => $this->workerData[0]["password"],
-            "phone" => $this->workerData[0]["phone"],
+            "firstname" => $this->getAccount(0)['workers'][0]["firstname"],
+            "lastname" => $this->getAccount(0)['workers'][0]["lastname"],
+            "password" => $this->getAccount(0)['workers'][0]["password"],
+            "password_confirmation" => $this->getAccount(0)['workers'][0]["password"],
+            "phone" => $this->getAccount(0)['workers'][0]["phone"],
         ];
         $response = $this->putJson('/api/invite/' . 'INVALID:TOKEN', $data);
         $response->assertStatus(409);
@@ -842,10 +881,10 @@ class UserTest extends TestCase
         // Confirm invitation
         $requiredData = ['firstname', 'lastname', 'password', 'password_confirmation'];
         $confirmData = [
-            "firstname" => $this->workerData[0]["firstname"],
-            "lastname" => $this->workerData[0]["lastname"],
-            "password" => $this->workerData[0]["password"],
-            "password_confirmation" => $this->workerData[0]["password"],
+            "firstname" => $this->getAccount(0)['workers'][0]["firstname"],
+            "lastname" => $this->getAccount(0)['workers'][0]["lastname"],
+            "password" => $this->getAccount(0)['workers'][0]["password"],
+            "password_confirmation" => $this->getAccount(0)['workers'][0]["password"],
         ];
         
         foreach($requiredData as $field)

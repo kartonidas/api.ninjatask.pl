@@ -520,4 +520,17 @@ class UserController extends Controller
         
         return true;
     }
+    
+    /**
+    * Get login user firm identifier
+    *
+    * Get login user firm identifier.
+    * @responseField status integer Firm identifier
+    * @header Authorization: Bearer {TOKEN}
+    * @group User management
+    */
+    public function getFirmId()
+    {
+        return Auth::user()->firm_id;
+    }
 }

@@ -3,6 +3,8 @@
 namespace Tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Facades\Hash;
+use App\Exceptions\Exception;
 use App\Models\User;
 use App\Models\UserRegisterToken;
 
@@ -10,57 +12,22 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
     
-    protected $testEmail = 'arturpatura@gmail.com';
-    protected $userData = [
-        'firstname' => 'Artur',
-        'lastname' => 'Patura',
-        'phone' => '723310782',
-        'firm_identifier' => 'netextend.pl',
-        'password' => 'Pass102@',
-        'password_confirmation' => 'Pass102@',
-    ];
-    protected $workerData = [
-        [
-            'firstname' => 'Jan',
-            'lastname' => 'Kowalski',
-            'email' => 'jan-kowalski@gmail.com',
-            'phone' => '879546254',
-            'superuser' => false,
-            'password' => 'Pass102@',
-            'password_confirmation' => 'Pass102@',
-        ],
-        [
-            'firstname' => 'Grzegorz',
-            'lastname' => 'Wąs',
-            'email' => 'grzegorz-was@gmail.com',
-            'phone' => '125963544',
-            'superuser' => true,
-            'password' => 'Pass102@',
-            'password_confirmation' => 'Pass102@',
-        ],
-        [
-            'firstname' => 'Zbigniew',
-            'lastname' => 'Nowak',
-            'email' => 'zbigniew-nowak@gmail.com',
-            'phone' => '878555415',
-            'superuser' => false,
-            'password' => 'Pass102@',
-            'password_confirmation' => 'Pass102@',
-        ],
-    ];
-    
-    protected function userRegister()
+    protected function getAccount($id = 0)
     {
-        $response = $this->post('/api/register', ['email' => $this->testEmail]);
+        return config('testing.accounts')[$id];
+    }
+    
+    protected function userRegister($id = 0)
+    {
+        $account = $this->getAccount($id);
+            
+        $response = $this->post('/api/register', ['email' => $account['email']]);
         $status = $response->getContent();
         
         if($status !== "1")
             throw new Exception('Invalid response status');
-    }
-    
-    protected function getToken()
-    {
-        $user = User::where('email', $this->testEmail)->where('owner', 1)->first();
+        
+        $user = User::where('email', $account['email'])->where('owner', 1)->first();
         if(!$user)
             throw new Exception('User not exists');
         
@@ -71,24 +38,55 @@ abstract class TestCase extends BaseTestCase
         return $tokenRow->token;
     }
     
-    protected function userRegisterWithConfirmation()
+    protected function userRegisterWithConfirmation($id = 0)
     {
-        $this->userRegister();
-        $token = $this->getToken();
+        $token = $this->userRegister($id);
         
-        $response = $this->post('/api/register/confirm/' . $token, $this->userData);
+        $response = $this->post('/api/register/confirm/' . $token, $this->getAccount($id)['data']);
         $response->getContent();
     }
     
-    protected function getOwnerLoginToken()
+    protected function getOwnerLoginToken($id = 0)
     {
-        $this->userRegisterWithConfirmation();
+        $this->userRegisterWithConfirmation($id);
         $data = [
-            'email' => $this->testEmail,
-            'password' => $this->userData['password'],
+            'email' => $this->getAccount($id)['email'],
+            'password' => $this->getAccount($id)['data']['password'],
             'device_name' => 'test'
         ];
+        if(User::where("email", $this->getAccount($id)['email'])->active()->count() > 1)
+        {
+            $user = User::where("email", $this->getAccount($id)['email'])->where('owner', 1)->active()->first();
+            $data["firm_id"] = $user->firm_id;
+        }
+        
         $response = $this->post('/api/login', $data);
+        $response->assertStatus(200);
         return $response->getContent();
+    }
+    
+    protected function prepareMultipleUserAccount()
+    {
+        for($id = 0; $id < count(config('testing.accounts')); $id++)
+        {
+            $this->getOwnerLoginToken($id);
+            
+            $ownerUser = User::where('email', $this->getAccount($id)['email'])->where('owner', 1)->first();
+            foreach($this->getAccount($id)['workers'] as $data)
+            {
+                $user = new User;
+                $user->firm_id = $ownerUser->firm_id;
+                $user->firstname = $data["firstname"];
+                $user->lastname = $data["lastname"];
+                $user->email = $data["email"];
+                $user->password = Hash::make($data["password"]);
+                $user->phone = $data["phone"];
+                $user->owner = 0;
+                $user->activated = 1;
+                $user->user_permission_id = 0;
+                $user->superuser = $data["superuser"];
+                $user->save();
+            }
+        }
     }
 }

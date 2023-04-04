@@ -12,6 +12,7 @@ use App\Exceptions\AccessDenied;
 use App\Exceptions\Exception;
 use App\Exceptions\ObjectNotExist;
 use App\Exceptions\Unauthorized;
+use App\Exceptions\UserExist;
 
 class Handler extends ExceptionHandler
 {
@@ -34,6 +35,7 @@ class Handler extends ExceptionHandler
         Exception::class,
         ObjectNotExist::class,
         Unauthorized::class,
+        UserExist::class,
     ];
 
     /**

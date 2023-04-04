@@ -11,6 +11,7 @@ use Illuminate\Validation\ValidationException;
 use App\Exceptions\ObjectNotExist;
 use App\Models\User;
 use App\Models\UserRegisterToken;
+use App\Rules\FirmIdentifier;
 
 class RegisterController extends Controller
 {
@@ -114,7 +115,7 @@ class RegisterController extends Controller
             "lastname" => "required|max:100",
             "phone" => "required|max:30",
             "password" => ["required", Password::min(8)->letters()->mixedCase()->numbers()->symbols(), "confirmed"],
-            "firm_identifier" => "required|max:200"
+            "firm_identifier" => ["required", new FirmIdentifier, "max:200"]
         ]);
         
         DB::transaction(function () use($user, $request) {
