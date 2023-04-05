@@ -29,6 +29,13 @@ class UserTest extends TestCase
             ];
             $response = $this->postJson('/api/login', $data);
             $response->assertStatus(200);
+            $token = $response->getContent();
+            
+            $response = $this->withToken($token)->getJson('/api/get-firm-id');
+            $response->assertStatus(200);
+            
+            $user = User::where('email', $this->getAccount(0)['email'])->where('owner', 1)->first();
+            $response->assertContent((string)$user->firm_id);
         }
     }
     
@@ -345,9 +352,7 @@ class UserTest extends TestCase
     public function test_user_empty_list(): void
     {
         $token = $this->getOwnerLoginToken();
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->getJson('/api/users');
+        $response = $this->withToken($token)->getJson('/api/users');
         
         $response
             ->assertStatus(200)
@@ -363,9 +368,7 @@ class UserTest extends TestCase
     public function test_user_list_invalid_token(): void
     {
         $token = $this->getOwnerLoginToken();
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer INVALID:TOKEN',
-        ])->getJson('/api/users');
+        $response = $this->withToken('INVALID:TOKEN')->getJson('/api/users');
         
         $response->assertStatus(422);
     }
@@ -376,17 +379,13 @@ class UserTest extends TestCase
         
         foreach($this->getAccount(0)['workers'] as $data)
         {
-            $response = $this->withHeaders([
-                'Authorization' => 'Bearer '. $token,
-            ])->putJson('/api/user', $data);
+            $response = $this->withToken($token)->putJson('/api/user', $data);
             $response->assertStatus(200);
         }
         
         $this->assertDatabaseCount('users', count($this->getAccount(0)['workers']) + 1);
         
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->getJson('/api/users');
+        $response = $this->withToken($token)->getJson('/api/users');
         
         $response
             ->assertStatus(200)
@@ -406,18 +405,14 @@ class UserTest extends TestCase
         $userIds = [];
         foreach($this->getAccount(0)['workers'] as $data)
         {
-            $response = $this->withHeaders([
-                'Authorization' => 'Bearer '. $token,
-            ])->putJson('/api/user', $data);
+            $response = $this->withToken($token)->putJson('/api/user', $data);
             $response->assertStatus(200);
             $userIds[] = $response->getContent();
         }
         
         $this->assertDatabaseCount('users', $totalUsers);
         
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->getJson('/api/users');
+        $response = $this->withToken($token)->getJson('/api/users');
         
         $response
             ->assertStatus(200)
@@ -428,14 +423,10 @@ class UserTest extends TestCase
                 'has_more' => false,
             ]);
             
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->deleteJson('/api/user/' . end($userIds));
+        $response = $this->withToken($token)->deleteJson('/api/user/' . end($userIds));
         $response->assertStatus(200);
         
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->getJson('/api/users');
+        $response = $this->withToken($token)->getJson('/api/users');
         
         $response
             ->assertStatus(200)
@@ -454,18 +445,14 @@ class UserTest extends TestCase
         $userIds = [];
         foreach($this->getAccount(0)['workers'] as $data)
         {
-            $response = $this->withHeaders([
-                'Authorization' => 'Bearer '. $token,
-            ])->putJson('/api/user', $data);
+            $response = $this->withToken($token)->putJson('/api/user', $data);
             $response->assertStatus(200);
             $userIds[] = $response->getContent();
         }
         
         $this->assertDatabaseCount('users', count($this->getAccount(0)['workers']) + 1);
         
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->getJson('/api/users');
+        $response = $this->withToken($token)->getJson('/api/users');
         
         $response
             ->assertStatus(200)
@@ -476,16 +463,12 @@ class UserTest extends TestCase
                 'has_more' => false,
             ]);
             
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->deleteJson('/api/user/' . time());
+        $response = $this->withToken($token)->deleteJson('/api/user/' . time());
         $response->assertStatus(404);
         
         $this->assertDatabaseCount('users', count($this->getAccount(0)['workers']) + 1);
         
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->getJson('/api/users');
+        $response = $this->withToken($token)->getJson('/api/users');
         
         $response
             ->assertStatus(200)
@@ -509,9 +492,7 @@ class UserTest extends TestCase
             $data = $workerData;
             unset($data[$field]);
             
-            $response = $this->withHeaders([
-                'Authorization' => 'Bearer '. $token,
-            ])->putJson('/api/user', $data);
+            $response = $this->withToken($token)->putJson('/api/user', $data);
             $response->assertStatus(422);
         }
         $this->assertDatabaseCount('users', 1);
@@ -520,14 +501,10 @@ class UserTest extends TestCase
         $data = $workerData;
         $data['email'] = 'xxxx';
         
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->putJson('/api/user', $data);
+        $response = $this->withToken($token)->putJson('/api/user', $data);
         $response->assertStatus(422);
         
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->getJson('/api/users');
+        $response = $this->withToken($token)->getJson('/api/users');
         
         $response
             ->assertStatus(200)
@@ -544,19 +521,13 @@ class UserTest extends TestCase
         $token = $this->getOwnerLoginToken();
         
         $data = $this->getAccount(0)['workers'][0];
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->putJson('/api/user', $data);
+        $response = $this->withToken($token)->putJson('/api/user', $data);
         $response->assertStatus(200);
         
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->putJson('/api/user', $data);
+        $response = $this->withToken($token)->putJson('/api/user', $data);
         $response->assertStatus(409);
         
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->getJson('/api/users');
+        $response = $this->withToken($token)->getJson('/api/users');
         
         $response
             ->assertStatus(200)
@@ -573,15 +544,11 @@ class UserTest extends TestCase
         $token = $this->getOwnerLoginToken();
         
         $data = $this->getAccount(0)['workers'][0];
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->putJson('/api/user', $data);
+        $response = $this->withToken($token)->putJson('/api/user', $data);
         $response->assertStatus(200);
         $userId = $response->getContent();
         
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->getJson('/api/user/' . $userId);
+        $response = $this->withToken($token)->getJson('/api/user/' . $userId);
         
         $response
             ->assertStatus(200)
@@ -600,15 +567,11 @@ class UserTest extends TestCase
         $token = $this->getOwnerLoginToken();
         
         $data = $this->getAccount(0)['workers'][0];
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->putJson('/api/user', $data);
+        $response = $this->withToken($token)->putJson('/api/user', $data);
         $response->assertStatus(200);
         $userId = $response->getContent();
         
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->getJson('/api/user/' . time());
+        $response = $this->withToken($token)->getJson('/api/user/' . time());
         
         $response->assertStatus(404);
     }
@@ -618,15 +581,11 @@ class UserTest extends TestCase
         $token = $this->getOwnerLoginToken();
         
         $data = $this->getAccount(0)['workers'][0];
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->putJson('/api/user', $data);
+        $response = $this->withToken($token)->putJson('/api/user', $data);
         $response->assertStatus(200);
         $userId = $response->getContent();
         
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->getJson('/api/user/' . $userId);
+        $response = $this->withToken($token)->getJson('/api/user/' . $userId);
         
         $response
             ->assertStatus(200)
@@ -640,14 +599,10 @@ class UserTest extends TestCase
             ]);
         
         $data = $this->getAccount(0)['workers'][1];
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->putJson('/api/user/' . $userId, $data);
+        $response = $this->withToken($token)->putJson('/api/user/' . $userId, $data);
         $response->assertStatus(200);
         
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->getJson('/api/user/' . $userId);
+        $response = $this->withToken($token)->getJson('/api/user/' . $userId);
         
         $response
             ->assertStatus(200)
@@ -666,15 +621,11 @@ class UserTest extends TestCase
         $token = $this->getOwnerLoginToken();
         
         $data = $this->getAccount(0)['workers'][0];
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->putJson('/api/user', $data);
+        $response = $this->withToken($token)->putJson('/api/user', $data);
         $response->assertStatus(200);
         $userId = $response->getContent();
         
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->getJson('/api/user/' . $userId);
+        $response = $this->withToken($token)->getJson('/api/user/' . $userId);
         
         $response
             ->assertStatus(200)
@@ -688,14 +639,10 @@ class UserTest extends TestCase
             ]);
         
         $data = $this->getAccount(0)['workers'][1];
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->putJson('/api/user/' . time(), $data);
+        $response = $this->withToken($token)->putJson('/api/user/' . time(), $data);
         $response->assertStatus(404);
         
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->getJson('/api/user/' . $userId);
+        $response = $this->withToken($token)->getJson('/api/user/' . $userId);
         
         $data = $this->getAccount(0)['workers'][0];
         $response
@@ -717,22 +664,16 @@ class UserTest extends TestCase
         $userIds = [];
         foreach($this->getAccount(0)['workers'] as $data)
         {
-            $response = $this->withHeaders([
-                'Authorization' => 'Bearer '. $token,
-            ])->putJson('/api/user', $data);
+            $response = $this->withToken($token)->putJson('/api/user', $data);
             $response->assertStatus(200);
             $userIds[] = $response->getContent();
         }
         
         $data = $this->getAccount(0)['workers'][1];
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->putJson('/api/user/' . $userIds[0], ['firstname' => $this->getAccount(0)['workers'][1]['firstname'], 'email' => $this->getAccount(0)['workers'][1]['email']]);
+        $response = $this->withToken($token)->putJson('/api/user/' . $userIds[0], ['firstname' => $this->getAccount(0)['workers'][1]['firstname'], 'email' => $this->getAccount(0)['workers'][1]['email']]);
         $response->assertStatus(409);
         
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->getJson('/api/user/' . $userIds[0]);
+        $response = $this->withToken($token)->getJson('/api/user/' . $userIds[0]);
         
         $data = $this->getAccount(0)['workers'][0];
         $response
@@ -752,9 +693,7 @@ class UserTest extends TestCase
         $token = $this->getOwnerLoginToken();
         
         $data = ['email' => 'johndoe@example.com'];
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->postJson('/api/invite', $data);
+        $response = $this->withToken($token)->postJson('/api/invite', $data);
         $response->assertStatus(200);
         
         $invitationRow = UserInvitation::where('email', 'johndoe@example.com')->first();
@@ -777,9 +716,7 @@ class UserTest extends TestCase
         $response->assertStatus(200);
         
         // Get user list
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->getJson('/api/users');
+        $response = $this->withToken($token)->getJson('/api/users');
         
         $response
             ->assertStatus(200)
@@ -796,15 +733,11 @@ class UserTest extends TestCase
         $token = $this->getOwnerLoginToken();
         
         $data = ['email' => 'arturpatura@gmail.com'];
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->postJson('/api/invite', $data);
+        $response = $this->withToken($token)->postJson('/api/invite', $data);
         $response->assertStatus(409);
         
         // Get user list
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->getJson('/api/users');
+        $response = $this->withToken($token)->getJson('/api/users');
         
         $response
             ->assertStatus(200)
@@ -821,9 +754,7 @@ class UserTest extends TestCase
         $token = $this->getOwnerLoginToken();
         
         $data = ['email' => 'johndoe@example.com'];
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->postJson('/api/invite', $data);
+        $response = $this->withToken($token)->postJson('/api/invite', $data);
         $response->assertStatus(200);
         
         $invitationRow = UserInvitation::where('email', 'johndoe@example.com')->first();
@@ -846,9 +777,7 @@ class UserTest extends TestCase
         $response->assertStatus(409);
         
         // Get user list
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->getJson('/api/users');
+        $response = $this->withToken($token)->getJson('/api/users');
         
         $response
             ->assertStatus(200)
@@ -865,9 +794,7 @@ class UserTest extends TestCase
         $token = $this->getOwnerLoginToken();
         
         $data = ['email' => 'johndoe@example.com'];
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->postJson('/api/invite', $data);
+        $response = $this->withToken($token)->postJson('/api/invite', $data);
         $response->assertStatus(200);
         
         $invitationRow = UserInvitation::where('email', 'johndoe@example.com')->first();
@@ -896,9 +823,7 @@ class UserTest extends TestCase
         }
         
         // Get user list
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '. $token,
-        ])->getJson('/api/users');
+        $response = $this->withToken($token)->getJson('/api/users');
         
         $response
             ->assertStatus(200)

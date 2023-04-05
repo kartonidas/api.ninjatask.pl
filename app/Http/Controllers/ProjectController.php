@@ -37,9 +37,9 @@ class ProjectController extends Controller
             ::apiFields()
             ->take($size)
             ->skip(($page-1)*$size)
-            ->all();
+            ->get();
     
-        $total = Project->count();
+        $total = Project::count();
         $out = [
             "total_rows" => $total,
             "total_pages" => ceil($total / $size),

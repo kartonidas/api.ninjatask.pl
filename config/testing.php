@@ -49,6 +49,16 @@ return [
                     'password' => 'Pass102@',
                     'password_confirmation' => 'Pass102@',
                 ],
+            ],
+            'projects' => [
+                [
+                    'name' => 'First project (netextend.pl)',
+                    'description' => 'Lorem ipsum dolor sit amet'
+                ],
+                [
+                    'name' => 'Second project (netextend.pl)',
+                    'description' => 'Lorem ipsum dolor sit amet'
+                ]
             ]
         ],
         [
@@ -89,6 +99,16 @@ return [
                     'password' => 'Pass102@',
                     'password_confirmation' => 'Pass102@',
                 ]
+            ],
+            'projects' => [
+                [
+                    'name' => 'First project (Firma Pana Jana)',
+                    'description' => 'Lorem ipsum dolor sit amet'
+                ],
+                [
+                    'name' => 'Second project (Firma Pana Jana)',
+                    'description' => 'Lorem ipsum dolor sit amet'
+                ]
             ]
         ],
         [
@@ -110,6 +130,25 @@ return [
                     'superuser' => false,
                     'password' => 'Pass102@',
                     'password_confirmation' => 'Pass102@',
+                ],
+                [
+                    'firstname' => 'Artur',
+                    'lastname' => 'Patura - pracownik do sprawdzania uprawnień',
+                    'email' => 'art.urpa.tura@gmail.com',
+                    'phone' => '125962345',
+                    'superuser' => false,
+                    'password' => 'Pass102@',
+                    'password_confirmation' => 'Pass102@',
+                ]
+            ],
+            'projects' => [
+                [
+                    'name' => 'First project (Bąk i Synowie)',
+                    'description' => 'Lorem ipsum dolor sit amet'
+                ],
+                [
+                    'name' => 'Second project (Bąk i Synowie)',
+                    'description' => 'Lorem ipsum dolor sit amet'
                 ]
             ]
         ],

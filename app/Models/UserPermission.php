@@ -46,13 +46,16 @@ class UserPermission extends Model
     public function getPermission()
     {
         $out = [];
-        $permissions = explode(";", $this->permissions);
-        if($permissions)
+        if(trim($this->permissions) != "")
         {
-            foreach($permissions as $permission)
+            $permissions = explode(";", $this->permissions);
+            if($permissions)
             {
-                list($group, $perm) = explode(":", $permission);
-                $out[$group] = explode(",", $perm);
+                foreach($permissions as $permission)
+                {
+                    list($group, $perm) = explode(":", $permission);
+                    $out[$group] = explode(",", $perm);
+                }
             }
         }
         return $out;

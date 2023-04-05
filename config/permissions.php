@@ -6,6 +6,10 @@ return [
             "module" => "Projects",
             "operation" => ["list", "create", "update", "delete"]
         ],
+        "task" => [
+            "module" => "Task",
+            "operation" => ["list", "create", "update", "delete"]
+        ],
         "user" => [
             "module" => "Users",
             "operation" => ["list", "create", "update", "delete"]

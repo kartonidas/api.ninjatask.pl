@@ -5,7 +5,10 @@ namespace Tests;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Hash;
 use App\Exceptions\Exception;
+use App\Models\Firm;
+use App\Models\Project;
 use App\Models\User;
+use App\Models\UserPermission;
 use App\Models\UserRegisterToken;
 
 abstract class TestCase extends BaseTestCase
@@ -65,7 +68,7 @@ abstract class TestCase extends BaseTestCase
         return $response->getContent();
     }
     
-    protected function prepareMultipleUserAccount()
+    protected function prepareMultipleUserAccount($params = [])
     {
         for($id = 0; $id < count(config('testing.accounts')); $id++)
         {
@@ -87,6 +90,52 @@ abstract class TestCase extends BaseTestCase
                 $user->superuser = $data["superuser"];
                 $user->save();
             }
+            
+            if(!empty($params["projects"]))
+            {
+                if(!empty($this->getAccount($id)['projects']))
+                {
+                    foreach($this->getAccount($id)['projects'] as $data)
+                    {
+                        $project = new Project;
+                        $project->uuid = $ownerUser->getUuid();
+                        $project->name = $data["name"];
+                        $project->description = $data["description"];
+                        $project->saveQuietly();
+                    }
+                }
+            }
         }
+    }
+    
+    protected function getAccountUuui($token)
+    {
+        $response = $this->withToken($token)->getJson('/api/get-firm-id');
+        $firmId = $response->getContent();
+        
+        $firm = Firm::find($firmId);
+        return $firm->uuid;
+    }
+    
+    protected function setUserPermission($email, $permissions)
+    {
+        if(User::where('email', $email)->count() > 1)
+            throw new Exception('User with email address ' . $email . ' exists more than once');
+        
+        $user = User::where('email', $email)->first();
+        if(!$user)
+            throw new Exception('User with email address ' . $email . ' not exist');
+        
+        $firm = Firm::find($user->firm_id);
+        
+        $userPermission = new UserPermission;
+        $userPermission->name = "Test";
+        $userPermission->uuid = $firm->uuid;
+        $userPermission->permissions = $permissions;
+        $userPermission->saveQuietly();
+        
+        $user->superuser = 0;
+        $user->user_permission_id = $userPermission->id;
+        $user->save();
     }
 }

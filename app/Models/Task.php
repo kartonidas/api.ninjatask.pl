@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-class Project extends Model
+class Task extends Model
 {
     use \App\Traits\UuidTrait {
         boot as traitBoot;
@@ -13,6 +12,6 @@ class Project extends Model
     
     public function scopeApiFields(Builder $query): void
     {
-        $query->select("id", "name", "location", "description", "owner");
+        $query->select("id", "name", "description");
     }
 }

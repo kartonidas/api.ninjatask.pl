@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 
 /*
@@ -18,7 +19,6 @@ use App\Http\Controllers\UserController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
 
 Route::middleware('auth:sanctum')->group(function () use($router) {
     $router->get('/logout', [UserController::class, "logout"]);
@@ -49,7 +49,17 @@ Route::middleware('auth:sanctum')->group(function () use($router) {
     $router->delete('/permission/{id}/del', [PermissionController::class, "removePermission"])->where("id", "[0-9]+");
     
     // ZADANIA
-    // todo...
+    $router->get('/tasks/{id}', [TaskController::class, "list"]);
+    $router->put('/task', [TaskController::class, "create"]);
+    $router->get('/task/{id}', [TaskController::class, "get"])->where("id", "[0-9]+");
+    $router->put('/task/{id}', [TaskController::class, "update"])->where("id", "[0-9]+");
+    $router->delete('/task/{id}', [TaskController::class, "delete"])->where("id", "[0-9]+");
+    $router->post('/task/{id}/start', [TaskController::class, "start"])->where("id", "[0-9]+");
+    $router->post('/task/{id}/stop', [TaskController::class, "start"])->where("id", "[0-9]+");
+    $router->post('/task/{id}/log-time', [TaskController::class, "logTime"])->where("id", "[0-9]+");
+    
+    // todo
+    // usuwanie / aktualizacja czasu pracy nad zadaniem
 });
 
 // REJESTRACJA
