@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Exceptions\Exception;
 use App\Models\Firm;
 use App\Models\Project;
+use App\Models\Task;
 use App\Models\User;
 use App\Models\UserPermission;
 use App\Models\UserRegisterToken;
@@ -91,17 +92,26 @@ abstract class TestCase extends BaseTestCase
                 $user->save();
             }
             
-            if(!empty($params["projects"]))
+            if(!empty($params["projects"]) && !empty($this->getAccount($id)['projects']))
             {
-                if(!empty($this->getAccount($id)['projects']))
+                foreach($this->getAccount($id)['projects'] as $data)
                 {
-                    foreach($this->getAccount($id)['projects'] as $data)
+                    $project = new Project;
+                    $project->uuid = $ownerUser->getUuid();
+                    $project->name = $data["data"]["name"];
+                    $project->description = $data["data"]["description"];
+                    $project->saveQuietly();
+                    
+                    if(!empty($params["tasks"]) && !empty($data["tasks"]))
                     {
-                        $project = new Project;
-                        $project->uuid = $ownerUser->getUuid();
-                        $project->name = $data["name"];
-                        $project->description = $data["description"];
-                        $project->saveQuietly();
+                        foreach($data["tasks"] as $data)
+                        {
+                            $task = new Task;
+                            $task->uuid = $ownerUser->getUuid();
+                            $task->project_id = $project->id;
+                            $task->name = $data["name"];
+                            $task->saveQuietly();
+                        }
                     }
                 }
             }
@@ -137,5 +147,10 @@ abstract class TestCase extends BaseTestCase
         $user->superuser = 0;
         $user->user_permission_id = $userPermission->id;
         $user->save();
+    }
+    
+    protected function getProject($token)
+    {
+        return Project::withoutGlobalScopes()->where('uuid', $this->getAccountUuui($token))->inRandomOrder()->first();
     }
 }

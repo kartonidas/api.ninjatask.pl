@@ -52,12 +52,35 @@ return [
             ],
             'projects' => [
                 [
-                    'name' => 'First project (netextend.pl)',
-                    'description' => 'Lorem ipsum dolor sit amet'
+                    'data' => [
+                        'name' => 'First project (netextend.pl)',
+                        'description' => 'Lorem ipsum dolor sit amet'    
+                    ],
+                    'tasks' => [
+                        [
+                            'name' => 'P1 First task (netextend.pl)',
+                        ],
+                        [
+                            'name' => 'P1 Second task (netextend.pl)',
+                        ],
+                        [
+                            'name' => 'P1 Third task (netextend.pl)',
+                        ]
+                    ]
                 ],
                 [
-                    'name' => 'Second project (netextend.pl)',
-                    'description' => 'Lorem ipsum dolor sit amet'
+                    'data' => [
+                        'name' => 'Second project (netextend.pl)',
+                        'description' => 'Lorem ipsum dolor sit amet'    
+                    ],
+                    'tasks' => [
+                        [
+                            'name' => 'P2 First task (netextend.pl)',
+                        ],
+                        [
+                            'name' => 'P2 Second task (netextend.pl)',
+                        ],
+                    ]
                 ]
             ]
         ],
@@ -102,12 +125,32 @@ return [
             ],
             'projects' => [
                 [
-                    'name' => 'First project (Firma Pana Jana)',
-                    'description' => 'Lorem ipsum dolor sit amet'
+                    'data' => [
+                        'name' => 'First project (Firma Pana Jana)',
+                        'description' => 'Lorem ipsum dolor sit amet'
+                    ],
+                    'tasks' => [
+                        [
+                            'name' => 'P1 First task (Firma Pana Jana)',
+                        ],
+                    ]
                 ],
                 [
-                    'name' => 'Second project (Firma Pana Jana)',
-                    'description' => 'Lorem ipsum dolor sit amet'
+                    'data' => [
+                        'name' => 'Second project (Firma Pana Jana)',
+                        'description' => 'Lorem ipsum dolor sit amet'    
+                    ],
+                    'tasks' => [
+                        [
+                            'name' => 'P2 First task (Firma Pana Jana)',
+                        ],
+                        [
+                            'name' => 'P2 Second task (Firma Pana Jana)',
+                        ],
+                        [
+                            'name' => 'P2 Third task (Firma Pana Jana)',
+                        ]
+                    ]
                 ]
             ]
         ],
@@ -143,12 +186,29 @@ return [
             ],
             'projects' => [
                 [
-                    'name' => 'First project (Bąk i Synowie)',
-                    'description' => 'Lorem ipsum dolor sit amet'
+                    'data' => [
+                        'name' => 'First project (Bąk i Synowie)',
+                        'description' => 'Lorem ipsum dolor sit amet'
+                    ],
+                    'tasks' => [
+                        [
+                            'name' => 'P1 First task (Bąk i Synowie)',
+                        ],
+                        [
+                            'name' => 'P1 Secont task (Bąk i Synowie)',
+                        ],
+                    ]
                 ],
                 [
-                    'name' => 'Second project (Bąk i Synowie)',
-                    'description' => 'Lorem ipsum dolor sit amet'
+                    'data' => [
+                        'name' => 'Second project (Bąk i Synowie)',
+                        'description' => 'Lorem ipsum dolor sit amet'
+                    ],
+                    'tasks' => [
+                        [
+                            'name' => 'P2 First task (Bąk i Synowie)',
+                        ],
+                    ]
                 ]
             ]
         ],

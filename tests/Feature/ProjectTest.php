@@ -23,7 +23,7 @@ class ProjectTest extends TestCase
         $response = $this->postJson('/api/login', $data);
         $token = $response->getContent();
         
-        $response = $this->withToken($token)->putJson('/api/project', $this->getAccount($accountUserId)['projects'][0]);
+        $response = $this->withToken($token)->putJson('/api/project', $this->getAccount($accountUserId)['projects'][0]['data']);
         $response->assertStatus(200);
     }
     
@@ -40,7 +40,7 @@ class ProjectTest extends TestCase
         $response = $this->postJson('/api/login', $data);
         $token = $response->getContent();
         
-        $projectData = $this->getAccount($accountUserId)['projects'][0];
+        $projectData = $this->getAccount($accountUserId)['projects'][0]['data'];
         
         $requiredFields = ['name'];
         foreach($requiredFields as $field)
@@ -78,7 +78,7 @@ class ProjectTest extends TestCase
             ]);
     }
     
-    // Successfull get project non empty list
+    // Successfull get project non-empty list
     public function test_project_list(): void
     {
         $accountUserId = 2;
@@ -134,7 +134,7 @@ class ProjectTest extends TestCase
             ]);
     }
     
-    // Successfull delete project
+    // Error while delete project (invalid ID)
     public function test_delete_project_invalid_id(): void
     {
         $accountUserId = 2;
@@ -196,7 +196,7 @@ class ProjectTest extends TestCase
             ]);
     }
     
-    // Error get project details (invalid id)
+    // Error while get project details (invalid ID)
     public function test_project_get_details_invalid_id(): void
     {
         $accountUserId = 2;
@@ -256,7 +256,7 @@ class ProjectTest extends TestCase
             ]);
     }
     
-    // Error update project (invalid id)
+    // Error while update project (invalid ID)
     public function test_update_project_invalid_id(): void
     {
         $accountUserId = 2;
@@ -285,7 +285,7 @@ class ProjectTest extends TestCase
         $response->assertStatus(404);
     }
     
-    // Create project with valid permission
+    // Error while create project with invalid permission
     public function test_create_project_permission_error(): void
     {
         $accountUserId = 2;
@@ -299,11 +299,11 @@ class ProjectTest extends TestCase
         $response = $this->postJson('/api/login', $data);
         $token = $response->getContent();
         
-        $response = $this->withToken($token)->putJson('/api/project', $this->getAccount($accountUserId)['projects'][0]);
+        $response = $this->withToken($token)->putJson('/api/project', $this->getAccount($accountUserId)['projects'][0]['data']);
         $response->assertStatus(405);
     }
     
-    // Create project no permission
+    // Successfull create project with valid permission
     public function test_create_project_permission_ok(): void
     {
         $accountUserId = 2;
@@ -317,11 +317,11 @@ class ProjectTest extends TestCase
         $response = $this->postJson('/api/login', $data);
         $token = $response->getContent();
         
-        $response = $this->withToken($token)->putJson('/api/project', $this->getAccount($accountUserId)['projects'][0]);
+        $response = $this->withToken($token)->putJson('/api/project', $this->getAccount($accountUserId)['projects'][0]['data']);
         $response->assertStatus(200);
     }
     
-    // Get project list no permission
+    // Error while get project list with invalid permission
     public function test_list_project_permission_error(): void
     {
         $accountUserId = 2;
@@ -339,7 +339,7 @@ class ProjectTest extends TestCase
         $response->assertStatus(405);
     }
     
-    // Get project list with valid permission
+    // Successfull get project list with valid permission
     public function test_list_project_permission_ok(): void
     {
         $accountUserId = 2;
@@ -357,7 +357,7 @@ class ProjectTest extends TestCase
         $response->assertStatus(200);
     }
     
-    // Delete project no permission
+    // Error while delete project with invalid permission
     public function test_delete_project_permission_error(): void
     {
         $accountUserId = 2;
@@ -371,13 +371,13 @@ class ProjectTest extends TestCase
         $response = $this->postJson('/api/login', $data);
         $token = $response->getContent();
         
-        $project = Project::withoutGlobalScopes()->where('uuid', $this->getAccountUuui($token))->inRandomOrder()->first();
+        $project = $this->getProject($token);
         
         $response = $this->withToken($token)->deleteJson('/api/project/' . $project->id);
         $response->assertStatus(405);
     }
     
-    // Delete project with valid permission
+    // Successfull delete project with valid permission
     public function test_delete_project_permission_ok(): void
     {
         $accountUserId = 2;
@@ -391,13 +391,13 @@ class ProjectTest extends TestCase
         $response = $this->postJson('/api/login', $data);
         $token = $response->getContent();
         
-        $project = Project::withoutGlobalScopes()->where('uuid', $this->getAccountUuui($token))->inRandomOrder()->first();
+        $project = $this->getProject($token);
         
         $response = $this->withToken($token)->deleteJson('/api/project/' . $project->id);
         $response->assertStatus(200);
     }
     
-    // Get project details no permission
+    // Error while get project details with invalid permission
     public function test_project_get_details_permission_error(): void
     {
         $accountUserId = 2;
@@ -411,13 +411,13 @@ class ProjectTest extends TestCase
         $response = $this->postJson('/api/login', $data);
         $token = $response->getContent();
         
-        $project = Project::withoutGlobalScopes()->where('uuid', $this->getAccountUuui($token))->inRandomOrder()->first();
+        $project = $this->getProject($token);
         
         $response = $this->withToken($token)->getJson('/api/project/' . $project->id);
         $response->assertStatus(405);
     }
     
-    // Get project details with valid permission
+    // Successfull get project details with valid permission
     public function test_project_get_details_permission_ok(): void
     {
         $accountUserId = 2;
@@ -431,13 +431,13 @@ class ProjectTest extends TestCase
         $response = $this->postJson('/api/login', $data);
         $token = $response->getContent();
         
-        $project = Project::withoutGlobalScopes()->where('uuid', $this->getAccountUuui($token))->inRandomOrder()->first();
+        $project = $this->getProject($token);
         
         $response = $this->withToken($token)->getJson('/api/project/' . $project->id);
         $response->assertStatus(200);
     }
     
-    // Update project no permission
+    // Error while update project with invalid permission
     public function test_update_project_permission_error(): void
     {
         $accountUserId = 2;
@@ -451,7 +451,7 @@ class ProjectTest extends TestCase
         $response = $this->postJson('/api/login', $data);
         $token = $response->getContent();
         
-        $project = Project::withoutGlobalScopes()->where('uuid', $this->getAccountUuui($token))->inRandomOrder()->first();
+        $project = $this->getProject($token);
         
         $data = [
             'name' => 'Name updated',
@@ -463,7 +463,7 @@ class ProjectTest extends TestCase
         $response->assertStatus(405);
     }
     
-    // Update project with valid permission
+    // Successfull update project with valid permission
     public function test_update_project_permission_ok(): void
     {
         $accountUserId = 2;
@@ -477,7 +477,7 @@ class ProjectTest extends TestCase
         $response = $this->postJson('/api/login', $data);
         $token = $response->getContent();
         
-        $project = Project::withoutGlobalScopes()->where('uuid', $this->getAccountUuui($token))->inRandomOrder()->first();
+        $project = $this->getProject($token);
         
         $data = [
             'name' => 'Name updated',

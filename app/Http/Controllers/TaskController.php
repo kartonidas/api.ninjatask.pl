@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use App\Models\Project;
+use App\Models\User;
 use App\Models\Task;
 
 class TaskController extends Controller
@@ -38,15 +39,14 @@ class TaskController extends Controller
         $size = $request->input("size", config("api.list.size"));
         $page = $request->input("page", 1);
         
-        $firm = Auth::user()->getFirm();
         $users = Task
             ::apiFields()
-            ->where("project_id", $firm->id)
+            ->where("project_id", $id)
             ->take($size)
             ->skip(($page-1)*$size)
             ->get();
             
-        $total = Task::where("project_id", $firm->id)->count();
+        $total = Task::where("project_id", $id)->count();
         $out = [
             "total_rows" => $total,
             "total_pages" => ceil($total / $size),
@@ -70,6 +70,13 @@ class TaskController extends Controller
     */
     public function get(Request $request, $id)
     {
+        User::checkAccess("task:list");
+        
+        $task = Task::apiFields()->find($id);
+        if(!$task)
+            throw new ObjectNotExist(__("Task does not exist"));
+        
+        return $task;
     }
     
     /**
@@ -85,6 +92,25 @@ class TaskController extends Controller
     */
     public function create(Request $request)
     {
+        User::checkAccess("task:create");
+        
+        $request->validate([
+            "project_id" => "required|integer",
+            "name" => "required|max:250",
+            "description" => "nullable|max:5000",
+        ]);
+        
+        $project = Project::find($request->input("project_id"));
+        if(!$project)
+            throw new ObjectNotExist(__("Project not exist"));
+        
+        $task = new Task;
+        $task->project_id = $project->id;
+        $task->name = $request->input("name");
+        $task->description = $request->input("description", "");
+        $task->save();
+        
+        return $task->id;
     }
     
     /**
@@ -100,6 +126,39 @@ class TaskController extends Controller
     */
     public function update(Request $request, $id)
     {
+        User::checkAccess("task:update");
+        
+        $task = Task::find($id);
+        if(!$task)
+            throw new ObjectNotExist(__("Task does not exist"));
+        
+        $rules = [
+            "name" => "required|max:250",
+            "description" => "nullable|max:5000",
+        ];
+        
+        $validate = [];
+        $updateFields = ["name", "description"];
+        foreach($updateFields as $field)
+        {
+            if($request->has($field))
+            {
+                if(!empty($rules[$field]))
+                    $validate[$field] = $rules[$field];
+            }
+        }
+        
+        if(!empty($validate))
+            $request->validate($validate);
+        
+        foreach($updateFields as $field)
+        {
+            if($request->has($field))
+                $task->{$field} = $request->input($field);
+        }
+        $task->save();
+        
+        return true;
     }
     
     /**
@@ -114,6 +173,14 @@ class TaskController extends Controller
     */
     public function delete(Request $request, $id)
     {
+        User::checkAccess("task:delete");
+        
+        $task = Task::find($id);
+        if(!$task)
+            throw new ObjectNotExist(__("Task does not exist"));
+        
+        $task->delete();
+        return true;
     }
     
     /**
