@@ -215,7 +215,7 @@ class UserController extends Controller
         $firm = Auth::user()->getFirm();
         $users = User
             ::apiFields()
-            ->where("firm_id", $firm->id)
+            ->byFirm()
             ->noDelete()
             ->take($size)
             ->skip(($page-1)*$size)
@@ -421,7 +421,7 @@ class UserController extends Controller
     {
         User::checkAccess("user:list");
         
-        $user = User::noDelete()->apiFields()->find($id);
+        $user = User::byFirm()->noDelete()->apiFields()->find($id);
         if(!$user)
             throw new ObjectNotExist(__("User does not exist"));
         
@@ -448,7 +448,7 @@ class UserController extends Controller
     {
         User::checkAccess("user:update");
         
-        $user = User::noDelete()->find($id);
+        $user = User::byFirm()->noDelete()->find($id);
         if(!$user)
             throw new ObjectNotExist(__("User does not exist"));
         
@@ -512,7 +512,7 @@ class UserController extends Controller
     {
         User::checkAccess("user:delete");
         
-        $user = User::find($id);
+        $user = User::byFirm()->find($id);
         if(!$user)
             throw new ObjectNotExist(__("User does not exist"));
         
@@ -532,5 +532,18 @@ class UserController extends Controller
     public function getFirmId()
     {
         return Auth::user()->firm_id;
+    }
+    
+    /**
+    * Get login user identifier
+    *
+    * Get login user identifier.
+    * @responseField status integer User identifier
+    * @header Authorization: Bearer {TOKEN}
+    * @group User management
+    */
+    public function getId()
+    {
+        return Auth::user()->id;
     }
 }

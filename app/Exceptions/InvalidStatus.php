@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use App\Exceptions\ApiBaseException;
 
-class AccessDenied extends ApiBaseException
+class InvalidStatus extends ApiBaseException
 {
-    public $status = 405;
+    public $status = 404;
 }

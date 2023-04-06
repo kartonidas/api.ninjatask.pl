@@ -119,6 +119,12 @@ class User extends Authenticatable
         $query->where("activated", 1)->where("deleted", 0);
     }
     
+    public function scopeByFirm(Builder $query): void
+    {
+        $firm = Auth::user()->getFirm();
+        $query->where("firm_id", $firm->id);
+    }
+    
     public function scopeApiFields(Builder $query): void
     {
         $query->select("id", "firstname", "lastname", "phone", "email", "activated", "owner", "superuser", "user_permission_id");

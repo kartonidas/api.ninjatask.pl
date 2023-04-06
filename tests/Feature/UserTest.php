@@ -349,7 +349,7 @@ class UserTest extends TestCase
         }
     }
     
-    public function test_user_empty_list(): void
+    public function test_get_user_empty_list_successfull(): void
     {
         $token = $this->getOwnerLoginToken();
         $response = $this->withToken($token)->getJson('/api/users');
@@ -365,7 +365,7 @@ class UserTest extends TestCase
             ]);
     }
     
-    public function test_user_list_invalid_token(): void
+    public function test_get_user_list_invalid_token(): void
     {
         $token = $this->getOwnerLoginToken();
         $response = $this->withToken('INVALID:TOKEN')->getJson('/api/users');
@@ -391,6 +391,65 @@ class UserTest extends TestCase
             ->assertStatus(200)
             ->assertJson([
                 'total_rows' => count($this->getAccount(0)['workers']) + 1,
+                'total_pages' => 1,
+                'current_page' => 1,
+                'has_more' => false,
+            ]);
+    }
+    
+    public function test_create_user_invalid_params(): void
+    {
+        $token = $this->getOwnerLoginToken();
+        
+        $requiredData = ['firstname', 'lastname', 'email', 'password', 'password_confirmation'];
+        $workerData = $this->getAccount(0)['workers'][0];
+        
+        foreach($requiredData as $field)
+        {
+            $data = $workerData;
+            unset($data[$field]);
+            
+            $response = $this->withToken($token)->putJson('/api/user', $data);
+            $response->assertStatus(422);
+        }
+        $this->assertDatabaseCount('users', 1);
+        
+        // invalid email
+        $data = $workerData;
+        $data['email'] = 'xxxx';
+        
+        $response = $this->withToken($token)->putJson('/api/user', $data);
+        $response->assertStatus(422);
+        
+        $response = $this->withToken($token)->getJson('/api/users');
+        
+        $response
+            ->assertStatus(200)
+            ->assertJson([
+                'total_rows' => 1,
+                'total_pages' => 1,
+                'current_page' => 1,
+                'has_more' => false,
+            ]);
+    }
+    
+    public function test_create_user_email_exist(): void
+    {
+        $token = $this->getOwnerLoginToken();
+        
+        $data = $this->getAccount(0)['workers'][0];
+        $response = $this->withToken($token)->putJson('/api/user', $data);
+        $response->assertStatus(200);
+        
+        $response = $this->withToken($token)->putJson('/api/user', $data);
+        $response->assertStatus(409);
+        
+        $response = $this->withToken($token)->getJson('/api/users');
+        
+        $response
+            ->assertStatus(200)
+            ->assertJson([
+                'total_rows' => 2,
                 'total_pages' => 1,
                 'current_page' => 1,
                 'has_more' => false,
@@ -480,66 +539,7 @@ class UserTest extends TestCase
             ]);
     }
     
-    public function test_create_user_invalid_params(): void
-    {
-        $token = $this->getOwnerLoginToken();
-        
-        $requiredData = ['firstname', 'lastname', 'email', 'password', 'password_confirmation'];
-        $workerData = $this->getAccount(0)['workers'][0];
-        
-        foreach($requiredData as $field)
-        {
-            $data = $workerData;
-            unset($data[$field]);
-            
-            $response = $this->withToken($token)->putJson('/api/user', $data);
-            $response->assertStatus(422);
-        }
-        $this->assertDatabaseCount('users', 1);
-        
-        // invalid email
-        $data = $workerData;
-        $data['email'] = 'xxxx';
-        
-        $response = $this->withToken($token)->putJson('/api/user', $data);
-        $response->assertStatus(422);
-        
-        $response = $this->withToken($token)->getJson('/api/users');
-        
-        $response
-            ->assertStatus(200)
-            ->assertJson([
-                'total_rows' => 1,
-                'total_pages' => 1,
-                'current_page' => 1,
-                'has_more' => false,
-            ]);
-    }
-    
-    public function test_create_user_email_exist(): void
-    {
-        $token = $this->getOwnerLoginToken();
-        
-        $data = $this->getAccount(0)['workers'][0];
-        $response = $this->withToken($token)->putJson('/api/user', $data);
-        $response->assertStatus(200);
-        
-        $response = $this->withToken($token)->putJson('/api/user', $data);
-        $response->assertStatus(409);
-        
-        $response = $this->withToken($token)->getJson('/api/users');
-        
-        $response
-            ->assertStatus(200)
-            ->assertJson([
-                'total_rows' => 2,
-                'total_pages' => 1,
-                'current_page' => 1,
-                'has_more' => false,
-            ]);
-    }
-    
-    public function test_user_get_details_successfull(): void
+    public function test_get_user_details_successfull(): void
     {
         $token = $this->getOwnerLoginToken();
         
@@ -562,7 +562,7 @@ class UserTest extends TestCase
             ]);
     }
     
-    public function test_user_get_details_invalid_id(): void
+    public function test_get_user_details_invalid_id(): void
     {
         $token = $this->getOwnerLoginToken();
         
@@ -833,5 +833,307 @@ class UserTest extends TestCase
                 'current_page' => 1,
                 'has_more' => false,
             ]);
+    }
+    
+    public function test_permission_get_user_list_ok(): void
+    {
+        $accountUserId = 2;
+        $this->prepareMultipleUserAccount(['projects' => true]);
+        $data = [
+            'email' => $this->getAccount($accountUserId)['workers'][1]['email'],
+            'password' => $this->getAccount($accountUserId)['workers'][1]['password'],
+            'device_name' => 'test',
+        ];
+        $this->setUserPermission($data['email'], "user:list");
+        $response = $this->postJson('/api/login', $data);
+        $token = $response->getContent();
+        
+        $response = $this->withToken($token)->getJson('/api/users');
+        $response->assertStatus(200);
+    }
+    
+    public function test_permission_get_user_list_error(): void
+    {
+        $accountUserId = 2;
+        $this->prepareMultipleUserAccount(['projects' => true]);
+        $data = [
+            'email' => $this->getAccount($accountUserId)['workers'][1]['email'],
+            'password' => $this->getAccount($accountUserId)['workers'][1]['password'],
+            'device_name' => 'test',
+        ];
+        $this->setUserPermission($data['email'], "user:create,update,delete");
+        $response = $this->postJson('/api/login', $data);
+        $token = $response->getContent();
+        
+        $response = $this->withToken($token)->getJson('/api/users');
+        $response->assertStatus(405);
+    }
+    
+    public function test_permission_create_user_ok(): void
+    {
+        $accountUserId = 2;
+        $this->prepareMultipleUserAccount(['projects' => true]);
+        $data = [
+            'email' => $this->getAccount($accountUserId)['workers'][1]['email'],
+            'password' => $this->getAccount($accountUserId)['workers'][1]['password'],
+            'device_name' => 'test',
+        ];
+        $this->setUserPermission($data['email'], "user:create");
+        $response = $this->postJson('/api/login', $data);
+        $token = $response->getContent();
+        
+        $response = $this->withToken($token)->putJson('/api/user', $this->getAccount(0)['workers'][0]);
+        $response->assertStatus(200);
+    }
+    
+    public function test_permission_create_user_error(): void
+    {
+        $accountUserId = 2;
+        $this->prepareMultipleUserAccount(['projects' => true]);
+        $data = [
+            'email' => $this->getAccount($accountUserId)['workers'][1]['email'],
+            'password' => $this->getAccount($accountUserId)['workers'][1]['password'],
+            'device_name' => 'test',
+        ];
+        $this->setUserPermission($data['email'], "user:list,update,delete");
+        $response = $this->postJson('/api/login', $data);
+        $token = $response->getContent();
+        
+        $response = $this->withToken($token)->putJson('/api/user', $this->getAccount(0)['workers'][0]);
+        $response->assertStatus(405);
+    }
+    
+    public function test_permission_update_user_ok(): void
+    {
+        $accountUserId = 2;
+        $this->prepareMultipleUserAccount(['projects' => true]);
+        $data = [
+            'email' => $this->getAccount($accountUserId)['workers'][1]['email'],
+            'password' => $this->getAccount($accountUserId)['workers'][1]['password'],
+            'device_name' => 'test',
+        ];
+        $this->setUserPermission($data['email'], "user:update");
+        $response = $this->postJson('/api/login', $data);
+        $token = $response->getContent();
+        
+        $response = $this->withToken($token)->getJson('/api/get-firm-id');
+        $firmId = $response->getContent();
+        
+        $user = new User;
+        $user->firm_id = $firmId;
+        $user->email = 'example@wp.pl';
+        $user->password = 'example';
+        $user->save();
+        
+        $response = $this->withToken($token)->putJson('/api/user/' . $user->id);
+        $response->assertStatus(200);
+    }
+    
+    public function test_permission_update_user_error(): void
+    {
+        $accountUserId = 2;
+        $this->prepareMultipleUserAccount(['projects' => true]);
+        $data = [
+            'email' => $this->getAccount($accountUserId)['workers'][1]['email'],
+            'password' => $this->getAccount($accountUserId)['workers'][1]['password'],
+            'device_name' => 'test',
+        ];
+        $this->setUserPermission($data['email'], "user:list,create,delete");
+        $response = $this->postJson('/api/login', $data);
+        $token = $response->getContent();
+        
+        $response = $this->withToken($token)->getJson('/api/get-firm-id');
+        $firmId = $response->getContent();
+        
+        $user = new User;
+        $user->firm_id = $firmId;
+        $user->email = 'example@wp.pl';
+        $user->password = 'example';
+        $user->save();
+        
+        $response = $this->withToken($token)->putJson('/api/user/' . $user->id);
+        $response->assertStatus(405);
+    }
+    
+    public function test_permission_update_user_other_account_error(): void
+    {
+        $accountUserId = 2;
+        $this->prepareMultipleUserAccount(['projects' => true]);
+        $data = [
+            'email' => $this->getAccount($accountUserId)['workers'][1]['email'],
+            'password' => $this->getAccount($accountUserId)['workers'][1]['password'],
+            'device_name' => 'test',
+        ];
+        $this->setUserPermission($data['email'], "user:list,create,update,delete");
+        $response = $this->postJson('/api/login', $data);
+        $token = $response->getContent();
+        
+        $user = new User;
+        $user->firm_id = 99;
+        $user->email = 'example@wp.pl';
+        $user->password = 'example';
+        $user->save();
+        
+        $response = $this->withToken($token)->putJson('/api/user/' . $user->id);
+        $response->assertStatus(404);
+    }
+    
+    public function test_permission_delete_user_ok(): void
+    {
+        $accountUserId = 2;
+        $this->prepareMultipleUserAccount(['projects' => true]);
+        $data = [
+            'email' => $this->getAccount($accountUserId)['workers'][1]['email'],
+            'password' => $this->getAccount($accountUserId)['workers'][1]['password'],
+            'device_name' => 'test',
+        ];
+        $this->setUserPermission($data['email'], "user:delete");
+        $response = $this->postJson('/api/login', $data);
+        $token = $response->getContent();
+        
+        $response = $this->withToken($token)->getJson('/api/get-firm-id');
+        $firmId = $response->getContent();
+        
+        $user = new User;
+        $user->firm_id = $firmId;
+        $user->email = 'example@wp.pl';
+        $user->password = 'example';
+        $user->save();
+        
+        $response = $this->withToken($token)->deleteJson('/api/user/' . $user->id);
+        $response->assertStatus(200);
+    }
+    
+    public function test_permission_delete_user_error(): void
+    {
+        $accountUserId = 2;
+        $this->prepareMultipleUserAccount(['projects' => true]);
+        $data = [
+            'email' => $this->getAccount($accountUserId)['workers'][1]['email'],
+            'password' => $this->getAccount($accountUserId)['workers'][1]['password'],
+            'device_name' => 'test',
+        ];
+        $this->setUserPermission($data['email'], "user:list,create,update");
+        $response = $this->postJson('/api/login', $data);
+        $token = $response->getContent();
+        
+        $response = $this->withToken($token)->getJson('/api/get-firm-id');
+        $firmId = $response->getContent();
+        
+        $user = new User;
+        $user->firm_id = $firmId;
+        $user->email = 'example@wp.pl';
+        $user->password = 'example';
+        $user->save();
+        
+        $response = $this->withToken($token)->deleteJson('/api/user/' . $user->id);
+        $response->assertStatus(405);
+    }
+    
+    public function test_permission_delete_user_other_account_error(): void
+    {
+        $accountUserId = 2;
+        $this->prepareMultipleUserAccount(['projects' => true]);
+        $data = [
+            'email' => $this->getAccount($accountUserId)['workers'][1]['email'],
+            'password' => $this->getAccount($accountUserId)['workers'][1]['password'],
+            'device_name' => 'test',
+        ];
+        $this->setUserPermission($data['email'], "user:list,create,update,delete");
+        $response = $this->postJson('/api/login', $data);
+        $token = $response->getContent();
+        
+        $response = $this->withToken($token)->getJson('/api/get-firm-id');
+        $firmId = $response->getContent();
+        
+        $user = new User;
+        $user->firm_id = 99;
+        $user->email = 'example@wp.pl';
+        $user->password = 'example';
+        $user->save();
+        
+        $response = $this->withToken($token)->deleteJson('/api/user/' . $user->id);
+        $response->assertStatus(404);
+    }
+    
+    public function test_permission_get_user_details_ok(): void
+    {
+        $accountUserId = 2;
+        $this->prepareMultipleUserAccount(['projects' => true]);
+        $data = [
+            'email' => $this->getAccount($accountUserId)['workers'][1]['email'],
+            'password' => $this->getAccount($accountUserId)['workers'][1]['password'],
+            'device_name' => 'test',
+        ];
+        $this->setUserPermission($data['email'], "user:list");
+        $response = $this->postJson('/api/login', $data);
+        $token = $response->getContent();
+        
+        $response = $this->withToken($token)->getJson('/api/get-firm-id');
+        $firmId = $response->getContent();
+        
+        $user = new User;
+        $user->firm_id = $firmId;
+        $user->email = 'example@wp.pl';
+        $user->password = 'example';
+        $user->save();
+        
+        $response = $this->withToken($token)->getJson('/api/user/' . $user->id);
+        
+        $response->assertStatus(200);
+    }
+    
+    public function test_permission_get_user_details_error(): void
+    {
+        $accountUserId = 2;
+        $this->prepareMultipleUserAccount(['projects' => true]);
+        $data = [
+            'email' => $this->getAccount($accountUserId)['workers'][1]['email'],
+            'password' => $this->getAccount($accountUserId)['workers'][1]['password'],
+            'device_name' => 'test',
+        ];
+        $this->setUserPermission($data['email'], "user:create,update,delete");
+        $response = $this->postJson('/api/login', $data);
+        $token = $response->getContent();
+        
+        $response = $this->withToken($token)->getJson('/api/get-firm-id');
+        $firmId = $response->getContent();
+        
+        $user = new User;
+        $user->firm_id = $firmId;
+        $user->email = 'example@wp.pl';
+        $user->password = 'example';
+        $user->save();
+        
+        $response = $this->withToken($token)->getJson('/api/user/' . $user->id);
+        
+        $response->assertStatus(405);
+    }
+    
+    public function test_permission_get_user_details_other_account_error(): void
+    {
+        $accountUserId = 2;
+        $this->prepareMultipleUserAccount(['projects' => true]);
+        $data = [
+            'email' => $this->getAccount($accountUserId)['workers'][1]['email'],
+            'password' => $this->getAccount($accountUserId)['workers'][1]['password'],
+            'device_name' => 'test',
+        ];
+        $this->setUserPermission($data['email'], "user:list,create,update,delete");
+        $response = $this->postJson('/api/login', $data);
+        $token = $response->getContent();
+        
+        $response = $this->withToken($token)->getJson('/api/get-firm-id');
+        $firmId = $response->getContent();
+        
+        $user = new User;
+        $user->firm_id = 99;
+        $user->email = 'example@wp.pl';
+        $user->password = 'example';
+        $user->save();
+        
+        $response = $this->withToken($token)->getJson('/api/user/' . $user->id);
+        
+        $response->assertStatus(404);
     }
 }

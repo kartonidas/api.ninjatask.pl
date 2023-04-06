@@ -8,6 +8,8 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvi
 use Illuminate\Support\Facades\Event;
 use App\Models\UserInvitation;
 use App\Observers\UserInvitationObserver;
+use App\Models\TaskTime;
+use App\Observers\TaskTimeObserver;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -28,6 +30,7 @@ class EventServiceProvider extends ServiceProvider
     public function boot(): void
     {
         UserInvitation::observe(UserInvitationObserver::class);
+        TaskTime::observe(TaskTimeObserver::class);
     }
 
     /**

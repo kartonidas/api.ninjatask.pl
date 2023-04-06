@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tasks', function (Blueprint $table) {
+        Schema::create('task_comments', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid', 64);
-            $table->integer('project_id');
-            $table->string('name', 250);
-            $table->text('description')->default(null)->nullable();
-            $table->integer("total")->default(0);
-            $table->integer("total_billable")->default(0);
+            $table->integer("task_id");
+            $table->integer("user_id");
+            $table->text("comment")->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tasks');
+        Schema::dropIfExists('task_comments');
     }
 };

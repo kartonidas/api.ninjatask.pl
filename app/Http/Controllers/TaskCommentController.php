@@ -9,30 +9,30 @@ use Illuminate\Validation\ValidationException;
 use App\Exceptions\InvalidStatus;
 use App\Exceptions\ObjectExist;
 use App\Exceptions\ObjectNotExist;
-use App\Models\Project;
 use App\Models\User;
 use App\Models\Task;
+use App\Models\TaskComment;
 
-class TaskController extends Controller
+class TaskCommentController extends Controller
 {
     /**
-    * Get tasks list
+    * Get task comments list
     *
-    * Return tasks list assigned to project.
-    * @urlParam id integer required Project identifier.
+    * Return task comments list.
+    * @urlParam id integer required Task identifier.
     * @queryParam size integer Number of rows. Default: 50
     * @queryParam page integer Number of page (pagination). Default: 1
     * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "name": "Test project", "location": "Warsaw", "description": "", "owner": "john@doe.com"}]}
     * @header Authorization: Bearer {TOKEN}
-    * @group Tasks
+    * @group Task comments
     */
     public function list(Request $request, $id)
     {
         User::checkAccess("task:list");
         
-        $project = Project::find($id);
-        if(!$project)
-            throw new ObjectNotExist(__("Project not exist"));
+        $task = Task::find($id);
+        if(!$task)
+            throw new ObjectNotExist(__("Task not exist"));
         
         $request->validate([
             "size" => "nullable|integer|gt:0",
@@ -42,14 +42,14 @@ class TaskController extends Controller
         $size = $request->input("size", config("api.list.size"));
         $page = $request->input("page", 1);
         
-        $users = Task
+        $users = TaskComment
             ::apiFields()
-            ->where("project_id", $id)
+            ->where("task_id", $id)
             ->take($size)
             ->skip(($page-1)*$size)
             ->get();
             
-        $total = Task::where("project_id", $id)->count();
+        $total = TaskComment::where("task_id", $id)->count();
         $out = [
             "total_rows" => $total,
             "total_pages" => ceil($total / $size),
@@ -62,86 +62,90 @@ class TaskController extends Controller
     }
     
     /**
-    * Get task details
+    * Get task comment details
     *
     * Return task details.
-    * @urlParam id integer required Project identifier.
-    * @response 200 {"id": 1, "name": "Example task"}
-    * @response 404 {"error":true,"message":"Project does not exist"}
+    * @urlParam task_id integer required Task identifier.
+    * @urlParam id integer required Comment identifier.
+    * @response 404 {"error":true,"message":"Comment does not exist"}
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
     */
-    public function get(Request $request, $id)
+    public function get(Request $request, $taskId, $id)
     {
         User::checkAccess("task:list");
         
-        $task = Task::apiFields()->find($id);
+        $task = Task::find($taskId);
         if(!$task)
-            throw new ObjectNotExist(__("Task does not exist"));
+            throw new ObjectNotExist(__("Task not exist"));
         
-        return $task;
+        $comment = TaskComment::apiFields()->find($id);
+        if(!$comment)
+            throw new ObjectNotExist(__("Comment does not exist"));
+        
+        return $comment;
     }
     
     /**
-    * Create new task
+    * Create new comment
     *
-    * Create new task.
-    * @bodyParam project_id integer required Project identifier.
-    * @bodyParam name string required Task name.
-    * @bodyParam description string Task description.
-    * @responseField id integer The id of the newly created project
+    * Create new comment.
+    * @bodyParam task_id integer required Task identifier.
+    * @bodyParam comment string required Comment.
+    * @responseField id integer The id of the newly created comment
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
     */
-    public function create(Request $request)
+    public function create(Request $request, $taskId)
     {
-        User::checkAccess("task:create");
+        User::checkAccess("task:list");
         
         $request->validate([
-            "project_id" => "required|integer",
-            "name" => "required|max:250",
-            "description" => "nullable|max:5000",
+            "comment" => "required|max:10000",
         ]);
         
-        $project = Project::find($request->input("project_id"));
-        if(!$project)
-            throw new ObjectNotExist(__("Project not exist"));
+        $task = Task::find($taskId);
+        if(!$task)
+            throw new ObjectNotExist(__("Task not exist"));
         
-        $task = new Task;
-        $task->project_id = $project->id;
-        $task->name = $request->input("name");
-        $task->description = $request->input("description", "");
-        $task->save();
+        $comment = new TaskComment;
+        $comment->task_id = $task->id;
+        $comment->user_id = Auth::user()->id;
+        $comment->comment = $request->input("comment");
+        $comment->save();
         
-        return $task->id;
+        return $comment->id;
     }
     
     /**
-    * Update task
+    * Update comment
     *
-    * Update task.
-    * @urlParam id integer required Task identifier.
-    * @bodyParam name string Task name.
-    * @bodyParam description string Project description.
+    * Update comment.
+    * @bodyParam task_id integer required Task identifier.
+    * @urlParam id integer required Comment identifier.
+    * @bodyParam comment string comment.
     * @responseField status boolean Update status
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
     */
-    public function update(Request $request, $id)
+    public function update(Request $request, $taskId, $id)
     {
-        User::checkAccess("task:update");
+        User::checkAccess("task:list");
         
-        $task = Task::find($id);
+        $task = Task::find($taskId);
         if(!$task)
             throw new ObjectNotExist(__("Task does not exist"));
         
+        $comment = TaskComment::apiFields()->find($id);
+        if(!$comment)
+            throw new ObjectNotExist(__("Comment does not exist"));
+        
         $rules = [
-            "name" => "required|max:250",
-            "description" => "nullable|max:5000",
+            "comment" => "required|max:10000",
         ];
         
         $validate = [];
-        $updateFields = ["name", "description"];
+        $updateFields = ["comment"];
         foreach($updateFields as $field)
         {
             if($request->has($field))
@@ -157,32 +161,37 @@ class TaskController extends Controller
         foreach($updateFields as $field)
         {
             if($request->has($field))
-                $task->{$field} = $request->input($field);
+                $comment->{$field} = $request->input($field);
         }
-        $task->save();
+        $comment->save();
         
         return true;
     }
     
     /**
-    * Delete task
+    * Delete comment
     *
-    * Delete task.
-    * @urlParam id integer required Task identifier.
+    * Delete comment.
+    * @bodyParam task_id integer required Task identifier.
+    * @urlParam id integer required Comment identifier.
     * @responseField status boolean Delete status
     * @response 404 {"error":true,"message":"Task does not exist"}
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
     */
-    public function delete(Request $request, $id)
+    public function delete(Request $request, $taskId, $id)
     {
-        User::checkAccess("task:delete");
+        User::checkAccess("task:list");
         
-        $task = Task::find($id);
+        $task = Task::find($taskId);
         if(!$task)
             throw new ObjectNotExist(__("Task does not exist"));
         
-        $task->delete();
+        $comment = TaskComment::apiFields()->find($id);
+        if(!$comment)
+            throw new ObjectNotExist(__("Comment does not exist"));
+        
+        $comment->delete();
         return true;
     }
 }

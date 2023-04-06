@@ -7,6 +7,8 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\TaskCommentController;
+use App\Http\Controllers\TaskTimeController;
 use App\Http\Controllers\UserController;
 
 /*
@@ -37,7 +39,9 @@ Route::middleware('auth:sanctum')->group(function () use($router) {
     $router->get('/user/{id}', [UserController::class, "get"])->where("id", "[0-9]+");
     $router->put('/user/{id}', [UserController::class, "update"])->where("id", "[0-9]+");
     $router->delete('/user/{id}', [UserController::class, "delete"])->where("id", "[0-9]+");
+    
     $router->get('/get-firm-id', [UserController::class, "getFirmId"]);
+    $router->get('/get-id', [UserController::class, "getId"]);
     
     // UPRAWNIENIA
     $router->get('/permissions', [PermissionController::class, "list"]);
@@ -54,12 +58,26 @@ Route::middleware('auth:sanctum')->group(function () use($router) {
     $router->get('/task/{id}', [TaskController::class, "get"])->where("id", "[0-9]+");
     $router->put('/task/{id}', [TaskController::class, "update"])->where("id", "[0-9]+");
     $router->delete('/task/{id}', [TaskController::class, "delete"])->where("id", "[0-9]+");
-    $router->post('/task/{id}/start', [TaskController::class, "start"])->where("id", "[0-9]+");
-    $router->post('/task/{id}/stop', [TaskController::class, "start"])->where("id", "[0-9]+");
-    $router->post('/task/{id}/log-time', [TaskController::class, "logTime"])->where("id", "[0-9]+");
+    
+    // ZADANIA - CZAS PRACY
+    $router->post('/task/{id}/time/start', [TaskTimeController::class, "start"])->where("id", "[0-9]+");
+    $router->post('/task/{id}/time/stop', [TaskTimeController::class, "stop"])->where("id", "[0-9]+");
+    $router->post('/task/{id}/time/pause', [TaskTimeController::class, "pause"])->where("id", "[0-9]+");
+    $router->put('/task/{id}/time', [TaskTimeController::class, "logTime"])->where("id", "[0-9]+");
+    $router->put('/task/{id}/time/{tid}', [TaskTimeController::class, "updateLogTime"])->where("id", "[0-9]+")->where("tid", "[0-9]+");
+    $router->delete('/task/{id}/time/{tid}', [TaskTimeController::class, "deleteTime"])->where("id", "[0-9]+")->where("tid", "[0-9]+");
+    $router->get('/task/{id}/times', [TaskTimeController::class, "getTimes"])->where("id", "[0-9]+");
+    
+    // ZADANIA - KOMENTARZ
+    $router->get('/task/{id}/comments', [TaskCommentController::class, "list"]);
+    $router->put('/task/{id}/comment', [TaskCommentController::class, "create"]);
+    $router->get('/task/{id}/comment/{cid}', [TaskCommentController::class, "get"])->where("id", "[0-9]+")->where("cid", "[0-9]+");
+    $router->put('/task/{id}/comment/{cid}', [TaskCommentController::class, "update"])->where("id", "[0-9]+")->where("cid", "[0-9]+");
+    $router->delete('/task/{id}/comment/{cid}', [TaskCommentController::class, "delete"])->where("id", "[0-9]+")->where("cid", "[0-9]+");
     
     // todo
-    // usuwanie / aktualizacja czasu pracy nad zadaniem
+    // dodawanie komentarzy do zadania
+    // załączniki do zadan i komentarzy
 });
 
 // REJESTRACJA
