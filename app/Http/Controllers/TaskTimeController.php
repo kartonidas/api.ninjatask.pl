@@ -24,7 +24,7 @@ class TaskTimeController extends Controller
     * @responseField status boolean Status
     * @response 404 {"error":true,"message":"Task does not exist"}
     * @header Authorization: Bearer {TOKEN}
-    * @group Tasks
+    * @group Task time
     */
     public function start(Request $request, $id)
     {
@@ -62,7 +62,7 @@ class TaskTimeController extends Controller
     * @responseField status boolean Status
     * @response 404 {"error":true,"message":"Task does not exist"}
     * @header Authorization: Bearer {TOKEN}
-    * @group Tasks
+    * @group Task time
     */
     public function pause(Request $request, $id)
     {
@@ -93,7 +93,7 @@ class TaskTimeController extends Controller
     * @responseField status boolean Status
     * @response 404 {"error":true,"message":"Task does not exist"}
     * @header Authorization: Bearer {TOKEN}
-    * @group Tasks
+    * @group Task time
     */
     public function stop(Request $request, $id)
     {
@@ -131,7 +131,7 @@ class TaskTimeController extends Controller
     * @responseField status boolean Status
     * @response 404 {"error":true,"message":"Task does not exist"}
     * @header Authorization: Bearer {TOKEN}
-    * @group Tasks
+    * @group Task time
     */
     public function logTime(Request $request, $id)
     {
@@ -166,8 +166,8 @@ class TaskTimeController extends Controller
     * Update log task spend time
     *
     * Update log task spend time.
-    * @urlParam task_id integer required Task identifier.
-    * @urlParam id integer required Task time identifier.
+    * @urlParam id integer required Task identifier.
+    * @urlParam tid integer required Task time identifier.
     * @bodyParam started integer Start time.
     * @bodyParam total integer Total time in seconds.
     * @bodyParam comment string Comment.
@@ -175,7 +175,7 @@ class TaskTimeController extends Controller
     * @responseField status boolean Status
     * @response 404 {"error":true,"message":"Task does not exist"}
     * @header Authorization: Bearer {TOKEN}
-    * @group Tasks
+    * @group Task time
     */
     public function updateLogTime(Request $request, $taskId, $id)
     {
@@ -231,10 +231,10 @@ class TaskTimeController extends Controller
     * @urlParam id integer required Task identifier.
     * @queryParam size integer Number of rows. Default: 50
     * @queryParam page integer Number of page (pagination). Default: 1
-    * @responseField status boolean Status
+    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "status": "active", "task_id": "1", "user_id": 1, "started": "1680843163", "finished": 1680843163, "timer_started": 0, "total": 600, "comment": "Example comment", "billable": 0}]}
     * @response 404 {"error":true,"message":"Task does not exist"}
     * @header Authorization: Bearer {TOKEN}
-    * @group Tasks
+    * @group Task time
     */
     public function getTimes(Request $request, $id)
     {
@@ -276,12 +276,12 @@ class TaskTimeController extends Controller
     * Delete task log time
     *
     * Delete task log time.
-    * @urlParam task_id integer required Task identifier.
-    * @urlParam id integer required Task time identifier.
+    * @urlParam id integer required Task identifier.
+    * @urlParam tid integer required Task time identifier.
     * @responseField status boolean Delete status
     * @response 404 {"error":true,"message":"Task does not exist"}
     * @header Authorization: Bearer {TOKEN}
-    * @group Tasks
+    * @group Task time
     */
     
     public function deleteTime(Request $request, $taskId, $id)

@@ -216,14 +216,13 @@ class UserController extends Controller
         $users = User
             ::apiFields()
             ->byFirm()
-            ->noDelete()
             ->take($size)
             ->skip(($page-1)*$size)
             ->orderBy("lastname", "ASC")
             ->orderBy("firstname", "ASC")
             ->get();
             
-        $total = User::where("firm_id", $firm->id)->noDelete()->count();
+        $total = User::where("firm_id", $firm->id)->count();
         $out = [
             "total_rows" => $total,
             "total_pages" => ceil($total / $size),
@@ -267,7 +266,6 @@ class UserController extends Controller
         
         $userByEmail = User::where("firm_id", Auth::user()->getFirm()->id)
             ->where("email", $request->input("email"))
-            ->noDelete()
             ->count();
         
         $permissionId = $request->input("permission_id", null);
@@ -320,7 +318,6 @@ class UserController extends Controller
         
         $userByEmail = User::where("firm_id", Auth::user()->getFirm()->id)
             ->where("email", $request->input("email"))
-            ->noDelete()
             ->count();
             
         if($userByEmail)
@@ -421,7 +418,7 @@ class UserController extends Controller
     {
         User::checkAccess("user:list");
         
-        $user = User::byFirm()->noDelete()->apiFields()->find($id);
+        $user = User::byFirm()->apiFields()->find($id);
         if(!$user)
             throw new ObjectNotExist(__("User does not exist"));
         
@@ -448,7 +445,7 @@ class UserController extends Controller
     {
         User::checkAccess("user:update");
         
-        $user = User::byFirm()->noDelete()->find($id);
+        $user = User::byFirm()->find($id);
         if(!$user)
             throw new ObjectNotExist(__("User does not exist"));
         
@@ -457,7 +454,6 @@ class UserController extends Controller
             $userByEmail = User::where("firm_id", $user->firm_id)
                 ->where("email", $request->input("email"))
                 ->where("id", "!=", $user->id)
-                ->noDelete()
                 ->count();
                 
             if($userByEmail)

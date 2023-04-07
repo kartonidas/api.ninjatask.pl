@@ -22,7 +22,7 @@ class TaskCommentController extends Controller
     * @urlParam id integer required Task identifier.
     * @queryParam size integer Number of rows. Default: 50
     * @queryParam page integer Number of page (pagination). Default: 1
-    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "name": "Test project", "location": "Warsaw", "description": "", "owner": "john@doe.com"}]}
+    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "comment": "Example comment", "user_id": 1, "created_at" => "2020-01-01 10:00:00"}]}
     * @header Authorization: Bearer {TOKEN}
     * @group Task comments
     */
@@ -64,12 +64,13 @@ class TaskCommentController extends Controller
     /**
     * Get task comment details
     *
-    * Return task details.
-    * @urlParam task_id integer required Task identifier.
-    * @urlParam id integer required Comment identifier.
+    * Return task comment details.
+    * @urlParam id integer required Task identifier.
+    * @urlParam cid integer required Comment identifier.
+    * @response 200 {"id": 1, "comment": "Example comment", "user_id": "1", "created_at" => "2020-01-01 10:00:00"}
     * @response 404 {"error":true,"message":"Comment does not exist"}
     * @header Authorization: Bearer {TOKEN}
-    * @group Tasks
+    * @group Task comments
     */
     public function get(Request $request, $taskId, $id)
     {
@@ -90,11 +91,11 @@ class TaskCommentController extends Controller
     * Create new comment
     *
     * Create new comment.
-    * @bodyParam task_id integer required Task identifier.
+    * @bodyParam id integer required Task identifier.
     * @bodyParam comment string required Comment.
     * @responseField id integer The id of the newly created comment
     * @header Authorization: Bearer {TOKEN}
-    * @group Tasks
+    * @group Task comments
     */
     public function create(Request $request, $taskId)
     {
@@ -121,12 +122,12 @@ class TaskCommentController extends Controller
     * Update comment
     *
     * Update comment.
-    * @bodyParam task_id integer required Task identifier.
-    * @urlParam id integer required Comment identifier.
+    * @bodyParam id integer required Task identifier.
+    * @urlParam cid integer required Comment identifier.
     * @bodyParam comment string comment.
     * @responseField status boolean Update status
     * @header Authorization: Bearer {TOKEN}
-    * @group Tasks
+    * @group Task comments
     */
     public function update(Request $request, $taskId, $id)
     {
@@ -172,12 +173,12 @@ class TaskCommentController extends Controller
     * Delete comment
     *
     * Delete comment.
-    * @bodyParam task_id integer required Task identifier.
-    * @urlParam id integer required Comment identifier.
+    * @bodyParam id integer required Task identifier.
+    * @urlParam cid integer required Comment identifier.
     * @responseField status boolean Delete status
     * @response 404 {"error":true,"message":"Task does not exist"}
     * @header Authorization: Bearer {TOKEN}
-    * @group Tasks
+    * @group Task comments
     */
     public function delete(Request $request, $taskId, $id)
     {

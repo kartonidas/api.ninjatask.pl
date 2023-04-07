@@ -1,50 +1,58 @@
-name: Projects
+name: 'Task comments'
 description: ''
 endpoints:
   -
     httpMethods:
       - GET
-    uri: api/projects
+    uri: 'api/task/{id}/comments'
     metadata:
-      groupName: Projects
+      groupName: 'Task comments'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get projects list'
-      description: 'Return projects list.'
+      title: 'Get task comments list'
+      description: 'Return task comments list.'
       authenticated: false
       custom: []
     headers:
       Content-Type: application/json
       Accept: application/json
       'Authorization:': 'Bearer {TOKEN}'
-    urlParameters: []
-    cleanUrlParameters: []
+    urlParameters:
+      id:
+        name: id
+        description: 'Task identifier.'
+        required: true
+        example: 17
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 17
     queryParameters:
       size:
         name: size
         description: 'Number of rows. Default: 50'
         required: false
-        example: 4
+        example: 8
         type: integer
         custom: []
       page:
         name: page
         description: 'Number of page (pagination). Default: 1'
         required: false
-        example: 10
+        example: 11
         type: integer
         custom: []
     cleanQueryParameters:
-      size: 4
-      page: 10
+      size: 8
+      page: 11
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
     responses:
       -
         status: 200
-        content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "name": "Test project", "location": "Warsaw", "description": "", "owner": "john@doe.com", "created_at" => "2020-01-01 10:00:00"}]}'
+        content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "comment": "Example comment", "user_id": 1, "created_at" => "2020-01-01 10:00:00"}]}'
         headers: []
         description: ''
         custom: []
@@ -57,14 +65,14 @@ endpoints:
   -
     httpMethods:
       - PUT
-    uri: api/project
+    uri: 'api/task/{id}/comment'
     metadata:
-      groupName: Projects
+      groupName: 'Task comments'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Create new project'
-      description: 'Create new project.'
+      title: 'Create new comment'
+      description: 'Create new comment.'
       authenticated: false
       custom: []
     headers:
@@ -76,45 +84,29 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      name:
-        name: name
-        description: 'Project name.'
+      id:
+        name: id
+        description: 'Task identifier.'
         required: true
-        example: illo
-        type: string
+        example: 12
+        type: integer
         custom: []
-      location:
-        name: location
-        description: 'Project location.'
-        required: false
-        example: quisquam
-        type: string
-        custom: []
-      description:
-        name: description
-        description: 'Project description.'
-        required: false
-        example: 'Quam facilis ab qui similique modi reprehenderit aliquid.'
-        type: string
-        custom: []
-      owner:
-        name: owner
-        description: 'Project owner.'
-        required: false
-        example: repellat
+      comment:
+        name: comment
+        description: Comment.
+        required: true
+        example: autem
         type: string
         custom: []
     cleanBodyParameters:
-      name: illo
-      location: quisquam
-      description: 'Quam facilis ab qui similique modi reprehenderit aliquid.'
-      owner: repellat
+      id: 12
+      comment: autem
     fileParameters: []
     responses: []
     responseFields:
       id:
         name: id
-        description: 'The id of the newly created project'
+        description: 'The id of the newly created comment'
         required: false
         example: null
         type: integer
@@ -127,14 +119,14 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: 'api/project/{id}'
+    uri: 'api/task/{id}/comment/{cid}'
     metadata:
-      groupName: Projects
+      groupName: 'Task comments'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get project details'
-      description: 'Return project details.'
+      title: 'Get task comment details'
+      description: 'Return task comment details.'
       authenticated: false
       custom: []
     headers:
@@ -144,13 +136,21 @@ endpoints:
     urlParameters:
       id:
         name: id
-        description: 'Project identifier.'
+        description: 'Task identifier.'
         required: true
-        example: 15
+        example: 6
+        type: integer
+        custom: []
+      cid:
+        name: cid
+        description: 'Comment identifier.'
+        required: true
+        example: 1
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 15
+      id: 6
+      cid: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -159,13 +159,13 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"id": 1, "name": "Test project", "location": "Warsaw", "description": "", "owner": "john@doe.com", "created_at" => "2020-01-01 10:00:00"}'
+        content: '{"id": 1, "comment": "Example comment", "user_id": "1", "created_at" => "2020-01-01 10:00:00"}'
         headers: []
         description: ''
         custom: []
       -
         status: 404
-        content: '{"error":true,"message":"Project does not exist"}'
+        content: '{"error":true,"message":"Comment does not exist"}'
         headers: []
         description: ''
         custom: []
@@ -178,14 +178,14 @@ endpoints:
   -
     httpMethods:
       - PUT
-    uri: 'api/project/{id}'
+    uri: 'api/task/{id}/comment/{cid}'
     metadata:
-      groupName: Projects
+      groupName: 'Task comments'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Update project'
-      description: 'Update project.'
+      title: 'Update comment'
+      description: 'Update comment.'
       authenticated: false
       custom: []
     headers:
@@ -193,51 +193,35 @@ endpoints:
       Accept: application/json
       'Authorization:': 'Bearer {TOKEN}'
     urlParameters:
-      id:
-        name: id
-        description: 'Project identifier.'
+      cid:
+        name: cid
+        description: 'Comment identifier.'
         required: true
-        example: 9
+        example: 7
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 9
+      cid: 7
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      name:
-        name: name
-        description: 'Project name.'
-        required: false
-        example: magni
-        type: string
+      id:
+        name: id
+        description: 'Task identifier.'
+        required: true
+        example: 20
+        type: integer
         custom: []
-      location:
-        name: location
-        description: 'Project location.'
+      comment:
+        name: comment
+        description: comment.
         required: false
-        example: aut
-        type: string
-        custom: []
-      description:
-        name: description
-        description: 'Project description.'
-        required: false
-        example: 'Non quaerat in blanditiis.'
-        type: string
-        custom: []
-      owner:
-        name: owner
-        description: 'Project owner.'
-        required: false
-        example: libero
+        example: quo
         type: string
         custom: []
     cleanBodyParameters:
-      name: magni
-      location: aut
-      description: 'Non quaerat in blanditiis.'
-      owner: libero
+      id: 20
+      comment: quo
     fileParameters: []
     responses: []
     responseFields:
@@ -256,14 +240,14 @@ endpoints:
   -
     httpMethods:
       - DELETE
-    uri: 'api/project/{id}'
+    uri: 'api/task/{id}/comment/{cid}'
     metadata:
-      groupName: Projects
+      groupName: 'Task comments'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Delete project'
-      description: 'Delete project.'
+      title: 'Delete comment'
+      description: 'Delete comment.'
       authenticated: false
       custom: []
     headers:
@@ -271,24 +255,32 @@ endpoints:
       Accept: application/json
       'Authorization:': 'Bearer {TOKEN}'
     urlParameters:
-      id:
-        name: id
-        description: 'Project identifier.'
+      cid:
+        name: cid
+        description: 'Comment identifier.'
         required: true
-        example: 17
+        example: 18
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 17
+      cid: 18
     queryParameters: []
     cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    bodyParameters:
+      id:
+        name: id
+        description: 'Task identifier.'
+        required: true
+        example: 1
+        type: integer
+        custom: []
+    cleanBodyParameters:
+      id: 1
     fileParameters: []
     responses:
       -
         status: 404
-        content: '{"error":true,"message":"Project does not exist"}'
+        content: '{"error":true,"message":"Task does not exist"}'
         headers: []
         description: ''
         custom: []

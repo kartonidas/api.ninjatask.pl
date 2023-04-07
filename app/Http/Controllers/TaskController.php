@@ -22,7 +22,7 @@ class TaskController extends Controller
     * @urlParam id integer required Project identifier.
     * @queryParam size integer Number of rows. Default: 50
     * @queryParam page integer Number of page (pagination). Default: 1
-    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "name": "Test project", "location": "Warsaw", "description": "", "owner": "john@doe.com"}]}
+    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "name": "Example task", "description": "Example description", "created_at" => "2020-01-01 10:00:00"}]}
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
     */
@@ -65,9 +65,9 @@ class TaskController extends Controller
     * Get task details
     *
     * Return task details.
-    * @urlParam id integer required Project identifier.
-    * @response 200 {"id": 1, "name": "Example task"}
-    * @response 404 {"error":true,"message":"Project does not exist"}
+    * @urlParam id integer required Task identifier.
+    * @response 200 {"id": 1, "name": "Example task", "description": "Example description", "created_at" => "2020-01-01 10:00:00"}
+    * @response 404 {"error":true,"message":"Task does not exist"}
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
     */
@@ -89,7 +89,7 @@ class TaskController extends Controller
     * @bodyParam project_id integer required Project identifier.
     * @bodyParam name string required Task name.
     * @bodyParam description string Task description.
-    * @responseField id integer The id of the newly created project
+    * @responseField id integer The id of the newly created task
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
     */
@@ -111,6 +111,7 @@ class TaskController extends Controller
         $task->project_id = $project->id;
         $task->name = $request->input("name");
         $task->description = $request->input("description", "");
+        $task->created_user_id = Auth::user()->id;
         $task->save();
         
         return $task->id;
@@ -122,7 +123,7 @@ class TaskController extends Controller
     * Update task.
     * @urlParam id integer required Task identifier.
     * @bodyParam name string Task name.
-    * @bodyParam description string Project description.
+    * @bodyParam description string Task description.
     * @responseField status boolean Update status
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks

@@ -17,7 +17,7 @@ class ProjectController extends Controller
     * Return projects list.
     * @queryParam size integer Number of rows. Default: 50
     * @queryParam page integer Number of page (pagination). Default: 1
-    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "name": "Test project", "location": "Warsaw", "description": "", "owner": "john@doe.com"}]}
+    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "name": "Test project", "location": "Warsaw", "description": "", "owner": "john@doe.com", "created_at" => "2020-01-01 10:00:00"}]}
     * @header Authorization: Bearer {TOKEN}
     * @group Projects
     */
@@ -56,7 +56,7 @@ class ProjectController extends Controller
     *
     * Return project details.
     * @urlParam id integer required Project identifier.
-    * @response 200 {"id": 1, "name": "Test project", "location": "Warsaw", "description": "", "owner": "john@doe.com"}
+    * @response 200 {"id": 1, "name": "Test project", "location": "Warsaw", "description": "", "owner": "john@doe.com", "created_at" => "2020-01-01 10:00:00"}
     * @response 404 {"error":true,"message":"Project does not exist"}
     * @header Authorization: Bearer {TOKEN}
     * @group Projects

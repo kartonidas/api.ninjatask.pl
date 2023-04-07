@@ -77,7 +77,6 @@ Route::middleware('auth:sanctum')->group(function () use($router) {
     
     // todo
     // dodawanie komentarzy do zadania
-    // załączniki do zadan i komentarzy
 });
 
 // REJESTRACJA

@@ -19,7 +19,9 @@ return new class extends Migration
             $table->text('description')->default(null)->nullable();
             $table->integer("total")->default(0);
             $table->integer("total_billable")->default(0);
+            $table->integer('created_user_id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

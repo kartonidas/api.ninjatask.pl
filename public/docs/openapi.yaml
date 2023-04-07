@@ -17,22 +17,22 @@ paths:
           in: query
           name: size
           description: 'Number of rows. Default: 50'
-          example: 15
+          example: 4
           required: false
           schema:
             type: integer
             description: 'Number of rows. Default: 50'
-            example: 15
+            example: 4
         -
           in: query
           name: page
           description: 'Number of page (pagination). Default: 1'
-          example: 14
+          example: 10
           required: false
           schema:
             type: integer
             description: 'Number of page (pagination). Default: 1'
-            example: 14
+            example: 10
         -
           in: header
           name: Content-Type
@@ -58,61 +58,10 @@ paths:
         200:
           description: ''
           content:
-            application/json:
+            text/plain:
               schema:
-                type: object
-                example:
-                  total_rows: 100
-                  total_pages: '4'
-                  current_page: 1
-                  has_more: true
-                  data:
-                    -
-                      id: 1
-                      name: 'Test project'
-                      location: Warsaw
-                      description: ''
-                      owner: john@doe.com
-                properties:
-                  total_rows:
-                    type: integer
-                    example: 100
-                  total_pages:
-                    type: string
-                    example: '4'
-                  current_page:
-                    type: integer
-                    example: 1
-                  has_more:
-                    type: boolean
-                    example: true
-                  data:
-                    type: array
-                    example:
-                      -
-                        id: 1
-                        name: 'Test project'
-                        location: Warsaw
-                        description: ''
-                        owner: john@doe.com
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                          example: 1
-                        name:
-                          type: string
-                          example: 'Test project'
-                        location:
-                          type: string
-                          example: Warsaw
-                        description:
-                          type: string
-                          example: ''
-                        owner:
-                          type: string
-                          example: john@doe.com
+                type: string
+                example: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "name": "Test project", "location": "Warsaw", "description": "", "owner": "john@doe.com", "created_at" => "2020-01-01 10:00:00"}]}'
       tags:
         - Projects
       security: []
@@ -160,15 +109,15 @@ paths:
                 location:
                   type: string
                   description: 'Project location.'
-                  example: non
+                  example: quisquam
                 description:
                   type: string
                   description: 'Project description.'
-                  example: 'Doloremque est earum nostrum maiores reprehenderit voluptatem laborum aliquid.'
+                  example: 'Quam facilis ab qui similique modi reprehenderit aliquid.'
                 owner:
                   type: string
                   description: 'Project owner.'
-                  example: nostrum
+                  example: repellat
               required:
                 - name
       security: []
@@ -203,31 +152,10 @@ paths:
         200:
           description: ''
           content:
-            application/json:
+            text/plain:
               schema:
-                type: object
-                example:
-                  id: 1
-                  name: 'Test project'
-                  location: Warsaw
-                  description: ''
-                  owner: john@doe.com
-                properties:
-                  id:
-                    type: integer
-                    example: 1
-                  name:
-                    type: string
-                    example: 'Test project'
-                  location:
-                    type: string
-                    example: Warsaw
-                  description:
-                    type: string
-                    example: ''
-                  owner:
-                    type: string
-                    example: john@doe.com
+                type: string
+                example: '{"id": 1, "name": "Test project", "location": "Warsaw", "description": "", "owner": "john@doe.com", "created_at" => "2020-01-01 10:00:00"}'
         404:
           description: ''
           content:
@@ -286,19 +214,19 @@ paths:
                 name:
                   type: string
                   description: 'Project name.'
-                  example: reiciendis
+                  example: magni
                 location:
                   type: string
                   description: 'Project location.'
-                  example: natus
+                  example: aut
                 description:
                   type: string
                   description: 'Project description.'
-                  example: 'Consequuntur vitae distinctio consequatur ut commodi libero.'
+                  example: 'Non quaerat in blanditiis.'
                 owner:
                   type: string
                   description: 'Project owner.'
-                  example: odit
+                  example: libero
       security: []
     delete:
       summary: 'Delete project'
@@ -351,7 +279,1116 @@ paths:
         in: path
         name: id
         description: 'Project identifier.'
+        example: 15
+        required: true
+        schema:
+          type: integer
+  '/api/task/{id}/comments':
+    get:
+      summary: 'Get task comments list'
+      operationId: getTaskCommentsList
+      description: 'Return task comments list.'
+      parameters:
+        -
+          in: query
+          name: size
+          description: 'Number of rows. Default: 50'
+          example: 8
+          required: false
+          schema:
+            type: integer
+            description: 'Number of rows. Default: 50'
+            example: 8
+        -
+          in: query
+          name: page
+          description: 'Number of page (pagination). Default: 1'
+          example: 11
+          required: false
+          schema:
+            type: integer
+            description: 'Number of page (pagination). Default: 1'
+            example: 11
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "comment": "Example comment", "user_id": 1, "created_at" => "2020-01-01 10:00:00"}]}'
+      tags:
+        - 'Task comments'
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'Task identifier.'
+        example: 17
+        required: true
+        schema:
+          type: integer
+  '/api/task/{id}/comment':
+    put:
+      summary: 'Create new comment'
+      operationId: createNewComment
+      description: 'Create new comment.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - 'Task comments'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: 'Task identifier.'
+                  example: 12
+                comment:
+                  type: string
+                  description: Comment.
+                  example: autem
+              required:
+                - id
+                - comment
+      security: []
+  '/api/task/{id}/comment/{cid}':
+    get:
+      summary: 'Get task comment details'
+      operationId: getTaskCommentDetails
+      description: 'Return task comment details.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"id": 1, "comment": "Example comment", "user_id": "1", "created_at" => "2020-01-01 10:00:00"}'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'Comment does not exist'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Comment does not exist'
+      tags:
+        - 'Task comments'
+      security: []
+    put:
+      summary: 'Update comment'
+      operationId: updateComment
+      description: 'Update comment.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - 'Task comments'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: 'Task identifier.'
+                  example: 20
+                comment:
+                  type: string
+                  description: comment.
+                  example: quo
+              required:
+                - id
+      security: []
+    delete:
+      summary: 'Delete comment'
+      operationId: deleteComment
+      description: 'Delete comment.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'Task does not exist'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Task does not exist'
+      tags:
+        - 'Task comments'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: 'Task identifier.'
+                  example: 1
+              required:
+                - id
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'Task identifier.'
+        example: 6
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
+        name: cid
+        description: 'Comment identifier.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  '/api/tasks/{id}':
+    get:
+      summary: 'Get tasks list'
+      operationId: getTasksList
+      description: 'Return tasks list assigned to project.'
+      parameters:
+        -
+          in: query
+          name: size
+          description: 'Number of rows. Default: 50'
+          example: 9
+          required: false
+          schema:
+            type: integer
+            description: 'Number of rows. Default: 50'
+            example: 9
+        -
+          in: query
+          name: page
+          description: 'Number of page (pagination). Default: 1'
+          example: 4
+          required: false
+          schema:
+            type: integer
+            description: 'Number of page (pagination). Default: 1'
+            example: 4
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "name": "Example task", "description": "Example description", "created_at" => "2020-01-01 10:00:00"}]}'
+      tags:
+        - Tasks
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'Project identifier.'
+        example: 9
+        required: true
+        schema:
+          type: integer
+  /api/task:
+    put:
+      summary: 'Create new task'
+      operationId: createNewTask
+      description: 'Create new task.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Tasks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project_id:
+                  type: integer
+                  description: 'Project identifier.'
+                  example: 15
+                name:
+                  type: string
+                  description: 'Task name.'
+                  example: autem
+                description:
+                  type: string
+                  description: 'Task description.'
+                  example: 'Quas aut quo aut.'
+              required:
+                - project_id
+                - name
+      security: []
+  '/api/task/{id}':
+    get:
+      summary: 'Get task details'
+      operationId: getTaskDetails
+      description: 'Return task details.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{"id": 1, "name": "Example task", "description": "Example description", "created_at" => "2020-01-01 10:00:00"}'
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'Task does not exist'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Task does not exist'
+      tags:
+        - Tasks
+      security: []
+    put:
+      summary: 'Update task'
+      operationId: updateTask
+      description: 'Update task.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Tasks
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'Task name.'
+                  example: earum
+                description:
+                  type: string
+                  description: 'Task description.'
+                  example: 'Ullam soluta quidem voluptas fugit vitae ipsum.'
+      security: []
+    delete:
+      summary: 'Delete task'
+      operationId: deleteTask
+      description: 'Delete task.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'Task does not exist'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Task does not exist'
+      tags:
+        - Tasks
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'Task identifier.'
+        example: 15
+        required: true
+        schema:
+          type: integer
+  '/api/task/{id}/time/start':
+    post:
+      summary: 'Start task timer'
+      operationId: startTaskTimer
+      description: 'Start task timer (log time).'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'Task does not exist'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Task does not exist'
+      tags:
+        - 'Task time'
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'Task identifier.'
+        example: 7
+        required: true
+        schema:
+          type: integer
+  '/api/task/{id}/time/stop':
+    post:
+      summary: 'Stop task timer'
+      operationId: stopTaskTimer
+      description: 'Stop task timer (log time).'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'Task does not exist'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Task does not exist'
+      tags:
+        - 'Task time'
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'Task identifier.'
+        example: 8
+        required: true
+        schema:
+          type: integer
+  '/api/task/{id}/time/pause':
+    post:
+      summary: 'Pause task timer'
+      operationId: pauseTaskTimer
+      description: 'Pause task timer (log time).'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'Task does not exist'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Task does not exist'
+      tags:
+        - 'Task time'
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'Task identifier.'
+        example: 6
+        required: true
+        schema:
+          type: integer
+  '/api/task/{id}/time':
+    put:
+      summary: 'Log task spend time'
+      operationId: logTaskSpendTime
+      description: 'Log task spend time.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'Task does not exist'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Task does not exist'
+      tags:
+        - 'Task time'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                started:
+                  type: integer
+                  description: 'Start time.'
+                  example: 9
+                total:
+                  type: integer
+                  description: 'Total time in seconds.'
+                  example: 17
+                comment:
+                  type: string
+                  description: Comment.
+                  example: similique
+                billable:
+                  type: boolean
+                  description: Billable.
+                  example: true
+              required:
+                - started
+                - total
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'Task identifier.'
+        example: 10
+        required: true
+        schema:
+          type: integer
+  '/api/task/{id}/time/{tid}':
+    put:
+      summary: 'Update log task spend time'
+      operationId: updateLogTaskSpendTime
+      description: 'Update log task spend time.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'Task does not exist'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Task does not exist'
+      tags:
+        - 'Task time'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                started:
+                  type: integer
+                  description: 'Start time.'
+                  example: 20
+                total:
+                  type: integer
+                  description: 'Total time in seconds.'
+                  example: 13
+                comment:
+                  type: string
+                  description: Comment.
+                  example: id
+                billable:
+                  type: boolean
+                  description: Billable.
+                  example: false
+      security: []
+    delete:
+      summary: 'Delete task log time'
+      operationId: deleteTaskLogTime
+      description: 'Delete task log time.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'Task does not exist'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Task does not exist'
+      tags:
+        - 'Task time'
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'Task identifier.'
+        example: 10
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
+        name: tid
+        description: 'Task time identifier.'
         example: 20
+        required: true
+        schema:
+          type: integer
+  '/api/task/{id}/times':
+    get:
+      summary: 'Get task spend time rows'
+      operationId: getTaskSpendTimeRows
+      description: 'Get task spend time rows.'
+      parameters:
+        -
+          in: query
+          name: size
+          description: 'Number of rows. Default: 50'
+          example: 8
+          required: false
+          schema:
+            type: integer
+            description: 'Number of rows. Default: 50'
+            example: 8
+        -
+          in: query
+          name: page
+          description: 'Number of page (pagination). Default: 1'
+          example: 5
+          required: false
+          schema:
+            type: integer
+            description: 'Number of page (pagination). Default: 1'
+            example: 5
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  total_rows: 100
+                  total_pages: '4'
+                  current_page: 1
+                  has_more: true
+                  data:
+                    -
+                      id: 1
+                      status: active
+                      task_id: '1'
+                      user_id: 1
+                      started: '1680843163'
+                      finished: 1680843163
+                      timer_started: 0
+                      total: 600
+                      comment: 'Example comment'
+                      billable: 0
+                properties:
+                  total_rows:
+                    type: integer
+                    example: 100
+                  total_pages:
+                    type: string
+                    example: '4'
+                  current_page:
+                    type: integer
+                    example: 1
+                  has_more:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        status: active
+                        task_id: '1'
+                        user_id: 1
+                        started: '1680843163'
+                        finished: 1680843163
+                        timer_started: 0
+                        total: 600
+                        comment: 'Example comment'
+                        billable: 0
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        status:
+                          type: string
+                          example: active
+                        task_id:
+                          type: string
+                          example: '1'
+                        user_id:
+                          type: integer
+                          example: 1
+                        started:
+                          type: string
+                          example: '1680843163'
+                        finished:
+                          type: integer
+                          example: 1680843163
+                        timer_started:
+                          type: integer
+                          example: 0
+                        total:
+                          type: integer
+                          example: 600
+                        comment:
+                          type: string
+                          example: 'Example comment'
+                        billable:
+                          type: integer
+                          example: 0
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'Task does not exist'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Task does not exist'
+      tags:
+        - 'Task time'
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'Task identifier.'
+        example: 3
         required: true
         schema:
           type: integer
@@ -365,22 +1402,22 @@ paths:
           in: query
           name: size
           description: 'Number of rows. Default: 50'
-          example: 16
+          example: 8
           required: false
           schema:
             type: integer
             description: 'Number of rows. Default: 50'
-            example: 16
+            example: 8
         -
           in: query
           name: page
           description: 'Number of page (pagination). Default: 1'
-          example: 10
+          example: 14
           required: false
           schema:
             type: integer
             description: 'Number of page (pagination). Default: 1'
-            example: 10
+            example: 14
         -
           in: header
           name: Content-Type
@@ -540,27 +1577,27 @@ paths:
                 firstname:
                   type: string
                   description: 'User first name.'
-                  example: laboriosam
+                  example: ut
                 lastname:
                   type: string
                   description: 'User last name.'
-                  example: sint
+                  example: magni
                 email:
                   type: string
                   description: 'User e-mail address.'
-                  example: bulah78@example.net
+                  example: shields.dina@example.net
                 password:
                   type: string
                   description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
-                  example: 2S()sKN
+                  example: 'T{qe9:%1jz$>CAGk'
                 phone:
                   type: string
                   description: 'User phone number.'
-                  example: voluptas
+                  example: quia
                 permission_id:
                   type: integer
                   description: 'Permission group identifier (if not set default permission will be used).'
-                  example: 7
+                  example: 13
                 superuser:
                   type: boolean
                   description: 'If set true user have full access regardless of permissions.'
@@ -627,11 +1664,11 @@ paths:
                 email:
                   type: string
                   description: 'User e-mail address.'
-                  example: danny.ortiz@example.net
+                  example: schmeler.chance@example.com
                 permission_id:
                   type: integer
                   description: 'Permission group identifier (if not set default permission will be used).'
-                  example: 16
+                  example: 6
               required:
                 - email
       security: []
@@ -765,27 +1802,27 @@ paths:
                 firstname:
                   type: string
                   description: 'User first name.'
-                  example: incidunt
+                  example: modi
                 lastname:
                   type: string
                   description: 'User last name.'
-                  example: ut
+                  example: sed
                 email:
                   type: string
                   description: 'User e-mail address.'
-                  example: ottis33@example.org
+                  example: aric.kling@example.com
                 password:
                   type: string
                   description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
-                  example: 'V&Bop}E\Zyn?'
+                  example: ',u_YtY/;P=nRD^3%'
                 phone:
                   type: string
                   description: 'User phone number.'
-                  example: minima
+                  example: officia
                 permission_id:
                   type: integer
                   description: 'Permission group identifier.'
-                  example: 11
+                  example: 3
                 superuser:
                   type: boolean
                   description: 'If set true user have full access regardless of permissions.'
@@ -842,10 +1879,72 @@ paths:
         in: path
         name: id
         description: 'User identifier.'
-        example: 12
+        example: 11
         required: true
         schema:
           type: integer
+  /api/get-firm-id:
+    get:
+      summary: 'Get login user firm identifier'
+      operationId: getLoginUserFirmIdentifier
+      description: 'Get login user firm identifier.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - 'User management'
+      security: []
+  /api/get-id:
+    get:
+      summary: 'Get login user identifier'
+      operationId: getLoginUserIdentifier
+      description: 'Get login user identifier.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - 'User management'
+      security: []
   '/api/invite/{token}':
     get:
       summary: 'Validate invite token'
@@ -941,19 +2040,19 @@ paths:
                 firstname:
                   type: string
                   description: 'User first name.'
-                  example: commodi
+                  example: odit
                 lastname:
                   type: string
                   description: 'User last name.'
-                  example: voluptatem
+                  example: veniam
                 password:
                   type: string
                   description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
-                  example: '!~cTB3|>r8B\fZ<,+'
+                  example: '0Q"{4-F7UrTzi%M1Sb^A'
                 phone:
                   type: string
                   description: 'User phone number.'
-                  example: perspiciatis
+                  example: ut
               required:
                 - firstname
                 - lastname
@@ -964,7 +2063,7 @@ paths:
         in: path
         name: token
         description: 'Invite token from invitation message.'
-        example: suscipit
+        example: dolorem
         required: true
         schema:
           type: string
@@ -978,22 +2077,22 @@ paths:
           in: query
           name: size
           description: 'Number of rows. Default: 50'
-          example: 5
+          example: 4
           required: false
           schema:
             type: integer
             description: 'Number of rows. Default: 50'
-            example: 5
+            example: 4
         -
           in: query
           name: page
           description: 'Number of page (pagination). Default: 1'
-          example: 6
+          example: 15
           required: false
           schema:
             type: integer
             description: 'Number of page (pagination). Default: 1'
-            example: 6
+            example: 15
         -
           in: header
           name: Content-Type
@@ -1153,15 +2252,15 @@ paths:
                 name:
                   type: string
                   description: 'Group permission name.'
-                  example: velit
+                  example: in
                 permissions:
                   type: string
                   description: Permission.
-                  example: nisi
+                  example: voluptates
                 is_default:
                   type: boolean
                   description: 'Set permission default.'
-                  example: true
+                  example: false
               required:
                 - name
                 - permissions
@@ -1286,11 +2385,11 @@ paths:
                 name:
                   type: string
                   description: 'Group permission name.'
-                  example: aspernatur
+                  example: veritatis
                 permissions:
                   type: string
                   description: Permission.
-                  example: distinctio
+                  example: minima
                 is_default:
                   type: boolean
                   description: 'Set permission default.'
@@ -1347,7 +2446,7 @@ paths:
         in: path
         name: id
         description: 'Permission group identifier.'
-        example: 10
+        example: 18
         required: true
         schema:
           type: integer
@@ -1407,11 +2506,11 @@ paths:
                 object:
                   type: string
                   description: 'Object name.'
-                  example: fugit
+                  example: dignissimos
                 action:
                   type: string
                   description: 'Action name (if not set, allow all actions).'
-                  example: nemo
+                  example: adipisci
               required:
                 - object
       security: []
@@ -1420,7 +2519,7 @@ paths:
         in: path
         name: id
         description: 'Permission group identifier.'
-        example: 7
+        example: 20
         required: true
         schema:
           type: integer
@@ -1480,11 +2579,11 @@ paths:
                 object:
                   type: string
                   description: 'Object name.'
-                  example: rerum
+                  example: odit
                 action:
                   type: string
                   description: 'Action name (if not set, allow all actions).'
-                  example: quo
+                  example: voluptatem
               required:
                 - object
       security: []
@@ -1493,7 +2592,7 @@ paths:
         in: path
         name: id
         description: 'Permission group identifier.'
-        example: 8
+        example: 14
         required: true
         schema:
           type: integer
@@ -1712,23 +2811,23 @@ paths:
                 firstname:
                   type: string
                   description: 'User first name.'
-                  example: asperiores
+                  example: fugiat
                 lastname:
                   type: string
                   description: 'User last name.'
-                  example: totam
+                  example: beatae
                 password:
                   type: string
                   description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
-                  example: 'Z$=SfB+9_JOVFM<z]n='
+                  example: 'MMS,BPU'
                 firm_identifier:
                   type: string
                   description: 'User firm name.'
-                  example: sunt
+                  example: accusamus
                 phone:
                   type: string
                   description: 'User phone number.'
-                  example: qui
+                  example: ut
               required:
                 - firstname
                 - lastname
@@ -1741,7 +2840,7 @@ paths:
         in: path
         name: token
         description: 'Register token.'
-        example: eos
+        example: error
         required: true
         schema:
           type: string
@@ -1806,15 +2905,15 @@ paths:
                 email:
                   type: string
                   description: 'Account e-mail address'
-                  example: rowe.zita@example.net
+                  example: ramiro25@example.net
                 password:
                   type: string
                   description: 'Account password'
-                  example: 'U#c]kN3;\L'
+                  example: '@jF3*)4Cxn,0xB;;V['
                 device_name:
                   type: string
                   description: 'Device name'
-                  example: qui
+                  example: iste
               required:
                 - email
                 - password
@@ -1869,11 +2968,11 @@ paths:
                 email:
                   type: string
                   description: 'Account e-mail address'
-                  example: nkuphal@example.org
+                  example: ron13@example.com
                 firm_id:
                   type: integer
                   description: 'Firm identifier (if e-mail address exist in more than once firms)'
-                  example: 17
+                  example: 3
               required:
                 - email
       security: []
@@ -1910,11 +3009,11 @@ paths:
                 token:
                   type: string
                   description: 'forgot password token'
-                  example: quaerat
+                  example: possimus
                 email:
                   type: string
                   description: 'Account e-mail address'
-                  example: emely.schuppe@example.org
+                  example: mariana.murray@example.org
               required:
                 - token
                 - email
@@ -1951,15 +3050,15 @@ paths:
                 token:
                   type: string
                   description: 'forgot password token'
-                  example: molestiae
+                  example: fuga
                 email:
                   type: string
                   description: 'Account e-mail address'
-                  example: irodriguez@example.org
+                  example: osinski.leatha@example.org
                 password:
                   type: string
                   description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
-                  example: 8QFdEgm
+                  example: ']dKn2~JUm,P"c=;k"GRv'
               required:
                 - token
                 - email
@@ -2014,13 +3113,22 @@ paths:
                 email:
                   type: string
                   description: 'Account e-mail address'
-                  example: sincere.klocko@example.com
+                  example: jade.torp@example.net
               required:
                 - email
       security: []
 tags:
   -
     name: Projects
+    description: ''
+  -
+    name: 'Task comments'
+    description: ''
+  -
+    name: Tasks
+    description: ''
+  -
+    name: 'Task time'
     description: ''
   -
     name: 'User management'

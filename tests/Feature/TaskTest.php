@@ -253,7 +253,7 @@ class TaskTest extends TestCase
         $response = $this->withToken($token)->getJson('/api/task/' . -9);
         $response->assertStatus(404);
         
-        // Try delete otherr users project
+        // Try delete other users task
         $uuid = $this->getAccountUuui($token);
         $otherUserTask = Task::withoutGlobalScopes()->where('uuid', '!=', $uuid)->inRandomOrder()->first();
         $response = $this->withToken($token)->deleteJson('/api/task/' . $otherUserTask->id);
@@ -312,7 +312,7 @@ class TaskTest extends TestCase
         $response = $this->withToken($token)->putJson('/api/task/' . -9, $data);
         $response->assertStatus(404);
         
-        // Try delete otherr users project
+        // Try update other users task
         $uuid = $this->getAccountUuui($token);
         $otherUserTask = Task::withoutGlobalScopes()->where('uuid', '!=', $uuid)->inRandomOrder()->first();
         $response = $this->withToken($token)->deleteJson('/api/task/' . $otherUserTask->id);

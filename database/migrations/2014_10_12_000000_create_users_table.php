@@ -28,6 +28,7 @@ return new class extends Migration
             $table->integer('user_permission_id')->nullable()->default(null);
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
             
             $table->index(['email']);
             $table->index(['activated']);

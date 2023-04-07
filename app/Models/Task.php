@@ -4,17 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\TaskTime;
+use App\Traits\DbTimestamp;
 
 class Task extends Model
 {
+    use DbTimestamp, SoftDeletes;
     use \App\Traits\UuidTrait {
         boot as traitBoot;
     }
     
     public function scopeApiFields(Builder $query): void
     {
-        $query->select("id", "name", "description");
+        $query->select("id", "name", "description", "created_at");
     }
     
     public function calculateTotalTime()

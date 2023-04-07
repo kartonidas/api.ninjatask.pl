@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Laravel",
-        "_postman_id": "11411a7e-e9d7-485c-99d9-d68605d47917",
+        "_postman_id": "70198790-e501-407d-b81c-b96d50648ba8",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -28,18 +28,18 @@
                             "query": [
                                 {
                                     "key": "size",
-                                    "value": "15",
+                                    "value": "4",
                                     "description": "Number of rows. Default: 50",
                                     "disabled": false
                                 },
                                 {
                                     "key": "page",
-                                    "value": "14",
+                                    "value": "10",
                                     "description": "Number of page (pagination). Default: 1",
                                     "disabled": false
                                 }
                             ],
-                            "raw": "{{baseUrl}}\/api\/projects?size=15&page=14"
+                            "raw": "{{baseUrl}}\/api\/projects?size=4&page=10"
                         },
                         "method": "GET",
                         "header": [
@@ -66,7 +66,7 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\"total_rows\": 100, \"total_pages\": \"4\", \"current_page\": 1, \"has_more\": true, \"data\": [{\"id\": 1, \"name\": \"Test project\", \"location\": \"Warsaw\", \"description\": \"\", \"owner\": \"john@doe.com\"}]}",
+                            "body": "{\"total_rows\": 100, \"total_pages\": \"4\", \"current_page\": 1, \"has_more\": true, \"data\": [{\"id\": 1, \"name\": \"Test project\", \"location\": \"Warsaw\", \"description\": \"\", \"owner\": \"john@doe.com\", \"created_at\" => \"2020-01-01 10:00:00\"}]}",
                             "name": ""
                         }
                     ]
@@ -97,7 +97,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"illo\",\"location\":\"non\",\"description\":\"Doloremque est earum nostrum maiores reprehenderit voluptatem laborum aliquid.\",\"owner\":\"nostrum\"}"
+                            "raw": "{\"name\":\"illo\",\"location\":\"quisquam\",\"description\":\"Quam facilis ab qui similique modi reprehenderit aliquid.\",\"owner\":\"repellat\"}"
                         },
                         "description": "Create new project.",
                         "auth": {
@@ -118,7 +118,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "20",
+                                    "value": "15",
                                     "description": "Project identifier."
                                 }
                             ]
@@ -148,7 +148,7 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\"id\": 1, \"name\": \"Test project\", \"location\": \"Warsaw\", \"description\": \"\", \"owner\": \"john@doe.com\"}",
+                            "body": "{\"id\": 1, \"name\": \"Test project\", \"location\": \"Warsaw\", \"description\": \"\", \"owner\": \"john@doe.com\", \"created_at\" => \"2020-01-01 10:00:00\"}",
                             "name": ""
                         },
                         {
@@ -171,7 +171,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "11",
+                                    "value": "9",
                                     "description": "Project identifier."
                                 }
                             ]
@@ -193,7 +193,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"reiciendis\",\"location\":\"natus\",\"description\":\"Consequuntur vitae distinctio consequatur ut commodi libero.\",\"owner\":\"odit\"}"
+                            "raw": "{\"name\":\"magni\",\"location\":\"aut\",\"description\":\"Non quaerat in blanditiis.\",\"owner\":\"libero\"}"
                         },
                         "description": "Update project.",
                         "auth": {
@@ -214,7 +214,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "4",
+                                    "value": "17",
                                     "description": "Project identifier."
                                 }
                             ]
@@ -252,6 +252,875 @@
             ]
         },
         {
+            "name": "Task comments",
+            "description": "",
+            "item": [
+                {
+                    "name": "Get task comments list",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/task\/:id\/comments",
+                            "query": [
+                                {
+                                    "key": "size",
+                                    "value": "8",
+                                    "description": "Number of rows. Default: 50",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "11",
+                                    "description": "Number of page (pagination). Default: 1",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/task\/:id\/comments?size=8&page=11",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "17",
+                                    "description": "Task identifier."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Return task comments list.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"total_rows\": 100, \"total_pages\": \"4\", \"current_page\": 1, \"has_more\": true, \"data\": [{\"id\": 1, \"comment\": \"Example comment\", \"user_id\": 1, \"created_at\" => \"2020-01-01 10:00:00\"}]}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Create new comment",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/task\/:id\/comment",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/task\/:id\/comment"
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"id\":12,\"comment\":\"autem\"}"
+                        },
+                        "description": "Create new comment.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get task comment details",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/task\/:id\/comment\/:cid",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/task\/:id\/comment\/:cid",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "6",
+                                    "description": "Task identifier."
+                                },
+                                {
+                                    "id": "cid",
+                                    "key": "cid",
+                                    "value": "1",
+                                    "description": "Comment identifier."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Return task comment details.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"id\": 1, \"comment\": \"Example comment\", \"user_id\": \"1\", \"created_at\" => \"2020-01-01 10:00:00\"}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"error\":true,\"message\":\"Comment does not exist\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Update comment",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/task\/:id\/comment\/:cid",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/task\/:id\/comment\/:cid",
+                            "variable": [
+                                {
+                                    "id": "cid",
+                                    "key": "cid",
+                                    "value": "7",
+                                    "description": "Comment identifier."
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"id\":20,\"comment\":\"quo\"}"
+                        },
+                        "description": "Update comment.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete comment",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/task\/:id\/comment\/:cid",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/task\/:id\/comment\/:cid",
+                            "variable": [
+                                {
+                                    "id": "cid",
+                                    "key": "cid",
+                                    "value": "18",
+                                    "description": "Comment identifier."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"id\":1}"
+                        },
+                        "description": "Delete comment.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"error\":true,\"message\":\"Task does not exist\"}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Tasks",
+            "description": "",
+            "item": [
+                {
+                    "name": "Get tasks list",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/tasks\/:id",
+                            "query": [
+                                {
+                                    "key": "size",
+                                    "value": "9",
+                                    "description": "Number of rows. Default: 50",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "4",
+                                    "description": "Number of page (pagination). Default: 1",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/tasks\/:id?size=9&page=4",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "9",
+                                    "description": "Project identifier."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Return tasks list assigned to project.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"total_rows\": 100, \"total_pages\": \"4\", \"current_page\": 1, \"has_more\": true, \"data\": [{\"id\": 1, \"name\": \"Example task\", \"description\": \"Example description\", \"created_at\" => \"2020-01-01 10:00:00\"}]}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Create new task",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/task",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/task"
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"project_id\":15,\"name\":\"autem\",\"description\":\"Quas aut quo aut.\"}"
+                        },
+                        "description": "Create new task.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get task details",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/task\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/task\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "15",
+                                    "description": "Task identifier."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Return task details.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"id\": 1, \"name\": \"Example task\", \"description\": \"Example description\", \"created_at\" => \"2020-01-01 10:00:00\"}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"error\":true,\"message\":\"Task does not exist\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Update task",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/task\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/task\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "14",
+                                    "description": "Task identifier."
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"earum\",\"description\":\"Ullam soluta quidem voluptas fugit vitae ipsum.\"}"
+                        },
+                        "description": "Update task.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete task",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/task\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/task\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "16",
+                                    "description": "Task identifier."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Delete task.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"error\":true,\"message\":\"Task does not exist\"}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Task time",
+            "description": "",
+            "item": [
+                {
+                    "name": "Start task timer",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/task\/:id\/time\/start",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/task\/:id\/time\/start",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "7",
+                                    "description": "Task identifier."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Start task timer (log time).",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"error\":true,\"message\":\"Task does not exist\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Stop task timer",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/task\/:id\/time\/stop",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/task\/:id\/time\/stop",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "8",
+                                    "description": "Task identifier."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Stop task timer (log time).",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"error\":true,\"message\":\"Task does not exist\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Pause task timer",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/task\/:id\/time\/pause",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/task\/:id\/time\/pause",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "6",
+                                    "description": "Task identifier."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Pause task timer (log time).",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"error\":true,\"message\":\"Task does not exist\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Log task spend time",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/task\/:id\/time",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/task\/:id\/time",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "10",
+                                    "description": "Task identifier."
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"started\":9,\"total\":17,\"comment\":\"similique\",\"billable\":true}"
+                        },
+                        "description": "Log task spend time.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"error\":true,\"message\":\"Task does not exist\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Update log task spend time",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/task\/:id\/time\/:tid",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/task\/:id\/time\/:tid",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "10",
+                                    "description": "Task identifier."
+                                },
+                                {
+                                    "id": "tid",
+                                    "key": "tid",
+                                    "value": "20",
+                                    "description": "Task time identifier."
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"started\":20,\"total\":13,\"comment\":\"id\",\"billable\":false}"
+                        },
+                        "description": "Update log task spend time.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"error\":true,\"message\":\"Task does not exist\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete task log time",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/task\/:id\/time\/:tid",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/task\/:id\/time\/:tid",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "17",
+                                    "description": "Task identifier."
+                                },
+                                {
+                                    "id": "tid",
+                                    "key": "tid",
+                                    "value": "14",
+                                    "description": "Task time identifier."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Delete task log time.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"error\":true,\"message\":\"Task does not exist\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get task spend time rows",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/task\/:id\/times",
+                            "query": [
+                                {
+                                    "key": "size",
+                                    "value": "8",
+                                    "description": "Number of rows. Default: 50",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "5",
+                                    "description": "Number of page (pagination). Default: 1",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/task\/:id\/times?size=8&page=5",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "3",
+                                    "description": "Task identifier."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Get task spend time rows.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"total_rows\": 100, \"total_pages\": \"4\", \"current_page\": 1, \"has_more\": true, \"data\": [{\"id\": 1, \"status\": \"active\", \"task_id\": \"1\", \"user_id\": 1, \"started\": \"1680843163\", \"finished\": 1680843163, \"timer_started\": 0, \"total\": 600, \"comment\": \"Example comment\", \"billable\": 0}]}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"error\":true,\"message\":\"Task does not exist\"}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "name": "User management",
             "description": "",
             "item": [
@@ -264,18 +1133,18 @@
                             "query": [
                                 {
                                     "key": "size",
-                                    "value": "16",
+                                    "value": "8",
                                     "description": "Number of rows. Default: 50",
                                     "disabled": false
                                 },
                                 {
                                     "key": "page",
-                                    "value": "10",
+                                    "value": "14",
                                     "description": "Number of page (pagination). Default: 1",
                                     "disabled": false
                                 }
                             ],
-                            "raw": "{{baseUrl}}\/api\/users?size=16&page=10"
+                            "raw": "{{baseUrl}}\/api\/users?size=8&page=14"
                         },
                         "method": "GET",
                         "header": [
@@ -333,7 +1202,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"firstname\":\"laboriosam\",\"lastname\":\"sint\",\"email\":\"bulah78@example.net\",\"password\":\"2S()sKN\",\"phone\":\"voluptas\",\"permission_id\":7,\"superuser\":true}"
+                            "raw": "{\"firstname\":\"ut\",\"lastname\":\"magni\",\"email\":\"shields.dina@example.net\",\"password\":\"T{qe9:%1jz$>CAGk\",\"phone\":\"quia\",\"permission_id\":13,\"superuser\":true}"
                         },
                         "description": "Create user account. After create account is ready to use.",
                         "auth": {
@@ -375,7 +1244,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"danny.ortiz@example.net\",\"permission_id\":16}"
+                            "raw": "{\"email\":\"schmeler.chance@example.com\",\"permission_id\":6}"
                         },
                         "description": "Send invitation to the email address provided.",
                         "auth": {
@@ -403,7 +1272,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "12",
+                                    "value": "11",
                                     "description": "User identifier."
                                 }
                             ]
@@ -456,7 +1325,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "9",
+                                    "value": "13",
                                     "description": "User identifier."
                                 }
                             ]
@@ -478,7 +1347,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"firstname\":\"incidunt\",\"lastname\":\"ut\",\"email\":\"ottis33@example.org\",\"password\":\"V&Bop}E\\\\Zyn?\",\"phone\":\"minima\",\"permission_id\":11,\"superuser\":false}"
+                            "raw": "{\"firstname\":\"modi\",\"lastname\":\"sed\",\"email\":\"aric.kling@example.com\",\"password\":\",u_YtY\\\/;P=nRD^3%\",\"phone\":\"officia\",\"permission_id\":3,\"superuser\":false}"
                         },
                         "description": "Update user account data.",
                         "auth": {
@@ -499,7 +1368,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "20",
+                                    "value": "10",
                                     "description": "User identifier."
                                 }
                             ]
@@ -535,6 +1404,70 @@
                     ]
                 },
                 {
+                    "name": "Get login user firm identifier",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/get-firm-id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/get-firm-id"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Get login user firm identifier.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get login user identifier",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/get-id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/get-id"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Get login user identifier.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
                     "name": "Validate invite token",
                     "request": {
                         "url": {
@@ -546,7 +1479,7 @@
                                 {
                                     "id": "token",
                                     "key": "token",
-                                    "value": "suscipit",
+                                    "value": "dolorem",
                                     "description": "Invite token from invitation message."
                                 }
                             ]
@@ -595,7 +1528,7 @@
                                 {
                                     "id": "token",
                                     "key": "token",
-                                    "value": "autem",
+                                    "value": "magnam",
                                     "description": "Invite token."
                                 }
                             ]
@@ -613,7 +1546,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"firstname\":\"commodi\",\"lastname\":\"voluptatem\",\"password\":\"!~cTB3|>r8B\\\\fZ<,+\",\"phone\":\"perspiciatis\"}"
+                            "raw": "{\"firstname\":\"odit\",\"lastname\":\"veniam\",\"password\":\"0Q\\\"{4-F7UrTzi%M1Sb^A\",\"phone\":\"ut\"}"
                         },
                         "description": "Confirm invitation and create new user account.",
                         "auth": {
@@ -644,18 +1577,18 @@
                             "query": [
                                 {
                                     "key": "size",
-                                    "value": "5",
+                                    "value": "4",
                                     "description": "Number of rows. Default: 50",
                                     "disabled": false
                                 },
                                 {
                                     "key": "page",
-                                    "value": "6",
+                                    "value": "15",
                                     "description": "Number of page (pagination). Default: 1",
                                     "disabled": false
                                 }
                             ],
-                            "raw": "{{baseUrl}}\/api\/permissions?size=5&page=6"
+                            "raw": "{{baseUrl}}\/api\/permissions?size=4&page=15"
                         },
                         "method": "GET",
                         "header": [
@@ -713,7 +1646,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"velit\",\"permissions\":\"nisi\",\"is_default\":true}"
+                            "raw": "{\"name\":\"in\",\"permissions\":\"voluptates\",\"is_default\":false}"
                         },
                         "description": "Create new persmission group. Permissions should look like this:\nprojects:list,create,update,delete;users:list",
                         "auth": {
@@ -741,7 +1674,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "10",
+                                    "value": "18",
                                     "description": "Permission group identifier."
                                 }
                             ]
@@ -794,7 +1727,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "5",
+                                    "value": "19",
                                     "description": "Permission group identifier."
                                 }
                             ]
@@ -816,7 +1749,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"aspernatur\",\"permissions\":\"distinctio\",\"is_default\":true}"
+                            "raw": "{\"name\":\"veritatis\",\"permissions\":\"minima\",\"is_default\":true}"
                         },
                         "description": "Update persmission group.",
                         "auth": {
@@ -837,7 +1770,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "12",
                                     "description": "Permission group identifier."
                                 }
                             ]
@@ -884,7 +1817,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "7",
+                                    "value": "20",
                                     "description": "Permission group identifier."
                                 }
                             ]
@@ -906,7 +1839,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"object\":\"fugit\",\"action\":\"nemo\"}"
+                            "raw": "{\"object\":\"dignissimos\",\"action\":\"adipisci\"}"
                         },
                         "description": "Add permission to persmission group.",
                         "auth": {
@@ -934,7 +1867,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "8",
+                                    "value": "14",
                                     "description": "Permission group identifier."
                                 }
                             ]
@@ -956,7 +1889,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"object\":\"rerum\",\"action\":\"quo\"}"
+                            "raw": "{\"object\":\"odit\",\"action\":\"voluptatem\"}"
                         },
                         "description": "Delete permission from persmission group.",
                         "auth": {
@@ -1062,7 +1995,7 @@
                                 {
                                     "id": "token",
                                     "key": "token",
-                                    "value": "eos",
+                                    "value": "error",
                                     "description": "Register token."
                                 }
                             ]
@@ -1111,7 +2044,7 @@
                                 {
                                     "id": "token",
                                     "key": "token",
-                                    "value": "vel",
+                                    "value": "impedit",
                                     "description": "Register token."
                                 }
                             ]
@@ -1129,7 +2062,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"firstname\":\"asperiores\",\"lastname\":\"totam\",\"password\":\"Z$=SfB+9_JOVFM<z]n=\",\"firm_identifier\":\"sunt\",\"phone\":\"qui\"}"
+                            "raw": "{\"firstname\":\"fugiat\",\"lastname\":\"beatae\",\"password\":\"MMS,BPU\",\"firm_identifier\":\"accusamus\",\"phone\":\"ut\"}"
                         },
                         "description": "Confirm register and finish registration.",
                         "auth": {
@@ -1167,7 +2100,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"rowe.zita@example.net\",\"password\":\"U#c]kN3;\\\\L\",\"device_name\":\"qui\"}"
+                            "raw": "{\"email\":\"ramiro25@example.net\",\"password\":\"@jF3*)4Cxn,0xB;;V[\",\"device_name\":\"iste\"}"
                         },
                         "description": "Return auth bearer Token.",
                         "auth": {
@@ -1205,7 +2138,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"nkuphal@example.org\",\"firm_id\":17}"
+                            "raw": "{\"email\":\"ron13@example.com\",\"firm_id\":3}"
                         },
                         "description": "Send password reset link",
                         "auth": {
@@ -1243,7 +2176,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"token\":\"quaerat\",\"email\":\"emely.schuppe@example.org\"}"
+                            "raw": "{\"token\":\"possimus\",\"email\":\"mariana.murray@example.org\"}"
                         },
                         "description": "Validate token reset password",
                         "auth": {
@@ -1274,7 +2207,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"token\":\"molestiae\",\"email\":\"irodriguez@example.org\",\"password\":\"8QFdEgm\"}"
+                            "raw": "{\"token\":\"fuga\",\"email\":\"osinski.leatha@example.org\",\"password\":\"]dKn2~JUm,P\\\"c=;k\\\"GRv\"}"
                         },
                         "description": "Send password reset link",
                         "auth": {
@@ -1305,7 +2238,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"sincere.klocko@example.com\"}"
+                            "raw": "{\"email\":\"jade.torp@example.net\"}"
                         },
                         "description": "Get user email assigned firm identifiers\nBecause e-mail addresses may be repeated within other companies, if the e-mail address exists more than once,\nyou must enter the company ID when logging in \/ remembering the password.",
                         "auth": {

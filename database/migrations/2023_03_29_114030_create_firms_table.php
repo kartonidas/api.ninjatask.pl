@@ -25,6 +25,7 @@ return new class extends Migration
             $table->integer('country_id')->nullable();
             $table->string('phone', 50)->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
