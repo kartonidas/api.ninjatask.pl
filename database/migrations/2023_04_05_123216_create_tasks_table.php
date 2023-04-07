@@ -22,6 +22,9 @@ return new class extends Migration
             $table->integer('created_user_id');
             $table->timestamps();
             $table->softDeletes();
+            
+            $table->index(['uuid']);
+            $table->index(['project_id']);
         });
     }
 

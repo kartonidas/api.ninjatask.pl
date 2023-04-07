@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('task_comments', function (Blueprint $table) {
+        Schema::create('task_assigned_users', function (Blueprint $table) {
             $table->id();
-            $table->integer("task_id");
-            $table->integer("user_id");
-            $table->text("comment")->nullable();
+            $table->integer('user_id');
+            $table->integer('task_id');
             $table->timestamps();
             
             $table->index('task_id');
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('task_comments');
+        Schema::dropIfExists('task_assigned_users');
     }
 };

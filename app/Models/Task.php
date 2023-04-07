@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\TaskAssignedUser;
 use App\Models\TaskTime;
 use App\Traits\DbTimestamp;
 
@@ -34,5 +35,30 @@ class Task extends Model
         $this->total = $totalTime;
         $this->total_billable = $totalBillableTime;
         $this->saveQuietly();
+    }
+    
+    public function getAssignedUserIds()
+    {
+        $out = [];
+        $rows = TaskAssignedUser::where("task_id", $this->id)->get();
+        foreach($rows as $row)
+            $out[] = $row->user_id;
+        return $out;
+    }
+    
+    public function assignUsers($users)
+    {
+        $users = array_filter($users);
+        foreach($users as $user)
+        {
+            if(!TaskAssignedUser::where("task_id", $this->id)->where("user_id", $user)->count())
+            {
+                $assign = new TaskAssignedUser;
+                $assign->task_id = $this->id;
+                $assign->user_id = $user;
+                $assign->save();
+            }
+        }
+        TaskAssignedUser::where("task_id", $this->id)->whereNotIn("user_id", $users)->delete();
     }
 }

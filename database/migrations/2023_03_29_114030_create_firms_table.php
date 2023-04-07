@@ -26,6 +26,8 @@ return new class extends Migration
             $table->string('phone', 50)->nullable();
             $table->timestamps();
             $table->softDeletes();
+            
+            $table->index(['uuid']);
         });
     }
 

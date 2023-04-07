@@ -4,9 +4,12 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\Models\Firm;
 use App\Models\Project;
 use App\Models\Task;
+use App\Models\TaskAssignedUser;
 use App\Models\TaskTime;
+use App\Models\User;
 
 class TaskTest extends TestCase
 {
@@ -31,6 +34,19 @@ class TaskTest extends TestCase
         
         $response = $this->withToken($token)->putJson('/api/task/', $data);
         $response->assertStatus(200);
+        
+        $uuid = $this->getAccountUuui($token);
+        $firm = Firm::where('uuid', $uuid)->first();
+        $task = Task::where('uuid', $uuid)->inRandomOrder()->first();
+        $users = User::where('firm_id', $firm->id)->where('owner', 0)->get();
+        $userIds = [];
+        foreach($users as $user)
+            $userIds[] = $user->id;
+        $data['users'] = $userIds;
+        
+        $response = $this->withToken($token)->putJson('/api/task/', $data);
+        $response->assertStatus(200);
+        $this->assertDatabaseCount('task_assigned_users', count($userIds));
     }
     
     // Error while create new task (invalid params)
@@ -59,6 +75,24 @@ class TaskTest extends TestCase
             $response = $this->withToken($token)->putJson('/api/task', $data);
             $response->assertStatus(422);
         }
+        
+        $uuid = $this->getAccountUuui($token);
+        $firm = Firm::where('uuid', $uuid)->first();
+        $task = Task::where('uuid', $uuid)->inRandomOrder()->first();
+        $users = User::where('firm_id', $firm->id)->where('owner', 0)->get();
+        
+        $data['users'] = [-1];
+        $response = $this->withToken($token)->putJson('/api/task/', $data);
+        $response->assertStatus(422);
+        
+        $data['users'] = $users[0]->id;
+        $response = $this->withToken($token)->putJson('/api/task/', $data);
+        $response->assertStatus(422);
+        
+        $otherUser = User::withoutGlobalScopes()->where('firm_id', '!=', $firm->id)->inRandomOrder()->first();
+        $data['users'] = [$otherUser->id];
+        $response = $this->withToken($token)->putJson('/api/task/', $data);
+        $response->assertStatus(422);
     }
     
     // Error while create new task (invalid project id)
@@ -290,6 +324,20 @@ class TaskTest extends TestCase
                 'name' => $data['name'],
                 'description' => $data['description'],
             ]);
+            
+        
+        $uuid = $this->getAccountUuui($token);
+        $firm = Firm::where('uuid', $uuid)->first();
+        $task = Task::where('uuid', $uuid)->inRandomOrder()->first();
+        $users = User::where('firm_id', $firm->id)->where('owner', 0)->get();
+        $userIds = [];
+        foreach($users as $user)
+            $userIds[] = $user->id;
+        $data['users'] = $userIds;
+        
+        $response = $this->withToken($token)->putJson('/api/task/' . $task->id, $data);
+        $response->assertStatus(200);
+        $this->assertDatabaseCount('task_assigned_users', count($userIds));
     }
     
     // Error while update task (invalid ID)
@@ -316,6 +364,205 @@ class TaskTest extends TestCase
         $uuid = $this->getAccountUuui($token);
         $otherUserTask = Task::withoutGlobalScopes()->where('uuid', '!=', $uuid)->inRandomOrder()->first();
         $response = $this->withToken($token)->deleteJson('/api/task/' . $otherUserTask->id);
+        $response->assertStatus(404);
+        
+        
+        $uuid = $this->getAccountUuui($token);
+        $firm = Firm::where('uuid', $uuid)->first();
+        $task = Task::where('uuid', $uuid)->inRandomOrder()->first();
+        $users = User::where('firm_id', $firm->id)->where('owner', 0)->get();
+        
+        $data['users'] = [-1];
+        $response = $this->withToken($token)->putJson('/api/task/' . $task->id, $data);
+        $response->assertStatus(422);
+        
+        $data['users'] = $users[0]->id;
+        $response = $this->withToken($token)->putJson('/api/task/' . $task->id, $data);
+        $response->assertStatus(422);
+        
+        $otherUser = User::withoutGlobalScopes()->where('firm_id', '!=', $firm->id)->inRandomOrder()->first();
+        $data['users'] = [$otherUser->id];
+        $response = $this->withToken($token)->putJson('/api/task/' . $task->id, $data);
+        $response->assertStatus(422);
+    }
+    
+    // Successfull assgin user to task
+    public function test_assign_user_to_task_successfull(): void
+    {
+        $accountUserId = 2;
+        $this->prepareMultipleUserAccount(['projects' => true, 'tasks' => true]);
+        $data = [
+            'email' => $this->getAccount($accountUserId)['email'],
+            'password' => $this->getAccount($accountUserId)['data']['password'],
+            'device_name' => 'test',
+        ];
+        $response = $this->postJson('/api/login', $data);
+        $token = $response->getContent();
+        $uuid = $this->getAccountUuui($token);
+        
+        $firm = Firm::where('uuid', $uuid)->first();
+        $task = Task::where('uuid', $uuid)->inRandomOrder()->first();
+        $user = User::where('firm_id', $firm->id)->where('owner', 0)->first();
+        $data = [
+            'user_id' => $user->id,
+        ];
+        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/assign', $data);
+        $response->assertStatus(200);
+        
+        $this->assertDatabaseCount('task_assigned_users', 1);
+        $this->assertDatabaseHas('task_assigned_users', [
+            'task_id' => $task->id,
+            'user_id' => $user->id,
+        ]);
+    }
+    
+    // Error while assgin user to task
+    public function test_assign_user_to_task_error(): void
+    {
+        $accountUserId = 2;
+        $this->prepareMultipleUserAccount(['projects' => true, 'tasks' => true]);
+        $data = [
+            'email' => $this->getAccount($accountUserId)['email'],
+            'password' => $this->getAccount($accountUserId)['data']['password'],
+            'device_name' => 'test',
+        ];
+        $response = $this->postJson('/api/login', $data);
+        $token = $response->getContent();
+        $uuid = $this->getAccountUuui($token);
+        
+        $firm = Firm::where('uuid', $uuid)->first();
+        $task = Task::where('uuid', $uuid)->inRandomOrder()->first();
+        $user = User::where('firm_id', $firm->id)->where('owner', 0)->first();
+        
+        $data = [];
+        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/assign', $data);
+        $response->assertStatus(422);
+        
+        $data = ['user_id' => $user->id];
+        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/assign', $data);
+        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/assign', $data);
+        $response->assertStatus(409);
+        
+        
+        $data = ['user_id' => $user->id];
+        $response = $this->withToken($token)->postJson('/api/task/-9/assign', $data);
+        $response->assertStatus(404);
+        
+        $data = ['user_id' => -1];
+        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/assign', $data);
+        $response->assertStatus(404);
+        
+        $otherUserTask = Task::withoutGlobalScopes()->where('uuid', '!=', $uuid)->inRandomOrder()->first();
+        $otherUser = User::withoutGlobalScopes()->where('firm_id', '!=', $firm->id)->inRandomOrder()->first();
+        
+        $data = ['user_id' => $user->id];
+        $response = $this->withToken($token)->postJson('/api/task/' . $otherUserTask->id . '/assign', $data);
+        $response->assertStatus(404);
+        
+        $data = ['user_id' => $otherUser->id];
+        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/assign', $data);
+        $response->assertStatus(404);
+        
+        $data = ['user_id' => $otherUser->id];
+        $response = $this->withToken($token)->postJson('/api/task/' . $otherUserTask->id . '/assign', $data);
+        $response->assertStatus(404);
+    }
+    
+    // Successfull deassgin user from task
+    public function test_deassign_user_to_task_successfull(): void
+    {
+        $accountUserId = 2;
+        $this->prepareMultipleUserAccount(['projects' => true, 'tasks' => true]);
+        $data = [
+            'email' => $this->getAccount($accountUserId)['email'],
+            'password' => $this->getAccount($accountUserId)['data']['password'],
+            'device_name' => 'test',
+        ];
+        $response = $this->postJson('/api/login', $data);
+        $token = $response->getContent();
+        $uuid = $this->getAccountUuui($token);
+        
+        $firm = Firm::where('uuid', $uuid)->first();
+        $task = Task::where('uuid', $uuid)->inRandomOrder()->first();
+        $user = User::where('firm_id', $firm->id)->where('owner', 0)->first();
+        
+        $assign = new TaskAssignedUser;
+        $assign->task_id = $task->id;
+        $assign->user_id = $user->id;
+        $assign->save();
+        
+        $data = [
+            'user_id' => $user->id,
+        ];
+        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/deassign', $data);
+        $response->assertStatus(200);
+        
+        $this->assertDatabaseCount('task_assigned_users', 0);
+    }
+    
+    // Error while deassgin user to task
+    public function test_deassign_user_to_task_error(): void
+    {
+        $accountUserId = 2;
+        $this->prepareMultipleUserAccount(['projects' => true, 'tasks' => true]);
+        $data = [
+            'email' => $this->getAccount($accountUserId)['email'],
+            'password' => $this->getAccount($accountUserId)['data']['password'],
+            'device_name' => 'test',
+        ];
+        $response = $this->postJson('/api/login', $data);
+        $token = $response->getContent();
+        $uuid = $this->getAccountUuui($token);
+        
+        $firm = Firm::where('uuid', $uuid)->first();
+        $task = Task::where('uuid', $uuid)->inRandomOrder()->first();
+        $user = User::where('firm_id', $firm->id)->where('owner', 0)->first();
+        
+        $assign = new TaskAssignedUser;
+        $assign->task_id = $task->id;
+        $assign->user_id = $user->id;
+        $assign->save();
+        
+        $data = [];
+        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/deassign', $data);
+        $response->assertStatus(422);
+        
+        $data = ['user_id' => $user->id];
+        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/deassign', $data);
+        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/deassign', $data);
+        $response->assertStatus(404);
+        
+        $assign = new TaskAssignedUser;
+        $assign->task_id = $task->id;
+        $assign->user_id = $user->id;
+        $assign->save();
+        
+        $data = ['user_id' => $user->id];
+        $response = $this->withToken($token)->postJson('/api/task/-9/deassign', $data);
+        $response->assertStatus(404);
+        
+        $data = ['user_id' => -1];
+        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/deassign', $data);
+        $response->assertStatus(404);
+        
+        $otherUserTask = Task::withoutGlobalScopes()->where('uuid', '!=', $uuid)->inRandomOrder()->first();
+        $otherUser = User::withoutGlobalScopes()->where('firm_id', '!=', $firm->id)->inRandomOrder()->first();
+        
+        $assign = new TaskAssignedUser;
+        $assign->task_id = $otherUserTask->id;
+        $assign->user_id = $otherUser->id;
+        $assign->save();
+        
+        $data = ['user_id' => $user->id];
+        $response = $this->withToken($token)->postJson('/api/task/' . $otherUserTask->id . '/deassign', $data);
+        $response->assertStatus(404);
+        
+        $data = ['user_id' => $otherUser->id];
+        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/deassign', $data);
+        $response->assertStatus(404);
+        
+        $data = ['user_id' => $otherUser->id];
+        $response = $this->withToken($token)->postJson('/api/task/' . $otherUserTask->id . '/deassign', $data);
         $response->assertStatus(404);
     }
     
@@ -538,5 +785,115 @@ class TaskTest extends TestCase
         $response->assertStatus(405);
     }
     
+    // Successfull assgin user to task with valid permission
+    public function test_permission_assign_user_to_task_ok(): void
+    {
+        $accountUserId = 2;
+        $this->prepareMultipleUserAccount(['projects' => true, 'tasks' => true]);
+        $data = [
+            'email' => $this->getAccount($accountUserId)['workers'][1]['email'],
+            'password' => $this->getAccount($accountUserId)['workers'][1]['password'],
+            'device_name' => 'test',
+        ];
+        $this->setUserPermission($data['email'], "task:update");
+        $response = $this->postJson('/api/login', $data);
+        $token = $response->getContent();
+        $uuid = $this->getAccountUuui($token);
+        
+        $firm = Firm::where('uuid', $uuid)->first();
+        $task = Task::where('uuid', $uuid)->inRandomOrder()->first();
+        $user = User::where('firm_id', $firm->id)->where('owner', 0)->first();
+        $data = [
+            'user_id' => $user->id,
+        ];
+        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/assign', $data);
+        $response->assertStatus(200);
+    }
     
+    // Error while assgin user to task with invalid permission
+    public function test_permission_assign_user_to_task_error(): void
+    {
+        $accountUserId = 2;
+        $this->prepareMultipleUserAccount(['projects' => true, 'tasks' => true]);
+        $data = [
+            'email' => $this->getAccount($accountUserId)['workers'][1]['email'],
+            'password' => $this->getAccount($accountUserId)['workers'][1]['password'],
+            'device_name' => 'test',
+        ];
+        $this->setUserPermission($data['email'], "task:list,create,delete");
+        $response = $this->postJson('/api/login', $data);
+        $token = $response->getContent();
+        $uuid = $this->getAccountUuui($token);
+        
+        $firm = Firm::where('uuid', $uuid)->first();
+        $task = Task::where('uuid', $uuid)->inRandomOrder()->first();
+        $user = User::where('firm_id', $firm->id)->where('owner', 0)->first();
+        $data = [
+            'user_id' => $user->id,
+        ];
+        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/assign', $data);
+        $response->assertStatus(405);
+    }
+    
+    // Successfull deassgin user from task with valid permission
+    public function test_permission_deassign_user_to_task_ok(): void
+    {
+        $accountUserId = 2;
+        $this->prepareMultipleUserAccount(['projects' => true, 'tasks' => true]);
+        $data = [
+            'email' => $this->getAccount($accountUserId)['workers'][1]['email'],
+            'password' => $this->getAccount($accountUserId)['workers'][1]['password'],
+            'device_name' => 'test',
+        ];
+        $this->setUserPermission($data['email'], "task:update");
+        $response = $this->postJson('/api/login', $data);
+        $token = $response->getContent();
+        $uuid = $this->getAccountUuui($token);
+        
+        $firm = Firm::where('uuid', $uuid)->first();
+        $task = Task::where('uuid', $uuid)->inRandomOrder()->first();
+        $user = User::where('firm_id', $firm->id)->where('owner', 0)->first();
+        
+        $assign = new TaskAssignedUser;
+        $assign->task_id = $task->id;
+        $assign->user_id = $user->id;
+        $assign->save();
+        
+        $data = [
+            'user_id' => $user->id,
+        ];
+        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/deassign', $data);
+        $response->assertStatus(200);
+    }
+    
+    // Successfull deassgin user from task with invalid permission
+    public function test_permission_deassign_user_to_task_error(): void
+    {
+        $accountUserId = 2;
+        $this->prepareMultipleUserAccount(['projects' => true, 'tasks' => true]);
+        $data = [
+            'email' => $this->getAccount($accountUserId)['workers'][1]['email'],
+            'password' => $this->getAccount($accountUserId)['workers'][1]['password'],
+            'device_name' => 'test',
+        ];
+        $this->setUserPermission($data['email'], "task:list,create,delete");
+        $response = $this->postJson('/api/login', $data);
+        $token = $response->getContent();
+        $uuid = $this->getAccountUuui($token);
+        
+        $firm = Firm::where('uuid', $uuid)->first();
+        $task = Task::where('uuid', $uuid)->inRandomOrder()->first();
+        $user = User::where('firm_id', $firm->id)->where('owner', 0)->first();
+        
+        $assign = new TaskAssignedUser;
+        $assign->task_id = $task->id;
+        $assign->user_id = $user->id;
+        $assign->save();
+        
+        $data = [
+            'user_id' => $user->id,
+        ];
+        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/deassign', $data);
+        $response->assertStatus(405);
+    }
 }

@@ -18,6 +18,8 @@ return new class extends Migration
             $table->tinyInteger('is_default')->default(0);
             $table->text('permissions');
             $table->timestamps();
+            
+            $table->index(['uuid']);
         });
     }
 

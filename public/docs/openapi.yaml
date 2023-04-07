@@ -17,12 +17,12 @@ paths:
           in: query
           name: size
           description: 'Number of rows. Default: 50'
-          example: 4
+          example: 20
           required: false
           schema:
             type: integer
             description: 'Number of rows. Default: 50'
-            example: 4
+            example: 20
         -
           in: query
           name: page
@@ -105,19 +105,19 @@ paths:
                 name:
                   type: string
                   description: 'Project name.'
-                  example: illo
+                  example: culpa
                 location:
                   type: string
                   description: 'Project location.'
-                  example: quisquam
+                  example: eaque
                 description:
                   type: string
                   description: 'Project description.'
-                  example: 'Quam facilis ab qui similique modi reprehenderit aliquid.'
+                  example: 'Aliquid laudantium nesciunt rem eveniet nostrum voluptatem.'
                 owner:
                   type: string
                   description: 'Project owner.'
-                  example: repellat
+                  example: placeat
               required:
                 - name
       security: []
@@ -214,19 +214,19 @@ paths:
                 name:
                   type: string
                   description: 'Project name.'
-                  example: magni
+                  example: rerum
                 location:
                   type: string
                   description: 'Project location.'
-                  example: aut
+                  example: expedita
                 description:
                   type: string
                   description: 'Project description.'
-                  example: 'Non quaerat in blanditiis.'
+                  example: 'Nihil est voluptates perspiciatis et quia consequatur dolores aut.'
                 owner:
                   type: string
                   description: 'Project owner.'
-                  example: libero
+                  example: iure
       security: []
     delete:
       summary: 'Delete project'
@@ -279,7 +279,7 @@ paths:
         in: path
         name: id
         description: 'Project identifier.'
-        example: 15
+        example: 8
         required: true
         schema:
           type: integer
@@ -293,22 +293,22 @@ paths:
           in: query
           name: size
           description: 'Number of rows. Default: 50'
-          example: 8
+          example: 16
           required: false
           schema:
             type: integer
             description: 'Number of rows. Default: 50'
-            example: 8
+            example: 16
         -
           in: query
           name: page
           description: 'Number of page (pagination). Default: 1'
-          example: 11
+          example: 15
           required: false
           schema:
             type: integer
             description: 'Number of page (pagination). Default: 1'
-            example: 11
+            example: 15
         -
           in: header
           name: Content-Type
@@ -346,7 +346,7 @@ paths:
         in: path
         name: id
         description: 'Task identifier.'
-        example: 17
+        example: 19
         required: true
         schema:
           type: integer
@@ -390,11 +390,11 @@ paths:
                 id:
                   type: integer
                   description: 'Task identifier.'
-                  example: 12
+                  example: 20
                 comment:
                   type: string
                   description: Comment.
-                  example: autem
+                  example: qui
               required:
                 - id
                 - comment
@@ -492,11 +492,11 @@ paths:
                 id:
                   type: integer
                   description: 'Task identifier.'
-                  example: 20
+                  example: 8
                 comment:
                   type: string
                   description: comment.
-                  example: quo
+                  example: nam
               required:
                 - id
       security: []
@@ -555,7 +555,7 @@ paths:
                 id:
                   type: integer
                   description: 'Task identifier.'
-                  example: 1
+                  example: 19
               required:
                 - id
       security: []
@@ -564,7 +564,7 @@ paths:
         in: path
         name: id
         description: 'Task identifier.'
-        example: 6
+        example: 17
         required: true
         schema:
           type: integer
@@ -572,7 +572,7 @@ paths:
         in: path
         name: cid
         description: 'Comment identifier.'
-        example: 1
+        example: 17
         required: true
         schema:
           type: integer
@@ -586,22 +586,22 @@ paths:
           in: query
           name: size
           description: 'Number of rows. Default: 50'
-          example: 9
+          example: 17
           required: false
           schema:
             type: integer
             description: 'Number of rows. Default: 50'
-            example: 9
+            example: 17
         -
           in: query
           name: page
           description: 'Number of page (pagination). Default: 1'
-          example: 4
+          example: 9
           required: false
           schema:
             type: integer
             description: 'Number of page (pagination). Default: 1'
-            example: 4
+            example: 9
         -
           in: header
           name: Content-Type
@@ -630,7 +630,7 @@ paths:
             text/plain:
               schema:
                 type: string
-                example: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "name": "Example task", "description": "Example description", "created_at" => "2020-01-01 10:00:00"}]}'
+                example: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "name": "Example task", "description": "Example description", "created_at" => "2020-01-01 10:00:00", "assigned_to" => [1,2]}]}'
       tags:
         - Tasks
       security: []
@@ -639,7 +639,7 @@ paths:
         in: path
         name: id
         description: 'Project identifier.'
-        example: 9
+        example: 8
         required: true
         schema:
           type: integer
@@ -683,15 +683,19 @@ paths:
                 project_id:
                   type: integer
                   description: 'Project identifier.'
-                  example: 15
+                  example: 8
                 name:
                   type: string
                   description: 'Task name.'
-                  example: autem
+                  example: vero
                 description:
                   type: string
                   description: 'Task description.'
-                  example: 'Quas aut quo aut.'
+                  example: 'Ad dolore sapiente cumque sed et corrupti.'
+                users:
+                  type: integer
+                  description: 'Array of users identifier assigned to task.'
+                  example: 5
               required:
                 - project_id
                 - name
@@ -730,7 +734,7 @@ paths:
             text/plain:
               schema:
                 type: string
-                example: '{"id": 1, "name": "Example task", "description": "Example description", "created_at" => "2020-01-01 10:00:00"}'
+                example: '{"id": 1, "name": "Example task", "description": "Example description", "created_at" => "2020-01-01 10:00:00", "assigned_to" => [1,2]}'
         404:
           description: ''
           content:
@@ -789,11 +793,15 @@ paths:
                 name:
                   type: string
                   description: 'Task name.'
-                  example: earum
+                  example: aut
                 description:
                   type: string
                   description: 'Task description.'
-                  example: 'Ullam soluta quidem voluptas fugit vitae ipsum.'
+                  example: 'Deleniti ipsum ipsum eveniet laborum ad.'
+                users:
+                  type: integer
+                  description: 'Array of users identifier assigned to task.'
+                  example: 7
       security: []
     delete:
       summary: 'Delete task'
@@ -846,7 +854,145 @@ paths:
         in: path
         name: id
         description: 'Task identifier.'
-        example: 15
+        example: 12
+        required: true
+        schema:
+          type: integer
+  '/api/task/{id}/assign':
+    post:
+      summary: 'Assign user to task'
+      operationId: assignUserToTask
+      description: 'Assign user to task.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'Task does not exist'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Task does not exist'
+      tags:
+        - Tasks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  description: 'User identifier.'
+                  example: 12
+              required:
+                - user_id
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'Task identifier.'
+        example: 7
+        required: true
+        schema:
+          type: integer
+  '/api/task/{id}/deassign':
+    post:
+      summary: 'Deassign user from task'
+      operationId: deassignUserFromTask
+      description: 'Deassign user from task.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: true
+                  message: 'Task does not exist'
+                properties:
+                  error:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: 'Task does not exist'
+      tags:
+        - Tasks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  description: 'User identifier.'
+                  example: 12
+              required:
+                - user_id
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'Task identifier.'
+        example: 9
         required: true
         schema:
           type: integer
@@ -902,7 +1048,7 @@ paths:
         in: path
         name: id
         description: 'Task identifier.'
-        example: 7
+        example: 12
         required: true
         schema:
           type: integer
@@ -958,7 +1104,7 @@ paths:
         in: path
         name: id
         description: 'Task identifier.'
-        example: 8
+        example: 10
         required: true
         schema:
           type: integer
@@ -1014,7 +1160,7 @@ paths:
         in: path
         name: id
         description: 'Task identifier.'
-        example: 6
+        example: 7
         required: true
         schema:
           type: integer
@@ -1074,15 +1220,15 @@ paths:
                 started:
                   type: integer
                   description: 'Start time.'
-                  example: 9
+                  example: 19
                 total:
                   type: integer
                   description: 'Total time in seconds.'
-                  example: 17
+                  example: 9
                 comment:
                   type: string
                   description: Comment.
-                  example: similique
+                  example: et
                 billable:
                   type: boolean
                   description: Billable.
@@ -1156,15 +1302,15 @@ paths:
                 started:
                   type: integer
                   description: 'Start time.'
-                  example: 20
+                  example: 4
                 total:
                   type: integer
                   description: 'Total time in seconds.'
-                  example: 13
+                  example: 8
                 comment:
                   type: string
                   description: Comment.
-                  example: id
+                  example: aut
                 billable:
                   type: boolean
                   description: Billable.
@@ -1221,7 +1367,7 @@ paths:
         in: path
         name: id
         description: 'Task identifier.'
-        example: 10
+        example: 15
         required: true
         schema:
           type: integer
@@ -1229,7 +1375,7 @@ paths:
         in: path
         name: tid
         description: 'Task time identifier.'
-        example: 20
+        example: 3
         required: true
         schema:
           type: integer
@@ -1243,22 +1389,22 @@ paths:
           in: query
           name: size
           description: 'Number of rows. Default: 50'
-          example: 8
+          example: 10
           required: false
           schema:
             type: integer
             description: 'Number of rows. Default: 50'
-            example: 8
+            example: 10
         -
           in: query
           name: page
           description: 'Number of page (pagination). Default: 1'
-          example: 5
+          example: 14
           required: false
           schema:
             type: integer
             description: 'Number of page (pagination). Default: 1'
-            example: 5
+            example: 14
         -
           in: header
           name: Content-Type
@@ -1388,7 +1534,7 @@ paths:
         in: path
         name: id
         description: 'Task identifier.'
-        example: 3
+        example: 5
         required: true
         schema:
           type: integer
@@ -1402,22 +1548,22 @@ paths:
           in: query
           name: size
           description: 'Number of rows. Default: 50'
-          example: 8
+          example: 10
           required: false
           schema:
             type: integer
             description: 'Number of rows. Default: 50'
-            example: 8
+            example: 10
         -
           in: query
           name: page
           description: 'Number of page (pagination). Default: 1'
-          example: 14
+          example: 12
           required: false
           schema:
             type: integer
             description: 'Number of page (pagination). Default: 1'
-            example: 14
+            example: 12
         -
           in: header
           name: Content-Type
@@ -1577,23 +1723,23 @@ paths:
                 firstname:
                   type: string
                   description: 'User first name.'
-                  example: ut
+                  example: earum
                 lastname:
                   type: string
                   description: 'User last name.'
-                  example: magni
+                  example: nihil
                 email:
                   type: string
                   description: 'User e-mail address.'
-                  example: shields.dina@example.net
+                  example: myrtice24@example.net
                 password:
                   type: string
                   description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
-                  example: 'T{qe9:%1jz$>CAGk'
+                  example: 'v{?j=M+Esn%'
                 phone:
                   type: string
                   description: 'User phone number.'
-                  example: quia
+                  example: tempora
                 permission_id:
                   type: integer
                   description: 'Permission group identifier (if not set default permission will be used).'
@@ -1601,7 +1747,7 @@ paths:
                 superuser:
                   type: boolean
                   description: 'If set true user have full access regardless of permissions.'
-                  example: true
+                  example: false
               required:
                 - firstname
                 - lastname
@@ -1664,11 +1810,11 @@ paths:
                 email:
                   type: string
                   description: 'User e-mail address.'
-                  example: schmeler.chance@example.com
+                  example: hlindgren@example.org
                 permission_id:
                   type: integer
                   description: 'Permission group identifier (if not set default permission will be used).'
-                  example: 6
+                  example: 16
               required:
                 - email
       security: []
@@ -1802,31 +1948,31 @@ paths:
                 firstname:
                   type: string
                   description: 'User first name.'
-                  example: modi
+                  example: voluptatem
                 lastname:
                   type: string
                   description: 'User last name.'
-                  example: sed
+                  example: voluptatem
                 email:
                   type: string
                   description: 'User e-mail address.'
-                  example: aric.kling@example.com
+                  example: gondricka@example.org
                 password:
                   type: string
                   description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
-                  example: ',u_YtY/;P=nRD^3%'
+                  example: 'qDTv`\dUG>|ZjY'''
                 phone:
                   type: string
                   description: 'User phone number.'
-                  example: officia
+                  example: eligendi
                 permission_id:
                   type: integer
                   description: 'Permission group identifier.'
-                  example: 3
+                  example: 18
                 superuser:
                   type: boolean
                   description: 'If set true user have full access regardless of permissions.'
-                  example: false
+                  example: true
       security: []
     delete:
       summary: 'Delete user account'
@@ -1879,7 +2025,7 @@ paths:
         in: path
         name: id
         description: 'User identifier.'
-        example: 11
+        example: 8
         required: true
         schema:
           type: integer
@@ -2040,19 +2186,19 @@ paths:
                 firstname:
                   type: string
                   description: 'User first name.'
-                  example: odit
+                  example: commodi
                 lastname:
                   type: string
                   description: 'User last name.'
-                  example: veniam
+                  example: expedita
                 password:
                   type: string
                   description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
-                  example: '0Q"{4-F7UrTzi%M1Sb^A'
+                  example: '*D0q~%3d'
                 phone:
                   type: string
                   description: 'User phone number.'
-                  example: ut
+                  example: inventore
               required:
                 - firstname
                 - lastname
@@ -2063,7 +2209,7 @@ paths:
         in: path
         name: token
         description: 'Invite token from invitation message.'
-        example: dolorem
+        example: eligendi
         required: true
         schema:
           type: string
@@ -2077,22 +2223,22 @@ paths:
           in: query
           name: size
           description: 'Number of rows. Default: 50'
-          example: 4
+          example: 1
           required: false
           schema:
             type: integer
             description: 'Number of rows. Default: 50'
-            example: 4
+            example: 1
         -
           in: query
           name: page
           description: 'Number of page (pagination). Default: 1'
-          example: 15
+          example: 14
           required: false
           schema:
             type: integer
             description: 'Number of page (pagination). Default: 1'
-            example: 15
+            example: 14
         -
           in: header
           name: Content-Type
@@ -2252,15 +2398,15 @@ paths:
                 name:
                   type: string
                   description: 'Group permission name.'
-                  example: in
+                  example: nisi
                 permissions:
                   type: string
                   description: Permission.
-                  example: voluptates
+                  example: occaecati
                 is_default:
                   type: boolean
                   description: 'Set permission default.'
-                  example: false
+                  example: true
               required:
                 - name
                 - permissions
@@ -2385,15 +2531,15 @@ paths:
                 name:
                   type: string
                   description: 'Group permission name.'
-                  example: veritatis
+                  example: eum
                 permissions:
                   type: string
                   description: Permission.
-                  example: minima
+                  example: sunt
                 is_default:
                   type: boolean
                   description: 'Set permission default.'
-                  example: true
+                  example: false
       security: []
     delete:
       summary: 'Delete persmission group'
@@ -2446,7 +2592,7 @@ paths:
         in: path
         name: id
         description: 'Permission group identifier.'
-        example: 18
+        example: 17
         required: true
         schema:
           type: integer
@@ -2506,11 +2652,11 @@ paths:
                 object:
                   type: string
                   description: 'Object name.'
-                  example: dignissimos
+                  example: nemo
                 action:
                   type: string
                   description: 'Action name (if not set, allow all actions).'
-                  example: adipisci
+                  example: omnis
               required:
                 - object
       security: []
@@ -2519,7 +2665,7 @@ paths:
         in: path
         name: id
         description: 'Permission group identifier.'
-        example: 20
+        example: 15
         required: true
         schema:
           type: integer
@@ -2579,11 +2725,11 @@ paths:
                 object:
                   type: string
                   description: 'Object name.'
-                  example: odit
+                  example: in
                 action:
                   type: string
                   description: 'Action name (if not set, allow all actions).'
-                  example: voluptatem
+                  example: molestias
               required:
                 - object
       security: []
@@ -2592,7 +2738,7 @@ paths:
         in: path
         name: id
         description: 'Permission group identifier.'
-        example: 14
+        example: 19
         required: true
         schema:
           type: integer
@@ -2811,23 +2957,23 @@ paths:
                 firstname:
                   type: string
                   description: 'User first name.'
-                  example: fugiat
+                  example: nisi
                 lastname:
                   type: string
                   description: 'User last name.'
-                  example: beatae
+                  example: commodi
                 password:
                   type: string
                   description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
-                  example: 'MMS,BPU'
+                  example: 'C&i\<kNn*zUOOMq@Io_'
                 firm_identifier:
                   type: string
                   description: 'User firm name.'
-                  example: accusamus
+                  example: commodi
                 phone:
                   type: string
                   description: 'User phone number.'
-                  example: ut
+                  example: saepe
               required:
                 - firstname
                 - lastname
@@ -2840,7 +2986,7 @@ paths:
         in: path
         name: token
         description: 'Register token.'
-        example: error
+        example: ad
         required: true
         schema:
           type: string
@@ -2905,15 +3051,15 @@ paths:
                 email:
                   type: string
                   description: 'Account e-mail address'
-                  example: ramiro25@example.net
+                  example: lamont18@example.org
                 password:
                   type: string
                   description: 'Account password'
-                  example: '@jF3*)4Cxn,0xB;;V['
+                  example: "~cN.Y'7hFI:ZO8^"
                 device_name:
                   type: string
                   description: 'Device name'
-                  example: iste
+                  example: praesentium
               required:
                 - email
                 - password
@@ -2968,11 +3114,11 @@ paths:
                 email:
                   type: string
                   description: 'Account e-mail address'
-                  example: ron13@example.com
+                  example: rene54@example.net
                 firm_id:
                   type: integer
                   description: 'Firm identifier (if e-mail address exist in more than once firms)'
-                  example: 3
+                  example: 10
               required:
                 - email
       security: []
@@ -3009,11 +3155,11 @@ paths:
                 token:
                   type: string
                   description: 'forgot password token'
-                  example: possimus
+                  example: quisquam
                 email:
                   type: string
                   description: 'Account e-mail address'
-                  example: mariana.murray@example.org
+                  example: kyla89@example.org
               required:
                 - token
                 - email
@@ -3050,15 +3196,15 @@ paths:
                 token:
                   type: string
                   description: 'forgot password token'
-                  example: fuga
+                  example: alias
                 email:
                   type: string
                   description: 'Account e-mail address'
-                  example: osinski.leatha@example.org
+                  example: hhilpert@example.org
                 password:
                   type: string
                   description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
-                  example: ']dKn2~JUm,P"c=;k"GRv'
+                  example: 'Rx:FKC`)u0R+'
               required:
                 - token
                 - email
@@ -3113,7 +3259,7 @@ paths:
                 email:
                   type: string
                   description: 'Account e-mail address'
-                  example: jade.torp@example.net
+                  example: kkreiger@example.com
               required:
                 - email
       security: []
