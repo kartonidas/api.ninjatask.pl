@@ -60,6 +60,9 @@ Route::middleware('auth:sanctum')->group(function () use($router) {
     $router->delete('/task/{id}', [TaskController::class, "delete"])->where("id", "[0-9]+");
     $router->post('/task/{id}/assign', [TaskController::class, "assignUser"])->where("id", "[0-9]+");
     $router->post('/task/{id}/deassign', [TaskController::class, "deAssignUser"])->where("id", "[0-9]+");
+    $router->get('/task/{id}/attachment/{aid}', [TaskController::class, "getAttachment"])->where("id", "[0-9]+")->where("aid", "[0-9]+");
+    $router->put('/task/{id}/attachment', [TaskController::class, "addAttachment"])->where("id", "[0-9]+");
+    $router->delete('/task/{id}/attachment/{aid}', [TaskController::class, "removeAttachment"])->where("id", "[0-9]+")->where("aid", "[0-9]+");
     
     // ZADANIA - CZAS PRACY
     $router->post('/task/{id}/time/start', [TaskTimeController::class, "start"])->where("id", "[0-9]+");

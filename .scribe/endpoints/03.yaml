@@ -25,7 +25,7 @@ endpoints:
         name: size
         description: 'Number of rows. Default: 50'
         required: false
-        example: 1
+        example: 18
         type: integer
         custom: []
       page:
@@ -36,7 +36,7 @@ endpoints:
         type: integer
         custom: []
     cleanQueryParameters:
-      size: 1
+      size: 18
       page: 14
     bodyParameters: []
     cleanBodyParameters: []
@@ -82,27 +82,27 @@ endpoints:
         name: name
         description: 'Group permission name.'
         required: true
-        example: nisi
+        example: saepe
         type: string
         custom: []
       permissions:
         name: permissions
         description: Permission.
         required: true
-        example: occaecati
+        example: fugit
         type: string
         custom: []
       is_default:
         name: is_default
         description: 'Set permission default.'
         required: false
-        example: true
+        example: false
         type: boolean
         custom: []
     cleanBodyParameters:
-      name: nisi
-      permissions: occaecati
-      is_default: true
+      name: saepe
+      permissions: fugit
+      is_default: false
     fileParameters: []
     responses:
       -
@@ -146,11 +146,11 @@ endpoints:
         name: id
         description: 'Permission group identifier.'
         required: true
-        example: 17
+        example: 8
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 17
+      id: 8
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -197,11 +197,11 @@ endpoints:
         name: id
         description: 'Permission group identifier.'
         required: true
-        example: 14
+        example: 8
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 14
+      id: 8
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -209,14 +209,14 @@ endpoints:
         name: name
         description: 'Group permission name.'
         required: false
-        example: eum
+        example: aliquid
         type: string
         custom: []
       permissions:
         name: permissions
         description: Permission.
         required: false
-        example: sunt
+        example: ex
         type: string
         custom: []
       is_default:
@@ -227,8 +227,8 @@ endpoints:
         type: boolean
         custom: []
     cleanBodyParameters:
-      name: eum
-      permissions: sunt
+      name: aliquid
+      permissions: ex
       is_default: false
     fileParameters: []
     responses: []
@@ -267,11 +267,11 @@ endpoints:
         name: id
         description: 'Permission group identifier.'
         required: true
-        example: 8
+        example: 16
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 8
+      id: 16
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -319,11 +319,11 @@ endpoints:
         name: id
         description: 'Permission group identifier.'
         required: true
-        example: 15
+        example: 2
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 15
+      id: 2
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -331,19 +331,19 @@ endpoints:
         name: object
         description: 'Object name.'
         required: true
-        example: nemo
+        example: laborum
         type: string
         custom: []
       action:
         name: action
         description: 'Action name (if not set, allow all actions).'
         required: false
-        example: omnis
+        example: minima
         type: string
         custom: []
     cleanBodyParameters:
-      object: nemo
-      action: omnis
+      object: laborum
+      action: minima
     fileParameters: []
     responses:
       -
@@ -387,11 +387,11 @@ endpoints:
         name: id
         description: 'Permission group identifier.'
         required: true
-        example: 19
+        example: 18
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 19
+      id: 18
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -399,19 +399,19 @@ endpoints:
         name: object
         description: 'Object name.'
         required: true
-        example: in
+        example: sit
         type: string
         custom: []
       action:
         name: action
         description: 'Action name (if not set, allow all actions).'
         required: false
-        example: molestias
+        example: inventore
         type: string
         custom: []
     cleanBodyParameters:
-      object: in
-      action: molestias
+      object: sit
+      action: inventore
     fileParameters: []
     responses:
       -

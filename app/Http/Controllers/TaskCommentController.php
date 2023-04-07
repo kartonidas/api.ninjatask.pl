@@ -22,7 +22,7 @@ class TaskCommentController extends Controller
     * @urlParam id integer required Task identifier.
     * @queryParam size integer Number of rows. Default: 50
     * @queryParam page integer Number of page (pagination). Default: 1
-    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "comment": "Example comment", "user_id": 1, "created_at" => "2020-01-01 10:00:00"}]}
+    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "comment": "Example comment", "user_id": 1, "created_at": "2020-01-01 10:00:00"}]}
     * @header Authorization: Bearer {TOKEN}
     * @group Task comments
     */
@@ -67,7 +67,7 @@ class TaskCommentController extends Controller
     * Return task comment details.
     * @urlParam id integer required Task identifier.
     * @urlParam cid integer required Comment identifier.
-    * @response 200 {"id": 1, "comment": "Example comment", "user_id": "1", "created_at" => "2020-01-01 10:00:00"}
+    * @response 200 {"id": 1, "comment": "Example comment", "user_id": "1", "created_at": "2020-01-01 10:00:00"}
     * @response 404 {"error":true,"message":"Comment does not exist"}
     * @header Authorization: Bearer {TOKEN}
     * @group Task comments

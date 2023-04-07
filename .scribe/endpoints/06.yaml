@@ -23,36 +23,36 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 19
+        example: 16
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 19
+      id: 16
     queryParameters:
       size:
         name: size
         description: 'Number of rows. Default: 50'
         required: false
-        example: 16
+        example: 4
         type: integer
         custom: []
       page:
         name: page
         description: 'Number of page (pagination). Default: 1'
         required: false
-        example: 15
+        example: 17
         type: integer
         custom: []
     cleanQueryParameters:
-      size: 16
-      page: 15
+      size: 4
+      page: 17
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
     responses:
       -
         status: 200
-        content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "comment": "Example comment", "user_id": 1, "created_at" => "2020-01-01 10:00:00"}]}'
+        content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "comment": "Example comment", "user_id": 1, "created_at": "2020-01-01 10:00:00"}]}'
         headers: []
         description: ''
         custom: []
@@ -88,19 +88,19 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 20
+        example: 14
         type: integer
         custom: []
       comment:
         name: comment
         description: Comment.
         required: true
-        example: qui
+        example: asperiores
         type: string
         custom: []
     cleanBodyParameters:
-      id: 20
-      comment: qui
+      id: 14
+      comment: asperiores
     fileParameters: []
     responses: []
     responseFields:
@@ -138,19 +138,19 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 17
+        example: 4
         type: integer
         custom: []
       cid:
         name: cid
         description: 'Comment identifier.'
         required: true
-        example: 17
+        example: 14
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 17
-      cid: 17
+      id: 4
+      cid: 14
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -159,7 +159,7 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"id": 1, "comment": "Example comment", "user_id": "1", "created_at" => "2020-01-01 10:00:00"}'
+        content: '{"id": 1, "comment": "Example comment", "user_id": "1", "created_at": "2020-01-01 10:00:00"}'
         headers: []
         description: ''
         custom: []
@@ -197,11 +197,11 @@ endpoints:
         name: cid
         description: 'Comment identifier.'
         required: true
-        example: 11
+        example: 14
         type: integer
         custom: []
     cleanUrlParameters:
-      cid: 11
+      cid: 14
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -209,19 +209,19 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 8
+        example: 17
         type: integer
         custom: []
       comment:
         name: comment
         description: comment.
         required: false
-        example: nam
+        example: quia
         type: string
         custom: []
     cleanBodyParameters:
-      id: 8
-      comment: nam
+      id: 17
+      comment: quia
     fileParameters: []
     responses: []
     responseFields:
@@ -259,11 +259,11 @@ endpoints:
         name: cid
         description: 'Comment identifier.'
         required: true
-        example: 20
+        example: 2
         type: integer
         custom: []
     cleanUrlParameters:
-      cid: 20
+      cid: 2
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -271,11 +271,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 19
+        example: 12
         type: integer
         custom: []
     cleanBodyParameters:
-      id: 19
+      id: 12
     fileParameters: []
     responses:
       -

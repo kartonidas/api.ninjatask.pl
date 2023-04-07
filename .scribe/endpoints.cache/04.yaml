@@ -25,36 +25,36 @@ endpoints:
         name: id
         description: 'Project identifier.'
         required: true
-        example: 8
+        example: 2
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 8
+      id: 2
     queryParameters:
       size:
         name: size
         description: 'Number of rows. Default: 50'
         required: false
-        example: 17
+        example: 10
         type: integer
         custom: []
       page:
         name: page
         description: 'Number of page (pagination). Default: 1'
         required: false
-        example: 9
+        example: 8
         type: integer
         custom: []
     cleanQueryParameters:
-      size: 17
-      page: 9
+      size: 10
+      page: 8
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
     responses:
       -
         status: 200
-        content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "name": "Example task", "description": "Example description", "created_at" => "2020-01-01 10:00:00", "assigned_to" => [1,2]}]}'
+        content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": "1", "name": "Example task", "description": "Example description", "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}]}]}'
         headers: []
         description: ''
         custom: []
@@ -90,35 +90,47 @@ endpoints:
         name: project_id
         description: 'Project identifier.'
         required: true
-        example: 8
+        example: 5
         type: integer
         custom: []
       name:
         name: name
         description: 'Task name.'
         required: true
-        example: vero
+        example: ipsum
         type: string
         custom: []
       description:
         name: description
         description: 'Task description.'
         required: false
-        example: 'Ad dolore sapiente cumque sed et corrupti.'
+        example: 'Autem et minima dolores beatae sit.'
         type: string
         custom: []
       users:
         name: users
-        description: 'Array of users identifier assigned to task.'
+        description: 'of users identifier assigned to task.'
         required: false
-        example: 5
-        type: integer
+        example:
+          - est
+        type: 'string[]'
+        custom: []
+      attachments:
+        name: attachments
+        description: 'of files attach to task ([{"name": "File name", "base64": Base64 encoded file, "description": "Optional file description"}])'
+        required: false
+        example:
+          - sit
+        type: 'string[]'
         custom: []
     cleanBodyParameters:
-      project_id: 8
-      name: vero
-      description: 'Ad dolore sapiente cumque sed et corrupti.'
-      users: 5
+      project_id: 5
+      name: ipsum
+      description: 'Autem et minima dolores beatae sit.'
+      users:
+        - est
+      attachments:
+        - sit
     fileParameters: []
     responses: []
     responseFields:
@@ -156,11 +168,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 12
+        example: 5
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 12
+      id: 5
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -169,7 +181,7 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"id": 1, "name": "Example task", "description": "Example description", "created_at" => "2020-01-01 10:00:00", "assigned_to" => [1,2]}'
+        content: '{"id": 1, "name": "Example task", "description": "Example description", "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}]}'
         headers: []
         description: ''
         custom: []
@@ -207,11 +219,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 12
+        example: 5
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 12
+      id: 5
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -219,27 +231,27 @@ endpoints:
         name: name
         description: 'Task name.'
         required: false
-        example: aut
+        example: repudiandae
         type: string
         custom: []
       description:
         name: description
         description: 'Task description.'
         required: false
-        example: 'Deleniti ipsum ipsum eveniet laborum ad.'
+        example: 'Enim quos qui rerum ducimus.'
         type: string
         custom: []
       users:
         name: users
         description: 'Array of users identifier assigned to task.'
         required: false
-        example: 7
+        example: 15
         type: integer
         custom: []
     cleanBodyParameters:
-      name: aut
-      description: 'Deleniti ipsum ipsum eveniet laborum ad.'
-      users: 7
+      name: repudiandae
+      description: 'Enim quos qui rerum ducimus.'
+      users: 15
     fileParameters: []
     responses: []
     responseFields:
@@ -277,11 +289,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 12
+        example: 9
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 12
+      id: 9
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -329,11 +341,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 7
+        example: 1
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 7
+      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -341,11 +353,11 @@ endpoints:
         name: user_id
         description: 'User identifier.'
         required: true
-        example: 12
+        example: 10
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 12
+      user_id: 10
     fileParameters: []
     responses:
       -
@@ -389,11 +401,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 9
+        example: 4
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 9
+      id: 4
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -401,11 +413,11 @@ endpoints:
         name: user_id
         description: 'User identifier.'
         required: true
-        example: 12
+        example: 6
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 12
+      user_id: 6
     fileParameters: []
     responses:
       -
@@ -418,6 +430,201 @@ endpoints:
       status:
         name: status
         description: 'Deassign status'
+        required: false
+        example: null
+        type: boolean
+        custom: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/task/{id}/attachment/{aid}'
+    metadata:
+      groupName: Tasks
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get attachment from task'
+      description: 'Get attachment from task.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters:
+      id:
+        name: id
+        description: 'Task identifier.'
+        required: true
+        example: 12
+        type: integer
+        custom: []
+      aid:
+        name: aid
+        description: 'Attachment identifier.'
+        required: true
+        example: 16
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 12
+      aid: 16
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: '{"error":true,"message":"Task does not exist"}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+    uri: 'api/task/{id}/attachment'
+    metadata:
+      groupName: Tasks
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Add attachment to task'
+      description: 'Add attachment to task.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters:
+      id:
+        name: id
+        description: 'Task identifier.'
+        required: true
+        example: 5
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 5
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        name: name
+        description: 'File name.'
+        required: true
+        example: rerum
+        type: string
+        custom: []
+      file:
+        name: file
+        description: 'Base64 encode file content".'
+        required: true
+        example: et
+        type: string
+        custom: []
+      description:
+        name: description
+        description: 'Description".'
+        required: false
+        example: 'Soluta animi autem quidem qui sed vel eaque.'
+        type: string
+        custom: []
+    cleanBodyParameters:
+      name: rerum
+      file: et
+      description: 'Soluta animi autem quidem qui sed vel eaque.'
+    fileParameters: []
+    responses:
+      -
+        status: 404
+        content: '{"error":true,"message":"Task does not exist"}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields:
+      status:
+        name: status
+        description: 'Add attachment status'
+        required: false
+        example: null
+        type: boolean
+        custom: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/task/{id}/attachment/{aid}'
+    metadata:
+      groupName: Tasks
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Remove attachment from task'
+      description: 'Remove attachment from task.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters:
+      id:
+        name: id
+        description: 'Task identifier.'
+        required: true
+        example: 11
+        type: integer
+        custom: []
+      aid:
+        name: aid
+        description: 'Attachment identifier.'
+        required: true
+        example: 8
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 11
+      aid: 8
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 404
+        content: '{"error":true,"message":"Task does not exist"}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields:
+      status:
+        name: status
+        description: 'Remove attachment status'
         required: false
         example: null
         type: boolean

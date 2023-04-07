@@ -34,12 +34,12 @@ endpoints:
         name: page
         description: 'Number of page (pagination). Default: 1'
         required: false
-        example: 12
+        example: 16
         type: integer
         custom: []
     cleanQueryParameters:
       size: 10
-      page: 12
+      page: 16
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -82,42 +82,42 @@ endpoints:
         name: firstname
         description: 'User first name.'
         required: true
-        example: earum
+        example: explicabo
         type: string
         custom: []
       lastname:
         name: lastname
         description: 'User last name.'
         required: true
-        example: nihil
+        example: aliquam
         type: string
         custom: []
       email:
         name: email
         description: 'User e-mail address.'
         required: true
-        example: myrtice24@example.net
+        example: ffisher@example.net
         type: string
         custom: []
       password:
         name: password
         description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
         required: true
-        example: 'v{?j=M+Esn%'
+        example: ':fiV+Qk<Hlx'
         type: string
         custom: []
       phone:
         name: phone
         description: 'User phone number.'
         required: false
-        example: tempora
+        example: nulla
         type: string
         custom: []
       permission_id:
         name: permission_id
         description: 'Permission group identifier (if not set default permission will be used).'
         required: false
-        example: 13
+        example: 19
         type: integer
         custom: []
       superuser:
@@ -128,12 +128,12 @@ endpoints:
         type: boolean
         custom: []
     cleanBodyParameters:
-      firstname: earum
-      lastname: nihil
-      email: myrtice24@example.net
-      password: 'v{?j=M+Esn%'
-      phone: tempora
-      permission_id: 13
+      firstname: explicabo
+      lastname: aliquam
+      email: ffisher@example.net
+      password: ':fiV+Qk<Hlx'
+      phone: nulla
+      permission_id: 19
       superuser: false
     fileParameters: []
     responses:
@@ -182,19 +182,19 @@ endpoints:
         name: email
         description: 'User e-mail address.'
         required: true
-        example: hlindgren@example.org
+        example: mpredovic@example.com
         type: string
         custom: []
       permission_id:
         name: permission_id
         description: 'Permission group identifier (if not set default permission will be used).'
         required: false
-        example: 16
+        example: 3
         type: integer
         custom: []
     cleanBodyParameters:
-      email: hlindgren@example.org
-      permission_id: 16
+      email: mpredovic@example.com
+      permission_id: 3
     fileParameters: []
     responses:
       -
@@ -238,11 +238,11 @@ endpoints:
         name: id
         description: 'User identifier.'
         required: true
-        example: 8
+        example: 10
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 8
+      id: 10
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -289,11 +289,11 @@ endpoints:
         name: id
         description: 'User identifier.'
         required: true
-        example: 20
+        example: 3
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 20
+      id: 3
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -301,42 +301,42 @@ endpoints:
         name: firstname
         description: 'User first name.'
         required: false
-        example: voluptatem
+        example: nobis
         type: string
         custom: []
       lastname:
         name: lastname
         description: 'User last name.'
         required: false
-        example: voluptatem
+        example: aut
         type: string
         custom: []
       email:
         name: email
         description: 'User e-mail address.'
         required: false
-        example: gondricka@example.org
+        example: wgreenfelder@example.com
         type: string
         custom: []
       password:
         name: password
         description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
         required: false
-        example: 'qDTv`\dUG>|ZjY'''
+        example: '\3*qqAL'
         type: string
         custom: []
       phone:
         name: phone
         description: 'User phone number.'
         required: false
-        example: eligendi
+        example: odio
         type: string
         custom: []
       permission_id:
         name: permission_id
         description: 'Permission group identifier.'
         required: false
-        example: 18
+        example: 1
         type: integer
         custom: []
       superuser:
@@ -347,12 +347,12 @@ endpoints:
         type: boolean
         custom: []
     cleanBodyParameters:
-      firstname: voluptatem
-      lastname: voluptatem
-      email: gondricka@example.org
-      password: 'qDTv`\dUG>|ZjY'''
-      phone: eligendi
-      permission_id: 18
+      firstname: nobis
+      lastname: aut
+      email: wgreenfelder@example.com
+      password: '\3*qqAL'
+      phone: odio
+      permission_id: 1
       superuser: true
     fileParameters: []
     responses: []
@@ -391,11 +391,11 @@ endpoints:
         name: id
         description: 'User identifier.'
         required: true
-        example: 4
+        example: 20
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 4
+      id: 20
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -518,11 +518,11 @@ endpoints:
         name: token
         description: 'Invite token from invitation message.'
         required: true
-        example: eligendi
+        example: fugit
         type: string
         custom: []
     cleanUrlParameters:
-      token: eligendi
+      token: fugit
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -568,11 +568,11 @@ endpoints:
         name: token
         description: 'Invite token.'
         required: true
-        example: eius
+        example: mollitia
         type: string
         custom: []
     cleanUrlParameters:
-      token: eius
+      token: mollitia
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -580,35 +580,35 @@ endpoints:
         name: firstname
         description: 'User first name.'
         required: true
-        example: commodi
+        example: dolor
         type: string
         custom: []
       lastname:
         name: lastname
         description: 'User last name.'
         required: true
-        example: expedita
+        example: voluptatem
         type: string
         custom: []
       password:
         name: password
         description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
         required: true
-        example: '*D0q~%3d'
+        example: '5n{1i|qZTt}WZKLt7iW/'
         type: string
         custom: []
       phone:
         name: phone
         description: 'User phone number.'
         required: false
-        example: inventore
+        example: aut
         type: string
         custom: []
     cleanBodyParameters:
-      firstname: commodi
-      lastname: expedita
-      password: '*D0q~%3d'
-      phone: inventore
+      firstname: dolor
+      lastname: voluptatem
+      password: '5n{1i|qZTt}WZKLt7iW/'
+      phone: aut
     fileParameters: []
     responses:
       -

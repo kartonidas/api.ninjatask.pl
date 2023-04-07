@@ -4,4 +4,26 @@ return [
     "list" => [
         "size" => 50,
     ],
+    "upload" => [
+        "allowed_mime_types" => [
+            "video/x-msvideo" => "avi",
+            "text/csv" => "csv",
+            "application/msword" => "doc",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document" => "docx",
+            "application/gzip" => "gz",
+            "image/gif" => "gif",
+            "audio/mpeg" => "mp3",
+            "application/vnd.oasis.opendocument.presentation" => "odp",
+            "application/vnd.oasis.opendocument.spreadsheet" => "ods",
+            "application/vnd.oasis.opendocument.text" => "odt",
+            "image/png" => "png",
+            "application/pdf" => "pdf",
+            "application/vnd.ms-powerpoint" => "ppt",
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation" => "pptx",
+            "application/x-tar" => "tar",
+            "text/plain" => "txt",
+            "application/zip" => "zip",
+            "application/x-7z-compressed" => "7z"
+        ]
+    ]
 ];

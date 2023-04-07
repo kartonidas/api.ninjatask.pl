@@ -5,15 +5,18 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use App\Exceptions\InvalidStatus;
 use App\Exceptions\ObjectExist;
 use App\Exceptions\ObjectNotExist;
+use App\Models\File;
 use App\Models\Project;
-use App\Models\User;
 use App\Models\Task;
 use App\Models\TaskAssignedUser;
+use App\Models\User;
+use App\Rules\Attachment;
 
 class TaskController extends Controller
 {
@@ -24,7 +27,7 @@ class TaskController extends Controller
     * @urlParam id integer required Project identifier.
     * @queryParam size integer Number of rows. Default: 50
     * @queryParam page integer Number of page (pagination). Default: 1
-    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "name": "Example task", "description": "Example description", "created_at" => "2020-01-01 10:00:00", "assigned_to" => [1,2]}]}
+    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": "1", "name": "Example task", "description": "Example description", "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}]}]}
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
     */
@@ -52,7 +55,10 @@ class TaskController extends Controller
             ->get();
         
         foreach($tasks as $k => $task)
+        {
             $tasks[$k]->assigned_to = $task->getAssignedUserIds();
+            $tasks[$k]->attachments = $task->getAttachments();
+        }
         
         $total = Task::where("project_id", $id)->count();
         $out = [
@@ -71,7 +77,7 @@ class TaskController extends Controller
     *
     * Return task details.
     * @urlParam id integer required Task identifier.
-    * @response 200 {"id": 1, "name": "Example task", "description": "Example description", "created_at" => "2020-01-01 10:00:00", "assigned_to" => [1,2]}
+    * @response 200 {"id": 1, "name": "Example task", "description": "Example description", "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}]}
     * @response 404 {"error":true,"message":"Task does not exist"}
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
@@ -85,6 +91,7 @@ class TaskController extends Controller
             throw new ObjectNotExist(__("Task does not exist"));
         
         $task->assigned_to = $task->getAssignedUserIds();
+        $task->attachments = $task->getAttachments();
         
         return $task;
     }
@@ -96,7 +103,8 @@ class TaskController extends Controller
     * @bodyParam project_id integer required Project identifier.
     * @bodyParam name string required Task name.
     * @bodyParam description string Task description.
-    * @bodyParam users integer Array of users identifier assigned to task.
+    * @bodyParam users Array of users identifier assigned to task.
+    * @bodyParam attachments Array of files attach to task ([{"name": "File name", "base64": Base64 encoded file, "description": "Optional file description"}])
     * @responseField id integer The id of the newly created task
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
@@ -110,6 +118,7 @@ class TaskController extends Controller
             "name" => "required|max:250",
             "description" => "nullable|max:5000",
             "users" => ["nullable", "array", Rule::in($this->getAllowedUserIds())],
+            "attachments" => ["nullable", "array", new Attachment],
         ]);
         
         $project = Project::find($request->input("project_id"));
@@ -122,6 +131,9 @@ class TaskController extends Controller
         $task->description = $request->input("description", "");
         $task->created_user_id = Auth::user()->id;
         $task->save();
+        
+        if(!empty($request->input("attachments", [])))
+            $task->upload($request->input("attachments"));
         
         if($request->input("users"))
             $task->assignUsers($request->input("users"));
@@ -276,6 +288,113 @@ class TaskController extends Controller
             throw new ObjectNotExist(__("User is not currently assigned to task"));
         
         TaskAssignedUser::where("task_id", $task->id)->where("user_id", $user->id)->delete();
+        return true;
+    }
+    
+    /**
+    * Get attachment from task
+    *
+    * Get attachment from task.
+    * @urlParam id integer required Task identifier.
+    * @urlParam aid integer required Attachment identifier.
+    * @response 200 {"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}
+    * @response 404 {"error":true,"message":"Task does not exist"}
+    * @header Authorization: Bearer {TOKEN}
+    * @group Tasks
+    */
+    public function getAttachment(Request $request, $taskId, $id)
+    {
+        User::checkAccess("task:list");
+        
+        $task = Task::find($taskId);
+        if(!$task)
+            throw new ObjectNotExist(__("Task does not exist"));
+        
+        $file = File::apiFields()->find($id);
+        if(!$file)
+            throw new ObjectNotExist(__("Attachment does not exist"));
+        
+        if(!$file->fileExists())
+            throw new ObjectNotExist(__("File does not exist"));
+        
+        $file->base64 = $file->getBase64();
+        return $file;
+    }
+    
+    /**
+    * Add attachment to task
+    *
+    * Add attachment to task.
+    * @urlParam id integer required Task identifier.
+    * @responseField status boolean Add attachment status
+    * @bodyParam name string required File name.
+    * @bodyParam file string required Base64 encode file content".
+    * @bodyParam description string Description".
+    * @response 404 {"error":true,"message":"Task does not exist"}
+    * @header Authorization: Bearer {TOKEN}
+    * @group Tasks
+    */
+    public function addAttachment(Request $request, $id)
+    {
+        User::checkAccess("task:update");
+        
+        $task = Task::find($id);
+        if(!$task)
+            throw new ObjectNotExist(__("Task does not exist"));
+        
+        $request->validate([
+            "name" => "required|max:200",
+            "file" => "required",
+            "description" => "nullable|max:2000",
+        ]);
+        
+        $data = [
+            "base64" => $request->input("file"),
+            "name" => $request->input("name"),
+            "description" => $request->input("description", ""),
+        ];
+        $data = json_encode($data);
+        
+        $validator = Validator::make(["attachments" => [$data]], [
+            "attachments" => ["nullable", "array", new Attachment],
+        ]);
+        
+        if($validator->fails())
+        {
+            throw ValidationException::withMessages([
+                $validator->messages()->all(),
+            ]);
+        }
+        
+        $task->upload([$data]);
+        return true;
+    }
+    
+    /**
+    * Remove attachment from task
+    *
+    * Remove attachment from task.
+    * @urlParam id integer required Task identifier.
+    * @urlParam aid integer required Attachment identifier.
+    * @responseField status boolean Remove attachment status
+    * @response 404 {"error":true,"message":"Task does not exist"}
+    * @header Authorization: Bearer {TOKEN}
+    * @group Tasks
+    */
+    public function removeAttachment(Request $request, $taskId, $id)
+    {
+        User::checkAccess("task:update");
+        
+        $task = Task::find($taskId);
+        if(!$task)
+            throw new ObjectNotExist(__("Task does not exist"));
+        
+        $file = File::apiFields()->find($id);
+        if(!$file)
+            throw new ObjectNotExist(__("Attachment does not exist"));
+        
+        $file->delete();
+        
         return true;
     }
     

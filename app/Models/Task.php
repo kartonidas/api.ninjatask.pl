@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\TaskAssignedUser;
 use App\Models\TaskTime;
+use App\Traits\File;
 use App\Traits\DbTimestamp;
 
 class Task extends Model
 {
-    use DbTimestamp, SoftDeletes;
+    use File, DbTimestamp, SoftDeletes;
     use \App\Traits\UuidTrait {
         boot as traitBoot;
     }
