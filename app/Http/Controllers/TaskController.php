@@ -310,7 +310,7 @@ class TaskController extends Controller
         if(!$task)
             throw new ObjectNotExist(__("Task does not exist"));
         
-        $file = File::apiFields()->find($id);
+        $file = File::where("type", $task->getTable())->where("object_id", $task->id)->apiFields()->find($id);
         if(!$file)
             throw new ObjectNotExist(__("Attachment does not exist"));
         
@@ -389,7 +389,7 @@ class TaskController extends Controller
         if(!$task)
             throw new ObjectNotExist(__("Task does not exist"));
         
-        $file = File::apiFields()->find($id);
+        $file = File::where("type", $task->getTable())->where("object_id", $task->id)->apiFields()->find($id);
         if(!$file)
             throw new ObjectNotExist(__("Attachment does not exist"));
         

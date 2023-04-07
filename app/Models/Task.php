@@ -12,7 +12,7 @@ use App\Traits\DbTimestamp;
 
 class Task extends Model
 {
-    use File, DbTimestamp, SoftDeletes;
+    use DbTimestamp, File, SoftDeletes;
     use \App\Traits\UuidTrait {
         boot as traitBoot;
     }

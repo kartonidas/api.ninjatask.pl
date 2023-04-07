@@ -79,9 +79,9 @@ Route::middleware('auth:sanctum')->group(function () use($router) {
     $router->get('/task/{id}/comment/{cid}', [TaskCommentController::class, "get"])->where("id", "[0-9]+")->where("cid", "[0-9]+");
     $router->put('/task/{id}/comment/{cid}', [TaskCommentController::class, "update"])->where("id", "[0-9]+")->where("cid", "[0-9]+");
     $router->delete('/task/{id}/comment/{cid}', [TaskCommentController::class, "delete"])->where("id", "[0-9]+")->where("cid", "[0-9]+");
-    
-    // todo
-    // dodawanie komentarzy do zadania
+    $router->get('/task/{id}/comment/{cid}/attachment/{aid}', [TaskCommentController::class, "getAttachment"])->where("id", "[0-9]+")->where("cid", "[0-9]+")->where("aid", "[0-9]+");
+    $router->put('/task/{id}/comment/{cid}/attachment', [TaskCommentController::class, "addAttachment"])->where("id", "[0-9]+")->where("cid", "[0-9]+");
+    $router->delete('/task/{id}/comment/{cid}/attachment/{aid}', [TaskCommentController::class, "removeAttachment"])->where("id", "[0-9]+")->where("cid", "[0-9]+")->where("aid", "[0-9]+");
 });
 
 // REJESTRACJA

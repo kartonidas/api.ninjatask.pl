@@ -102,11 +102,11 @@ endpoints:
         name: token
         description: 'Register token.'
         required: true
-        example: dolorem
+        example: alias
         type: string
         custom: []
     cleanUrlParameters:
-      token: dolorem
+      token: alias
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -152,11 +152,11 @@ endpoints:
         name: token
         description: 'Register token.'
         required: true
-        example: velit
+        example: dolorum
         type: string
         custom: []
     cleanUrlParameters:
-      token: velit
+      token: dolorum
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -164,43 +164,43 @@ endpoints:
         name: firstname
         description: 'User first name.'
         required: true
-        example: perspiciatis
+        example: dolorem
         type: string
         custom: []
       lastname:
         name: lastname
         description: 'User last name.'
         required: true
-        example: soluta
+        example: enim
         type: string
         custom: []
       password:
         name: password
         description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
         required: true
-        example: 'U~xhO"1iJE'
+        example: ')c=}Yen'
         type: string
         custom: []
       firm_identifier:
         name: firm_identifier
         description: 'User firm name.'
         required: true
-        example: ad
+        example: incidunt
         type: string
         custom: []
       phone:
         name: phone
         description: 'User phone number.'
         required: true
-        example: facilis
+        example: eveniet
         type: string
         custom: []
     cleanBodyParameters:
-      firstname: perspiciatis
-      lastname: soluta
-      password: 'U~xhO"1iJE'
-      firm_identifier: ad
-      phone: facilis
+      firstname: dolorem
+      lastname: enim
+      password: ')c=}Yen'
+      firm_identifier: incidunt
+      phone: eveniet
     fileParameters: []
     responses:
       -
@@ -247,27 +247,27 @@ endpoints:
         name: email
         description: 'Account e-mail address'
         required: true
-        example: eunice.rolfson@example.com
+        example: brionna.runte@example.net
         type: string
         custom: []
       password:
         name: password
         description: 'Account password'
         required: true
-        example: "h@pQQC3'+-^?-em89/?"
+        example: '*0B?"eXpIvWAy%J/.8!Z'
         type: string
         custom: []
       device_name:
         name: device_name
         description: 'Device name'
         required: true
-        example: quisquam
+        example: rerum
         type: string
         custom: []
     cleanBodyParameters:
-      email: eunice.rolfson@example.com
-      password: "h@pQQC3'+-^?-em89/?"
-      device_name: quisquam
+      email: brionna.runte@example.net
+      password: '*0B?"eXpIvWAy%J/.8!Z'
+      device_name: rerum
     fileParameters: []
     responses:
       -
@@ -314,19 +314,19 @@ endpoints:
         name: email
         description: 'Account e-mail address'
         required: true
-        example: ursula.bergnaum@example.net
+        example: hpollich@example.net
         type: string
         custom: []
       firm_id:
         name: firm_id
         description: 'Firm identifier (if e-mail address exist in more than once firms)'
         required: false
-        example: 19
+        example: 14
         type: integer
         custom: []
     cleanBodyParameters:
-      email: ursula.bergnaum@example.net
-      firm_id: 19
+      email: hpollich@example.net
+      firm_id: 14
     fileParameters: []
     responses:
       -
@@ -373,19 +373,19 @@ endpoints:
         name: token
         description: 'forgot password token'
         required: true
-        example: praesentium
+        example: atque
         type: string
         custom: []
       email:
         name: email
         description: 'Account e-mail address'
         required: true
-        example: jfranecki@example.com
+        example: jerrell77@example.com
         type: string
         custom: []
     cleanBodyParameters:
-      token: praesentium
-      email: jfranecki@example.com
+      token: atque
+      email: jerrell77@example.com
     fileParameters: []
     responses: []
     responseFields:
@@ -426,27 +426,27 @@ endpoints:
         name: token
         description: 'forgot password token'
         required: true
-        example: et
+        example: voluptatibus
         type: string
         custom: []
       email:
         name: email
         description: 'Account e-mail address'
         required: true
-        example: christina.hoeger@example.com
+        example: talia.kuvalis@example.org
         type: string
         custom: []
       password:
         name: password
         description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
         required: true
-        example: "Kz[`Btc4d'"
+        example: '["()]EpwBY>%OOZUs'
         type: string
         custom: []
     cleanBodyParameters:
-      token: et
-      email: christina.hoeger@example.com
-      password: "Kz[`Btc4d'"
+      token: voluptatibus
+      email: talia.kuvalis@example.org
+      password: '["()]EpwBY>%OOZUs'
     fileParameters: []
     responses: []
     responseFields:
@@ -490,11 +490,11 @@ endpoints:
         name: email
         description: 'Account e-mail address'
         required: true
-        example: landen.roob@example.org
+        example: brenna.crist@example.com
         type: string
         custom: []
     cleanBodyParameters:
-      email: landen.roob@example.org
+      email: brenna.crist@example.com
     fileParameters: []
     responses:
       -

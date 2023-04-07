@@ -25,36 +25,36 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 16
+        example: 6
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 16
+      id: 6
     queryParameters:
       size:
         name: size
         description: 'Number of rows. Default: 50'
         required: false
-        example: 4
+        example: 1
         type: integer
         custom: []
       page:
         name: page
         description: 'Number of page (pagination). Default: 1'
         required: false
-        example: 17
+        example: 16
         type: integer
         custom: []
     cleanQueryParameters:
-      size: 4
-      page: 17
+      size: 1
+      page: 16
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
     responses:
       -
         status: 200
-        content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "comment": "Example comment", "user_id": 1, "created_at": "2020-01-01 10:00:00"}]}'
+        content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "comment": "Example comment", "user_id": 1, "created_at": "2020-01-01 10:00:00", "attachments": [{"id": 1, "user_id": 1, "type": "task_comments", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}]}]}'
         headers: []
         description: ''
         custom: []
@@ -90,19 +90,29 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 14
+        example: 11
         type: integer
         custom: []
       comment:
         name: comment
         description: Comment.
         required: true
-        example: asperiores
+        example: voluptates
         type: string
         custom: []
+      attachments:
+        name: attachments
+        description: 'of files attach to task ([{"name": "File name", "base64": Base64 encoded file, "description": "Optional file description"}])'
+        required: false
+        example:
+          - eveniet
+        type: 'string[]'
+        custom: []
     cleanBodyParameters:
-      id: 14
-      comment: asperiores
+      id: 11
+      comment: voluptates
+      attachments:
+        - eveniet
     fileParameters: []
     responses: []
     responseFields:
@@ -140,19 +150,19 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 4
+        example: 9
         type: integer
         custom: []
       cid:
         name: cid
         description: 'Comment identifier.'
         required: true
-        example: 14
+        example: 18
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 4
-      cid: 14
+      id: 9
+      cid: 18
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -161,7 +171,7 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"id": 1, "comment": "Example comment", "user_id": "1", "created_at": "2020-01-01 10:00:00"}'
+        content: '{"id": 1, "comment": "Example comment", "user_id": "1", "created_at": "2020-01-01 10:00:00", "attachments": [{"id": 1, "user_id": 1, "type": "task_comments", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}]}'
         headers: []
         description: ''
         custom: []
@@ -199,11 +209,11 @@ endpoints:
         name: cid
         description: 'Comment identifier.'
         required: true
-        example: 14
+        example: 12
         type: integer
         custom: []
     cleanUrlParameters:
-      cid: 14
+      cid: 12
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -211,19 +221,19 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 17
+        example: 2
         type: integer
         custom: []
       comment:
         name: comment
         description: comment.
         required: false
-        example: quia
+        example: repudiandae
         type: string
         custom: []
     cleanBodyParameters:
-      id: 17
-      comment: quia
+      id: 2
+      comment: repudiandae
     fileParameters: []
     responses: []
     responseFields:
@@ -261,11 +271,11 @@ endpoints:
         name: cid
         description: 'Comment identifier.'
         required: true
-        example: 2
+        example: 13
         type: integer
         custom: []
     cleanUrlParameters:
-      cid: 2
+      cid: 13
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -273,11 +283,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 12
+        example: 1
         type: integer
         custom: []
     cleanBodyParameters:
-      id: 12
+      id: 1
     fileParameters: []
     responses:
       -
@@ -290,6 +300,225 @@ endpoints:
       status:
         name: status
         description: 'Delete status'
+        required: false
+        example: null
+        type: boolean
+        custom: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/task/{id}/comment/{cid}/attachment/{aid}'
+    metadata:
+      groupName: 'Task comments'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get attachment from comment'
+      description: 'Get attachment from comment.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters:
+      id:
+        name: id
+        description: 'Task identifier.'
+        required: true
+        example: 14
+        type: integer
+        custom: []
+      cid:
+        name: cid
+        description: 'Comment identifier.'
+        required: true
+        example: 12
+        type: integer
+        custom: []
+      aid:
+        name: aid
+        description: 'Attachment identifier.'
+        required: true
+        example: 6
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 14
+      cid: 12
+      aid: 6
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"id": 1, "user_id": 1, "type": "task_comments", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: '{"error":true,"message":"Task does not exist"}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+    uri: 'api/task/{id}/comment/{cid}/attachment'
+    metadata:
+      groupName: 'Task comments'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Add attachment to comment'
+      description: 'Add attachment to comment.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters:
+      id:
+        name: id
+        description: 'Task identifier.'
+        required: true
+        example: 12
+        type: integer
+        custom: []
+      cid:
+        name: cid
+        description: 'Comment identifier.'
+        required: true
+        example: 13
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 12
+      cid: 13
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        name: name
+        description: 'File name.'
+        required: true
+        example: ut
+        type: string
+        custom: []
+      file:
+        name: file
+        description: 'Base64 encode file content".'
+        required: true
+        example: enim
+        type: string
+        custom: []
+      description:
+        name: description
+        description: 'Description".'
+        required: false
+        example: 'Dolores animi voluptatem fugit molestiae.'
+        type: string
+        custom: []
+    cleanBodyParameters:
+      name: ut
+      file: enim
+      description: 'Dolores animi voluptatem fugit molestiae.'
+    fileParameters: []
+    responses:
+      -
+        status: 404
+        content: '{"error":true,"message":"Task does not exist"}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields:
+      status:
+        name: status
+        description: 'Add attachment status'
+        required: false
+        example: null
+        type: boolean
+        custom: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/task/{id}/comment/{cid}/attachment/{aid}'
+    metadata:
+      groupName: 'Task comments'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Remove attachment from comment'
+      description: 'Remove attachment from comment.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters:
+      id:
+        name: id
+        description: 'Task identifier.'
+        required: true
+        example: 8
+        type: integer
+        custom: []
+      cid:
+        name: cid
+        description: 'Comment identifier.'
+        required: true
+        example: 8
+        type: integer
+        custom: []
+      aid:
+        name: aid
+        description: 'Attachment identifier.'
+        required: true
+        example: 11
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 8
+      cid: 8
+      aid: 11
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 404
+        content: '{"error":true,"message":"Task does not exist"}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields:
+      status:
+        name: status
+        description: 'Remove attachment status'
         required: false
         example: null
         type: boolean
