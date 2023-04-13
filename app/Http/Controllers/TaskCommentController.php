@@ -86,7 +86,7 @@ class TaskCommentController extends Controller
         if(!$task)
             throw new ObjectNotExist(__("Task not exist"));
         
-        $comment = TaskComment::apiFields()->find($id);
+        $comment = TaskComment::where("task_id", $taskId)->apiFields()->find($id);
         if(!$comment)
             throw new ObjectNotExist(__("Comment does not exist"));
         
@@ -150,7 +150,7 @@ class TaskCommentController extends Controller
         if(!$task)
             throw new ObjectNotExist(__("Task does not exist"));
         
-        $comment = TaskComment::apiFields()->find($id);
+        $comment = TaskComment::where("task_id", $taskId)->apiFields()->find($id);
         if(!$comment)
             throw new ObjectNotExist(__("Comment does not exist"));
         
@@ -201,7 +201,7 @@ class TaskCommentController extends Controller
         if(!$task)
             throw new ObjectNotExist(__("Task does not exist"));
         
-        $comment = TaskComment::apiFields()->find($id);
+        $comment = TaskComment::where("task_id", $taskId)->apiFields()->find($id);
         if(!$comment)
             throw new ObjectNotExist(__("Comment does not exist"));
         
@@ -229,7 +229,7 @@ class TaskCommentController extends Controller
         if(!$task)
             throw new ObjectNotExist(__("Task does not exist"));
         
-        $comment = TaskComment::apiFields()->find($commentId);
+        $comment = TaskComment::where("task_id", $taskId)->apiFields()->find($commentId);
         if(!$comment)
             throw new ObjectNotExist(__("Comment does not exist"));
         
@@ -266,7 +266,7 @@ class TaskCommentController extends Controller
         if(!$task)
             throw new ObjectNotExist(__("Task does not exist"));
         
-        $comment = TaskComment::apiFields()->find($id);
+        $comment = TaskComment::where("task_id", $taskId)->apiFields()->find($id);
         if(!$comment)
             throw new ObjectNotExist(__("Comment does not exist"));
         
@@ -318,7 +318,7 @@ class TaskCommentController extends Controller
         if(!$task)
             throw new ObjectNotExist(__("Task does not exist"));
         
-        $comment = TaskComment::apiFields()->find($commentId);
+        $comment = TaskComment::where("task_id", $taskId)->apiFields()->find($commentId);
         if(!$comment)
             throw new ObjectNotExist(__("Comment does not exist"));
         

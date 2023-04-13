@@ -185,7 +185,7 @@ class TaskTimeController extends Controller
         if(!$task)
             throw new ObjectNotExist(__("Task does not exist"));
         
-        $timer = TaskTime::find($id);
+        $timer = TaskTime::where("task_id", $taskId)->find($id);
         if(!$timer)
             throw new ObjectNotExist(__("Task time does not exist"));
         
@@ -292,7 +292,7 @@ class TaskTimeController extends Controller
         if(!$task)
             throw new ObjectNotExist(__("Task does not exist"));
         
-        $timer = TaskTime::find($id);
+        $timer = TaskTime::where("task_id", $taskId)->find($id);
         if(!$timer)
             throw new ObjectNotExist(__("Task time does not exist"));
         
