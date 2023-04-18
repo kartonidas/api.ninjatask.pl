@@ -1,3 +1,5 @@
 <div>
-    Token: {{ $token }}
+    Token: {{ $token->token }}
+    <br/>
+    Code: {{ $token->code }}
 </div>

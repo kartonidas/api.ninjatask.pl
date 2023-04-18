@@ -9,6 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use App\Models\User;
+use App\Models\UserRegisterToken;
 
 class InitMessage extends Mailable
 {
@@ -17,7 +18,7 @@ class InitMessage extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public User $user, public string $token)
+    public function __construct(public User $user, public UserRegisterToken $token)
     {
     }
 

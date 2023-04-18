@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use DateTime;
+use DateInterval;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -136,12 +138,25 @@ class User extends Authenticatable
     
     public function generateRegisterToken()
     {
+        $date = new DateTime();
+        $date->add(new DateInterval("PT1H"));
+        
         $token = new UserRegisterToken;
         $token->user_id = $this->id;
         $token->token = Str::random(20) . ":" . Str::uuid()->toString();
+        $token->code = self::generateUniqueCode();
+        $token->code_expired_at = $date->format("Y-m-d H:i:s");
         $token->save();
         
-        return $token->token;
+        return $token;
+    }
+    
+    private static function generateUniqueCode()
+    {
+        $code = strtoupper(Str::random(6));
+        if(UserRegisterToken::where("code", $code)->count())
+            return self::generateUniqueCode();
+        return $code;
     }
     
     public function sendInitMessage($token)

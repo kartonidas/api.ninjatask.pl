@@ -5,11 +5,12 @@ namespace App\Models;
 use DateInterval;
 use DateTime;
 use Illuminate\Database\Eloquent\Model;
+use App\Exceptions\Exception;
 use App\Models\User;
 
 class UserRegisterToken extends Model
 {
-    public static function removeExpiredInvitationsToken()
+    public static function removeExpiredRegisterToken()
     {
         $date = new DateTime();
         $date = $date->sub(new DateInterval("P" . env("DAYS_TO_EXPIRE_REGISTER_TOKEN", 7) . "D"));
@@ -21,5 +22,11 @@ class UserRegisterToken extends Model
                 $user->delete();
             $row->delete();
         }
+    }
+    
+    public function checkExpiration()
+    {
+        if(time() > strtotime($this->code_expired_at))
+            throw new Exception(__("Register token expired"));
     }
 }

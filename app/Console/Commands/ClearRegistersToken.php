@@ -26,6 +26,6 @@ class ClearRegistersToken extends Command
      */
     public function handle(): void
     {
-        UserRegisterToken::removeExpiredInvitationsToken();
+        UserRegisterToken::removeExpiredRegisterToken();
     }
 }

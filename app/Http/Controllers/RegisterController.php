@@ -67,13 +67,18 @@ class RegisterController extends Controller
     */
     public function get(Request $request, $token)
     {
-        $userRegisterToken = UserRegisterToken::where("token", $token)->first();
+        $column = strlen($token) == 6 ? "code" : "token";
+        $userRegisterToken = UserRegisterToken::where($column, $token)->first();
+            
         if(!$userRegisterToken)
         {
             throw ValidationException::withMessages([
                 "email" => [__("Invalid register token.")],
             ]);
         }
+        
+        if($column == "code")
+            $userRegisterToken->checkExpiration();
         
         $user = User::select("email")->find($userRegisterToken->user_id);
         if(!$user)
@@ -98,13 +103,17 @@ class RegisterController extends Controller
     */
     public function confirm(Request $request, $token)
     {
-        $userRegisterToken = UserRegisterToken::where("token", $token)->first();
+        $column = strlen($token) == 6 ? "code" : "token";
+        $userRegisterToken = UserRegisterToken::where($column, $token)->first();
         if(!$userRegisterToken)
         {
             throw ValidationException::withMessages([
                 "token" => [__("Invalid register token.")],
             ]);
         }
+        
+        if($column == "code")
+            $userRegisterToken->checkExpiration();
         
         $user = User::find($userRegisterToken->user_id);
         if(!$user)

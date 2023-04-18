@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->integer('user_id');
             $table->string('token', 60)->unique();
+            $table->string('code', 6)->unique();
             $table->timestamps();
+            $table->dateTime('code_expired_at');
             
             $table->index(['user_id']);
         });
