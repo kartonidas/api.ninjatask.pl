@@ -21,7 +21,8 @@ class TaskCommentTest extends TestCase
             'device_name' => 'test',
         ];
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
@@ -40,7 +41,8 @@ class TaskCommentTest extends TestCase
         ];
         $this->setUserPermission($data['email'], $permission);
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();

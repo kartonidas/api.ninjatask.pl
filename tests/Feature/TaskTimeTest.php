@@ -22,7 +22,8 @@ class TaskTimeTest extends TestCase
             'device_name' => 'test',
         ];
         $response = $this->postJson('/api/login', $data);
-        return $response->getContent();
+        $response = json_decode($response->getContent());
+        return $response->token;
     }
     
     private function initPermission($permission = '')
@@ -36,7 +37,8 @@ class TaskTimeTest extends TestCase
         ];
         $this->setUserPermission($data['email'], $permission);
         $response = $this->postJson('/api/login', $data);
-        return $response->getContent();
+        $response = json_decode($response->getContent());
+        return $response->token;
     }
     
     // Successfull start task timer

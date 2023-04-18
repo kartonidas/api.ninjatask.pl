@@ -26,7 +26,8 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $project = $this->getProject($token);
         $data = $this->getAccount($accountUserId)['projects'][0]['tasks'][0];
@@ -60,7 +61,8 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $project = $this->getProject($token);
         $taskData = $this->getAccount($accountUserId)['projects'][0]['tasks'][0];
@@ -106,7 +108,8 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $project = $this->getProject($token);
         $taskData = $this->getAccount($accountUserId)['projects'][0]['tasks'][0];
@@ -133,7 +136,8 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $project = $this->getProject($token);
         
@@ -160,7 +164,8 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $project = $this->getProject($token);
         $totalTasks = Task::withoutGlobalScopes()->where('project_id', $project->id)->count();
@@ -188,7 +193,8 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $project = $this->getProject($token);
         $totalTasks = Task::withoutGlobalScopes()->where('project_id', $project->id)->count();
@@ -220,7 +226,8 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $project = $this->getProject($token);
         $totalTasks = Task::withoutGlobalScopes()->where('project_id', $project->id)->count();
@@ -257,7 +264,8 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
@@ -282,7 +290,8 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $response = $this->withToken($token)->getJson('/api/task/' . -9);
         $response->assertStatus(404);
@@ -305,7 +314,8 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
@@ -351,7 +361,8 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $data = [
             'name' => 'Name updated',
@@ -397,7 +408,8 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         $uuid = $this->getAccountUuui($token);
         
         $firm = Firm::where('uuid', $uuid)->first();
@@ -427,7 +439,8 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         $uuid = $this->getAccountUuui($token);
         
         $firm = Firm::where('uuid', $uuid)->first();
@@ -479,7 +492,8 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         $uuid = $this->getAccountUuui($token);
         
         $firm = Firm::where('uuid', $uuid)->first();
@@ -511,7 +525,8 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         $uuid = $this->getAccountUuui($token);
         
         $firm = Firm::where('uuid', $uuid)->first();
@@ -578,7 +593,8 @@ class TaskTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "task:create");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $project = $this->getProject($token);
         $data = $this->getAccount($accountUserId)['projects'][0]['tasks'][0];
@@ -600,7 +616,8 @@ class TaskTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "task:list,update,delete");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $project = $this->getProject($token);
         $data = $this->getAccount($accountUserId)['projects'][0]['tasks'][0];
@@ -622,7 +639,8 @@ class TaskTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "task:list");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $project = $this->getProject($token);
         
@@ -643,7 +661,8 @@ class TaskTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "task:create,update,delete");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $project = $this->getProject($token);
         
@@ -663,7 +682,8 @@ class TaskTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "task:delete");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
@@ -684,7 +704,8 @@ class TaskTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "task:list,create,update");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
@@ -705,7 +726,8 @@ class TaskTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "task:list,create,update,delete");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
@@ -726,7 +748,8 @@ class TaskTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "task:create,update,delete");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
@@ -747,7 +770,8 @@ class TaskTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "task:update");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
@@ -772,7 +796,8 @@ class TaskTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "task:list,create,delete");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
@@ -797,7 +822,8 @@ class TaskTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "task:update");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         $uuid = $this->getAccountUuui($token);
         
         $firm = Firm::where('uuid', $uuid)->first();
@@ -822,7 +848,8 @@ class TaskTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "task:list,create,delete");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         $uuid = $this->getAccountUuui($token);
         
         $firm = Firm::where('uuid', $uuid)->first();
@@ -847,7 +874,8 @@ class TaskTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "task:update");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         $uuid = $this->getAccountUuui($token);
         
         $firm = Firm::where('uuid', $uuid)->first();
@@ -878,7 +906,8 @@ class TaskTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "task:list,create,delete");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         $uuid = $this->getAccountUuui($token);
         
         $firm = Firm::where('uuid', $uuid)->first();

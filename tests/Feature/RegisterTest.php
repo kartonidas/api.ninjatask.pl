@@ -127,7 +127,8 @@ class RegisterTest extends TestCase
         ];
         $response = $this->post('/api/login', $data);
         $response->assertStatus(200);
-        $loginToken = $response->getContent();
+        $response = json_decode($response->getContent());
+        $loginToken = $response->token;
         
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '. $loginToken,

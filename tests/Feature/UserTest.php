@@ -29,7 +29,8 @@ class UserTest extends TestCase
             ];
             $response = $this->postJson('/api/login', $data);
             $response->assertStatus(200);
-            $token = $response->getContent();
+            $response = json_decode($response->getContent());
+            $token = $response->token;
             
             $response = $this->withToken($token)->getJson('/api/get-firm-id');
             $response->assertStatus(200);
@@ -97,7 +98,8 @@ class UserTest extends TestCase
         ];
         $response = $this->postJson('/api/login', $data);
         $response->assertStatus(200);
-        $loginToken = $response->getContent();
+        $response = json_decode($response->getContent());
+        $loginToken = $response->token;
         
         $response = $this->withToken($loginToken)->getJson('/api/get-firm-id');
         $response->assertStatus(200)->assertSeeText($user->firm_id);
@@ -846,7 +848,8 @@ class UserTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "user:list");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $response = $this->withToken($token)->getJson('/api/users');
         $response->assertStatus(200);
@@ -863,7 +866,8 @@ class UserTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "user:create,update,delete");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $response = $this->withToken($token)->getJson('/api/users');
         $response->assertStatus(405);
@@ -880,7 +884,8 @@ class UserTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "user:create");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $response = $this->withToken($token)->putJson('/api/user', $this->getAccount(0)['workers'][0]);
         $response->assertStatus(200);
@@ -897,7 +902,8 @@ class UserTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "user:list,update,delete");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $response = $this->withToken($token)->putJson('/api/user', $this->getAccount(0)['workers'][0]);
         $response->assertStatus(405);
@@ -914,7 +920,8 @@ class UserTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "user:update");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $response = $this->withToken($token)->getJson('/api/get-firm-id');
         $firmId = $response->getContent();
@@ -940,7 +947,8 @@ class UserTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "user:list,create,delete");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $response = $this->withToken($token)->getJson('/api/get-firm-id');
         $firmId = $response->getContent();
@@ -966,7 +974,8 @@ class UserTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "user:list,create,update,delete");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $user = new User;
         $user->firm_id = 99;
@@ -989,7 +998,8 @@ class UserTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "user:delete");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $response = $this->withToken($token)->getJson('/api/get-firm-id');
         $firmId = $response->getContent();
@@ -1015,7 +1025,8 @@ class UserTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "user:list,create,update");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $response = $this->withToken($token)->getJson('/api/get-firm-id');
         $firmId = $response->getContent();
@@ -1041,7 +1052,8 @@ class UserTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "user:list,create,update,delete");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $response = $this->withToken($token)->getJson('/api/get-firm-id');
         $firmId = $response->getContent();
@@ -1067,7 +1079,8 @@ class UserTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "user:list");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $response = $this->withToken($token)->getJson('/api/get-firm-id');
         $firmId = $response->getContent();
@@ -1094,7 +1107,8 @@ class UserTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "user:create,update,delete");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $response = $this->withToken($token)->getJson('/api/get-firm-id');
         $firmId = $response->getContent();
@@ -1121,7 +1135,8 @@ class UserTest extends TestCase
         ];
         $this->setUserPermission($data['email'], "user:list,create,update,delete");
         $response = $this->postJson('/api/login', $data);
-        $token = $response->getContent();
+        $response = json_decode($response->getContent());
+        $token = $response->token;
         
         $response = $this->withToken($token)->getJson('/api/get-firm-id');
         $firmId = $response->getContent();
