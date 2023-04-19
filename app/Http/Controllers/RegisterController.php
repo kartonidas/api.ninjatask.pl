@@ -123,7 +123,7 @@ class RegisterController extends Controller
             "firstname" => "required|max:100",
             "lastname" => "required|max:100",
             "phone" => "required|max:30",
-            "password" => ["required", Password::min(8)->letters()->mixedCase()->numbers()->symbols(), "confirmed"],
+            "password" => ["required", Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
             "firm_identifier" => ["required", new FirmIdentifier, "max:200"]
         ]);
         
