@@ -30,6 +30,7 @@ class UserController extends Controller
     * @bodyParam email string required Account e-mail address
     * @bodyParam password string required Account password
     * @bodyParam device_name string required Device name
+    * @bodyParam firm_id integer Firm identifier (required if e-mail address is register on two or more firms)
     * @responseField token string Auth token
     * @response 422 {"error":true,"message":"The provided credentials are incorrect.","errors":{"email":["The provided credentials are incorrect."]}}
     * @group User registation
@@ -70,8 +71,8 @@ class UserController extends Controller
     * Get user email assigned firm identifiers
     * Because e-mail addresses may be repeated within other companies, if the e-mail address exists more than once,
     * you must enter the company ID when logging in / remembering the password.
-    * @bodyParam email string required Account e-mail address
-    * @responseField status boolean Status
+    * @queryParam email string required Account e-mail address
+    * @response 200 [{"id": 1, "name": "Example Firm"}]
     * @response 404 {"error":true,"message":"User does not exist"}
     * @group User registation
     */
