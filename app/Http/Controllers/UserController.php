@@ -549,6 +549,7 @@ class UserController extends Controller
     *
     * Get logged user permissions
     * @header Authorization: Bearer {TOKEN}
+    * @response 200 {"permission":{"project":["list","create","update","delete"],"task":["list","create","update","delete"],"user":["list","create","update","delete"],"permission":["list","create","update","delete"]}}
     * @group User management
     */
     public function getPermissions()
