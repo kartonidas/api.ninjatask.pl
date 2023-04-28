@@ -103,8 +103,8 @@ class TaskController extends Controller
     * @bodyParam project_id integer required Project identifier.
     * @bodyParam name string required Task name.
     * @bodyParam description string Task description.
-    * @bodyParam users Array of users identifier assigned to task.
-    * @bodyParam attachments Array of files attach to task ([{"name": "File name", "base64": Base64 encoded file, "description": "Optional file description"}])
+    * @bodyParam users array Array of users identifier assigned to task.
+    * @bodyParam attachments array Array of files attach to task ([{"name": "File name", "base64": Base64 encoded file, "description": "Optional file description"}])
     * @responseField id integer The id of the newly created task
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
@@ -396,6 +396,49 @@ class TaskController extends Controller
         $file->delete();
         
         return true;
+    }
+    
+    /**
+    * Get task allowed users
+    *
+    * Get task allowed users ready to assigned.
+    * @urlParam id integer optional Task identifier.
+    * @response 200 [{"id":2,"firstname":"John","lastname":"Doe","email":"john.doe@gmail.com","_me":true,"_allowed":true,"_check":false}]
+    * @header Authorization: Bearer {TOKEN}
+    * @group Tasks
+    */
+    public function getAllowedUsers(Request $request, $taskId = 0)
+    {
+        User::checkAccess("task:list");
+        
+        
+        
+        // TODO!!!!!!!!!!!!!!!!!
+        if($taskId)
+        {
+            // Chodzi o to, aby pobrać jacy uzytkownicy są przypisani do tasku
+            // i ustawić im ponizej falge _check
+        }
+        
+        
+        
+        
+        $out = [];
+        $users = User::withTrashed()->byFirm()->where("activated", 1)->orderBy("lastname", "ASC")->orderBy("firstname", "ASC")->get();
+        foreach($users as $user)
+        {
+            $out[] = [
+                "id" => $user->id,
+                "firstname" => $user->firstname,
+                "lastname" => $user->lastname,
+                "email" => $user->email,
+                "_me" => $user->id == Auth::user()->id,
+                "_allowed" => !$user->trashed(),
+                "_check" => false,
+            ];
+        }
+        
+        return $out;
     }
     
     private function getAllowedUserIds()
