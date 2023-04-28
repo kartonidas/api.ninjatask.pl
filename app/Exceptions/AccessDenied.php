@@ -6,5 +6,5 @@ use App\Exceptions\ApiBaseException;
 
 class AccessDenied extends ApiBaseException
 {
-    public $status = 405;
+    public $status = 403;
 }

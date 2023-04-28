@@ -76,7 +76,7 @@ class Handler extends ExceptionHandler
             return new JsonResponse([
                 'error' => true,
                 'message' => $exception->getMessage(),
-            ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+            ], JsonResponse::HTTP_UNAUTHORIZED);
         });
         
     }
