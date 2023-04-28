@@ -543,4 +543,16 @@ class UserController extends Controller
     {
         return Auth::user()->id;
     }
+    
+    /**
+    * Get logged user permissions
+    *
+    * Get logged user permissions
+    * @header Authorization: Bearer {TOKEN}
+    * @group User management
+    */
+    public function getPermissions()
+    {
+        return Auth::user()->getAllUserPermissions();
+    }
 }

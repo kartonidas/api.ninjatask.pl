@@ -254,4 +254,22 @@ class User extends Authenticatable
         $defaultPermissions->permissions = implode(";", $permissions);
         $defaultPermissions->saveQuietly();
     }
+    
+    public function getAllUserPermissions()
+    {
+        $out = [];
+        if($this->owner || $this->superuser)
+        {
+            foreach(config("permissions.permission") as $module => $permission)
+                $out[$module] = $permission["operation"];
+        }
+        else
+        {
+            $permission = UserPermission::find($this->user_permission_id);
+            if($permission)
+                $out = $permission->getPermission();
+        }
+        
+        return ["permission" => $out];
+    }
 }

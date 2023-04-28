@@ -25,11 +25,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 16
+        example: 14
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 16
+      id: 14
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -77,11 +77,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 19
+        example: 2
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 19
+      id: 2
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -129,11 +129,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 16
+        example: 19
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 16
+      id: 19
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -181,11 +181,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 15
+        example: 18
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 15
+      id: 18
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -193,35 +193,35 @@ endpoints:
         name: started
         description: 'Start time.'
         required: true
-        example: 12
+        example: 20
         type: integer
         custom: []
       total:
         name: total
         description: 'Total time in seconds.'
         required: true
-        example: 8
+        example: 5
         type: integer
         custom: []
       comment:
         name: comment
         description: Comment.
         required: false
-        example: dolorum
+        example: eos
         type: string
         custom: []
       billable:
         name: billable
         description: Billable.
         required: false
-        example: false
+        example: true
         type: boolean
         custom: []
     cleanBodyParameters:
-      started: 12
-      total: 8
-      comment: dolorum
-      billable: false
+      started: 20
+      total: 5
+      comment: eos
+      billable: true
     fileParameters: []
     responses:
       -
@@ -265,19 +265,19 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 8
+        example: 11
         type: integer
         custom: []
       tid:
         name: tid
         description: 'Task time identifier.'
         required: true
-        example: 20
+        example: 14
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 8
-      tid: 20
+      id: 11
+      tid: 14
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -285,35 +285,35 @@ endpoints:
         name: started
         description: 'Start time.'
         required: false
-        example: 10
+        example: 3
         type: integer
         custom: []
       total:
         name: total
         description: 'Total time in seconds.'
         required: false
-        example: 6
+        example: 11
         type: integer
         custom: []
       comment:
         name: comment
         description: Comment.
         required: false
-        example: enim
+        example: quo
         type: string
         custom: []
       billable:
         name: billable
         description: Billable.
         required: false
-        example: false
+        example: true
         type: boolean
         custom: []
     cleanBodyParameters:
-      started: 10
-      total: 6
-      comment: enim
-      billable: false
+      started: 3
+      total: 11
+      comment: quo
+      billable: true
     fileParameters: []
     responses:
       -
@@ -357,19 +357,19 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 20
+        example: 18
         type: integer
         custom: []
       tid:
         name: tid
         description: 'Task time identifier.'
         required: true
-        example: 3
+        example: 5
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 20
-      tid: 3
+      id: 18
+      tid: 5
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -417,29 +417,29 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 2
+        example: 7
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 2
+      id: 7
     queryParameters:
       size:
         name: size
         description: 'Number of rows. Default: 50'
         required: false
-        example: 5
+        example: 3
         type: integer
         custom: []
       page:
         name: page
         description: 'Number of page (pagination). Default: 1'
         required: false
-        example: 3
+        example: 12
         type: integer
         custom: []
     cleanQueryParameters:
-      size: 5
-      page: 3
+      size: 3
+      page: 12
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
