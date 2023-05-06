@@ -46,7 +46,7 @@ class TaskController extends Controller
         
         $size = $request->input("size", config("api.list.size"));
         $page = $request->input("page", 1);
-        
+
         $tasks = Task
             ::apiFields()
             ->where("project_id", $id)
@@ -113,6 +113,8 @@ class TaskController extends Controller
     {
         User::checkAccess("task:create");
         
+        self::prepareSelfAssignedId($request);
+        
         $request->validate([
             "project_id" => "required|integer",
             "name" => "required|max:250",
@@ -156,6 +158,8 @@ class TaskController extends Controller
     public function update(Request $request, $id)
     {
         User::checkAccess("task:update");
+        
+        self::prepareSelfAssignedId($request);
         
         $task = Task::find($id);
         if(!$task)
@@ -328,7 +332,7 @@ class TaskController extends Controller
     * @urlParam id integer required Task identifier.
     * @responseField status boolean Add attachment status
     * @bodyParam name string required File name.
-    * @bodyParam file string required Base64 encode file content".
+    * @bodyParam base64 string required Base64 encode file content".
     * @bodyParam description string Description".
     * @response 404 {"error":true,"message":"Task does not exist"}
     * @header Authorization: Bearer {TOKEN}
@@ -344,16 +348,15 @@ class TaskController extends Controller
         
         $request->validate([
             "name" => "required|max:200",
-            "file" => "required",
+            "base64" => "required",
             "description" => "nullable|max:2000",
         ]);
         
         $data = [
-            "base64" => $request->input("file"),
+            "base64" => $request->input("base64"),
             "name" => $request->input("name"),
             "description" => $request->input("description", ""),
         ];
-        $data = json_encode($data);
         
         $validator = Validator::make(["attachments" => [$data]], [
             "attachments" => ["nullable", "array", new Attachment],
@@ -411,17 +414,13 @@ class TaskController extends Controller
     {
         User::checkAccess("task:list");
         
-        
-        
-        // TODO!!!!!!!!!!!!!!!!!
+        $currentAssignedUsers = [];
         if($taskId)
         {
-            // Chodzi o to, aby pobrać jacy uzytkownicy są przypisani do tasku
-            // i ustawić im ponizej falge _check
+            $task = Task::find($taskId);
+            if($task)
+                $currentAssignedUsers = $task->getAssignedUserIds();
         }
-        
-        
-        
         
         $out = [];
         $users = User::withTrashed()->byFirm()->where("activated", 1)->orderBy("lastname", "ASC")->orderBy("firstname", "ASC")->get();
@@ -434,7 +433,7 @@ class TaskController extends Controller
                 "email" => $user->email,
                 "_me" => $user->id == Auth::user()->id,
                 "_allowed" => !$user->trashed(),
-                "_check" => false,
+                "_check" => in_array($user->id, $currentAssignedUsers),
             ];
         }
         
@@ -448,5 +447,19 @@ class TaskController extends Controller
         foreach($users as $user)
             $userIds[] = $user->id;
         return $userIds;
+    }
+    
+    // user_id=-1 oznacza przypisanie zadania na siebie
+    private static function prepareSelfAssignedId(Request $request) {
+        if($request->has("users")) {
+            $users = $request->input("users");
+            foreach($users as $i => $user) {
+                if($user == -1)
+                    $users[$i] = Auth::user()->id;
+            }
+            
+            $users = array_unique($users);
+            $request->merge(["users" => $users]);
+        }
     }
 }

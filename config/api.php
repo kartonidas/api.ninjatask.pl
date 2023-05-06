@@ -17,13 +17,16 @@ return [
             "application/vnd.oasis.opendocument.spreadsheet" => "ods",
             "application/vnd.oasis.opendocument.text" => "odt",
             "image/png" => "png",
+            "image/jpeg" => "jpg",
             "application/pdf" => "pdf",
             "application/vnd.ms-powerpoint" => "ppt",
             "application/vnd.openxmlformats-officedocument.presentationml.presentation" => "pptx",
             "application/x-tar" => "tar",
             "text/plain" => "txt",
             "application/zip" => "zip",
-            "application/x-7z-compressed" => "7z"
+            "application/x-7z-compressed" => "7z",
+            "application/vnd.ms-excel" => "xls",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" => "xlsx",
         ]
     ]
 ];

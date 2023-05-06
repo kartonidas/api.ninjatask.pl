@@ -24,14 +24,13 @@ trait File
         $sort = FileModel::where("type", $type)->where("object_id", $this->id)->max("sort");
         foreach($attachments as $attachment)
         {
-            $attachment = json_decode($attachment);
             try
             {
                 DB::transaction(function() use($attachment, $type, &$sort) {
                     $directory = FileModel::getUploadDirectory($type);
                     
                     $f = finfo_open();
-                    $mime = finfo_buffer($f, base64_decode($attachment->base64), FILEINFO_MIME_TYPE);
+                    $mime = finfo_buffer($f, base64_decode($attachment["base64"]), FILEINFO_MIME_TYPE);
                     if(!empty(config("api.upload.allowed_mime_types")[$mime]))
                         $extension = config("api.upload.allowed_mime_types")[$mime];
                         
@@ -41,7 +40,7 @@ trait File
                     $filename = bin2hex(openssl_random_pseudo_bytes(16)) . "." . $extension;
                     
                     $fp = fopen($directory . "/" . $filename, "w");
-                    fwrite($fp, base64_decode($attachment->base64));
+                    fwrite($fp, base64_decode($attachment["base64"]));
                     fclose($fp);
                     
                     $size = filesize($directory . "/" . $filename);
@@ -52,10 +51,10 @@ trait File
                         $row->object_id = $this->id;
                         $row->user_id = Auth::user()->id;
                         $row->filename = $filename;
-                        $row->orig_name = $attachment->name;
+                        $row->orig_name = $attachment["name"];
                         $row->extension = $extension;
                         $row->size = $size;
-                        $row->description = $attachment->description ?? "";
+                        $row->description = $attachment["description"] ?? "";
                         $row->sort = ++$sort;
                         $row->save();
                     }
