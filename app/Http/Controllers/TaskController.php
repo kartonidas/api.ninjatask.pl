@@ -27,7 +27,7 @@ class TaskController extends Controller
     * @urlParam id integer required Project identifier.
     * @queryParam size integer Number of rows. Default: 50
     * @queryParam page integer Number of page (pagination). Default: 1
-    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": "1", "name": "Example task", "description": "Example description", "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}]}]}
+    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": "1", "name": "Example task", "description": "Example description", "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "timer": {"state": "active", "total": 250, "total_logged": 1000}}]}
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
     */
@@ -52,12 +52,14 @@ class TaskController extends Controller
             ->where("project_id", $id)
             ->take($size)
             ->skip(($page-1)*$size)
+            ->orderBy("updated_at", "desc")
             ->get();
         
         foreach($tasks as $k => $task)
         {
             $tasks[$k]->assigned_to = $task->getAssignedUserIds();
             $tasks[$k]->attachments = $task->getAttachments();
+            $tasks[$k]->timer = $task->getActiveTaskTime();
         }
         
         $total = Task::where("project_id", $id)->count();
@@ -77,7 +79,7 @@ class TaskController extends Controller
     *
     * Return task details.
     * @urlParam id integer required Task identifier.
-    * @response 200 {"id": 1, "name": "Example task", "description": "Example description", "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}]}
+    * @response 200 {"id": 1, "name": "Example task", "description": "Example description", "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "timer": {"state": "active", "total": 250, "total_logged": 1000}}
     * @response 404 {"error":true,"message":"Task does not exist"}
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
@@ -92,6 +94,7 @@ class TaskController extends Controller
         
         $task->assigned_to = $task->getAssignedUserIds();
         $task->attachments = $task->getAttachments();
+        $task->timer = $task->getActiveTaskTime();
         
         return $task;
     }

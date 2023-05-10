@@ -25,7 +25,7 @@ class TaskCommentController extends Controller
     * @urlParam id integer required Task identifier.
     * @queryParam size integer Number of rows. Default: 50
     * @queryParam page integer Number of page (pagination). Default: 1
-    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "comment": "Example comment", "user_id": 1, "created_at": "2020-01-01 10:00:00", "attachments": [{"id": 1, "user_id": 1, "type": "task_comments", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}]}]}
+    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "comment": "Example comment", "user_id": 1, "created_at": "2020-01-01 10:00:00", "attachments": [{"id": 1, "user_id": 1, "type": "task_comments", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "can_delete": true, "user": "John Doe", "_me": true}]}
     * @header Authorization: Bearer {TOKEN}
     * @group Task comments
     */
@@ -50,10 +50,16 @@ class TaskCommentController extends Controller
             ->where("task_id", $id)
             ->take($size)
             ->skip(($page-1)*$size)
+            ->orderBy("created_at", "DESC")
             ->get();
             
         foreach($comments as $k => $comment)
+        {
             $comments[$k]->attachments = $comment->getAttachments();
+            $comments[$k]->can_delete = $comment->canDelete();
+            $comments[$k]->user = $comment->getUserName();
+            $comments[$k]->_me = $comment->user_id == Auth::user()->id;
+        }
             
         $total = TaskComment::where("task_id", $id)->count();
         $out = [
@@ -73,7 +79,7 @@ class TaskCommentController extends Controller
     * Return task comment details.
     * @urlParam id integer required Task identifier.
     * @urlParam cid integer required Comment identifier.
-    * @response 200 {"id": 1, "comment": "Example comment", "user_id": "1", "created_at": "2020-01-01 10:00:00", "attachments": [{"id": 1, "user_id": 1, "type": "task_comments", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}]}
+    * @response 200 {"id": 1, "comment": "Example comment", "user_id": "1", "created_at": "2020-01-01 10:00:00", "attachments": [{"id": 1, "user_id": 1, "type": "task_comments", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "can_delete": true, "user" : "John Doe", "_me": true}
     * @response 404 {"error":true,"message":"Comment does not exist"}
     * @header Authorization: Bearer {TOKEN}
     * @group Task comments
@@ -91,6 +97,9 @@ class TaskCommentController extends Controller
             throw new ObjectNotExist(__("Comment does not exist"));
         
         $comment->attachments = $comment->getAttachments();
+        $comment->can_delete = $comment->canDelete();
+        $comment->user = $comment->getUserName();
+        $comment->_me = $comment->user_id == Auth::user()->id;
         
         return $comment;
     }

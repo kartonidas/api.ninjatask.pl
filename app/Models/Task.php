@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 use App\Models\TaskAssignedUser;
 use App\Models\TaskTime;
 use App\Traits\File;
@@ -61,5 +62,34 @@ class Task extends Model
             }
         }
         TaskAssignedUser::where("task_id", $this->id)->whereNotIn("user_id", $users)->delete();
+    }
+    
+    public function getActiveTaskTime() {
+        $out = [
+            "state" => "stop",
+            "total" => 0,
+        ];
+        
+        $activeTotalTime = 0;
+        $taskTime = TaskTime::where("task_id", $this->id)->where("user_id", Auth::user()->id)->whereIn("status", [TaskTime::ACTIVE, TaskTime::PAUSED])->first();
+        if($taskTime)
+        {
+            if($taskTime->status == TaskTime::ACTIVE)
+            {
+                $out["state"] = "active";
+                $out["total"] = $taskTime->total + (time() - $taskTime->timer_started);
+                
+                $activeTotalTime = $out["total"];
+            }
+            else
+            {
+                $out["state"] = "paused";
+                $out["total"] = $taskTime->total;    
+            }
+        }
+        
+        $out["total_logged"] = TaskTime::where("task_id", $this->id)->where("user_id", Auth::user()->id)->where("status", "!=", TaskTime::ACTIVE)->sum("total") + $activeTotalTime;
+        
+        return $out;
     }
 }

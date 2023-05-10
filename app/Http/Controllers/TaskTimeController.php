@@ -21,7 +21,7 @@ class TaskTimeController extends Controller
     *
     * Start task timer (log time).
     * @urlParam id integer required Task identifier.
-    * @responseField status boolean Status
+    * @response200 {"state": "active", "total": 250, "total_logged": 1000}
     * @response 404 {"error":true,"message":"Task does not exist"}
     * @header Authorization: Bearer {TOKEN}
     * @group Task time
@@ -51,7 +51,7 @@ class TaskTimeController extends Controller
         $timer->timer_started = $time;
         $timer->save();
         
-        return true;
+        return $task->getActiveTaskTime();
     }
     
     /**
@@ -59,7 +59,7 @@ class TaskTimeController extends Controller
     *
     * Pause task timer (log time).
     * @urlParam id integer required Task identifier.
-    * @responseField status boolean Status
+    * @response 200 {"state": "active", "total": 250, "total_logged": 1000}
     * @response 404 {"error":true,"message":"Task does not exist"}
     * @header Authorization: Bearer {TOKEN}
     * @group Task time
@@ -82,7 +82,7 @@ class TaskTimeController extends Controller
         $timer->total += $total;
         $timer->save();
         
-        return true;
+        return $task->getActiveTaskTime();
     }
     
     /**
@@ -90,7 +90,7 @@ class TaskTimeController extends Controller
     *
     * Stop task timer (log time).
     * @urlParam id integer required Task identifier.
-    * @responseField status boolean Status
+    * @response 200 {"state": "active", "total": 250, "total_logged": 1000}
     * @response 404 {"error":true,"message":"Task does not exist"}
     * @header Authorization: Bearer {TOKEN}
     * @group Task time
@@ -116,7 +116,7 @@ class TaskTimeController extends Controller
         $timer->total = $total;
         $timer->save();
         
-        return true;
+        return $task->getActiveTaskTime();
     }
     
     /**
