@@ -25,36 +25,36 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 3
+        example: 14
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 3
+      id: 14
     queryParameters:
       size:
         name: size
         description: 'Number of rows. Default: 50'
         required: false
-        example: 5
+        example: 1
         type: integer
         custom: []
       page:
         name: page
         description: 'Number of page (pagination). Default: 1'
         required: false
-        example: 3
+        example: 20
         type: integer
         custom: []
     cleanQueryParameters:
-      size: 5
-      page: 3
+      size: 1
+      page: 20
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
     responses:
       -
         status: 200
-        content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "comment": "Example comment", "user_id": 1, "created_at": "2020-01-01 10:00:00", "attachments": [{"id": 1, "user_id": 1, "type": "task_comments", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}]}]}'
+        content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "comment": "Example comment", "user_id": 1, "created_at": "2020-01-01 10:00:00", "attachments": [{"id": 1, "user_id": 1, "type": "task_comments", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "can_delete": true, "user": "John Doe", "_me": true}]}'
         headers: []
         description: ''
         custom: []
@@ -90,14 +90,14 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 8
+        example: 14
         type: integer
         custom: []
       comment:
         name: comment
         description: Comment.
         required: true
-        example: iusto
+        example: aspernatur
         type: string
         custom: []
       attachments:
@@ -105,14 +105,14 @@ endpoints:
         description: 'of files attach to task ([{"name": "File name", "base64": Base64 encoded file, "description": "Optional file description"}])'
         required: false
         example:
-          - doloremque
+          - quod
         type: 'string[]'
         custom: []
     cleanBodyParameters:
-      id: 8
-      comment: iusto
+      id: 14
+      comment: aspernatur
       attachments:
-        - doloremque
+        - quod
     fileParameters: []
     responses: []
     responseFields:
@@ -157,12 +157,12 @@ endpoints:
         name: cid
         description: 'Comment identifier.'
         required: true
-        example: 14
+        example: 15
         type: integer
         custom: []
     cleanUrlParameters:
       id: 12
-      cid: 14
+      cid: 15
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -171,7 +171,7 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"id": 1, "comment": "Example comment", "user_id": "1", "created_at": "2020-01-01 10:00:00", "attachments": [{"id": 1, "user_id": 1, "type": "task_comments", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}]}'
+        content: '{"id": 1, "comment": "Example comment", "user_id": "1", "created_at": "2020-01-01 10:00:00", "attachments": [{"id": 1, "user_id": 1, "type": "task_comments", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "can_delete": true, "user" : "John Doe", "_me": true}'
         headers: []
         description: ''
         custom: []
@@ -209,11 +209,11 @@ endpoints:
         name: cid
         description: 'Comment identifier.'
         required: true
-        example: 20
+        example: 9
         type: integer
         custom: []
     cleanUrlParameters:
-      cid: 20
+      cid: 9
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -221,19 +221,19 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 16
+        example: 5
         type: integer
         custom: []
       comment:
         name: comment
         description: comment.
         required: false
-        example: qui
+        example: laboriosam
         type: string
         custom: []
     cleanBodyParameters:
-      id: 16
-      comment: qui
+      id: 5
+      comment: laboriosam
     fileParameters: []
     responses: []
     responseFields:
@@ -271,11 +271,11 @@ endpoints:
         name: cid
         description: 'Comment identifier.'
         required: true
-        example: 18
+        example: 6
         type: integer
         custom: []
     cleanUrlParameters:
-      cid: 18
+      cid: 6
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -283,11 +283,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 8
+        example: 3
         type: integer
         custom: []
     cleanBodyParameters:
-      id: 8
+      id: 3
     fileParameters: []
     responses:
       -
@@ -331,14 +331,14 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 3
+        example: 18
         type: integer
         custom: []
       cid:
         name: cid
         description: 'Comment identifier.'
         required: true
-        example: 20
+        example: 2
         type: integer
         custom: []
       aid:
@@ -349,8 +349,8 @@ endpoints:
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 3
-      cid: 20
+      id: 18
+      cid: 2
       aid: 19
     queryParameters: []
     cleanQueryParameters: []
@@ -398,19 +398,19 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 18
+        example: 1
         type: integer
         custom: []
       cid:
         name: cid
         description: 'Comment identifier.'
         required: true
-        example: 6
+        example: 19
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 18
-      cid: 6
+      id: 1
+      cid: 19
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -418,27 +418,27 @@ endpoints:
         name: name
         description: 'File name.'
         required: true
-        example: similique
+        example: adipisci
         type: string
         custom: []
       file:
         name: file
         description: 'Base64 encode file content".'
         required: true
-        example: deserunt
+        example: praesentium
         type: string
         custom: []
       description:
         name: description
         description: 'Description".'
         required: false
-        example: 'Amet corrupti quod quia vel vel.'
+        example: 'Aut maiores placeat eligendi officiis eligendi nobis.'
         type: string
         custom: []
     cleanBodyParameters:
-      name: similique
-      file: deserunt
-      description: 'Amet corrupti quod quia vel vel.'
+      name: adipisci
+      file: praesentium
+      description: 'Aut maiores placeat eligendi officiis eligendi nobis.'
     fileParameters: []
     responses:
       -
@@ -482,27 +482,27 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 11
+        example: 14
         type: integer
         custom: []
       cid:
         name: cid
         description: 'Comment identifier.'
         required: true
-        example: 19
+        example: 13
         type: integer
         custom: []
       aid:
         name: aid
         description: 'Attachment identifier.'
         required: true
-        example: 6
+        example: 3
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 11
-      cid: 19
-      aid: 6
+      id: 14
+      cid: 13
+      aid: 3
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []

@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\User;
 
 class TaskTime extends Model
 {
+    use User;
+    
     const ACTIVE = "active";
     const PAUSED = "paused";
     const FINISHED = "finished";

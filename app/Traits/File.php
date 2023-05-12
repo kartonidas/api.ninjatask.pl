@@ -92,4 +92,35 @@ trait File
         if($type === null) $type = $this->getType();
         return FileModel::apiFields()->where("type", $type)->where("object_id", $this->id)->orderBy("sort", "ASC")->get();
     }
+    
+    public function attachBase64File($attachments = [], $allowedExtensions = [])
+    {
+        if(!empty($attachments))
+        {
+            //$ids = [];
+            //foreach($attachments as $attachment)
+            //{
+            //    if(in_array($attachment->extension, ["jpg", "png", "gif"]))
+            //        $ids[] = $attachment->id;
+            //}
+            
+            //if(!empty($ids))
+            //{
+                //$base64Images = [];
+                //$files = FileModel::select("id", "base64")->whereIn("id", $ids)->get();
+                //if(!$files->isEmpty())
+                //{
+                //    foreach($files as $file)
+                //        $base64Images[$file->id] = $file->base64;
+                //}
+                
+                foreach($attachments as $k => $attachment)
+                {
+                    if(empty($allowedExtensions) || in_array($attachment->extension, $allowedExtensions))
+                        $attachments[$k]->base64 = $attachment->getBase64();
+                }
+            //}
+        }
+        return $attachments;
+    }
 }

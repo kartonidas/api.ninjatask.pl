@@ -25,11 +25,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 6
+        example: 5
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 6
+      id: 5
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -42,14 +42,7 @@ endpoints:
         headers: []
         description: ''
         custom: []
-    responseFields:
-      status:
-        name: status
-        description: Status
-        required: false
-        example: null
-        type: boolean
-        custom: []
+    responseFields: []
     auth: []
     controller: null
     method: null
@@ -77,11 +70,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 15
+        example: 13
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 15
+      id: 13
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -89,19 +82,18 @@ endpoints:
     fileParameters: []
     responses:
       -
+        status: 200
+        content: '{"state": "active", "total": 250, "total_logged": 1000}'
+        headers: []
+        description: ''
+        custom: []
+      -
         status: 404
         content: '{"error":true,"message":"Task does not exist"}'
         headers: []
         description: ''
         custom: []
-    responseFields:
-      status:
-        name: status
-        description: Status
-        required: false
-        example: null
-        type: boolean
-        custom: []
+    responseFields: []
     auth: []
     controller: null
     method: null
@@ -129,11 +121,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 11
+        example: 10
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 11
+      id: 10
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -141,19 +133,18 @@ endpoints:
     fileParameters: []
     responses:
       -
+        status: 200
+        content: '{"state": "active", "total": 250, "total_logged": 1000}'
+        headers: []
+        description: ''
+        custom: []
+      -
         status: 404
         content: '{"error":true,"message":"Task does not exist"}'
         headers: []
         description: ''
         custom: []
-    responseFields:
-      status:
-        name: status
-        description: Status
-        required: false
-        example: null
-        type: boolean
-        custom: []
+    responseFields: []
     auth: []
     controller: null
     method: null
@@ -181,11 +172,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 1
+        example: 12
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 1
+      id: 12
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -193,21 +184,21 @@ endpoints:
         name: started
         description: 'Start time.'
         required: true
-        example: 3
+        example: 12
         type: integer
         custom: []
       total:
         name: total
         description: 'Total time in seconds.'
         required: true
-        example: 19
+        example: 11
         type: integer
         custom: []
       comment:
         name: comment
         description: Comment.
         required: false
-        example: vel
+        example: nihil
         type: string
         custom: []
       billable:
@@ -218,9 +209,9 @@ endpoints:
         type: boolean
         custom: []
     cleanBodyParameters:
-      started: 3
-      total: 19
-      comment: vel
+      started: 12
+      total: 11
+      comment: nihil
       billable: false
     fileParameters: []
     responses:
@@ -265,19 +256,19 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 19
+        example: 18
         type: integer
         custom: []
       tid:
         name: tid
         description: 'Task time identifier.'
         required: true
-        example: 19
+        example: 9
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 19
-      tid: 19
+      id: 18
+      tid: 9
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -285,21 +276,21 @@ endpoints:
         name: started
         description: 'Start time.'
         required: false
-        example: 6
+        example: 20
         type: integer
         custom: []
       total:
         name: total
         description: 'Total time in seconds.'
         required: false
-        example: 8
+        example: 4
         type: integer
         custom: []
       comment:
         name: comment
         description: Comment.
         required: false
-        example: modi
+        example: voluptatem
         type: string
         custom: []
       billable:
@@ -310,9 +301,9 @@ endpoints:
         type: boolean
         custom: []
     cleanBodyParameters:
-      started: 6
-      total: 8
-      comment: modi
+      started: 20
+      total: 4
+      comment: voluptatem
       billable: true
     fileParameters: []
     responses:
@@ -357,19 +348,19 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 12
+        example: 11
         type: integer
         custom: []
       tid:
         name: tid
         description: 'Task time identifier.'
         required: true
-        example: 19
+        example: 6
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 12
-      tid: 19
+      id: 11
+      tid: 6
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -417,36 +408,36 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 5
+        example: 12
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 5
+      id: 12
     queryParameters:
       size:
         name: size
         description: 'Number of rows. Default: 50'
         required: false
-        example: 16
+        example: 2
         type: integer
         custom: []
       page:
         name: page
         description: 'Number of page (pagination). Default: 1'
         required: false
-        example: 15
+        example: 10
         type: integer
         custom: []
     cleanQueryParameters:
-      size: 16
-      page: 15
+      size: 2
+      page: 10
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
     responses:
       -
         status: 200
-        content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "status": "active", "task_id": "1", "user_id": 1, "started": "1680843163", "finished": 1680843163, "timer_started": 0, "total": 600, "comment": "Example comment", "billable": 0}]}'
+        content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "status": "active", "task_id": "1", "user_id": 1, "started": "1680843163", "finished": 1680843163, "timer_started": 0, "total": 600, "comment": "Example comment", "billable": 0, "_me": true, "user": "John Doe"}]}'
         headers: []
         description: ''
         custom: []

@@ -231,7 +231,7 @@ class TaskTimeController extends Controller
     * @urlParam id integer required Task identifier.
     * @queryParam size integer Number of rows. Default: 50
     * @queryParam page integer Number of page (pagination). Default: 1
-    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "status": "active", "task_id": "1", "user_id": 1, "started": "1680843163", "finished": 1680843163, "timer_started": 0, "total": 600, "comment": "Example comment", "billable": 0}]}
+    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "status": "active", "task_id": "1", "user_id": 1, "started": "1680843163", "finished": 1680843163, "timer_started": 0, "total": 600, "comment": "Example comment", "billable": 0, "_me": true, "user": "John Doe"}]}
     * @response 404 {"error":true,"message":"Task does not exist"}
     * @header Authorization: Bearer {TOKEN}
     * @group Task time
@@ -252,21 +252,30 @@ class TaskTimeController extends Controller
         $size = $request->input("size", config("api.list.size"));
         $page = $request->input("page", 1);
         
-        $users = TaskTime
+        $times = TaskTime
             ::apiFields()
             ->where("task_id", $id)
             ->where("status", TaskTime::FINISHED)
             ->take($size)
             ->skip(($page-1)*$size)
+            ->orderBy("finished", "DESC")
             ->get();
             
-        $total = TaskTime::where("task_id", $id)->count();
+        $total = TaskTime::where("task_id", $id)->where("status", TaskTime::FINISHED)->count();
+        
+        foreach($times as $k => $time)
+        {
+            $times[$k]->user = $time->getUserName();
+            $times[$k]->_me = $time->user_id == Auth::user()->id;
+            $times[$k]->billable = $time->billable == 1;
+        }
+        
         $out = [
             "total_rows" => $total,
             "total_pages" => ceil($total / $size),
             "current_page" => $page,
             "has_more" => ceil($total / $size) > $page,
-            "data" => $users,
+            "data" => $times,
         ];
             
         return $out;

@@ -102,11 +102,11 @@ endpoints:
         name: token
         description: 'Register token.'
         required: true
-        example: consequuntur
+        example: nulla
         type: string
         custom: []
     cleanUrlParameters:
-      token: consequuntur
+      token: nulla
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -152,11 +152,11 @@ endpoints:
         name: token
         description: 'Register token.'
         required: true
-        example: sed
+        example: excepturi
         type: string
         custom: []
     cleanUrlParameters:
-      token: sed
+      token: excepturi
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -164,43 +164,43 @@ endpoints:
         name: firstname
         description: 'User first name.'
         required: true
-        example: necessitatibus
+        example: qui
         type: string
         custom: []
       lastname:
         name: lastname
         description: 'User last name.'
         required: true
-        example: recusandae
+        example: reprehenderit
         type: string
         custom: []
       password:
         name: password
         description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
         required: true
-        example: '/vXvjU@RStK<?b)0'
+        example: 'SWunW;ho/W[5;qg!\2p+'
         type: string
         custom: []
       firm_identifier:
         name: firm_identifier
         description: 'User firm name.'
         required: true
-        example: enim
+        example: nulla
         type: string
         custom: []
       phone:
         name: phone
         description: 'User phone number.'
         required: true
-        example: eum
+        example: sunt
         type: string
         custom: []
     cleanBodyParameters:
-      firstname: necessitatibus
-      lastname: recusandae
-      password: '/vXvjU@RStK<?b)0'
-      firm_identifier: enim
-      phone: eum
+      firstname: qui
+      lastname: reprehenderit
+      password: 'SWunW;ho/W[5;qg!\2p+'
+      firm_identifier: nulla
+      phone: sunt
     fileParameters: []
     responses:
       -
@@ -247,35 +247,35 @@ endpoints:
         name: email
         description: 'Account e-mail address'
         required: true
-        example: rosenbaum.theresa@example.com
+        example: malinda34@example.com
         type: string
         custom: []
       password:
         name: password
         description: 'Account password'
         required: true
-        example: 'vRUZYP!f^o}kRuIZ'
+        example: '&^_K/N>7y*"'
         type: string
         custom: []
       device_name:
         name: device_name
         description: 'Device name'
         required: true
-        example: ratione
+        example: eligendi
         type: string
         custom: []
       firm_id:
         name: firm_id
         description: 'Firm identifier (required if e-mail address is register on two or more firms)'
         required: false
-        example: 17
+        example: 20
         type: integer
         custom: []
     cleanBodyParameters:
-      email: rosenbaum.theresa@example.com
-      password: 'vRUZYP!f^o}kRuIZ'
-      device_name: ratione
-      firm_id: 17
+      email: malinda34@example.com
+      password: '&^_K/N>7y*"'
+      device_name: eligendi
+      firm_id: 20
     fileParameters: []
     responses:
       -
@@ -322,19 +322,19 @@ endpoints:
         name: email
         description: 'Account e-mail address'
         required: true
-        example: brown.zemlak@example.org
+        example: vkreiger@example.com
         type: string
         custom: []
       firm_id:
         name: firm_id
         description: 'Firm identifier (if e-mail address exist in more than once firms)'
         required: false
-        example: 1
+        example: 12
         type: integer
         custom: []
     cleanBodyParameters:
-      email: brown.zemlak@example.org
-      firm_id: 1
+      email: vkreiger@example.com
+      firm_id: 12
     fileParameters: []
     responses:
       -
@@ -381,19 +381,19 @@ endpoints:
         name: token
         description: 'forgot password token'
         required: true
-        example: qui
+        example: facilis
         type: string
         custom: []
       email:
         name: email
         description: 'Account e-mail address'
         required: true
-        example: rau.damaris@example.net
+        example: lempi07@example.net
         type: string
         custom: []
     cleanBodyParameters:
-      token: qui
-      email: rau.damaris@example.net
+      token: facilis
+      email: lempi07@example.net
     fileParameters: []
     responses: []
     responseFields:
@@ -434,27 +434,27 @@ endpoints:
         name: token
         description: 'forgot password token'
         required: true
-        example: non
+        example: sint
         type: string
         custom: []
       email:
         name: email
         description: 'Account e-mail address'
         required: true
-        example: tina.rath@example.com
+        example: ramon28@example.net
         type: string
         custom: []
       password:
         name: password
         description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
         required: true
-        example: '1Zu|>OAz\&OB{'
+        example: +%@XNYQYW);
         type: string
         custom: []
     cleanBodyParameters:
-      token: non
-      email: tina.rath@example.com
-      password: '1Zu|>OAz\&OB{'
+      token: sint
+      email: ramon28@example.net
+      password: +%@XNYQYW);
     fileParameters: []
     responses: []
     responseFields:
@@ -496,11 +496,11 @@ endpoints:
         name: email
         description: 'Account e-mail address'
         required: true
-        example: constantin.gislason@example.com
+        example: mccullough.dedric@example.com
         type: string
         custom: []
     cleanQueryParameters:
-      email: constantin.gislason@example.com
+      email: mccullough.dedric@example.com
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
