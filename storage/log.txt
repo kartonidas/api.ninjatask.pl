@@ -1,0 +1,8 @@
+Array
+(
+    [email] => arturpatura@gmail.com
+    [firstname] => Jan
+    [lastname] => Kowalski
+    [phone] => 222333222
+    [superuser] => 
+)

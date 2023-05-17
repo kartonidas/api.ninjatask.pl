@@ -28,5 +28,8 @@ return [
             "application/vnd.ms-excel" => "xls",
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" => "xlsx",
         ]
+    ],
+    "tasks" => [
+        "priority" => [1 => "low", 2 => "normal", 3 => "high"]
     ]
 ];

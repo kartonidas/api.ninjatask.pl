@@ -372,7 +372,7 @@ class UserTest extends TestCase
         $token = $this->getOwnerLoginToken();
         $response = $this->withToken('INVALID:TOKEN')->getJson('/api/users');
         
-        $response->assertStatus(422);
+        $response->assertStatus(401);
     }
     
     public function test_create_user_successfull(): void
@@ -403,7 +403,7 @@ class UserTest extends TestCase
     {
         $token = $this->getOwnerLoginToken();
         
-        $requiredData = ['firstname', 'lastname', 'email', 'password', 'password_confirmation'];
+        $requiredData = ['firstname', 'lastname', 'email', 'password'];
         $workerData = $this->getAccount(0)['workers'][0];
         
         foreach($requiredData as $field)
@@ -808,12 +808,11 @@ class UserTest extends TestCase
         $response->assertStatus(200);
         
         // Confirm invitation
-        $requiredData = ['firstname', 'lastname', 'password', 'password_confirmation'];
+        $requiredData = ['firstname', 'lastname', 'password'];
         $confirmData = [
             "firstname" => $this->getAccount(0)['workers'][0]["firstname"],
             "lastname" => $this->getAccount(0)['workers'][0]["lastname"],
             "password" => $this->getAccount(0)['workers'][0]["password"],
-            "password_confirmation" => $this->getAccount(0)['workers'][0]["password"],
         ];
         
         foreach($requiredData as $field)
@@ -870,7 +869,7 @@ class UserTest extends TestCase
         $token = $response->token;
         
         $response = $this->withToken($token)->getJson('/api/users');
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     public function test_permission_create_user_ok(): void
@@ -906,7 +905,7 @@ class UserTest extends TestCase
         $token = $response->token;
         
         $response = $this->withToken($token)->putJson('/api/user', $this->getAccount(0)['workers'][0]);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     public function test_permission_update_user_ok(): void
@@ -960,7 +959,7 @@ class UserTest extends TestCase
         $user->save();
         
         $response = $this->withToken($token)->putJson('/api/user/' . $user->id);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     public function test_permission_update_user_other_account_error(): void
@@ -1038,7 +1037,7 @@ class UserTest extends TestCase
         $user->save();
         
         $response = $this->withToken($token)->deleteJson('/api/user/' . $user->id);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     public function test_permission_delete_user_other_account_error(): void
@@ -1121,7 +1120,7 @@ class UserTest extends TestCase
         
         $response = $this->withToken($token)->getJson('/api/user/' . $user->id);
         
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     public function test_permission_get_user_details_other_account_error(): void

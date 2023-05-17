@@ -27,7 +27,7 @@ class TaskController extends Controller
     * @urlParam id integer required Project identifier.
     * @queryParam size integer Number of rows. Default: 50
     * @queryParam page integer Number of page (pagination). Default: 1
-    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": "1", "name": "Example task", "description": "Example description", "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "timer": {"state": "active", "total": 250, "total_logged": 1000}}]}
+    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": "1", "name": "Example task", "description": "Example description", "project_id": 1, "priority" : 2, "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "timer": {"state": "active", "total": 250, "total_logged": 1000}}]}
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
     */
@@ -60,6 +60,7 @@ class TaskController extends Controller
             $tasks[$k]->assigned_to = $task->getAssignedUserIds();
             $tasks[$k]->attachments = $task->getAttachments();
             $tasks[$k]->timer = $task->getActiveTaskTime();
+            $tasks[$k]->completed = $task->completed == 1;
         }
         
         $total = Task::where("project_id", $id)->count();
@@ -79,7 +80,7 @@ class TaskController extends Controller
     *
     * Return task details.
     * @urlParam id integer required Task identifier.
-    * @response 200 {"id": 1, "name": "Example task", "description": "Example description", "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "timer": {"state": "active", "total": 250, "total_logged": 1000}}
+    * @response 200 {"id": 1, "name": "Example task", "description": "Example description", "project_id": 1, "priority" : 2, "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "timer": {"state": "active", "total": 250, "total_logged": 1000}}
     * @response 404 {"error":true,"message":"Task does not exist"}
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
@@ -95,6 +96,7 @@ class TaskController extends Controller
         $task->assigned_to = $task->getAssignedUserIds();
         $task->attachments = $task->getAttachments();
         $task->timer = $task->getActiveTaskTime();
+        $task->completed = $task->completed == 1;
         
         return $task;
     }
@@ -124,6 +126,7 @@ class TaskController extends Controller
             "description" => "nullable|max:5000",
             "users" => ["nullable", "array", Rule::in($this->getAllowedUserIds())],
             "attachments" => ["nullable", "array", new Attachment],
+            "priority" => ["nullable", Rule::in(array_keys(config("api.tasks.priority")))],
         ]);
         
         $project = Project::find($request->input("project_id"));
@@ -135,6 +138,7 @@ class TaskController extends Controller
         $task->name = $request->input("name");
         $task->description = $request->input("description", "");
         $task->created_user_id = Auth::user()->id;
+        $task->priority = intval($request->input("priority", 2));
         $task->save();
         
         if(!empty($request->input("attachments", [])))
@@ -172,10 +176,11 @@ class TaskController extends Controller
             "name" => "required|max:250",
             "description" => "nullable|max:5000",
             "users" => ["nullable", "array", Rule::in($this->getAllowedUserIds())],
+            "priority" => ["nullable", Rule::in(array_keys(config("api.tasks.priority")))],
         ];
         
         $validate = [];
-        $updateFields = ["name", "description"];
+        $updateFields = ["name", "description", "priority"];
         foreach($updateFields as $field)
         {
             if($request->has($field))
@@ -443,6 +448,58 @@ class TaskController extends Controller
         return $out;
     }
     
+    /**
+    * Close task
+    *
+    * Set task as closed.
+    * @urlParam id integer optional Task identifier.
+    * @responseField status boolean Update status
+    * @header Authorization: Bearer {TOKEN}
+    * @group Tasks
+    */
+    public function close(Request $request, $id = 0)
+    {
+        User::checkAccess("task:update");
+        
+        $task = Task::find($id);
+        if(!$task)
+            throw new ObjectNotExist(__("Task does not exist"));
+        
+        if($task->completed)
+            throw new InvalidStatus(__("The task is currently closed"));
+        
+        $task->completed = 1;
+        $task->save;
+        
+        return true;
+    }
+    
+    /**
+    * Close task
+    *
+    * Set task as opened.
+    * @urlParam id integer optional Task identifier.
+    * @responseField status boolean Update status
+    * @header Authorization: Bearer {TOKEN}
+    * @group Tasks
+    */
+    public function open(Request $request, $id = 0)
+    {
+        User::checkAccess("task:update");
+        
+        $task = Task::find($id);
+        if(!$task)
+            throw new ObjectNotExist(__("Task does not exist"));
+        
+        if(!$task->completed)
+            throw new InvalidStatus(__("The task is currently opened"));
+        
+        $task->completed = 0;
+        $task->save;
+        
+        return true;
+    }
+    
     private function getAllowedUserIds()
     {
         $userIds = [];
@@ -454,7 +511,7 @@ class TaskController extends Controller
     
     // user_id=-1 oznacza przypisanie zadania na siebie
     private static function prepareSelfAssignedId(Request $request) {
-        if($request->has("users")) {
+        if($request->has("users") && is_array($request->input("users"))) {
             $users = $request->input("users");
             foreach($users as $i => $user) {
                 if($user == -1)

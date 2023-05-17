@@ -27,19 +27,19 @@ endpoints:
         name: size
         description: 'Number of rows. Default: 50'
         required: false
-        example: 8
+        example: 14
         type: integer
         custom: []
       page:
         name: page
         description: 'Number of page (pagination). Default: 1'
         required: false
-        example: 8
+        example: 10
         type: integer
         custom: []
     cleanQueryParameters:
-      size: 8
-      page: 8
+      size: 14
+      page: 10
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -82,35 +82,35 @@ endpoints:
         name: name
         description: 'Project name.'
         required: true
-        example: consequatur
+        example: ex
         type: string
         custom: []
       location:
         name: location
         description: 'Project location.'
         required: false
-        example: odit
+        example: numquam
         type: string
         custom: []
       description:
         name: description
         description: 'Project description.'
         required: false
-        example: 'Provident accusantium omnis magni voluptatem repudiandae nisi.'
+        example: 'Sunt error cum voluptatum nobis.'
         type: string
         custom: []
       owner:
         name: owner
         description: 'Project owner.'
         required: false
-        example: ab
+        example: nemo
         type: string
         custom: []
     cleanBodyParameters:
-      name: consequatur
-      location: odit
-      description: 'Provident accusantium omnis magni voluptatem repudiandae nisi.'
-      owner: ab
+      name: ex
+      location: numquam
+      description: 'Sunt error cum voluptatum nobis.'
+      owner: nemo
     fileParameters: []
     responses: []
     responseFields:
@@ -148,11 +148,11 @@ endpoints:
         name: id
         description: 'Project identifier.'
         required: true
-        example: 11
+        example: 15
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 11
+      id: 15
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -199,11 +199,11 @@ endpoints:
         name: id
         description: 'Project identifier.'
         required: true
-        example: 18
+        example: 10
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 18
+      id: 10
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -211,35 +211,35 @@ endpoints:
         name: name
         description: 'Project name.'
         required: false
-        example: et
+        example: molestias
         type: string
         custom: []
       location:
         name: location
         description: 'Project location.'
         required: false
-        example: sed
+        example: sapiente
         type: string
         custom: []
       description:
         name: description
         description: 'Project description.'
         required: false
-        example: 'Qui nesciunt odio et sit ipsam.'
+        example: 'Quia aut id est.'
         type: string
         custom: []
       owner:
         name: owner
         description: 'Project owner.'
         required: false
-        example: qui
+        example: sint
         type: string
         custom: []
     cleanBodyParameters:
-      name: et
-      location: sed
-      description: 'Qui nesciunt odio et sit ipsam.'
-      owner: qui
+      name: molestias
+      location: sapiente
+      description: 'Quia aut id est.'
+      owner: sint
     fileParameters: []
     responses: []
     responseFields:
@@ -277,11 +277,11 @@ endpoints:
         name: id
         description: 'Project identifier.'
         required: true
-        example: 6
+        example: 16
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 6
+      id: 16
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -302,6 +302,49 @@ endpoints:
         example: null
         type: boolean
         custom: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/projectsWithTasks
+    metadata:
+      groupName: Projects
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get project with assigned tasks'
+      description: 'Get project with assigned and opened tasks.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{[{"id": 1, "name": "Test project", "location": "Warsaw", "description": "", "owner": "john@doe.com", "created_at": "2020-01-01 10:00:00"}]}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: '{"error":true,"message":"Project does not exist"}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
     auth: []
     controller: null
     method: null

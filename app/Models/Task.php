@@ -20,7 +20,7 @@ class Task extends Model
     
     public function scopeApiFields(Builder $query): void
     {
-        $query->select("id", "name", "description", "created_at");
+        $query->select("id", "name", "description", "project_id", "priority", "completed", "created_at");
     }
     
     public function calculateTotalTime()

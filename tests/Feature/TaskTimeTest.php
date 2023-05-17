@@ -501,7 +501,7 @@ class TaskTimeTest extends TestCase
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
         $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/time/start');
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     // Successfull stop task timer with valid permission
@@ -543,7 +543,7 @@ class TaskTimeTest extends TestCase
         $timer->save();
         
         $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/time/stop');
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     // Successfull pause task timer with valid permission
@@ -585,7 +585,7 @@ class TaskTimeTest extends TestCase
         $timer->save();
         
         $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/time/pause');
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     // Successfull get task time empty list with valid permission
@@ -609,7 +609,7 @@ class TaskTimeTest extends TestCase
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
         $response = $this->withToken($token)->getJson('/api/task/' . $task->id . '/times');
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     // Successfull delete time with valid permission
@@ -651,7 +651,7 @@ class TaskTimeTest extends TestCase
         $timer->save();
         
         $response = $this->withToken($token)->deleteJson('/api/task/' . $task->id . '/time/' . $timer->id);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     // Successfull task log time with valid permission
@@ -687,7 +687,7 @@ class TaskTimeTest extends TestCase
             'comment' => 'Example time comment'
         ];
         $response = $this->withToken($token)->putJson('/api/task/' . $task->id . '/time', $data);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     // Successfull update task log time with valid permission
@@ -742,6 +742,6 @@ class TaskTimeTest extends TestCase
             'comment' => 'Example time comment updated'
         ];
         $response = $this->withToken($token)->putJson('/api/task/' . $task->id . '/time/' . $timer->id, $data);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
 }

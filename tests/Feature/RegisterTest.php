@@ -72,16 +72,9 @@ class RegisterTest extends TestCase
             $response->assertStatus(422);
         }
         
-        // not match password
-        $data = $this->getAccount(0)['data'];
-        $data['password_confirmation'] = "123456789";
-        $response = $this->postJson('/api/register/confirm/' . $token, $data);
-        $response->assertStatus(422);
-        
         // too weak password
         $data = $this->getAccount(0)['data'];
         $data['password'] = "123";
-        $data['password_confirmation'] = "123";
         $response = $this->postJson('/api/register/confirm/' . $token, $data);
         $response->assertStatus(422);
     }

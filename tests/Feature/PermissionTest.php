@@ -503,7 +503,7 @@ class PermissionTest extends TestCase
             'permissions' => 'task:list,delete;user:list',
         ];
         $response = $this->withToken($token)->putJson('/api/permission/', $data);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     // Successfull get permission list with valid permission
@@ -519,7 +519,7 @@ class PermissionTest extends TestCase
     {
         $token = $this->initPermission('permission:create,update,delete');
         $response = $this->withToken($token)->getJson('/api/permissions');
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     // Successfull delete permission with valid permission
@@ -551,7 +551,7 @@ class PermissionTest extends TestCase
         $permission->save();
         
         $response = $this->withToken($token)->deleteJson('/api/permission/' . $permission->id);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     // Successfull get permission details with valid permission
@@ -583,7 +583,7 @@ class PermissionTest extends TestCase
         $permission->save();
         
         $response = $this->withToken($token)->getJson('/api/permission/' . $permission->id);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     // Successfull update permission with valid permission
@@ -621,7 +621,7 @@ class PermissionTest extends TestCase
             'description' => 'Description updated',
         ];
         $response = $this->withToken($token)->putJson('/api/permission/' . $permission->id, $data);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     // Successfull add permission with valid permission
@@ -659,7 +659,7 @@ class PermissionTest extends TestCase
             'action' => 'create',
         ];
         $response = $this->withToken($token)->putJson('/api/permission/' . $permission->id . '/add', $data);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     // Successfull remove permission with valid permission
@@ -695,6 +695,6 @@ class PermissionTest extends TestCase
             'object' => 'user'
         ];
         $response = $this->withToken($token)->deleteJson('/api/permission/' . $permission->id . '/del', $data);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
 }

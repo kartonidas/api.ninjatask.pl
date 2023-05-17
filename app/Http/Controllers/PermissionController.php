@@ -20,7 +20,7 @@ class PermissionController extends Controller
     * Return permissions list.
     * @queryParam size integer Number of rows. Default: 50
     * @queryParam page integer Number of page (pagination). Default: 1
-    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id":1,"name":"Example group name","permissions":{"module":["list","create"]}, "is_default": 0}]}
+    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id":1,"name":"Example group name","permissions":[{"name": "module name", "perm": ["list","create"]}], "is_default": 0}]}
     * @header Authorization: Bearer {TOKEN}
     * @group User permissions
     */
@@ -45,8 +45,18 @@ class PermissionController extends Controller
             
         if(!$permissions->isEmpty())
         {
-            foreach($permissions as $permission)
-                $permission->permissions = $permission->getPermission();
+            foreach($permissions as $k => $permission)
+            {
+                $permArray = [];
+                $perm = $permission->getPermission();
+                if($perm)
+                {
+                    foreach($perm as $module => $p)
+                        $permArray[] = ["name" => $module, "perm" => $p];
+                }
+                $permission->permissions = $permArray;
+                $permission->is_default = $permission->is_default == 1;
+            }
         }
         
         $total = UserPermission::count();

@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Exceptions\ObjectNotExist;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use App\Models\Project;
+use App\Models\Task;
+use App\Models\TaskAssignedUser;
 use App\Models\User;
 
 class ProjectController extends Controller
@@ -177,5 +180,45 @@ class ProjectController extends Controller
         
         $project->delete();
         return true;
+    }
+    
+    /**
+    * Get project with assigned tasks
+    *
+    * Get project with assigned and opened tasks.
+    * @response 200 {[{"id": 1, "name": "Test project", "location": "Warsaw", "description": "", "owner": "john@doe.com", "created_at": "2020-01-01 10:00:00"}]}
+    * @response 404 {"error":true,"message":"Project does not exist"}
+    * @header Authorization: Bearer {TOKEN}
+    * @group Projects
+    */
+    public function getProjectsWithOpenedTasks(Request $request)
+    {
+        User::checkAccess("task:list");
+        
+        $tasks = Task::select("project_id");//->where("completed", 0);
+        if(!Auth::user()->owner)
+        {
+            $taskIds = [-1];
+            $assginedTasks = TaskAssignedUser::select("task_id")->where("user_id", Auth::user()->id)->get();
+            if(!$assginedTasks->isEmpty())
+            {
+                foreach($assginedTasks as $assginedTask)
+                    $taskIds[] = $assginedTask->task_id;
+            }
+            $taskIds = array_unique($taskIds);
+            $tasks->whereIn("id", $taskIds);
+        }
+        $tasks = $tasks->get();
+        
+        $projectIds = [-1];
+        if(!$tasks->isEmpty())
+        {
+            foreach($tasks as $task)
+                $projectIds[] = $task->project_id;
+        }
+        
+        $projects = Project::apiFields()->whereIn("id", $projectIds)->orderBy("updated_at", "DESC")->get();
+        
+        return $projects;
     }
 }

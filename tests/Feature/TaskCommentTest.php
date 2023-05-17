@@ -315,7 +315,7 @@ class TaskCommentTest extends TestCase
             'comment' => 'Example comment'
         ];
         $response = $this->withToken($token)->putJson('/api/task/' . $task->id . '/comment', $data);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     // Successfull get comment list with valid permission
@@ -341,7 +341,7 @@ class TaskCommentTest extends TestCase
         list($task, $token) = $this->initPermission('');
         
         $response = $this->withToken($token)->getJson('/api/task/' . $task->id . '/comments');
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     // Successfull delete comment with valid permission
@@ -374,7 +374,7 @@ class TaskCommentTest extends TestCase
         
         $this->assertDatabaseCount('task_comments', 1);
         $response = $this->withToken($token)->deleteJson('/api/task/' . $task->id . '/comment/' . $comment->id);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
         $this->assertDatabaseCount('task_comments', 1);
     }
     
@@ -409,7 +409,7 @@ class TaskCommentTest extends TestCase
         $comment->save();
         
         $response = $this->withToken($token)->getJson('/api/task/' . $task->id . '/comment/' . $comment->id);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     // Successfull update comment with valid permission
@@ -450,7 +450,7 @@ class TaskCommentTest extends TestCase
             'comment' => 'Comment updated',
         ];
         $response = $this->withToken($token)->putJson('/api/task/' . $task->id . '/comment/' . $comment->id, $data);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
         
         $this->assertDatabaseHas('task_comments', [
             'id' => $comment->id,

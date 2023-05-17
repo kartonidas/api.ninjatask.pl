@@ -31,6 +31,7 @@ Route::middleware('auth:sanctum')->group(function () use($router) {
     $router->get('/project/{id}', [ProjectController::class, "get"])->where("id", "[0-9]+");
     $router->put('/project/{id}', [ProjectController::class, "update"])->where("id", "[0-9]+");
     $router->delete('/project/{id}', [ProjectController::class, "delete"])->where("id", "[0-9]+");
+    $router->get('/projectsWithTasks', [ProjectController::class, "getProjectsWithOpenedTasks"]);
     
     // PRACOWNICY
     $router->get('/users', [UserController::class, "list"]);
@@ -65,6 +66,8 @@ Route::middleware('auth:sanctum')->group(function () use($router) {
     $router->put('/task/{id}/attachment', [TaskController::class, "addAttachment"])->where("id", "[0-9]+");
     $router->delete('/task/{id}/attachment/{aid}', [TaskController::class, "removeAttachment"])->where("id", "[0-9]+")->where("aid", "[0-9]+");
     $router->get('/task/users/{id?}', [TaskController::class, "getAllowedUsers"])->where("id", "[0-9]+");
+    $router->post('/task/{id}/close', [TaskController::class, "close"])->where("id", "[0-9]+");
+    $router->post('/task/{id}/open', [TaskController::class, "open"])->where("id", "[0-9]+");
     
     // ZADANIA - CZAS PRACY
     $router->post('/task/{id}/time/start', [TaskTimeController::class, "start"])->where("id", "[0-9]+");

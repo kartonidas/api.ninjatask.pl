@@ -383,7 +383,7 @@ class TaskTest extends TestCase
         $task = Task::where('uuid', $uuid)->inRandomOrder()->first();
         $users = User::where('firm_id', $firm->id)->where('owner', 0)->get();
         
-        $data['users'] = [-1];
+        $data['users'] = [-2];
         $response = $this->withToken($token)->putJson('/api/task/' . $task->id, $data);
         $response->assertStatus(422);
         
@@ -624,7 +624,7 @@ class TaskTest extends TestCase
         $data['project_id'] = $project->id;
         
         $response = $this->withToken($token)->putJson('/api/task', $data);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     // Successfull get task list with valid permission
@@ -667,7 +667,7 @@ class TaskTest extends TestCase
         $project = $this->getProject($token);
         
         $response = $this->withToken($token)->getJson('/api/tasks/' . $project->id);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     // Successfull delete task with valid permission
@@ -711,7 +711,7 @@ class TaskTest extends TestCase
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
         $response = $this->withToken($token)->deleteJson('/api/task/' . $task->id);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     // Successfull get task details with valid permission
@@ -755,7 +755,7 @@ class TaskTest extends TestCase
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
         $response = $this->withToken($token)->getJson('/api/task/' . $task->id);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     // Successfull update task with valid permission
@@ -807,7 +807,7 @@ class TaskTest extends TestCase
             'description' => 'Description updated',
         ];
         $response = $this->withToken($token)->putJson('/api/task/' . $task->id, $data);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     // Successfull assgin user to task with valid permission
@@ -859,7 +859,7 @@ class TaskTest extends TestCase
             'user_id' => $user->id,
         ];
         $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/assign', $data);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     // Successfull deassgin user from task with valid permission
@@ -923,6 +923,6 @@ class TaskTest extends TestCase
             'user_id' => $user->id,
         ];
         $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/deassign', $data);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
 }

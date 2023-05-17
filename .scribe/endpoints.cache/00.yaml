@@ -104,11 +104,11 @@ endpoints:
         name: token
         description: 'Register token.'
         required: true
-        example: nulla
+        example: autem
         type: string
         custom: []
     cleanUrlParameters:
-      token: nulla
+      token: autem
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -154,11 +154,11 @@ endpoints:
         name: token
         description: 'Register token.'
         required: true
-        example: excepturi
+        example: tempore
         type: string
         custom: []
     cleanUrlParameters:
-      token: excepturi
+      token: tempore
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -166,43 +166,43 @@ endpoints:
         name: firstname
         description: 'User first name.'
         required: true
-        example: qui
+        example: esse
         type: string
         custom: []
       lastname:
         name: lastname
         description: 'User last name.'
         required: true
-        example: reprehenderit
+        example: quidem
         type: string
         custom: []
       password:
         name: password
         description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
         required: true
-        example: 'SWunW;ho/W[5;qg!\2p+'
+        example: '|`X(J5x(lmPJ.C;eeuvl'
         type: string
         custom: []
       firm_identifier:
         name: firm_identifier
         description: 'User firm name.'
         required: true
-        example: nulla
+        example: similique
         type: string
         custom: []
       phone:
         name: phone
         description: 'User phone number.'
         required: true
-        example: sunt
+        example: maiores
         type: string
         custom: []
     cleanBodyParameters:
-      firstname: qui
-      lastname: reprehenderit
-      password: 'SWunW;ho/W[5;qg!\2p+'
-      firm_identifier: nulla
-      phone: sunt
+      firstname: esse
+      lastname: quidem
+      password: '|`X(J5x(lmPJ.C;eeuvl'
+      firm_identifier: similique
+      phone: maiores
     fileParameters: []
     responses:
       -
@@ -249,35 +249,35 @@ endpoints:
         name: email
         description: 'Account e-mail address'
         required: true
-        example: malinda34@example.com
+        example: chasity12@example.org
         type: string
         custom: []
       password:
         name: password
         description: 'Account password'
         required: true
-        example: '&^_K/N>7y*"'
+        example: 'jcU*V{7&xY'
         type: string
         custom: []
       device_name:
         name: device_name
         description: 'Device name'
         required: true
-        example: eligendi
+        example: illo
         type: string
         custom: []
       firm_id:
         name: firm_id
         description: 'Firm identifier (required if e-mail address is register on two or more firms)'
         required: false
-        example: 20
+        example: 1
         type: integer
         custom: []
     cleanBodyParameters:
-      email: malinda34@example.com
-      password: '&^_K/N>7y*"'
-      device_name: eligendi
-      firm_id: 20
+      email: chasity12@example.org
+      password: 'jcU*V{7&xY'
+      device_name: illo
+      firm_id: 1
     fileParameters: []
     responses:
       -
@@ -324,19 +324,19 @@ endpoints:
         name: email
         description: 'Account e-mail address'
         required: true
-        example: vkreiger@example.com
+        example: clark66@example.net
         type: string
         custom: []
       firm_id:
         name: firm_id
         description: 'Firm identifier (if e-mail address exist in more than once firms)'
         required: false
-        example: 12
+        example: 19
         type: integer
         custom: []
     cleanBodyParameters:
-      email: vkreiger@example.com
-      firm_id: 12
+      email: clark66@example.net
+      firm_id: 19
     fileParameters: []
     responses:
       -
@@ -383,19 +383,19 @@ endpoints:
         name: token
         description: 'forgot password token'
         required: true
-        example: facilis
+        example: dolor
         type: string
         custom: []
       email:
         name: email
         description: 'Account e-mail address'
         required: true
-        example: lempi07@example.net
+        example: eichmann.andy@example.com
         type: string
         custom: []
     cleanBodyParameters:
-      token: facilis
-      email: lempi07@example.net
+      token: dolor
+      email: eichmann.andy@example.com
     fileParameters: []
     responses: []
     responseFields:
@@ -436,27 +436,27 @@ endpoints:
         name: token
         description: 'forgot password token'
         required: true
-        example: sint
+        example: vel
         type: string
         custom: []
       email:
         name: email
         description: 'Account e-mail address'
         required: true
-        example: ramon28@example.net
+        example: lawson.johns@example.org
         type: string
         custom: []
       password:
         name: password
         description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
         required: true
-        example: +%@XNYQYW);
+        example: '%)zc|w'
         type: string
         custom: []
     cleanBodyParameters:
-      token: sint
-      email: ramon28@example.net
-      password: +%@XNYQYW);
+      token: vel
+      email: lawson.johns@example.org
+      password: '%)zc|w'
     fileParameters: []
     responses: []
     responseFields:
@@ -498,11 +498,11 @@ endpoints:
         name: email
         description: 'Account e-mail address'
         required: true
-        example: mccullough.dedric@example.com
+        example: twintheiser@example.org
         type: string
         custom: []
     cleanQueryParameters:
-      email: mccullough.dedric@example.com
+      email: twintheiser@example.org
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []

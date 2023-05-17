@@ -197,7 +197,7 @@ class UserController extends Controller
     * Return users account list.
     * @queryParam size integer Number of rows. Default: 50
     * @queryParam page integer Number of page (pagination). Default: 1
-    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "firstname": "John", "lastname": "Doe", "phone": 123456789, "email": "john@doe.com", "activated": 1, "owner": 0, "superuser": 0, "user_permission_id": 1}]}
+    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "firstname": "John", "lastname": "Doe", "phone": 123456789, "email": "john@doe.com", "activated": 1, "owner": 0, "superuser": 0, "user_permission_id": 1, "user_permission_name": "Permission name"}]}
     * @header Authorization: Bearer {TOKEN}
     * @group User management
     */
@@ -219,9 +219,26 @@ class UserController extends Controller
             ->byFirm()
             ->take($size)
             ->skip(($page-1)*$size)
+            ->orderBy("owner", "DESC")
+            ->orderBy("superuser", "DESC")
             ->orderBy("lastname", "ASC")
             ->orderBy("firstname", "ASC")
             ->get();
+            
+        foreach($users as $k => $user)
+        {
+            $users[$k]->activated = $user->activated == 1;
+            $users[$k]->owner = $user->owner == 1;
+            $users[$k]->superuser = $user->superuser == 1;
+            
+            $users[$k]->user_permission_name = "";
+            if(!$user->superuser && $user->user_permission_id > 0) {
+                $userPermission = UserPermission::find($user->user_permission_id);
+                if($userPermission)
+                    $users[$k]->user_permission_name = $userPermission->name;
+            }
+            
+        }
             
         $total = User::where("firm_id", $firm->id)->count();
         $out = [
@@ -244,7 +261,7 @@ class UserController extends Controller
     * @bodyParam email string required User e-mail address.
     * @bodyParam password string required User password (min 8 characters, lowercase and uppercase letters, number, special characters).
     * @bodyParam phone string User phone number.
-    * @bodyParam permission_id integer Permission group identifier (if not set default permission will be used).
+    * @bodyParam user_permission_id integer Permission group identifier (if not set default permission will be used).
     * @bodyParam superuser boolean If set true user have full access regardless of permissions.
     * @responseField id integer The id of the newly created user
     * @response 409 {"error":true,"message":"The given e-mail address is already registered"}
@@ -259,9 +276,9 @@ class UserController extends Controller
             "firstname" => "required|max:100",
             "lastname" => "required|max:100",
             "email" => "required|email",
-            "password" => ["required", RulePassword::min(8)->letters()->mixedCase()->numbers()->symbols(), "confirmed"],
+            "password" => ["required", RulePassword::min(8)->letters()->mixedCase()->numbers()->symbols()],
             "phone" => "nullable|max:30",
-            "permission_id" => ["nullable", Rule::in(UserPermission::getIds())],
+            "user_permission_id" => ["nullable", Rule::in(UserPermission::getIds())],
             "superuser" => "nullable|boolean",
         ]);
         
@@ -269,8 +286,8 @@ class UserController extends Controller
             ->where("email", $request->input("email"))
             ->count();
         
-        $permissionId = $request->input("permission_id", null);
-        if(!$request->has("permission_id"))
+        $permissionId = $request->input("user_permission_id", null);
+        if(!$request->has("user_permission_id"))
         {
             $defaultPermissionId = UserPermission::getDefault();
             if($defaultPermissionId)
@@ -301,7 +318,7 @@ class UserController extends Controller
     *
     * Send invitation to the email address provided.
     * @bodyParam email string required User e-mail address.
-    * @bodyParam permission_id integer Permission group identifier (if not set default permission will be used).
+    * @bodyParam user_permission_id integer Permission group identifier (if not set default permission will be used).
     * @responseField status boolean Status
     * @response 409 {"error":true,"message":"The given e-mail address is already registered"}
     * @header Authorization: Bearer {TOKEN}
@@ -314,7 +331,7 @@ class UserController extends Controller
         
         $request->validate([
             "email" => "required|email",
-            "permission_id" => ["nullable", Rule::in(UserPermission::getIds())],
+            "user_permission_id" => ["nullable", Rule::in(UserPermission::getIds())],
         ]);
         
         $userByEmail = User::where("firm_id", Auth::user()->getFirm()->id)
@@ -324,8 +341,8 @@ class UserController extends Controller
         if($userByEmail)
             throw new UserExist(__("The given e-mail address is already registered"));
         
-        $permissionId = $request->input("permission_id", null);
-        if(!$request->has("permission_id"))
+        $permissionId = $request->input("user_permission_id", null);
+        if(!$request->has("user_permission_id"))
         {
             $defaultPermissionId = UserPermission::getDefault();
             if($defaultPermissionId)
@@ -382,7 +399,7 @@ class UserController extends Controller
         $request->validate([
             "firstname" => "required|max:100",
             "lastname" => "required|max:100",
-            "password" => ["required", RulePassword::min(8)->letters()->mixedCase()->numbers()->symbols(), "confirmed"],
+            "password" => ["required", RulePassword::min(8)->letters()->mixedCase()->numbers()->symbols()],
             "phone" => "nullable|max:30",
         ]);
         
@@ -410,7 +427,7 @@ class UserController extends Controller
     *
     * Return user account data.
     * @urlParam id integer required User identifier.
-    * @response 200 {"id": 1, "firstname": "John", "lastname": "Doe", "phone": 123456789, "email": "john@doe.com", "activated": 1, "owner": 0, "superuser": 0, "user_permission_id": 1}
+    * @response 200 {"id": 1, "firstname": "John", "lastname": "Doe", "phone": 123456789, "email": "john@doe.com", "activated": 1, "owner": 0, "superuser": 0, "user_permission_id": 1, "user_permission_name": "Permission name"}
     * @response 404 {"error":true,"message":"User does not exist"}
     * @header Authorization: Bearer {TOKEN}
     * @group User management
@@ -422,6 +439,18 @@ class UserController extends Controller
         $user = User::byFirm()->apiFields()->find($id);
         if(!$user)
             throw new ObjectNotExist(__("User does not exist"));
+        
+        
+        $user->activated = $user->activated == 1;
+        $user->owner = $user->owner == 1;
+        $user->superuser = $user->superuser == 1;
+        
+        $user->user_permission_name = "";
+        if(!$user->superuser && $user->user_permission_id > 0) {
+            $userPermission = UserPermission::find($user->user_permission_id);
+            if($userPermission)
+                $user->user_permission_name = $userPermission->name;
+        }
         
         return $user;
     }
@@ -436,7 +465,7 @@ class UserController extends Controller
     * @bodyParam email string User e-mail address.
     * @bodyParam password string User password (min 8 characters, lowercase and uppercase letters, number, special characters).
     * @bodyParam phone string User phone number.
-    * @bodyParam permission_id integer Permission group identifier.
+    * @bodyParam user_permission_id integer Permission group identifier.
     * @bodyParam superuser boolean If set true user have full access regardless of permissions.
     * @responseField status boolean Update status
     * @header Authorization: Bearer {TOKEN}
@@ -465,14 +494,14 @@ class UserController extends Controller
             "firstname" => "required|max:100",
             "lastname" => "required|max:100",
             "email" => "required|email",
-            "password" => ["required", RulePassword::min(8)->letters()->mixedCase()->numbers()->symbols(), "confirmed"],
+            "password" => ["required", RulePassword::min(8)->letters()->mixedCase()->numbers()->symbols()],
             "phone" => "nullable|max:30",
             "superuser" => "nullable|boolean",
-            "permission_id" => ["nullable", Rule::in(UserPermission::getIds())],
+            "user_permission_id" => ["nullable", Rule::in(UserPermission::getIds())],
         ];
         
         $validate = [];
-        $updateFields = ["firstname", "lastname", "email", "phone", "password", "superuser", "permission_id"];
+        $updateFields = ["firstname", "lastname", "email", "phone", "password", "superuser", "user_permission_id"];
         foreach($updateFields as $field)
         {
             if($request->has($field))

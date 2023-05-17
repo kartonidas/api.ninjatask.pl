@@ -311,7 +311,7 @@ class ProjectTest extends TestCase
         $token = $response->token;
         
         $response = $this->withToken($token)->putJson('/api/project', $this->getAccount($accountUserId)['projects'][0]['data']);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     // Successfull create project with valid permission
@@ -349,7 +349,7 @@ class ProjectTest extends TestCase
         $token = $response->token;
         
         $response = $this->withToken($token)->getJson('/api/projects');
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     // Successfull get project list with valid permission
@@ -389,7 +389,7 @@ class ProjectTest extends TestCase
         $project = $this->getProject($token);
         
         $response = $this->withToken($token)->deleteJson('/api/project/' . $project->id);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     // Successfull delete project with valid permission
@@ -431,7 +431,7 @@ class ProjectTest extends TestCase
         $project = $this->getProject($token);
         
         $response = $this->withToken($token)->getJson('/api/project/' . $project->id);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     // Successfull get project details with valid permission
@@ -479,7 +479,7 @@ class ProjectTest extends TestCase
             'owner' => 'Owner updated',
         ];
         $response = $this->withToken($token)->putJson('/api/project/' . $project->id, $data);
-        $response->assertStatus(405);
+        $response->assertStatus(403);
     }
     
     // Successfull update project with valid permission
