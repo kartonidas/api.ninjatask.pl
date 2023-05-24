@@ -500,6 +500,65 @@ class TaskController extends Controller
         return true;
     }
     
+    /**
+    * My work
+    *
+    * Get logged user opened and assigned tasks.
+    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": "1", "name": "Example task", "description": "Example description", "project_id": 1, "priority" : 2, "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "timer": {"state": "active", "total": 250, "total_logged": 1000}}]}
+    * @header Authorization: Bearer {TOKEN}
+    * @group Tasks
+    */
+    public function myWork(Request $request)
+    {
+        $request->validate([
+            "size" => "nullable|integer|gt:0",
+            "page" => "nullable|integer|gt:0",
+        ]);
+        
+        $size = $request->input("size", config("api.list.size"));
+        $page = $request->input("page", 1);
+        
+        $taskIds = [-1];
+        $assignedTasks = TaskAssignedUser::select("task_id")->where("user_id", Auth::user()->id)->get();
+        if(!$assignedTasks->isEmpty())
+        {
+            foreach($assignedTasks as $row)
+                $taskIds[] = $row->task_id;
+        }
+
+        $tasks = Task
+            ::apiFields()
+            ->whereIn("id", $taskIds)
+            ->where("completed", 0);
+            
+        $total = $tasks->count();
+        
+        $tasks = $tasks->take($size)
+            ->skip(($page-1)*$size)
+            ->orderBy("priority", "DESC")
+            ->orderBy("updated_at", "desc")
+            ->get();
+        
+        foreach($tasks as $k => $task)
+        {
+            $tasks[$k]->assigned_to = $task->getAssignedUserIds();
+            $tasks[$k]->attachments = $task->getAttachments();
+            $tasks[$k]->timer = $task->getActiveTaskTime();
+            $tasks[$k]->completed = $task->completed == 1;
+        }
+        
+        
+        $out = [
+            "total_rows" => $total,
+            "total_pages" => ceil($total / $size),
+            "current_page" => $page,
+            "has_more" => ceil($total / $size) > $page,
+            "data" => $tasks,
+        ];
+            
+        return $out;
+    }
+    
     private function getAllowedUserIds()
     {
         $userIds = [];

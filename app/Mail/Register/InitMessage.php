@@ -18,7 +18,7 @@ class InitMessage extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public User $user, public UserRegisterToken $token)
+    public function __construct(public User $user, public UserRegisterToken $token, public string $source)
     {
     }
 
@@ -37,8 +37,16 @@ class InitMessage extends Mailable
      */
     public function content(): Content
     {
+        $locale = app()->getLocale();
+        $view = 'emails.' . $locale . '.register.init';
+        if(!view()->exists($view))
+            $view = 'emails.'.config("api.default_language").'.register.init';
+            
         return new Content(
-            view: 'emails.register.init',
+            view: $view,
+            with: [
+                "locale" => $locale,
+            ],
         );
     }
 

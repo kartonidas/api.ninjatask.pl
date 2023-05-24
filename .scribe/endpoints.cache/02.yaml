@@ -27,19 +27,19 @@ endpoints:
         name: size
         description: 'Number of rows. Default: 50'
         required: false
-        example: 13
+        example: 12
         type: integer
         custom: []
       page:
         name: page
         description: 'Number of page (pagination). Default: 1'
         required: false
-        example: 7
+        example: 13
         type: integer
         custom: []
     cleanQueryParameters:
-      size: 13
-      page: 7
+      size: 12
+      page: 13
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -82,59 +82,59 @@ endpoints:
         name: firstname
         description: 'User first name.'
         required: true
-        example: aliquam
+        example: nemo
         type: string
         custom: []
       lastname:
         name: lastname
         description: 'User last name.'
         required: true
-        example: quia
+        example: voluptas
         type: string
         custom: []
       email:
         name: email
         description: 'User e-mail address.'
         required: true
-        example: osinski.mabelle@example.org
+        example: kristy.willms@example.net
         type: string
         custom: []
       password:
         name: password
         description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
         required: true
-        example: '[DsouI^F0;T"]K*'
+        example: d;~K4VWy
         type: string
         custom: []
       phone:
         name: phone
         description: 'User phone number.'
         required: false
-        example: possimus
+        example: eum
         type: string
         custom: []
       user_permission_id:
         name: user_permission_id
         description: 'Permission group identifier (if not set default permission will be used).'
         required: false
-        example: 16
+        example: 6
         type: integer
         custom: []
       superuser:
         name: superuser
         description: 'If set true user have full access regardless of permissions.'
         required: false
-        example: false
+        example: true
         type: boolean
         custom: []
     cleanBodyParameters:
-      firstname: aliquam
-      lastname: quia
-      email: osinski.mabelle@example.org
-      password: '[DsouI^F0;T"]K*'
-      phone: possimus
-      user_permission_id: 16
-      superuser: false
+      firstname: nemo
+      lastname: voluptas
+      email: kristy.willms@example.net
+      password: d;~K4VWy
+      phone: eum
+      user_permission_id: 6
+      superuser: true
     fileParameters: []
     responses:
       -
@@ -182,19 +182,19 @@ endpoints:
         name: email
         description: 'User e-mail address.'
         required: true
-        example: yundt.milford@example.org
+        example: brooke.ankunding@example.net
         type: string
         custom: []
       user_permission_id:
         name: user_permission_id
         description: 'Permission group identifier (if not set default permission will be used).'
         required: false
-        example: 11
+        example: 3
         type: integer
         custom: []
     cleanBodyParameters:
-      email: yundt.milford@example.org
-      user_permission_id: 11
+      email: brooke.ankunding@example.net
+      user_permission_id: 3
     fileParameters: []
     responses:
       -
@@ -289,11 +289,11 @@ endpoints:
         name: id
         description: 'User identifier.'
         required: true
-        example: 2
+        example: 20
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 2
+      id: 20
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -301,42 +301,42 @@ endpoints:
         name: firstname
         description: 'User first name.'
         required: false
-        example: deleniti
+        example: quis
         type: string
         custom: []
       lastname:
         name: lastname
         description: 'User last name.'
         required: false
-        example: numquam
+        example: sed
         type: string
         custom: []
       email:
         name: email
         description: 'User e-mail address.'
         required: false
-        example: ahermann@example.com
+        example: zbins@example.org
         type: string
         custom: []
       password:
         name: password
         description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
         required: false
-        example: '@EC1`y\@.V'
+        example: '2yl}W=fVUB6xO*_lPdz]'
         type: string
         custom: []
       phone:
         name: phone
         description: 'User phone number.'
         required: false
-        example: aliquam
+        example: vel
         type: string
         custom: []
       user_permission_id:
         name: user_permission_id
         description: 'Permission group identifier.'
         required: false
-        example: 15
+        example: 18
         type: integer
         custom: []
       superuser:
@@ -347,12 +347,12 @@ endpoints:
         type: boolean
         custom: []
     cleanBodyParameters:
-      firstname: deleniti
-      lastname: numquam
-      email: ahermann@example.com
-      password: '@EC1`y\@.V'
-      phone: aliquam
-      user_permission_id: 15
+      firstname: quis
+      lastname: sed
+      email: zbins@example.org
+      password: '2yl}W=fVUB6xO*_lPdz]'
+      phone: vel
+      user_permission_id: 18
       superuser: true
     fileParameters: []
     responses: []
@@ -391,11 +391,11 @@ endpoints:
         name: id
         description: 'User identifier.'
         required: true
-        example: 19
+        example: 7
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 19
+      id: 7
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -453,6 +453,204 @@ endpoints:
         description: ''
         custom: []
     responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/profile
+    metadata:
+      groupName: 'User management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'User profile'
+      description: 'User profile.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"id": 1, "firstname": "John", "lastname": "Doe", "phone": 123456789, "email": "john@doe.com", "activated": 1, "owner": 0, "superuser": 0, "user_permission_id": 1, "user_permission_name": "Permission name"}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+    uri: api/profile
+    metadata:
+      groupName: 'User management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update user profile'
+      description: 'User profile.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      firstname:
+        name: firstname
+        description: 'User first name.'
+        required: false
+        example: quis
+        type: string
+        custom: []
+      lastname:
+        name: lastname
+        description: 'User last name.'
+        required: false
+        example: occaecati
+        type: string
+        custom: []
+      email:
+        name: email
+        description: 'User e-mail address.'
+        required: false
+        example: oberbrunner.lucinda@example.com
+        type: string
+        custom: []
+      password:
+        name: password
+        description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
+        required: false
+        example: 'UFG*40C%O\~c(nei*p'
+        type: string
+        custom: []
+      phone:
+        name: phone
+        description: 'User phone number.'
+        required: false
+        example: velit
+        type: string
+        custom: []
+    cleanBodyParameters:
+      firstname: quis
+      lastname: occaecati
+      email: oberbrunner.lucinda@example.com
+      password: 'UFG*40C%O\~c(nei*p'
+      phone: velit
+    fileParameters: []
+    responses: []
+    responseFields:
+      status:
+        name: status
+        description: 'Update status'
+        required: false
+        example: null
+        type: boolean
+        custom: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/settings
+    metadata:
+      groupName: 'User management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'User settings'
+      description: 'User settings.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"locale": "pl"}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+    uri: api/settings
+    metadata:
+      groupName: 'User management'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update user settings'
+      description: 'User settings.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      flocale:
+        name: flocale
+        description: 'Locale ex. pl.'
+        required: false
+        example: kpe_LR
+        type: string
+        custom: []
+    cleanBodyParameters:
+      flocale: kpe_LR
+    fileParameters: []
+    responses: []
+    responseFields:
+      status:
+        name: status
+        description: 'Update status'
+        required: false
+        example: null
+        type: boolean
+        custom: []
     auth: []
     controller: null
     method: null
@@ -555,11 +753,11 @@ endpoints:
         name: token
         description: 'Invite token from invitation message.'
         required: true
-        example: sequi
+        example: dolores
         type: string
         custom: []
     cleanUrlParameters:
-      token: sequi
+      token: dolores
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -605,11 +803,11 @@ endpoints:
         name: token
         description: 'Invite token.'
         required: true
-        example: libero
+        example: vel
         type: string
         custom: []
     cleanUrlParameters:
-      token: libero
+      token: vel
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -617,35 +815,35 @@ endpoints:
         name: firstname
         description: 'User first name.'
         required: true
-        example: maxime
+        example: doloremque
         type: string
         custom: []
       lastname:
         name: lastname
         description: 'User last name.'
         required: true
-        example: soluta
+        example: consectetur
         type: string
         custom: []
       password:
         name: password
         description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
         required: true
-        example: (p~ik~plUdcl
+        example: ',6Dun~'
         type: string
         custom: []
       phone:
         name: phone
         description: 'User phone number.'
         required: false
-        example: nihil
+        example: qui
         type: string
         custom: []
     cleanBodyParameters:
-      firstname: maxime
-      lastname: soluta
-      password: (p~ik~plUdcl
-      phone: nihil
+      firstname: doloremque
+      lastname: consectetur
+      password: ',6Dun~'
+      phone: qui
     fileParameters: []
     responses:
       -

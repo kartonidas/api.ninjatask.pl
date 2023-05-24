@@ -22,7 +22,7 @@ use App\Http\Controllers\UserController;
 |
 */
 
-Route::middleware('auth:sanctum')->group(function () use($router) {
+Route::middleware(['auth:sanctum', 'locale'])->group(function () use($router) {
     $router->get('/logout', [UserController::class, "logout"]);
     
     // PROJEKTY
@@ -41,6 +41,10 @@ Route::middleware('auth:sanctum')->group(function () use($router) {
     $router->put('/user/{id}', [UserController::class, "update"])->where("id", "[0-9]+");
     $router->delete('/user/{id}', [UserController::class, "delete"])->where("id", "[0-9]+");
     $router->get('/user/permission', [UserController::class, "getPermissions"]);
+    $router->get('/profile', [UserController::class, "profile"]);
+    $router->put('/profile', [UserController::class, "profileUpdate"]);
+    $router->get('/settings', [UserController::class, "settings"]);
+    $router->put('/settings', [UserController::class, "settingsUpdate"]);
     
     $router->get('/get-firm-id', [UserController::class, "getFirmId"]);
     $router->get('/get-id', [UserController::class, "getId"]);
@@ -55,7 +59,7 @@ Route::middleware('auth:sanctum')->group(function () use($router) {
     $router->delete('/permission/{id}/del', [PermissionController::class, "removePermission"])->where("id", "[0-9]+");
     
     // ZADANIA
-    $router->get('/tasks/{id}', [TaskController::class, "list"]);
+    $router->get('/tasks/{id}', [TaskController::class, "list"])->where("id", "[0-9]+");
     $router->put('/task', [TaskController::class, "create"]);
     $router->get('/task/{id}', [TaskController::class, "get"])->where("id", "[0-9]+");
     $router->put('/task/{id}', [TaskController::class, "update"])->where("id", "[0-9]+");
@@ -68,6 +72,7 @@ Route::middleware('auth:sanctum')->group(function () use($router) {
     $router->get('/task/users/{id?}', [TaskController::class, "getAllowedUsers"])->where("id", "[0-9]+");
     $router->post('/task/{id}/close', [TaskController::class, "close"])->where("id", "[0-9]+");
     $router->post('/task/{id}/open', [TaskController::class, "open"])->where("id", "[0-9]+");
+    $router->get('/tasks/my-work', [TaskController::class, "myWork"]);
     
     // ZADANIA - CZAS PRACY
     $router->post('/task/{id}/time/start', [TaskTimeController::class, "start"])->where("id", "[0-9]+");
@@ -89,19 +94,21 @@ Route::middleware('auth:sanctum')->group(function () use($router) {
     $router->delete('/task/{id}/comment/{cid}/attachment/{aid}', [TaskCommentController::class, "removeAttachment"])->where("id", "[0-9]+")->where("cid", "[0-9]+")->where("aid", "[0-9]+");
 });
 
-// REJESTRACJA
-Route::post("/register", [RegisterController::class, "register"]);
-Route::get("/register/confirm/{token}", [RegisterController::class, "get"]);
-Route::post("/register/confirm/{token}", [RegisterController::class, "confirm"]);
-
-// REJESTRACJA Z ZAPROSZENIA
-Route::get('/invite/{token}', [UserController::class, "inviteGet"]);
-Route::put('/invite/{token}', [UserController::class, "inviteConfirm"]);
-
-// LOGOWANIE / PRZYPOMNIENIE HASŁA
-Route::post("/login", [UserController::class, "login"]);
-Route::post("/forgot-password", [UserController::class, "forgotPassword"]);
-Route::get("/reset-password", [UserController::class, "resetPasswordGet"]);
-Route::post("/reset-password", [UserController::class, "resetPassword"]);
-Route::get("/get-email-firm-ids", [UserController::class, "getUserFirmIds"]);
+Route::middleware(['locale'])->group(function () use($router) {
+    // REJESTRACJA
+    $router->post("/register", [RegisterController::class, "register"]);
+    $router->get("/register/confirm/{token}", [RegisterController::class, "get"]);
+    $router->post("/register/confirm/{token}", [RegisterController::class, "confirm"]);
+    
+    // REJESTRACJA Z ZAPROSZENIA
+    $router->get('/invite/{token}', [UserController::class, "inviteGet"]);
+    $router->put('/invite/{token}', [UserController::class, "inviteConfirm"]);
+    
+    // LOGOWANIE / PRZYPOMNIENIE HASŁA
+    $router->post("/login", [UserController::class, "login"]);
+    $router->post("/forgot-password", [UserController::class, "forgotPassword"]);
+    $router->get("/reset-password", [UserController::class, "resetPasswordGet"]);
+    $router->post("/reset-password", [UserController::class, "resetPassword"]);
+    $router->get("/get-email-firm-ids", [UserController::class, "getUserFirmIds"]);
+});
 

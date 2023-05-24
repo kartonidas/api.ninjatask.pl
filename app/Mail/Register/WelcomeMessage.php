@@ -36,8 +36,13 @@ class WelcomeMessage extends Mailable
      */
     public function content(): Content
     {
+        $locale = app()->getLocale();
+        $view = 'emails.' . $locale . '.register.welcome';
+        if(!view()->exists($view))
+            $view = 'emails.'.config("api.default_language").'.register.welcome';
+            
         return new Content(
-            view: 'emails.register.welcome',
+            view: $view,
         );
     }
 

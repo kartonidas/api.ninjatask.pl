@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 use App\Exceptions\ObjectNotExist;
@@ -20,6 +21,7 @@ class RegisterController extends Controller
     *
     * Create new user account. After registration, a confirmation link is sent to the provided e-mail address.
     * @bodyParam email string required The email address. Example: john@doe.com
+    * @bodyParam source string Register source. One of: app/www
     * @response 200 true
     * @response 422 {"error":true,"message":"The provided email is already registered.","errors":{"email":["The provided email is already registered."]}}
     * @group User registation
@@ -28,6 +30,7 @@ class RegisterController extends Controller
     {
         $request->validate([
             "email" => "required|email",
+            "source" => ["nullable", Rule::in("app", "www")],
         ]);
         
         $user = User::where("email", $request->email)->where("activated", 1)->where("owner", 1)->first();
@@ -51,7 +54,7 @@ class RegisterController extends Controller
         }
         
         $token = $user->generateRegisterToken();
-        $user->sendInitMessage($token);
+        $user->sendInitMessage($token, $request->input("source", "www"));
         
         return true;
     }

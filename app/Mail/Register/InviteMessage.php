@@ -36,8 +36,13 @@ class InviteMessage extends Mailable
      */
     public function content(): Content
     {
+        $locale = app()->getLocale();
+        $view = 'emails.' . $locale . '.register.invite';
+        if(!view()->exists($view))
+            $view = 'emails.'.config("api.default_language").'.register.invite';
+            
         return new Content(
-            view: 'emails.register.invite',
+            view: $view,
         );
     }
 

@@ -62,7 +62,16 @@ class UserController extends Controller
             ]);
         }
         
-        return response()->json(["token" => $user->createToken($request->device_name)->plainTextToken]);
+        $settings = $user->getAccountSettings();
+        
+        $out = [
+            "token" => $user->createToken($request->device_name)->plainTextToken,
+            "firstname" => $user->firstname,
+            "lastname" => $user->lastname,
+            "locale" => $settings->locale,
+        ];
+        
+        return response()->json($out);
     }
     
     /**
@@ -162,7 +171,7 @@ class UserController extends Controller
         $request->validate([
             "token" => "required",
             "email" => "required|email",
-            "password" => "required|min:8|confirmed",
+            "password" => "required|min:8",
         ]);
         
         return User::userTokenResetPassword($request->only("email", "password", "token"));
@@ -545,6 +554,157 @@ class UserController extends Controller
         $user->delete();
         
         return true;
+    }
+    
+    /**
+    * User profile
+    *
+    * User profile.
+    * @response 200 {"id": 1, "firstname": "John", "lastname": "Doe", "phone": 123456789, "email": "john@doe.com", "activated": 1, "owner": 0, "superuser": 0, "user_permission_id": 1, "user_permission_name": "Permission name"}
+    * @header Authorization: Bearer {TOKEN}
+    * @group User management
+    */
+    public function profile(Request $request)
+    {
+        $user = User::byFirm()->apiFields()->find(Auth::user()->id);
+        if(!$user)
+            throw new ObjectNotExist(__("User does not exist"));
+        
+        $user->activated = $user->activated == 1;
+        $user->owner = $user->owner == 1;
+        $user->superuser = $user->superuser == 1;
+        
+        $user->user_permission_name = "";
+        if(!$user->superuser && $user->user_permission_id > 0) {
+            $userPermission = UserPermission::find($user->user_permission_id);
+            if($userPermission)
+                $user->user_permission_name = $userPermission->name;
+        }
+        
+        return $user;
+    }
+    
+    /**
+    * Update user profile
+    *
+    * User profile.
+    * @bodyParam firstname string User first name.
+    * @bodyParam lastname string User last name.
+    * @bodyParam email string User e-mail address.
+    * @bodyParam password string User password (min 8 characters, lowercase and uppercase letters, number, special characters).
+    * @bodyParam phone string User phone number.
+    * @responseField status boolean Update status
+
+    * @header Authorization: Bearer {TOKEN}
+    * @group User management
+    */
+    public function profileUpdate(Request $request)
+    {
+        $user = User::byFirm()->apiFields()->find(Auth::user()->id);
+        if(!$user)
+            throw new ObjectNotExist(__("User does not exist"));
+        
+        if($request->has("email"))
+        {
+            $userByEmail = User::where("firm_id", $user->firm_id)
+                ->where("email", $request->input("email"))
+                ->where("id", "!=", $user->id)
+                ->count();
+                
+            if($userByEmail)
+                throw new UserExist(__("The given e-mail address is already registered"));
+        }
+        
+        $rules = [
+            "firstname" => "required|max:100",
+            "lastname" => "required|max:100",
+            "email" => "required|email",
+            "password" => ["required", RulePassword::min(8)->letters()->mixedCase()->numbers()->symbols()],
+            "phone" => "nullable|max:30",
+        ];
+        
+        $validate = [];
+        $updateFields = ["firstname", "lastname", "email", "phone", "password"];
+        foreach($updateFields as $field)
+        {
+            if($request->has($field))
+            {
+                if(!empty($rules[$field]))
+                    $validate[$field] = $rules[$field];
+            }
+        }
+        
+        if(!empty($validate))
+            $request->validate($validate);
+        
+        foreach($updateFields as $field)
+        {
+            if($request->has($field))
+                $user->{$field} = $field == "password" ? Hash::make($request->input($field)) : $request->input($field);
+        }
+        $user->save();
+            
+        return true;
+    }
+    
+    /**
+    * User settings
+    *
+    * User settings.
+    * @response 200 {"locale": "pl"}
+    * @header Authorization: Bearer {TOKEN}
+    * @group User management
+    */
+    public function settings(Request $request)
+    {
+        $user = User::byFirm()->apiFields()->find(Auth::user()->id);
+        if(!$user)
+            throw new ObjectNotExist(__("User does not exist"));
+        
+        return $user->getAccountSettings();
+    }
+    
+    /**
+    * Update user settings
+    *
+    * User settings.
+    * @bodyParam flocale string Locale ex. pl.
+    * @responseField status boolean Update status
+
+    * @header Authorization: Bearer {TOKEN}
+    * @group User management
+    */
+    public function settingsUpdate(Request $request)
+    {
+        $user = User::byFirm()->apiFields()->find(Auth::user()->id);
+        if(!$user)
+            throw new ObjectNotExist(__("User does not exist"));
+        
+        $rules = [
+            "locale" => ["required", Rule::in(config("api.allowed_languages"))],
+        ];
+        
+        $validate = [];
+        $updateFields = ["locale"];
+        foreach($updateFields as $field)
+        {
+            if($request->has($field))
+            {
+                if(!empty($rules[$field]))
+                    $validate[$field] = $rules[$field];
+            }
+        }
+        
+        if(!empty($validate))
+            $request->validate($validate);
+        
+        $settings = $user->ensureAccountSettings();
+        foreach($updateFields as $field)
+        {
+            if($request->has($field))
+                $settings->{$field} = $request->input($field);
+        }
+        $settings->save();
     }
     
     /**

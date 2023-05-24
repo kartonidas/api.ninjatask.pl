@@ -26,6 +26,7 @@ use App\Models\Firm;
 use App\Models\PasswordResetToken;
 use App\Models\UserPermission;
 use App\Models\UserRegisterToken;
+use App\Models\UserSetting;
 
 class User extends Authenticatable
 {
@@ -94,7 +95,7 @@ class User extends Authenticatable
         $tokenRow->token = $token;
         $tokenRow->save();
         
-        $url = env("FRONTEND_URL") . "reset-password?token=" . $token . "&email=" . $this->email;
+        $url = env("FRONTEND_URL") . app()->getLocale() . "/reset-password?token=" . $token . "&email=" . $this->email;
         Mail::to($this->email)->send(new ForgotPasswordMessage($url));
     }
     
@@ -159,9 +160,9 @@ class User extends Authenticatable
         return $code;
     }
     
-    public function sendInitMessage($token)
+    public function sendInitMessage($token, $source = "www")
     {
-        Mail::to($this->email)->send(new InitMessage($this, $token));
+        Mail::to($this->email)->send(new InitMessage($this, $token, $source));
     }
     
     public function sendWelcomeMessage()
@@ -271,5 +272,28 @@ class User extends Authenticatable
         }
         
         return ["permission" => $out];
+    }
+    
+    public function ensureAccountSettings()
+    {
+        $row = UserSetting::where("user_id", $this->id)->first();
+        if(!$row)
+        {
+            $row = new UserSetting;
+            $row->user_id = $this->id;
+            $row->save();
+        }
+        
+        return $row;
+    }
+    
+    public function getAccountSettings()
+    {
+        $settings = UserSetting::apiFields()->where("user_id", $this->id)->first();
+        
+        if(!$settings)
+            $settings = UserSetting::getDafaultValues();
+        
+        return $settings;
     }
 }

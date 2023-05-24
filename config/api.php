@@ -1,6 +1,10 @@
 <?php
 
 return [
+    "allowed_languages" => [
+        "en", "pl",
+    ],
+    "default_language" => "en",
     "list" => [
         "size" => 50,
     ],

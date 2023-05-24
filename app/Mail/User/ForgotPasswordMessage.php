@@ -27,7 +27,7 @@ class ForgotPasswordMessage extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'API Forgot password',
+            subject: __('Forgot password'),
         );
     }
 
@@ -36,8 +36,13 @@ class ForgotPasswordMessage extends Mailable
      */
     public function content(): Content
     {
+        $locale = app()->getLocale();
+        $view = 'emails.' . $locale . '.user.forgot-password';
+        if(!view()->exists($view))
+            $view = 'emails.'.config("api.default_language").'.user.forgot-password';
+        
         return new Content(
-            view: 'emails.user.forgot-password',
+            view: $view,
         );
     }
 
