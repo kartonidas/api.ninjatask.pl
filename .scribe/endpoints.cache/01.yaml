@@ -27,26 +27,26 @@ endpoints:
         name: size
         description: 'Number of rows. Default: 50'
         required: false
-        example: 13
+        example: 5
         type: integer
         custom: []
       page:
         name: page
         description: 'Number of page (pagination). Default: 1'
         required: false
-        example: 15
+        example: 19
         type: integer
         custom: []
     cleanQueryParameters:
-      size: 13
-      page: 15
+      size: 5
+      page: 19
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
     responses:
       -
         status: 200
-        content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "name": "Test project", "location": "Warsaw", "description": "", "owner": "john@doe.com", "created_at": "2020-01-01 10:00:00"}]}'
+        content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "name": "Test project", "location": "Warsaw", "description": "", "owner": "john@doe.com", "created_at": "2020-01-01 10:00:00", "tasks" : [{"total": 10, "opened": 3, "me": 1}]}]}'
         headers: []
         description: ''
         custom: []
@@ -82,35 +82,35 @@ endpoints:
         name: name
         description: 'Project name.'
         required: true
-        example: nihil
+        example: ea
         type: string
         custom: []
       location:
         name: location
         description: 'Project location.'
         required: false
-        example: porro
+        example: ut
         type: string
         custom: []
       description:
         name: description
         description: 'Project description.'
         required: false
-        example: 'Expedita officia praesentium accusantium nobis.'
+        example: 'Voluptas molestiae ipsum sint voluptatem aut.'
         type: string
         custom: []
       owner:
         name: owner
         description: 'Project owner.'
         required: false
-        example: voluptas
+        example: quaerat
         type: string
         custom: []
     cleanBodyParameters:
-      name: nihil
-      location: porro
-      description: 'Expedita officia praesentium accusantium nobis.'
-      owner: voluptas
+      name: ea
+      location: ut
+      description: 'Voluptas molestiae ipsum sint voluptatem aut.'
+      owner: quaerat
     fileParameters: []
     responses: []
     responseFields:
@@ -148,11 +148,11 @@ endpoints:
         name: id
         description: 'Project identifier.'
         required: true
-        example: 20
+        example: 18
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 20
+      id: 18
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -161,7 +161,7 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"id": 1, "name": "Test project", "location": "Warsaw", "description": "", "owner": "john@doe.com", "created_at": "2020-01-01 10:00:00"}'
+        content: '{"id": 1, "name": "Test project", "location": "Warsaw", "description": "", "owner": "john@doe.com", "created_at": "2020-01-01 10:00:00", "tasks" : [{"total": 10, "opened": 3, "me": 1}]}'
         headers: []
         description: ''
         custom: []
@@ -199,11 +199,11 @@ endpoints:
         name: id
         description: 'Project identifier.'
         required: true
-        example: 9
+        example: 15
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 9
+      id: 15
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -211,35 +211,35 @@ endpoints:
         name: name
         description: 'Project name.'
         required: false
-        example: autem
+        example: non
         type: string
         custom: []
       location:
         name: location
         description: 'Project location.'
         required: false
-        example: eius
+        example: voluptatem
         type: string
         custom: []
       description:
         name: description
         description: 'Project description.'
         required: false
-        example: 'Ut hic saepe fuga impedit sit odio.'
+        example: 'Et distinctio laborum ab dolores expedita.'
         type: string
         custom: []
       owner:
         name: owner
         description: 'Project owner.'
         required: false
-        example: odit
+        example: amet
         type: string
         custom: []
     cleanBodyParameters:
-      name: autem
-      location: eius
-      description: 'Ut hic saepe fuga impedit sit odio.'
-      owner: odit
+      name: non
+      location: voluptatem
+      description: 'Et distinctio laborum ab dolores expedita.'
+      owner: amet
     fileParameters: []
     responses: []
     responseFields:
@@ -277,11 +277,11 @@ endpoints:
         name: id
         description: 'Project identifier.'
         required: true
-        example: 1
+        example: 2
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 1
+      id: 2
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -341,6 +341,43 @@ endpoints:
       -
         status: 404
         content: '{"error":true,"message":"Project does not exist"}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/projects/simple
+    metadata:
+      groupName: Projects
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get all project list'
+      description: 'Get all project list (ex. for select)'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{[{"id": 1, "name": "Test project"}]}'
         headers: []
         description: ''
         custom: []

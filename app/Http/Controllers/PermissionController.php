@@ -20,7 +20,7 @@ class PermissionController extends Controller
     * Return permissions list.
     * @queryParam size integer Number of rows. Default: 50
     * @queryParam page integer Number of page (pagination). Default: 1
-    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id":1,"name":"Example group name","permissions":[{"name": "module name", "perm": ["list","create"]}], "is_default": 0}]}
+    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id":1,"name":"Example group name","permissions":[{"name": "module name", "perm": ["list","create"]}], "is_default": 0, "can_delete": 1}]}
     * @header Authorization: Bearer {TOKEN}
     * @group User permissions
     */
@@ -56,6 +56,7 @@ class PermissionController extends Controller
                 }
                 $permission->permissions = $permArray;
                 $permission->is_default = $permission->is_default == 1;
+                $permission->can_delete = $permission->canDelete();
             }
         }
         
@@ -109,7 +110,7 @@ class PermissionController extends Controller
     *
     * Get persmission group details.
     * @urlParam id integer required Permission group identifier.
-    * @response 200 {"id":1,"name":"Example group name","permissions":{"module":["list","create"]}, "is_default": 0}
+    * @response 200 {"id":1,"name":"Example group name","permissions":{"module":["list","create"]}, "is_default": 0, "can_delete": 1}
     * @response 404 {"error":true,"message":"Permission does not exist"}
     * @header Authorization: Bearer {TOKEN}
     * @group User permissions
@@ -123,6 +124,7 @@ class PermissionController extends Controller
             throw new ObjectNotExist(__("Permission does not exist"));
         
         $permission->permissions = $permission->getPermission();
+        $permission->can_delete = $permission->canDelete();
         return $permission;
     }
     
@@ -267,5 +269,25 @@ class PermissionController extends Controller
         
         $permission->del($request->input("object"), $request->input("action", "*"));
         return true;
+    }
+    
+    /**
+    * Return permission modules
+    *
+    * Return permission modules
+    * @response 200 {"permissions":[{"name": "module name", "perm": ["list","create"]}]}
+    * @header Authorization: Bearer {TOKEN}
+    * @group User permissions
+    */
+    public function permissionModules(Request $request)
+    {
+        $out = [];
+        $permissions = config("permissions.permission");
+        if(!empty($permissions))
+        {
+            foreach($permissions as $module => $p)
+                $out[] = ["name" => $module, "perm" => $p];
+        }
+        return $out;
     }
 }

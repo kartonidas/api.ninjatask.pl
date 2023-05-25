@@ -53,9 +53,16 @@
     "The provided credentials are incorrect.": "Podane dane uwierzytelniaj\u0105ce s\u0105 nieprawid\u0142owe.",
     "User does not exist.": "U\u017cytkownik nie istnieje.",
     "Invalid reset token": "Nieprawid\u0142owy token",
-    "The given e-mail address is already registered": "Podany adres e-mail jest już zarejestrowany",
-    "Only account owner can send invitations": "Tylko właściciel może wysyłać zaproszenia",
-    "The given token is invalid": "Podany token jest nieprawidłowy",
-    "The provided email is already registered.": "Podany adres e-mail jest już zarejestrowany.",
-    "Invalid register token.": "Nieprawidłowy token."
+    "The given e-mail address is already registered": "Podany adres e-mail jest ju\u017c zarejestrowany",
+    "Only account owner can send invitations": "Tylko w\u0142a\u015bciciel mo\u017ce wysy\u0142a\u0107 zaproszenia",
+    "The given token is invalid": "Podany token jest nieprawid\u0142owy",
+    "The provided email is already registered.": "Podany adres e-mail jest ju\u017c zarejestrowany.",
+    "Invalid register token.": "Nieprawid\u0142owy token.",
+    "Register token expired": "Token wygasł",
+    "Cannot deleted default permission.": "Nie można usunąc uprawnień oznacoznych jako domyślne.",
+    "Cannot deleted. Permissions are used.": "Nie można usunąć uprawnień które sa przypisane do użytkownika.",
+    "Cannot deleted owner account": "Nie można usunąć konta właściciela",
+    "User not exist": "Użytkownik nie istnieje",
+    "Invalid user permission.": "Nieprawidłowe uprawnienia.",
+    "Access denied": "Brak dostępu"
 }

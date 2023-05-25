@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use App\Exceptions\Exception;
+use App\Models\Firm;
 use App\Models\User;
 
 class UserPermission extends Model
@@ -22,14 +23,14 @@ class UserPermission extends Model
             return false;
         }
         
-        if(User::where("firm_id", $this->uuid)->where("deleted", 0)->where("user_permission_id", $this->id)->count())
+        if(User::where("deleted", 0)->where("user_permission_id", $this->id)->count())
         {
             if($exception)
                 throw new Exception(__("Cannot deleted. Permissions are used."));
             return false;
         }
         
-        return false;
+        return true;
     }
     
     public function delete()

@@ -65,6 +65,7 @@ class GetText extends Command
         $directiories = [
             base_path() . "/app/Http/Controllers",
             base_path() . "/resources/views",
+            base_path() . "/app/Models",
         ];
         
         $allTexts = [];

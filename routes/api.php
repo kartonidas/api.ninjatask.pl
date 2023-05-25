@@ -32,6 +32,7 @@ Route::middleware(['auth:sanctum', 'locale'])->group(function () use($router) {
     $router->put('/project/{id}', [ProjectController::class, "update"])->where("id", "[0-9]+");
     $router->delete('/project/{id}', [ProjectController::class, "delete"])->where("id", "[0-9]+");
     $router->get('/projectsWithTasks', [ProjectController::class, "getProjectsWithOpenedTasks"]);
+    $router->get('/projects/simple', [ProjectController::class, "listSimple"]);
     
     // PRACOWNICY
     $router->get('/users', [UserController::class, "list"]);
@@ -57,6 +58,7 @@ Route::middleware(['auth:sanctum', 'locale'])->group(function () use($router) {
     $router->delete('/permission/{id}', [PermissionController::class, "delete"])->where("id", "[0-9]+");
     $router->put('/permission/{id}/add', [PermissionController::class, "addPermission"])->where("id", "[0-9]+");
     $router->delete('/permission/{id}/del', [PermissionController::class, "removePermission"])->where("id", "[0-9]+");
+    $router->get('/permission/modules', [PermissionController::class, "permissionModules"]);
     
     // ZADANIA
     $router->get('/tasks/{id}', [TaskController::class, "list"])->where("id", "[0-9]+");
