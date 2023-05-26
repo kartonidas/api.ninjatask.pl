@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\File as RuleFile;
 use Illuminate\Validation\ValidationException;
 use App\Exceptions\InvalidStatus;
 use App\Exceptions\ObjectExist;
@@ -355,30 +356,20 @@ class TaskController extends Controller
         if(!$task)
             throw new ObjectNotExist(__("Task does not exist"));
         
+        $allowedMimeTypes = config("api.upload.allowed_mime_types");
         $request->validate([
-            "name" => "required|max:200",
-            "base64" => "required",
+            "file" => [
+                "required",
+                RuleFile::types($allowedMimeTypes)
+            ],
             "description" => "nullable|max:2000",
         ]);
         
-        $data = [
-            "base64" => $request->input("base64"),
-            "name" => $request->input("name"),
-            "description" => $request->input("description", ""),
+        $toUpload = [
+            "file" => $request->file("file"),
+            "description" => $request->input("description", "")
         ];
-        
-        $validator = Validator::make(["attachments" => [$data]], [
-            "attachments" => ["nullable", "array", new Attachment],
-        ]);
-        
-        if($validator->fails())
-        {
-            throw ValidationException::withMessages([
-                $validator->messages()->all(),
-            ]);
-        }
-        
-        $task->upload([$data]);
+        $task->upload([$toUpload]);
         return true;
     }
     

@@ -29,19 +29,36 @@ trait File
                 DB::transaction(function() use($attachment, $type, &$sort) {
                     $directory = FileModel::getUploadDirectory($type);
                     
-                    $f = finfo_open();
-                    $mime = finfo_buffer($f, base64_decode($attachment["base64"]), FILEINFO_MIME_TYPE);
-                    if(!empty(config("api.upload.allowed_mime_types")[$mime]))
-                        $extension = config("api.upload.allowed_mime_types")[$mime];
+                    if(!empty($attachment["file"]) && $attachment["file"] instanceof \Illuminate\Http\UploadedFile)
+                    {
+                        $relativeDirectory = FileModel::getUploadDirectory($type, false);
+                        $mime = $attachment["file"]->getMimeType();
+                        if(!empty(config("api.upload.allowed_mime_types")[$mime]))
+                            $extension = config("api.upload.allowed_mime_types")[$mime];
+                            
+                        if(empty($extension))
+                            throw new Exception(__("Unsupported file type"));
                         
-                    if(!$extension)
-                        throw new Exception(__("Unsupported file type"));
-                    
-                    $filename = bin2hex(openssl_random_pseudo_bytes(16)) . "." . $extension;
-                    
-                    $fp = fopen($directory . "/" . $filename, "w");
-                    fwrite($fp, base64_decode($attachment["base64"]));
-                    fclose($fp);
+                        $attachment["name"] = $attachment["file"]->getClientOriginalName();
+                        $filename = bin2hex(openssl_random_pseudo_bytes(16)) . "." . $extension;
+                        $path = $attachment["file"]->storeAs($relativeDirectory, $filename, "upload");
+                    }
+                    else
+                    {
+                        $f = finfo_open();
+                        $mime = finfo_buffer($f, base64_decode($attachment["base64"]), FILEINFO_MIME_TYPE);
+                        if(!empty(config("api.upload.allowed_mime_types")[$mime]))
+                            $extension = config("api.upload.allowed_mime_types")[$mime];
+                            
+                        if(empty($extension))
+                            throw new Exception(__("Unsupported file type"));
+                        
+                        $filename = bin2hex(openssl_random_pseudo_bytes(16)) . "." . $extension;
+                        
+                        $fp = fopen($directory . "/" . $filename, "w");
+                        fwrite($fp, base64_decode($attachment["base64"]));
+                        fclose($fp);
+                    }
                     
                     $size = filesize($directory . "/" . $filename);
                     if($size > 0)

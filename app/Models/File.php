@@ -32,11 +32,16 @@ class File extends Model
         return parent::delete();
     }
 
-    public static function getUploadDirectory($type)
+    public static function getUploadDirectory($type, $absolute = true)
 	{
-		$directory = storage_path("upload/files/" . Auth::user()->getUuid() . "/" . $type);
+        $path = "upload/files/" . Auth::user()->getUuid() . "/" . $type;
+		$directory = storage_path($path);
 		@mkdir($directory, 0777, true);
-		return $directory;
+        
+        if(!$absolute)
+            return $path;
+        
+        return $directory;
 	}
     
     public function fileExists()

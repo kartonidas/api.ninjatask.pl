@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rules\File as RuleFile;
 use App\Exceptions\InvalidStatus;
 use App\Exceptions\ObjectExist;
 use App\Exceptions\ObjectNotExist;
@@ -279,31 +280,20 @@ class TaskCommentController extends Controller
         if(!$comment)
             throw new ObjectNotExist(__("Comment does not exist"));
         
+        $allowedMimeTypes = config("api.upload.allowed_mime_types");
         $request->validate([
-            "name" => "required|max:200",
-            "file" => "required",
+            "file" => [
+                "required",
+                RuleFile::types($allowedMimeTypes)
+            ],
             "description" => "nullable|max:2000",
         ]);
         
-        $data = [
-            "base64" => $request->input("file"),
-            "name" => $request->input("name"),
-            "description" => $request->input("description", ""),
+        $toUpload = [
+            "file" => $request->file("file"),
+            "description" => $request->input("description", "")
         ];
-        $data = json_encode($data);
-        
-        $validator = Validator::make(["attachments" => [$data]], [
-            "attachments" => ["nullable", "array", new Attachment],
-        ]);
-        
-        if($validator->fails())
-        {
-            throw ValidationException::withMessages([
-                $validator->messages()->all(),
-            ]);
-        }
-        
-        $comment->upload([$data]);
+        $comment->upload([$toUpload]);
         return true;
     }
     

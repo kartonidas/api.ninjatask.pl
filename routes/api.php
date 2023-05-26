@@ -69,7 +69,7 @@ Route::middleware(['auth:sanctum', 'locale'])->group(function () use($router) {
     $router->post('/task/{id}/assign', [TaskController::class, "assignUser"])->where("id", "[0-9]+");
     $router->post('/task/{id}/deassign', [TaskController::class, "deAssignUser"])->where("id", "[0-9]+");
     $router->get('/task/{id}/attachment/{aid}', [TaskController::class, "getAttachment"])->where("id", "[0-9]+")->where("aid", "[0-9]+");
-    $router->put('/task/{id}/attachment', [TaskController::class, "addAttachment"])->where("id", "[0-9]+");
+    $router->post('/task/{id}/attachment', [TaskController::class, "addAttachment"])->where("id", "[0-9]+");
     $router->delete('/task/{id}/attachment/{aid}', [TaskController::class, "removeAttachment"])->where("id", "[0-9]+")->where("aid", "[0-9]+");
     $router->get('/task/users/{id?}', [TaskController::class, "getAllowedUsers"])->where("id", "[0-9]+");
     $router->post('/task/{id}/close', [TaskController::class, "close"])->where("id", "[0-9]+");
@@ -92,7 +92,7 @@ Route::middleware(['auth:sanctum', 'locale'])->group(function () use($router) {
     $router->put('/task/{id}/comment/{cid}', [TaskCommentController::class, "update"])->where("id", "[0-9]+")->where("cid", "[0-9]+");
     $router->delete('/task/{id}/comment/{cid}', [TaskCommentController::class, "delete"])->where("id", "[0-9]+")->where("cid", "[0-9]+");
     $router->get('/task/{id}/comment/{cid}/attachment/{aid}', [TaskCommentController::class, "getAttachment"])->where("id", "[0-9]+")->where("cid", "[0-9]+")->where("aid", "[0-9]+");
-    $router->put('/task/{id}/comment/{cid}/attachment', [TaskCommentController::class, "addAttachment"])->where("id", "[0-9]+")->where("cid", "[0-9]+");
+    $router->post('/task/{id}/comment/{cid}/attachment', [TaskCommentController::class, "addAttachment"])->where("id", "[0-9]+")->where("cid", "[0-9]+");
     $router->delete('/task/{id}/comment/{cid}/attachment/{aid}', [TaskCommentController::class, "removeAttachment"])->where("id", "[0-9]+")->where("cid", "[0-9]+")->where("aid", "[0-9]+");
 });
 
