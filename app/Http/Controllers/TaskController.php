@@ -369,8 +369,9 @@ class TaskController extends Controller
             "file" => $request->file("file"),
             "description" => $request->input("description", "")
         ];
-        $task->upload([$toUpload]);
-        return true;
+        
+        $id = $task->uploadSingle($toUpload);
+        return $id;
     }
     
     /**

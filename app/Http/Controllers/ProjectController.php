@@ -228,6 +228,12 @@ class ProjectController extends Controller
         
         $projects = Project::apiFields()->whereIn("id", $projectIds)->orderBy("updated_at", "DESC")->get();
         
+        foreach($projects as $k => $project)
+        {
+            $count = $project->getTaskCount();
+            $projects[$k]->tasks = $count;
+        }
+        
         return $projects;
     }
     

@@ -27,60 +27,75 @@ trait File
             try
             {
                 DB::transaction(function() use($attachment, $type, &$sort) {
-                    $directory = FileModel::getUploadDirectory($type);
-                    
-                    if(!empty($attachment["file"]) && $attachment["file"] instanceof \Illuminate\Http\UploadedFile)
-                    {
-                        $relativeDirectory = FileModel::getUploadDirectory($type, false);
-                        $mime = $attachment["file"]->getMimeType();
-                        if(!empty(config("api.upload.allowed_mime_types")[$mime]))
-                            $extension = config("api.upload.allowed_mime_types")[$mime];
-                            
-                        if(empty($extension))
-                            throw new Exception(__("Unsupported file type"));
-                        
-                        $attachment["name"] = $attachment["file"]->getClientOriginalName();
-                        $filename = bin2hex(openssl_random_pseudo_bytes(16)) . "." . $extension;
-                        $path = $attachment["file"]->storeAs($relativeDirectory, $filename, "upload");
-                    }
-                    else
-                    {
-                        $f = finfo_open();
-                        $mime = finfo_buffer($f, base64_decode($attachment["base64"]), FILEINFO_MIME_TYPE);
-                        if(!empty(config("api.upload.allowed_mime_types")[$mime]))
-                            $extension = config("api.upload.allowed_mime_types")[$mime];
-                            
-                        if(empty($extension))
-                            throw new Exception(__("Unsupported file type"));
-                        
-                        $filename = bin2hex(openssl_random_pseudo_bytes(16)) . "." . $extension;
-                        
-                        $fp = fopen($directory . "/" . $filename, "w");
-                        fwrite($fp, base64_decode($attachment["base64"]));
-                        fclose($fp);
-                    }
-                    
-                    $size = filesize($directory . "/" . $filename);
-                    if($size > 0)
-                    {
-                        $row = new FileModel;
-                        $row->type = $type;
-                        $row->object_id = $this->id;
-                        $row->user_id = Auth::user()->id;
-                        $row->filename = $filename;
-                        $row->orig_name = $attachment["name"];
-                        $row->extension = $extension;
-                        $row->size = $size;
-                        $row->description = $attachment["description"] ?? "";
-                        $row->sort = ++$sort;
-                        $row->save();
-                    }
+                    $sort++;
+                    $this->uploadSingle($attachment, $type, $sort);
                 });
             }
             catch(Throwable $e)
             {
                 static::$errors[] = $e->getMessage();
             }
+        }
+    }
+    
+    public function uploadSingle($attachment, $type = null, $sort = null)
+    {
+        if($type === null) $type = $this->getType();
+        if($sort === null)
+        {
+            $sort = FileModel::where("type", $type)->where("object_id", $this->id)->max("sort");
+            $sort += 1;
+        }
+        
+        $directory = FileModel::getUploadDirectory($type);
+                    
+        if(!empty($attachment["file"]) && $attachment["file"] instanceof \Illuminate\Http\UploadedFile)
+        {
+            $relativeDirectory = FileModel::getUploadDirectory($type, false);
+            $mime = $attachment["file"]->getMimeType();
+            if(!empty(config("api.upload.allowed_mime_types")[$mime]))
+                $extension = config("api.upload.allowed_mime_types")[$mime];
+                
+            if(empty($extension))
+                throw new Exception(__("Unsupported file type"));
+            
+            $attachment["name"] = $attachment["file"]->getClientOriginalName();
+            $filename = bin2hex(openssl_random_pseudo_bytes(16)) . "." . $extension;
+            $path = $attachment["file"]->storeAs($relativeDirectory, $filename, "upload");
+        }
+        else
+        {
+            $f = finfo_open();
+            $mime = finfo_buffer($f, base64_decode($attachment["base64"]), FILEINFO_MIME_TYPE);
+            if(!empty(config("api.upload.allowed_mime_types")[$mime]))
+                $extension = config("api.upload.allowed_mime_types")[$mime];
+                
+            if(empty($extension))
+                throw new Exception(__("Unsupported file type"));
+            
+            $filename = bin2hex(openssl_random_pseudo_bytes(16)) . "." . $extension;
+            
+            $fp = fopen($directory . "/" . $filename, "w");
+            fwrite($fp, base64_decode($attachment["base64"]));
+            fclose($fp);
+        }
+        
+        $size = filesize($directory . "/" . $filename);
+        if($size > 0)
+        {
+            $row = new FileModel;
+            $row->type = $type;
+            $row->object_id = $this->id;
+            $row->user_id = Auth::user()->id;
+            $row->filename = $filename;
+            $row->orig_name = $attachment["name"];
+            $row->extension = $extension;
+            $row->size = $size;
+            $row->description = $attachment["description"] ?? "";
+            $row->sort = $sort;
+            $row->save();
+            
+            return $row->id;
         }
     }
 
@@ -107,7 +122,7 @@ trait File
     public function getAttachments($type = null)
     {
         if($type === null) $type = $this->getType();
-        return FileModel::apiFields()->where("type", $type)->where("object_id", $this->id)->orderBy("sort", "ASC")->get();
+        return FileModel::apiFields()->where("type", $type)->where("object_id", $this->id)->orderBy("created_at", "DESC")->get();
     }
     
     public function attachBase64File($attachments = [], $allowedExtensions = [])
