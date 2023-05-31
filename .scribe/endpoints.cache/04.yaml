@@ -35,19 +35,19 @@ endpoints:
         name: size
         description: 'Number of rows. Default: 50'
         required: false
-        example: 18
+        example: 20
         type: integer
         custom: []
       page:
         name: page
         description: 'Number of page (pagination). Default: 1'
         required: false
-        example: 14
+        example: 4
         type: integer
         custom: []
     cleanQueryParameters:
-      size: 18
-      page: 14
+      size: 20
+      page: 4
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -90,21 +90,21 @@ endpoints:
         name: project_id
         description: 'Project identifier.'
         required: true
-        example: 2
+        example: 1
         type: integer
         custom: []
       name:
         name: name
         description: 'Task name.'
         required: true
-        example: quo
+        example: sint
         type: string
         custom: []
       description:
         name: description
         description: 'Task description.'
         required: false
-        example: 'Doloribus saepe aut quo architecto laudantium.'
+        example: 'Et nihil reprehenderit dolores harum.'
         type: string
         custom: []
       users:
@@ -112,7 +112,7 @@ endpoints:
         description: 'Array of users identifier assigned to task.'
         required: false
         example:
-          - illo
+          - et
         type: 'string[]'
         custom: []
       attachments:
@@ -120,17 +120,17 @@ endpoints:
         description: 'Array of files attach to task ([{"name": "File name", "base64": Base64 encoded file, "description": "Optional file description"}])'
         required: false
         example:
-          - voluptates
+          - et
         type: 'string[]'
         custom: []
     cleanBodyParameters:
-      project_id: 2
-      name: quo
-      description: 'Doloribus saepe aut quo architecto laudantium.'
+      project_id: 1
+      name: sint
+      description: 'Et nihil reprehenderit dolores harum.'
       users:
-        - illo
+        - et
       attachments:
-        - voluptates
+        - et
     fileParameters: []
     responses: []
     responseFields:
@@ -168,11 +168,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 6
+        example: 9
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 6
+      id: 9
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -181,7 +181,7 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"id": 1, "name": "Example task", "description": "Example description", "project_id": 1, "priority" : 2, "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "timer": {"state": "active", "total": 250, "total_logged": 1000}}'
+        content: '{"id": 1, "name": "Example task", "description": "Example description", "project_id": 1, "priority" : 2, "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "timer": {"state": "active", "total": 250, "total_logged": 1000}, "project_name": "Project name"}'
         headers: []
         description: ''
         custom: []
@@ -219,11 +219,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 15
+        example: 10
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 15
+      id: 10
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -231,27 +231,27 @@ endpoints:
         name: name
         description: 'Task name.'
         required: false
-        example: voluptas
+        example: qui
         type: string
         custom: []
       description:
         name: description
         description: 'Task description.'
         required: false
-        example: 'Est corrupti ducimus nihil saepe.'
+        example: 'Aut eligendi non non culpa qui exercitationem.'
         type: string
         custom: []
       users:
         name: users
         description: 'Array of users identifier assigned to task.'
         required: false
-        example: 7
+        example: 14
         type: integer
         custom: []
     cleanBodyParameters:
-      name: voluptas
-      description: 'Est corrupti ducimus nihil saepe.'
-      users: 7
+      name: qui
+      description: 'Aut eligendi non non culpa qui exercitationem.'
+      users: 14
     fileParameters: []
     responses: []
     responseFields:
@@ -289,11 +289,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 17
+        example: 19
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 17
+      id: 19
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -341,11 +341,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 3
+        example: 2
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 3
+      id: 2
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -353,11 +353,11 @@ endpoints:
         name: user_id
         description: 'User identifier.'
         required: true
-        example: 4
+        example: 16
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 4
+      user_id: 16
     fileParameters: []
     responses:
       -
@@ -401,11 +401,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 16
+        example: 5
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 16
+      id: 5
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -413,11 +413,11 @@ endpoints:
         name: user_id
         description: 'User identifier.'
         required: true
-        example: 2
+        example: 20
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 2
+      user_id: 20
     fileParameters: []
     responses:
       -
@@ -461,19 +461,19 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 5
+        example: 10
         type: integer
         custom: []
       aid:
         name: aid
         description: 'Attachment identifier.'
         required: true
-        example: 6
+        example: 15
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 5
-      aid: 6
+      id: 10
+      aid: 15
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -500,7 +500,7 @@ endpoints:
     custom: []
   -
     httpMethods:
-      - PUT
+      - POST
     uri: 'api/task/{id}/attachment'
     metadata:
       groupName: Tasks
@@ -520,11 +520,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 5
+        example: 2
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 5
+      id: 2
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -532,27 +532,27 @@ endpoints:
         name: name
         description: 'File name.'
         required: true
-        example: dicta
+        example: sint
         type: string
         custom: []
       base64:
         name: base64
         description: 'Base64 encode file content".'
         required: true
-        example: ipsam
+        example: neque
         type: string
         custom: []
       description:
         name: description
         description: 'Description".'
         required: false
-        example: 'Quos omnis fuga ea accusantium et mollitia consequatur reprehenderit.'
+        example: 'Laudantium nihil architecto doloremque voluptas.'
         type: string
         custom: []
     cleanBodyParameters:
-      name: dicta
-      base64: ipsam
-      description: 'Quos omnis fuga ea accusantium et mollitia consequatur reprehenderit.'
+      name: sint
+      base64: neque
+      description: 'Laudantium nihil architecto doloremque voluptas.'
     fileParameters: []
     responses:
       -
@@ -596,19 +596,19 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 4
+        example: 6
         type: integer
         custom: []
       aid:
         name: aid
         description: 'Attachment identifier.'
         required: true
-        example: 1
+        example: 13
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 4
-      aid: 1
+      id: 6
+      aid: 13
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -656,11 +656,11 @@ endpoints:
         name: id
         description: 'optional Task identifier.'
         required: false
-        example: 13
+        example: 9
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 13
+      id: 9
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -701,11 +701,11 @@ endpoints:
         name: id
         description: 'optional Task identifier.'
         required: false
-        example: 7
+        example: 15
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 7
+      id: 15
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -747,11 +747,11 @@ endpoints:
         name: id
         description: 'optional Task identifier.'
         required: false
-        example: 4
+        example: 19
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 4
+      id: 19
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -803,6 +803,50 @@ endpoints:
         description: ''
         custom: []
     responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/task/{id}/time'
+    metadata:
+      groupName: Tasks
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Return total logged time'
+      description: 'Return total logged time'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 404
+        content: '{"error":true,"message":"Task does not exist"}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields:
+      status:
+        name: status
+        description: 'Total logged time in seconds'
+        required: false
+        example: null
+        type: integer
+        custom: []
     auth: []
     controller: null
     method: null

@@ -555,6 +555,26 @@ class TaskController extends Controller
         return $out;
     }
     
+    /**
+    * Return total logged time
+    *
+    * Return total logged time
+    * @responseField status int Total logged time in seconds
+    * @response 404 {"error":true,"message":"Task does not exist"}
+    * @header Authorization: Bearer {TOKEN}
+    * @group Tasks
+    */
+    public function time(Request $request, $id)
+    {
+        User::checkAccess("task:list");
+        
+        $task = Task::select("total")->find($id);
+        if(!$task)
+            throw new ObjectNotExist(__("Task does not exist"));
+        
+        return $task->total;
+    }
+    
     private function getAllowedUserIds()
     {
         $userIds = [];

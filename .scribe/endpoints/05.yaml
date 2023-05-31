@@ -23,11 +23,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 5
+        example: 8
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 5
+      id: 8
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -68,11 +68,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 18
+        example: 4
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 18
+      id: 4
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -119,11 +119,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 1
+        example: 18
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 1
+      id: 18
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -170,11 +170,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 2
+        example: 15
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 2
+      id: 15
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -182,35 +182,35 @@ endpoints:
         name: started
         description: 'Start time.'
         required: true
-        example: 9
+        example: 3
         type: integer
         custom: []
       total:
         name: total
         description: 'Total time in seconds.'
         required: true
-        example: 17
+        example: 7
         type: integer
         custom: []
       comment:
         name: comment
         description: Comment.
         required: false
-        example: at
+        example: dolorem
         type: string
         custom: []
       billable:
         name: billable
         description: Billable.
         required: false
-        example: false
+        example: true
         type: boolean
         custom: []
     cleanBodyParameters:
-      started: 9
-      total: 17
-      comment: at
-      billable: false
+      started: 3
+      total: 7
+      comment: dolorem
+      billable: true
     fileParameters: []
     responses:
       -
@@ -254,19 +254,19 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 10
+        example: 17
         type: integer
         custom: []
       tid:
         name: tid
         description: 'Task time identifier.'
         required: true
-        example: 15
+        example: 3
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 10
-      tid: 15
+      id: 17
+      tid: 3
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -274,35 +274,35 @@ endpoints:
         name: started
         description: 'Start time.'
         required: false
-        example: 20
+        example: 5
         type: integer
         custom: []
       total:
         name: total
         description: 'Total time in seconds.'
         required: false
-        example: 13
+        example: 10
         type: integer
         custom: []
       comment:
         name: comment
         description: Comment.
         required: false
-        example: recusandae
+        example: voluptates
         type: string
         custom: []
       billable:
         name: billable
         description: Billable.
         required: false
-        example: true
+        example: false
         type: boolean
         custom: []
     cleanBodyParameters:
-      started: 20
-      total: 13
-      comment: recusandae
-      billable: true
+      started: 5
+      total: 10
+      comment: voluptates
+      billable: false
     fileParameters: []
     responses:
       -
@@ -346,19 +346,19 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 15
+        example: 7
         type: integer
         custom: []
       tid:
         name: tid
         description: 'Task time identifier.'
         required: true
-        example: 18
+        example: 5
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 15
-      tid: 18
+      id: 7
+      tid: 5
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -406,29 +406,29 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 20
+        example: 19
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 20
+      id: 19
     queryParameters:
       size:
         name: size
         description: 'Number of rows. Default: 50'
         required: false
-        example: 5
+        example: 6
         type: integer
         custom: []
       page:
         name: page
         description: 'Number of page (pagination). Default: 1'
         required: false
-        example: 17
+        example: 5
         type: integer
         custom: []
     cleanQueryParameters:
-      size: 5
-      page: 17
+      size: 6
+      page: 5
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -436,6 +436,65 @@ endpoints:
       -
         status: 200
         content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "status": "active", "task_id": "1", "user_id": 1, "started": "1680843163", "finished": 1680843163, "timer_started": 0, "total": 600, "comment": "Example comment", "billable": 0, "_me": true, "user": "John Doe"}]}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: '{"error":true,"message":"Task does not exist"}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/task/{id}/time/{tid}'
+    metadata:
+      groupName: 'Task time'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get task spend time row'
+      description: 'Get task spend time row.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters:
+      id:
+        name: id
+        description: 'Task identifier.'
+        required: true
+        example: 2
+        type: integer
+        custom: []
+      tid:
+        name: tid
+        description: 'Task time identifier.'
+        required: true
+        example: 11
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 2
+      tid: 11
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"id": 1, "status": "active", "task_id": "1", "user_id": 1, "started": "1680843163", "finished": 1680843163, "timer_started": 0, "total": 600, "comment": "Example comment", "billable": 0, "_me": true, "user": "John Doe"}'
         headers: []
         description: ''
         custom: []

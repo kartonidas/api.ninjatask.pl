@@ -276,9 +276,43 @@ class TaskTimeController extends Controller
             "current_page" => $page,
             "has_more" => ceil($total / $size) > $page,
             "data" => $times,
+            "total" => $task->total,
         ];
             
         return $out;
+    }
+    
+    /**
+    * Get task spend time row
+    *
+    * Get task spend time row.
+    * @urlParam id integer required Task identifier.
+    * @urlParam tid integer required Task time identifier.
+    * @response 200 {"id": 1, "status": "active", "task_id": "1", "user_id": 1, "started": "1680843163", "finished": 1680843163, "timer_started": 0, "total": 600, "comment": "Example comment", "billable": 0, "_me": true, "user": "John Doe"}
+    * @response 404 {"error":true,"message":"Task does not exist"}
+    * @header Authorization: Bearer {TOKEN}
+    * @group Task time
+    */
+    public function getTime(Request $request, $id, $tid)
+    {
+        User::checkAccess("task:list");
+        
+        $task = Task::find($id);
+        if(!$task)
+            throw new ObjectNotExist(__("Task does not exist"));
+        
+        $time = TaskTime
+            ::apiFields()
+            ->where("id", $tid)
+            ->where("task_id", $id)
+            ->where("status", TaskTime::FINISHED)
+            ->first();
+            
+        $time->user = $time->getUserName();
+        $time->_me = $time->user_id == Auth::user()->id;
+        $time->billable = $time->billable == 1;
+        
+        return $time;
     }
     
     /**

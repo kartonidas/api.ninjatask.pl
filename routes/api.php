@@ -75,6 +75,7 @@ Route::middleware(['auth:sanctum', 'locale'])->group(function () use($router) {
     $router->post('/task/{id}/close', [TaskController::class, "close"])->where("id", "[0-9]+");
     $router->post('/task/{id}/open', [TaskController::class, "open"])->where("id", "[0-9]+");
     $router->get('/tasks/my-work', [TaskController::class, "myWork"]);
+    $router->get('/task/{id}/time', [TaskController::class, "time"]);
     
     // ZADANIA - CZAS PRACY
     $router->post('/task/{id}/time/start', [TaskTimeController::class, "start"])->where("id", "[0-9]+");
@@ -84,6 +85,7 @@ Route::middleware(['auth:sanctum', 'locale'])->group(function () use($router) {
     $router->put('/task/{id}/time/{tid}', [TaskTimeController::class, "updateLogTime"])->where("id", "[0-9]+")->where("tid", "[0-9]+");
     $router->delete('/task/{id}/time/{tid}', [TaskTimeController::class, "deleteTime"])->where("id", "[0-9]+")->where("tid", "[0-9]+");
     $router->get('/task/{id}/times', [TaskTimeController::class, "getTimes"])->where("id", "[0-9]+");
+    $router->get('/task/{id}/time/{tid}', [TaskTimeController::class, "getTime"])->where("id", "[0-9]+");
     
     // ZADANIA - KOMENTARZ
     $router->get('/task/{id}/comments', [TaskCommentController::class, "list"]);
