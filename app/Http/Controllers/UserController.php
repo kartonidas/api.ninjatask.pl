@@ -17,9 +17,12 @@ use App\Exceptions\ObjectNotExist;
 use App\Exceptions\UserExist;
 use App\Models\Firm;
 use App\Models\PasswordResetToken;
+use App\Models\Task;
+use App\Models\TaskTime;
 use App\Models\User;
 use App\Models\UserInvitation;
 use App\Models\UserPermission;
+use App\Rules\Notifications as NotificationsRule;
 
 class UserController extends Controller
 {
@@ -670,7 +673,8 @@ class UserController extends Controller
     * Update user settings
     *
     * User settings.
-    * @bodyParam flocale string Locale ex. pl.
+    * @bodyParam locale string Locale ex. pl.
+    * @bodyParam notifications string User e-mail notifications (separated by a comma)
     * @responseField status boolean Update status
 
     * @header Authorization: Bearer {TOKEN}
@@ -684,10 +688,11 @@ class UserController extends Controller
         
         $rules = [
             "locale" => ["required", Rule::in(config("api.allowed_languages"))],
+            "notifications" => ["nullable", new NotificationsRule],
         ];
         
         $validate = [];
-        $updateFields = ["locale"];
+        $updateFields = ["locale", "notifications"];
         foreach($updateFields as $field)
         {
             if($request->has($field))
@@ -707,6 +712,48 @@ class UserController extends Controller
                 $settings->{$field} = $request->input($field);
         }
         $settings->save();
+    }
+    
+    /**
+    * Get active timer
+    *
+    * Get user active timer list.
+    * @responseField status boolean Update status
+    * @response 200 {"total": 100, "data": [{"id": 1, "task_id": 12, "status": "active", "total": 1, "task": "Task name"}]}
+    * @header Authorization: Bearer {TOKEN}
+    * @group User management
+    */
+    public function getActiveTimer(Request $request)
+    {
+        $timer = TaskTime::where("user_id", Auth::user()->id)->whereIn("status", [TaskTime::ACTIVE, TaskTime::PAUSED])->orderBy("created_at", "DESC")->get();
+        
+        $out = [];
+        if(!$timer->isEmpty())
+        {
+            $data = [];
+            foreach($timer as $time)
+            {
+                $task = Task::find($time->task_id);
+                if(!$task)
+                    continue;
+                
+                $total = $time->total;
+                if($time->status == TaskTime::ACTIVE)
+                    $total = $time->total + (time() - $time->timer_started);
+                
+                $data[] = [
+                    "id" => $time->id,
+                    "task_id" => $time->task_id,
+                    "status" => $time->status,
+                    "total" => $total,
+                    "task" => $task->name,
+                ];
+            }
+            $out["total"] = count($data);
+            $out["data"] = $data;
+        }
+        
+        return $out;
     }
     
     /**

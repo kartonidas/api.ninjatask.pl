@@ -11,14 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_settings', function (Blueprint $table) {
+        Schema::create('notifications', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
-            $table->char('locale', 2)->default('pl');
-            $table->string('notifications', 250)->nullable()->default(null);
+            $table->integer('object_id');
+            $table->string('type', 80);
+            $table->tinyInteger('read')->nullable()->default(0);
+            $table->dateTime('read_time')->nullable()->default(null);
             $table->timestamps();
             
-            $table->unique('user_id');
+            $table->index('user_id');
         });
     }
 
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_settings');
+        Schema::dropIfExists('notifications');
     }
 };

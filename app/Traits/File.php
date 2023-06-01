@@ -119,10 +119,18 @@ trait File
         }
     }
 
-    public function getAttachments($type = null)
+    public function getAttachments($type = null, $withoutUuidScope = false)
     {
         if($type === null) $type = $this->getType();
-        return FileModel::apiFields()->where("type", $type)->where("object_id", $this->id)->orderBy("created_at", "DESC")->get();
+        
+        $files = FileModel::where("type", $type)->where("object_id", $this->id)->orderBy("created_at", "DESC");
+        if($withoutUuidScope)
+            $files->withoutGlobalscopes();
+        else
+            $files->apiFields();
+    
+        return $files->get();
+    
     }
     
     public function attachBase64File($attachments = [], $allowedExtensions = [])

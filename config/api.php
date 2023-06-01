@@ -35,5 +35,17 @@ return [
     ],
     "tasks" => [
         "priority" => [1 => "low", 2 => "normal", 3 => "high"]
+    ],
+    "notifications" => [
+        "task:assign",
+        "task:change_status_assigned",
+        "task:add_comment_assigned",
+        "task:change_status_owner",
+        "task:add_comment_owner",
+    ],
+    "notifications_default" => [
+        "task:assign",
+        "task:change_status_assigned",
+        "task:add_comment_assigned",
     ]
 ];

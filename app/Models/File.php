@@ -25,16 +25,19 @@ class File extends Model
     
     public function delete()
     {
-        $directory = self::getUploadDirectory($this->type);
+        $directory = self::getUploadDirectory($this->type, true, $this->uuid);
         if(file_exists($directory . "/" . $this->filename))
             unlink($directory . "/" . $this->filename);
         
         return parent::delete();
     }
 
-    public static function getUploadDirectory($type, $absolute = true)
+    public static function getUploadDirectory($type, $absolute = true, $uuid = null)
 	{
-        $path = "upload/files/" . Auth::user()->getUuid() . "/" . $type;
+        if($uuid === null)
+            $uuid = Auth::user()->getUuid();
+        $path = "upload/files/" . $uuid . "/" . $type;
+        
 		$directory = storage_path($path);
 		@mkdir($directory, 0777, true);
         

@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('app:clear-invitations-token')->daily();
         $schedule->command('app:clear-registers-token')->daily();
         $schedule->command('app:clear-unused-access-token')->daily();
+        $schedule->command('app:remove-deleted-tasks')->daily();
     }
 
     /**

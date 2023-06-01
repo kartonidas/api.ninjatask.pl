@@ -49,6 +49,7 @@ Route::middleware(['auth:sanctum', 'locale'])->group(function () use($router) {
     
     $router->get('/get-firm-id', [UserController::class, "getFirmId"]);
     $router->get('/get-id', [UserController::class, "getId"]);
+    $router->get('/user/getActiveTimer', [UserController::class, "getActiveTimer"]);
     
     // UPRAWNIENIA
     $router->get('/permissions', [PermissionController::class, "list"]);
@@ -88,7 +89,8 @@ Route::middleware(['auth:sanctum', 'locale'])->group(function () use($router) {
     $router->get('/task/{id}/time/{tid}', [TaskTimeController::class, "getTime"])->where("id", "[0-9]+");
     
     // ZADANIA - KOMENTARZ
-    $router->get('/task/{id}/comments', [TaskCommentController::class, "list"]);
+    $router->get('/task/{id}/comments', [TaskCommentController::class, "list"])->where("id", "[0-9]+");
+    $router->get('/task/{id}/comments/load-more/{lid}', [TaskCommentController::class, "loadMore"])->where("id", "[0-9]+")->where("lid", "[0-9]+");
     $router->put('/task/{id}/comment', [TaskCommentController::class, "create"]);
     $router->get('/task/{id}/comment/{cid}', [TaskCommentController::class, "get"])->where("id", "[0-9]+")->where("cid", "[0-9]+");
     $router->put('/task/{id}/comment/{cid}', [TaskCommentController::class, "update"])->where("id", "[0-9]+")->where("cid", "[0-9]+");

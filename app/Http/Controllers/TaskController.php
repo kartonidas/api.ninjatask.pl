@@ -543,7 +543,6 @@ class TaskController extends Controller
             $tasks[$k]->completed = $task->completed == 1;
         }
         
-        
         $out = [
             "total_rows" => $total,
             "total_pages" => ceil($total / $size),

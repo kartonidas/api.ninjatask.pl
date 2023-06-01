@@ -12,11 +12,12 @@ class UserSetting extends Model
     {
         $obj = new stdClass();
         $obj->locale = config("api.default_language");
+        $obj->notifications = implode(",", config("api.notifications_default"));
         return $obj;
     }
     
     public function scopeApiFields(Builder $query): void
     {
-        $query->select("locale");
+        $query->select("locale", "notifications");
     }
 }

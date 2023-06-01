@@ -102,6 +102,9 @@
                                                     <li class="tocify-item level-2" data-unique="task-comments-GETapi-task--id--comments">
                                 <a href="#task-comments-GETapi-task--id--comments">Get task comments list</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="task-comments-GETapi-task--id--comments-load-more--lid-">
+                                <a href="#task-comments-GETapi-task--id--comments-load-more--lid-">Load more comments</a>
+                            </li>
                                                                                 <li class="tocify-item level-2" data-unique="task-comments-PUTapi-task--id--comment">
                                 <a href="#task-comments-PUTapi-task--id--comment">Create new comment</a>
                             </li>
@@ -252,6 +255,9 @@
                                                                                 <li class="tocify-item level-2" data-unique="user-management-GETapi-get-id">
                                 <a href="#user-management-GETapi-get-id">Get login user identifier</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="user-management-GETapi-user-getActiveTimer">
+                                <a href="#user-management-GETapi-user-getActiveTimer">Get active timer</a>
+                            </li>
                                                                                 <li class="tocify-item level-2" data-unique="user-management-GETapi-invite--token-">
                                 <a href="#user-management-GETapi-invite--token-">Validate invite token</a>
                             </li>
@@ -334,7 +340,7 @@
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: May 31, 2023</li>
+        <li>Last updated: June 1, 2023</li>
     </ul>
 </div>
 
@@ -350,7 +356,7 @@
 You can switch the language used with the tabs at the top right (or from the nav menu at the top left on mobile).</aside>
 
         <h1 id="authenticating-requests">Authenticating requests</h1>
-<p>This API is authenticated by sending an <strong><code>Authorization</code></strong> header with the value <strong><code>"Bearer {YOUR_AUTH_KEY}"</code></strong>.</p>
+<p>To authenticate requests, include an <strong><code>Authorization</code></strong> header with the value <strong><code>"Bearer {YOUR_AUTH_KEY}"</code></strong>.</p>
 <p>All authenticated endpoints are marked with a <code>requires authentication</code> badge in the documentation below.</p>
 <p>You can retrieve your token by visiting your dashboard and clicking <b>Generate API token</b>.</p>
 
@@ -371,7 +377,7 @@ You can switch the language used with the tabs at the top right (or from the nav
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/projects?size=18&amp;page=12" \
+    --get "http://localhost/api/projects?size=3&amp;page=8" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
@@ -383,8 +389,8 @@ You can switch the language used with the tabs at the top right (or from the nav
 );
 
 const params = {
-    "size": "18",
-    "page": "12",
+    "size": "3",
+    "page": "8",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -512,10 +518,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                name="size"                data-endpoint="GETapi-projects"
-               value="18"
+               value="3"
                data-component="query">
     <br>
-<p>Number of rows. Default: 50 Example: <code>18</code></p>
+<p>Number of rows. Default: 50 Example: <code>3</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>page</code></b>&nbsp;&nbsp;
@@ -523,10 +529,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                name="page"                data-endpoint="GETapi-projects"
-               value="12"
+               value="8"
                data-component="query">
     <br>
-<p>Number of page (pagination). Default: 1 Example: <code>12</code></p>
+<p>Number of page (pagination). Default: 1 Example: <code>8</code></p>
             </div>
                 </form>
 
@@ -548,10 +554,10 @@ fetch(url, {
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}" \
     --data "{
-    \"name\": \"ea\",
-    \"location\": \"rem\",
-    \"description\": \"Esse molestiae consequuntur cupiditate excepturi quidem.\",
-    \"owner\": \"atque\"
+    \"name\": \"blanditiis\",
+    \"location\": \"velit\",
+    \"description\": \"Sint dolorem qui dolorum nulla placeat expedita repellendus.\",
+    \"owner\": \"et\"
 }"
 </code></pre></div>
 
@@ -568,10 +574,10 @@ const headers = {
 };
 
 let body = {
-    "name": "ea",
-    "location": "rem",
-    "description": "Esse molestiae consequuntur cupiditate excepturi quidem.",
-    "owner": "atque"
+    "name": "blanditiis",
+    "location": "velit",
+    "description": "Sint dolorem qui dolorum nulla placeat expedita repellendus.",
+    "owner": "et"
 };
 
 fetch(url, {
@@ -663,10 +669,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="name"                data-endpoint="PUTapi-project"
-               value="ea"
+               value="blanditiis"
                data-component="body">
     <br>
-<p>Project name. Example: <code>ea</code></p>
+<p>Project name. Example: <code>blanditiis</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>location</code></b>&nbsp;&nbsp;
@@ -674,10 +680,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="location"                data-endpoint="PUTapi-project"
-               value="rem"
+               value="velit"
                data-component="body">
     <br>
-<p>Project location. Example: <code>rem</code></p>
+<p>Project location. Example: <code>velit</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>description</code></b>&nbsp;&nbsp;
@@ -685,10 +691,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="description"                data-endpoint="PUTapi-project"
-               value="Esse molestiae consequuntur cupiditate excepturi quidem."
+               value="Sint dolorem qui dolorum nulla placeat expedita repellendus."
                data-component="body">
     <br>
-<p>Project description. Example: <code>Esse molestiae consequuntur cupiditate excepturi quidem.</code></p>
+<p>Project description. Example: <code>Sint dolorem qui dolorum nulla placeat expedita repellendus.</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>owner</code></b>&nbsp;&nbsp;
@@ -696,10 +702,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="owner"                data-endpoint="PUTapi-project"
-               value="atque"
+               value="et"
                data-component="body">
     <br>
-<p>Project owner. Example: <code>atque</code></p>
+<p>Project owner. Example: <code>et</code></p>
         </div>
         </form>
 
@@ -725,7 +731,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/project/20" \
+    --get "http://localhost/api/project/4" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
@@ -733,7 +739,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/project/20"
+    "http://localhost/api/project/4"
 );
 
 const headers = {
@@ -861,10 +867,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="GETapi-project--id-"
-               value="20"
+               value="4"
                data-component="url">
     <br>
-<p>Project identifier. Example: <code>20</code></p>
+<p>Project identifier. Example: <code>4</code></p>
             </div>
                     </form>
 
@@ -881,22 +887,22 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/project/17" \
+    "http://localhost/api/project/9" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}" \
     --data "{
-    \"name\": \"ut\",
-    \"location\": \"explicabo\",
-    \"description\": \"Laudantium sint autem debitis et voluptate quisquam.\",
-    \"owner\": \"in\"
+    \"name\": \"modi\",
+    \"location\": \"optio\",
+    \"description\": \"Atque repudiandae ab eligendi cum.\",
+    \"owner\": \"aspernatur\"
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/project/17"
+    "http://localhost/api/project/9"
 );
 
 const headers = {
@@ -906,10 +912,10 @@ const headers = {
 };
 
 let body = {
-    "name": "ut",
-    "location": "explicabo",
-    "description": "Laudantium sint autem debitis et voluptate quisquam.",
-    "owner": "in"
+    "name": "modi",
+    "location": "optio",
+    "description": "Atque repudiandae ab eligendi cum.",
+    "owner": "aspernatur"
 };
 
 fetch(url, {
@@ -1001,10 +1007,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="PUTapi-project--id-"
-               value="17"
+               value="9"
                data-component="url">
     <br>
-<p>Project identifier. Example: <code>17</code></p>
+<p>Project identifier. Example: <code>9</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -1013,10 +1019,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="name"                data-endpoint="PUTapi-project--id-"
-               value="ut"
+               value="modi"
                data-component="body">
     <br>
-<p>Project name. Example: <code>ut</code></p>
+<p>Project name. Example: <code>modi</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>location</code></b>&nbsp;&nbsp;
@@ -1024,10 +1030,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="location"                data-endpoint="PUTapi-project--id-"
-               value="explicabo"
+               value="optio"
                data-component="body">
     <br>
-<p>Project location. Example: <code>explicabo</code></p>
+<p>Project location. Example: <code>optio</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>description</code></b>&nbsp;&nbsp;
@@ -1035,10 +1041,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="description"                data-endpoint="PUTapi-project--id-"
-               value="Laudantium sint autem debitis et voluptate quisquam."
+               value="Atque repudiandae ab eligendi cum."
                data-component="body">
     <br>
-<p>Project description. Example: <code>Laudantium sint autem debitis et voluptate quisquam.</code></p>
+<p>Project description. Example: <code>Atque repudiandae ab eligendi cum.</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>owner</code></b>&nbsp;&nbsp;
@@ -1046,10 +1052,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="owner"                data-endpoint="PUTapi-project--id-"
-               value="in"
+               value="aspernatur"
                data-component="body">
     <br>
-<p>Project owner. Example: <code>in</code></p>
+<p>Project owner. Example: <code>aspernatur</code></p>
         </div>
         </form>
 
@@ -1075,7 +1081,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/api/project/3" \
+    "http://localhost/api/project/12" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
@@ -1083,7 +1089,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/project/3"
+    "http://localhost/api/project/12"
 );
 
 const headers = {
@@ -1190,10 +1196,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="DELETEapi-project--id-"
-               value="3"
+               value="12"
                data-component="url">
     <br>
-<p>Project identifier. Example: <code>3</code></p>
+<p>Project identifier. Example: <code>12</code></p>
             </div>
                     </form>
 
@@ -1473,7 +1479,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/task/13/comments?size=10&amp;page=9" \
+    --get "http://localhost/api/task/20/comments?size=8&amp;page=18" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
@@ -1481,12 +1487,12 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/task/13/comments"
+    "http://localhost/api/task/20/comments"
 );
 
 const params = {
-    "size": "10",
-    "page": "9",
+    "size": "8",
+    "page": "18",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -1622,10 +1628,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="GETapi-task--id--comments"
-               value="13"
+               value="20"
                data-component="url">
     <br>
-<p>Task identifier. Example: <code>13</code></p>
+<p>Task identifier. Example: <code>20</code></p>
             </div>
                         <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
                                     <div style="padding-left: 28px; clear: unset;">
@@ -1634,10 +1640,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                name="size"                data-endpoint="GETapi-task--id--comments"
-               value="10"
+               value="8"
                data-component="query">
     <br>
-<p>Number of rows. Default: 50 Example: <code>10</code></p>
+<p>Number of rows. Default: 50 Example: <code>8</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>page</code></b>&nbsp;&nbsp;
@@ -1645,10 +1651,201 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                name="page"                data-endpoint="GETapi-task--id--comments"
-               value="9"
+               value="18"
                data-component="query">
     <br>
-<p>Number of page (pagination). Default: 1 Example: <code>9</code></p>
+<p>Number of page (pagination). Default: 1 Example: <code>18</code></p>
+            </div>
+                </form>
+
+                    <h2 id="task-comments-GETapi-task--id--comments-load-more--lid-">Load more comments</h2>
+
+<p>
+</p>
+
+<p>Load more comments.</p>
+
+<span id="example-requests-GETapi-task--id--comments-load-more--lid-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost/api/task/2/comments/load-more/13?size=16" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/api/task/2/comments/load-more/13"
+);
+
+const params = {
+    "size": "16",
+};
+Object.keys(params)
+    .forEach(key =&gt; url.searchParams.append(key, params[key]));
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization:": "Bearer {TOKEN}",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-task--id--comments-load-more--lid-">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;total_rows&quot;: 100,
+    &quot;total_pages&quot;: &quot;4&quot;,
+    &quot;current_page&quot;: 1,
+    &quot;has_more&quot;: true,
+    &quot;data&quot;: [
+        {
+            &quot;id&quot;: 1,
+            &quot;comment&quot;: &quot;Example comment&quot;,
+            &quot;user_id&quot;: 1,
+            &quot;created_at&quot;: &quot;2020-01-01 10:00:00&quot;,
+            &quot;attachments&quot;: [
+                {
+                    &quot;id&quot;: 1,
+                    &quot;user_id&quot;: 1,
+                    &quot;type&quot;: &quot;task_comments&quot;,
+                    &quot;filename&quot;: &quot;filename.ext&quot;,
+                    &quot;orig_name&quot;: &quot;filename.ext&quot;,
+                    &quot;extension&quot;: &quot;ext&quot;,
+                    &quot;size&quot;: 100,
+                    &quot;description&quot;: &quot;Example description&quot;,
+                    &quot;created_at&quot;: &quot;2020-01-01 10:00:00&quot;,
+                    &quot;base64&quot;: &quot;Base64 encode file content&quot;
+                }
+            ],
+            &quot;can_delete&quot;: true,
+            &quot;user&quot;: &quot;John Doe&quot;,
+            &quot;_me&quot;: true
+        }
+    ]
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-task--id--comments-load-more--lid-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-task--id--comments-load-more--lid-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-task--id--comments-load-more--lid-" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-task--id--comments-load-more--lid-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-task--id--comments-load-more--lid-"></code></pre>
+</span>
+<form id="form-GETapi-task--id--comments-load-more--lid-" data-method="GET"
+      data-path="api/task/{id}/comments/load-more/{lid}"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-task--id--comments-load-more--lid-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-task--id--comments-load-more--lid-"
+                    onclick="tryItOut('GETapi-task--id--comments-load-more--lid-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-task--id--comments-load-more--lid-"
+                    onclick="cancelTryOut('GETapi-task--id--comments-load-more--lid-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-task--id--comments-load-more--lid-" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/task/{id}/comments/load-more/{lid}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETapi-task--id--comments-load-more--lid-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETapi-task--id--comments-load-more--lid-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization:</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization:"                data-endpoint="GETapi-task--id--comments-load-more--lid-"
+               value="Bearer {TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {TOKEN}</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               name="id"                data-endpoint="GETapi-task--id--comments-load-more--lid-"
+               value="2"
+               data-component="url">
+    <br>
+<p>Task identifier. Example: <code>2</code></p>
+            </div>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>lid</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               name="lid"                data-endpoint="GETapi-task--id--comments-load-more--lid-"
+               value="13"
+               data-component="url">
+    <br>
+<p>Last displayed comment ID. Example: <code>13</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
+                                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>size</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="number" style="display: none"
+               name="size"                data-endpoint="GETapi-task--id--comments-load-more--lid-"
+               value="16"
+               data-component="query">
+    <br>
+<p>Number of rows. Default: 50 Example: <code>16</code></p>
             </div>
                 </form>
 
@@ -1670,10 +1867,10 @@ fetch(url, {
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}" \
     --data "{
-    \"id\": 6,
-    \"comment\": \"reprehenderit\",
+    \"id\": 13,
+    \"comment\": \"aspernatur\",
     \"attachments\": [
-        \"totam\"
+        \"veritatis\"
     ]
 }"
 </code></pre></div>
@@ -1691,10 +1888,10 @@ const headers = {
 };
 
 let body = {
-    "id": 6,
-    "comment": "reprehenderit",
+    "id": 13,
+    "comment": "aspernatur",
     "attachments": [
-        "totam"
+        "veritatis"
     ]
 };
 
@@ -1787,10 +1984,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="PUTapi-task--id--comment"
-               value="6"
+               value="13"
                data-component="body">
     <br>
-<p>Task identifier. Example: <code>6</code></p>
+<p>Task identifier. Example: <code>13</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>comment</code></b>&nbsp;&nbsp;
@@ -1798,10 +1995,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="comment"                data-endpoint="PUTapi-task--id--comment"
-               value="reprehenderit"
+               value="aspernatur"
                data-component="body">
     <br>
-<p>Comment. Example: <code>reprehenderit</code></p>
+<p>Comment. Example: <code>aspernatur</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>attachments</code></b>&nbsp;&nbsp;
@@ -1840,7 +2037,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/task/3/comment/16" \
+    --get "http://localhost/api/task/5/comment/19" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
@@ -1848,7 +2045,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/task/3/comment/16"
+    "http://localhost/api/task/5/comment/19"
 );
 
 const headers = {
@@ -1984,10 +2181,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="GETapi-task--id--comment--cid-"
-               value="3"
+               value="5"
                data-component="url">
     <br>
-<p>Task identifier. Example: <code>3</code></p>
+<p>Task identifier. Example: <code>5</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>cid</code></b>&nbsp;&nbsp;
@@ -1995,10 +2192,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="cid"                data-endpoint="GETapi-task--id--comment--cid-"
-               value="16"
+               value="19"
                data-component="url">
     <br>
-<p>Comment identifier. Example: <code>16</code></p>
+<p>Comment identifier. Example: <code>19</code></p>
             </div>
                     </form>
 
@@ -2015,20 +2212,20 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/task/1/comment/20" \
+    "http://localhost/api/task/1/comment/9" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}" \
     --data "{
-    \"id\": 10,
-    \"comment\": \"necessitatibus\"
+    \"id\": 8,
+    \"comment\": \"voluptates\"
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/task/1/comment/20"
+    "http://localhost/api/task/1/comment/9"
 );
 
 const headers = {
@@ -2038,8 +2235,8 @@ const headers = {
 };
 
 let body = {
-    "id": 10,
-    "comment": "necessitatibus"
+    "id": 8,
+    "comment": "voluptates"
 };
 
 fetch(url, {
@@ -2131,10 +2328,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="cid"                data-endpoint="PUTapi-task--id--comment--cid-"
-               value="20"
+               value="9"
                data-component="url">
     <br>
-<p>Comment identifier. Example: <code>20</code></p>
+<p>Comment identifier. Example: <code>9</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -2143,10 +2340,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="PUTapi-task--id--comment--cid-"
-               value="10"
+               value="8"
                data-component="body">
     <br>
-<p>Task identifier. Example: <code>10</code></p>
+<p>Task identifier. Example: <code>8</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>comment</code></b>&nbsp;&nbsp;
@@ -2154,10 +2351,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="comment"                data-endpoint="PUTapi-task--id--comment--cid-"
-               value="necessitatibus"
+               value="voluptates"
                data-component="body">
     <br>
-<p>comment. Example: <code>necessitatibus</code></p>
+<p>comment. Example: <code>voluptates</code></p>
         </div>
         </form>
 
@@ -2183,19 +2380,19 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/api/task/1/comment/8" \
+    "http://localhost/api/task/1/comment/9" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}" \
     --data "{
-    \"id\": 20
+    \"id\": 18
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/task/1/comment/8"
+    "http://localhost/api/task/1/comment/9"
 );
 
 const headers = {
@@ -2205,7 +2402,7 @@ const headers = {
 };
 
 let body = {
-    "id": 20
+    "id": 18
 };
 
 fetch(url, {
@@ -2307,10 +2504,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="cid"                data-endpoint="DELETEapi-task--id--comment--cid-"
-               value="8"
+               value="9"
                data-component="url">
     <br>
-<p>Comment identifier. Example: <code>8</code></p>
+<p>Comment identifier. Example: <code>9</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -2319,10 +2516,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="DELETEapi-task--id--comment--cid-"
-               value="20"
+               value="18"
                data-component="body">
     <br>
-<p>Task identifier. Example: <code>20</code></p>
+<p>Task identifier. Example: <code>18</code></p>
         </div>
         </form>
 
@@ -2348,7 +2545,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/task/3/comment/5/attachment/20" \
+    --get "http://localhost/api/task/1/comment/1/attachment/10" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
@@ -2356,7 +2553,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/task/3/comment/5/attachment/20"
+    "http://localhost/api/task/1/comment/1/attachment/10"
 );
 
 const headers = {
@@ -2481,10 +2678,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="GETapi-task--id--comment--cid--attachment--aid-"
-               value="3"
+               value="1"
                data-component="url">
     <br>
-<p>Task identifier. Example: <code>3</code></p>
+<p>Task identifier. Example: <code>1</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>cid</code></b>&nbsp;&nbsp;
@@ -2492,10 +2689,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="cid"                data-endpoint="GETapi-task--id--comment--cid--attachment--aid-"
-               value="5"
+               value="1"
                data-component="url">
     <br>
-<p>Comment identifier. Example: <code>5</code></p>
+<p>Comment identifier. Example: <code>1</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>aid</code></b>&nbsp;&nbsp;
@@ -2503,10 +2700,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="aid"                data-endpoint="GETapi-task--id--comment--cid--attachment--aid-"
-               value="20"
+               value="10"
                data-component="url">
     <br>
-<p>Attachment identifier. Example: <code>20</code></p>
+<p>Attachment identifier. Example: <code>10</code></p>
             </div>
                     </form>
 
@@ -2523,21 +2720,21 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/task/5/comment/18/attachment" \
+    "http://localhost/api/task/14/comment/15/attachment" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}" \
     --data "{
-    \"name\": \"voluptatem\",
-    \"file\": \"deleniti\",
-    \"description\": \"Repellat blanditiis accusantium esse.\"
+    \"name\": \"possimus\",
+    \"file\": \"quaerat\",
+    \"description\": \"Molestiae alias exercitationem non ut est temporibus debitis.\"
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/task/5/comment/18/attachment"
+    "http://localhost/api/task/14/comment/15/attachment"
 );
 
 const headers = {
@@ -2547,9 +2744,9 @@ const headers = {
 };
 
 let body = {
-    "name": "voluptatem",
-    "file": "deleniti",
-    "description": "Repellat blanditiis accusantium esse."
+    "name": "possimus",
+    "file": "quaerat",
+    "description": "Molestiae alias exercitationem non ut est temporibus debitis."
 };
 
 fetch(url, {
@@ -2651,10 +2848,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="POSTapi-task--id--comment--cid--attachment"
-               value="5"
+               value="14"
                data-component="url">
     <br>
-<p>Task identifier. Example: <code>5</code></p>
+<p>Task identifier. Example: <code>14</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>cid</code></b>&nbsp;&nbsp;
@@ -2662,10 +2859,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="cid"                data-endpoint="POSTapi-task--id--comment--cid--attachment"
-               value="18"
+               value="15"
                data-component="url">
     <br>
-<p>Comment identifier. Example: <code>18</code></p>
+<p>Comment identifier. Example: <code>15</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -2674,10 +2871,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="name"                data-endpoint="POSTapi-task--id--comment--cid--attachment"
-               value="voluptatem"
+               value="possimus"
                data-component="body">
     <br>
-<p>File name. Example: <code>voluptatem</code></p>
+<p>File name. Example: <code>possimus</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>file</code></b>&nbsp;&nbsp;
@@ -2685,10 +2882,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="file"                data-endpoint="POSTapi-task--id--comment--cid--attachment"
-               value="deleniti"
+               value="quaerat"
                data-component="body">
     <br>
-<p>Base64 encode file content&quot;. Example: <code>deleniti</code></p>
+<p>Base64 encode file content&quot;. Example: <code>quaerat</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>description</code></b>&nbsp;&nbsp;
@@ -2696,10 +2893,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="description"                data-endpoint="POSTapi-task--id--comment--cid--attachment"
-               value="Repellat blanditiis accusantium esse."
+               value="Molestiae alias exercitationem non ut est temporibus debitis."
                data-component="body">
     <br>
-<p>Description&quot;. Example: <code>Repellat blanditiis accusantium esse.</code></p>
+<p>Description&quot;. Example: <code>Molestiae alias exercitationem non ut est temporibus debitis.</code></p>
         </div>
         </form>
 
@@ -2725,7 +2922,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/api/task/11/comment/18/attachment/1" \
+    "http://localhost/api/task/19/comment/19/attachment/19" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
@@ -2733,7 +2930,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/task/11/comment/18/attachment/1"
+    "http://localhost/api/task/19/comment/19/attachment/19"
 );
 
 const headers = {
@@ -2840,10 +3037,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="DELETEapi-task--id--comment--cid--attachment--aid-"
-               value="11"
+               value="19"
                data-component="url">
     <br>
-<p>Task identifier. Example: <code>11</code></p>
+<p>Task identifier. Example: <code>19</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>cid</code></b>&nbsp;&nbsp;
@@ -2851,10 +3048,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="cid"                data-endpoint="DELETEapi-task--id--comment--cid--attachment--aid-"
-               value="18"
+               value="19"
                data-component="url">
     <br>
-<p>Comment identifier. Example: <code>18</code></p>
+<p>Comment identifier. Example: <code>19</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>aid</code></b>&nbsp;&nbsp;
@@ -2862,10 +3059,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="aid"                data-endpoint="DELETEapi-task--id--comment--cid--attachment--aid-"
-               value="1"
+               value="19"
                data-component="url">
     <br>
-<p>Attachment identifier. Example: <code>1</code></p>
+<p>Attachment identifier. Example: <code>19</code></p>
             </div>
                     </form>
 
@@ -2895,7 +3092,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/tasks/1?size=20&amp;page=4" \
+    --get "http://localhost/api/tasks/15?size=8&amp;page=13" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
@@ -2903,12 +3100,12 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/tasks/1"
+    "http://localhost/api/tasks/15"
 );
 
 const params = {
-    "size": "20",
-    "page": "4",
+    "size": "8",
+    "page": "13",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -3053,10 +3250,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="GETapi-tasks--id-"
-               value="1"
+               value="15"
                data-component="url">
     <br>
-<p>Project identifier. Example: <code>1</code></p>
+<p>Project identifier. Example: <code>15</code></p>
             </div>
                         <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
                                     <div style="padding-left: 28px; clear: unset;">
@@ -3065,10 +3262,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                name="size"                data-endpoint="GETapi-tasks--id-"
-               value="20"
+               value="8"
                data-component="query">
     <br>
-<p>Number of rows. Default: 50 Example: <code>20</code></p>
+<p>Number of rows. Default: 50 Example: <code>8</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>page</code></b>&nbsp;&nbsp;
@@ -3076,10 +3273,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                name="page"                data-endpoint="GETapi-tasks--id-"
-               value="4"
+               value="13"
                data-component="query">
     <br>
-<p>Number of page (pagination). Default: 1 Example: <code>4</code></p>
+<p>Number of page (pagination). Default: 1 Example: <code>13</code></p>
             </div>
                 </form>
 
@@ -3101,14 +3298,14 @@ fetch(url, {
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}" \
     --data "{
-    \"project_id\": 1,
-    \"name\": \"sint\",
-    \"description\": \"Et nihil reprehenderit dolores harum.\",
+    \"project_id\": 11,
+    \"name\": \"culpa\",
+    \"description\": \"Quam nulla sequi ut officia repellat qui distinctio.\",
     \"users\": [
-        \"et\"
+        \"sint\"
     ],
     \"attachments\": [
-        \"et\"
+        \"aut\"
     ]
 }"
 </code></pre></div>
@@ -3126,14 +3323,14 @@ const headers = {
 };
 
 let body = {
-    "project_id": 1,
-    "name": "sint",
-    "description": "Et nihil reprehenderit dolores harum.",
+    "project_id": 11,
+    "name": "culpa",
+    "description": "Quam nulla sequi ut officia repellat qui distinctio.",
     "users": [
-        "et"
+        "sint"
     ],
     "attachments": [
-        "et"
+        "aut"
     ]
 };
 
@@ -3226,10 +3423,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="project_id"                data-endpoint="PUTapi-task"
-               value="1"
+               value="11"
                data-component="body">
     <br>
-<p>Project identifier. Example: <code>1</code></p>
+<p>Project identifier. Example: <code>11</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>name</code></b>&nbsp;&nbsp;
@@ -3237,10 +3434,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="name"                data-endpoint="PUTapi-task"
-               value="sint"
+               value="culpa"
                data-component="body">
     <br>
-<p>Task name. Example: <code>sint</code></p>
+<p>Task name. Example: <code>culpa</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>description</code></b>&nbsp;&nbsp;
@@ -3248,10 +3445,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="description"                data-endpoint="PUTapi-task"
-               value="Et nihil reprehenderit dolores harum."
+               value="Quam nulla sequi ut officia repellat qui distinctio."
                data-component="body">
     <br>
-<p>Task description. Example: <code>Et nihil reprehenderit dolores harum.</code></p>
+<p>Task description. Example: <code>Quam nulla sequi ut officia repellat qui distinctio.</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>users</code></b>&nbsp;&nbsp;
@@ -3303,7 +3500,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/task/9" \
+    --get "http://localhost/api/task/15" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
@@ -3311,7 +3508,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/task/9"
+    "http://localhost/api/task/15"
 );
 
 const headers = {
@@ -3456,10 +3653,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="GETapi-task--id-"
-               value="9"
+               value="15"
                data-component="url">
     <br>
-<p>Task identifier. Example: <code>9</code></p>
+<p>Task identifier. Example: <code>15</code></p>
             </div>
                     </form>
 
@@ -3476,21 +3673,21 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/task/10" \
+    "http://localhost/api/task/19" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}" \
     --data "{
-    \"name\": \"qui\",
-    \"description\": \"Aut eligendi non non culpa qui exercitationem.\",
-    \"users\": 14
+    \"name\": \"omnis\",
+    \"description\": \"Iusto magni et in quaerat aut.\",
+    \"users\": 19
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/task/10"
+    "http://localhost/api/task/19"
 );
 
 const headers = {
@@ -3500,9 +3697,9 @@ const headers = {
 };
 
 let body = {
-    "name": "qui",
-    "description": "Aut eligendi non non culpa qui exercitationem.",
-    "users": 14
+    "name": "omnis",
+    "description": "Iusto magni et in quaerat aut.",
+    "users": 19
 };
 
 fetch(url, {
@@ -3594,10 +3791,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="PUTapi-task--id-"
-               value="10"
+               value="19"
                data-component="url">
     <br>
-<p>Task identifier. Example: <code>10</code></p>
+<p>Task identifier. Example: <code>19</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -3606,10 +3803,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="name"                data-endpoint="PUTapi-task--id-"
-               value="qui"
+               value="omnis"
                data-component="body">
     <br>
-<p>Task name. Example: <code>qui</code></p>
+<p>Task name. Example: <code>omnis</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>description</code></b>&nbsp;&nbsp;
@@ -3617,10 +3814,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="description"                data-endpoint="PUTapi-task--id-"
-               value="Aut eligendi non non culpa qui exercitationem."
+               value="Iusto magni et in quaerat aut."
                data-component="body">
     <br>
-<p>Task description. Example: <code>Aut eligendi non non culpa qui exercitationem.</code></p>
+<p>Task description. Example: <code>Iusto magni et in quaerat aut.</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>users</code></b>&nbsp;&nbsp;
@@ -3628,10 +3825,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                name="users"                data-endpoint="PUTapi-task--id-"
-               value="14"
+               value="19"
                data-component="body">
     <br>
-<p>Array of users identifier assigned to task. Example: <code>14</code></p>
+<p>Array of users identifier assigned to task. Example: <code>19</code></p>
         </div>
         </form>
 
@@ -3657,7 +3854,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/api/task/19" \
+    "http://localhost/api/task/6" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
@@ -3665,7 +3862,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/task/19"
+    "http://localhost/api/task/6"
 );
 
 const headers = {
@@ -3772,10 +3969,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="DELETEapi-task--id-"
-               value="19"
+               value="6"
                data-component="url">
     <br>
-<p>Task identifier. Example: <code>19</code></p>
+<p>Task identifier. Example: <code>6</code></p>
             </div>
                     </form>
 
@@ -3801,7 +3998,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/task/2/assign" \
+    "http://localhost/api/task/6/assign" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}" \
@@ -3813,7 +4010,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/task/2/assign"
+    "http://localhost/api/task/6/assign"
 );
 
 const headers = {
@@ -3925,10 +4122,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="POSTapi-task--id--assign"
-               value="2"
+               value="6"
                data-component="url">
     <br>
-<p>Task identifier. Example: <code>2</code></p>
+<p>Task identifier. Example: <code>6</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -3966,19 +4163,19 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/task/5/deassign" \
+    "http://localhost/api/task/1/deassign" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}" \
     --data "{
-    \"user_id\": 20
+    \"user_id\": 10
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/task/5/deassign"
+    "http://localhost/api/task/1/deassign"
 );
 
 const headers = {
@@ -3988,7 +4185,7 @@ const headers = {
 };
 
 let body = {
-    "user_id": 20
+    "user_id": 10
 };
 
 fetch(url, {
@@ -4090,10 +4287,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="POSTapi-task--id--deassign"
-               value="5"
+               value="1"
                data-component="url">
     <br>
-<p>Task identifier. Example: <code>5</code></p>
+<p>Task identifier. Example: <code>1</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -4102,10 +4299,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="user_id"                data-endpoint="POSTapi-task--id--deassign"
-               value="20"
+               value="10"
                data-component="body">
     <br>
-<p>User identifier. Example: <code>20</code></p>
+<p>User identifier. Example: <code>10</code></p>
         </div>
         </form>
 
@@ -4131,7 +4328,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/task/10/attachment/15" \
+    --get "http://localhost/api/task/17/attachment/10" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
@@ -4139,7 +4336,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/task/10/attachment/15"
+    "http://localhost/api/task/17/attachment/10"
 );
 
 const headers = {
@@ -4264,10 +4461,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="GETapi-task--id--attachment--aid-"
-               value="10"
+               value="17"
                data-component="url">
     <br>
-<p>Task identifier. Example: <code>10</code></p>
+<p>Task identifier. Example: <code>17</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>aid</code></b>&nbsp;&nbsp;
@@ -4275,10 +4472,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="aid"                data-endpoint="GETapi-task--id--attachment--aid-"
-               value="15"
+               value="10"
                data-component="url">
     <br>
-<p>Attachment identifier. Example: <code>15</code></p>
+<p>Attachment identifier. Example: <code>10</code></p>
             </div>
                     </form>
 
@@ -4295,21 +4492,21 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/task/2/attachment" \
+    "http://localhost/api/task/19/attachment" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}" \
     --data "{
-    \"name\": \"sint\",
-    \"base64\": \"neque\",
-    \"description\": \"Laudantium nihil architecto doloremque voluptas.\"
+    \"name\": \"et\",
+    \"base64\": \"atque\",
+    \"description\": \"Et dignissimos id a maxime delectus.\"
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/task/2/attachment"
+    "http://localhost/api/task/19/attachment"
 );
 
 const headers = {
@@ -4319,9 +4516,9 @@ const headers = {
 };
 
 let body = {
-    "name": "sint",
-    "base64": "neque",
-    "description": "Laudantium nihil architecto doloremque voluptas."
+    "name": "et",
+    "base64": "atque",
+    "description": "Et dignissimos id a maxime delectus."
 };
 
 fetch(url, {
@@ -4423,10 +4620,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="POSTapi-task--id--attachment"
-               value="2"
+               value="19"
                data-component="url">
     <br>
-<p>Task identifier. Example: <code>2</code></p>
+<p>Task identifier. Example: <code>19</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -4435,10 +4632,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="name"                data-endpoint="POSTapi-task--id--attachment"
-               value="sint"
+               value="et"
                data-component="body">
     <br>
-<p>File name. Example: <code>sint</code></p>
+<p>File name. Example: <code>et</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>base64</code></b>&nbsp;&nbsp;
@@ -4446,10 +4643,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="base64"                data-endpoint="POSTapi-task--id--attachment"
-               value="neque"
+               value="atque"
                data-component="body">
     <br>
-<p>Base64 encode file content&quot;. Example: <code>neque</code></p>
+<p>Base64 encode file content&quot;. Example: <code>atque</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>description</code></b>&nbsp;&nbsp;
@@ -4457,10 +4654,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="description"                data-endpoint="POSTapi-task--id--attachment"
-               value="Laudantium nihil architecto doloremque voluptas."
+               value="Et dignissimos id a maxime delectus."
                data-component="body">
     <br>
-<p>Description&quot;. Example: <code>Laudantium nihil architecto doloremque voluptas.</code></p>
+<p>Description&quot;. Example: <code>Et dignissimos id a maxime delectus.</code></p>
         </div>
         </form>
 
@@ -4486,7 +4683,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/api/task/6/attachment/13" \
+    "http://localhost/api/task/18/attachment/12" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
@@ -4494,7 +4691,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/task/6/attachment/13"
+    "http://localhost/api/task/18/attachment/12"
 );
 
 const headers = {
@@ -4601,10 +4798,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="DELETEapi-task--id--attachment--aid-"
-               value="6"
+               value="18"
                data-component="url">
     <br>
-<p>Task identifier. Example: <code>6</code></p>
+<p>Task identifier. Example: <code>18</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>aid</code></b>&nbsp;&nbsp;
@@ -4612,10 +4809,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="aid"                data-endpoint="DELETEapi-task--id--attachment--aid-"
-               value="13"
+               value="12"
                data-component="url">
     <br>
-<p>Attachment identifier. Example: <code>13</code></p>
+<p>Attachment identifier. Example: <code>12</code></p>
             </div>
                     </form>
 
@@ -4641,7 +4838,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/task/users/9" \
+    --get "http://localhost/api/task/users/4" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
@@ -4649,7 +4846,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/task/users/9"
+    "http://localhost/api/task/users/4"
 );
 
 const headers = {
@@ -4763,10 +4960,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="GETapi-task-users--id--"
-               value="9"
+               value="4"
                data-component="url">
     <br>
-<p>optional Task identifier. Example: <code>9</code></p>
+<p>optional Task identifier. Example: <code>4</code></p>
             </div>
                     </form>
 
@@ -4783,7 +4980,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/task/15/close" \
+    "http://localhost/api/task/5/close" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
@@ -4791,7 +4988,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/task/15/close"
+    "http://localhost/api/task/5/close"
 );
 
 const headers = {
@@ -4888,10 +5085,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="POSTapi-task--id--close"
-               value="15"
+               value="5"
                data-component="url">
     <br>
-<p>optional Task identifier. Example: <code>15</code></p>
+<p>optional Task identifier. Example: <code>5</code></p>
             </div>
                     </form>
 
@@ -4917,7 +5114,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/task/19/open" \
+    "http://localhost/api/task/10/open" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
@@ -4925,7 +5122,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/task/19/open"
+    "http://localhost/api/task/10/open"
 );
 
 const headers = {
@@ -5022,10 +5219,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="POSTapi-task--id--open"
-               value="19"
+               value="10"
                data-component="url">
     <br>
-<p>optional Task identifier. Example: <code>19</code></p>
+<p>optional Task identifier. Example: <code>10</code></p>
             </div>
                     </form>
 
@@ -5345,7 +5542,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/task/8/time/start" \
+    "http://localhost/api/task/10/time/start" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
@@ -5353,7 +5550,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/task/8/time/start"
+    "http://localhost/api/task/10/time/start"
 );
 
 const headers = {
@@ -5460,10 +5657,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="POSTapi-task--id--time-start"
-               value="8"
+               value="10"
                data-component="url">
     <br>
-<p>Task identifier. Example: <code>8</code></p>
+<p>Task identifier. Example: <code>10</code></p>
             </div>
                     </form>
 
@@ -5480,7 +5677,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/task/4/time/stop" \
+    "http://localhost/api/task/9/time/stop" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
@@ -5488,7 +5685,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/task/4/time/stop"
+    "http://localhost/api/task/9/time/stop"
 );
 
 const headers = {
@@ -5606,10 +5803,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="POSTapi-task--id--time-stop"
-               value="4"
+               value="9"
                data-component="url">
     <br>
-<p>Task identifier. Example: <code>4</code></p>
+<p>Task identifier. Example: <code>9</code></p>
             </div>
                     </form>
 
@@ -5772,22 +5969,22 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/task/15/time" \
+    "http://localhost/api/task/2/time" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}" \
     --data "{
-    \"started\": 3,
-    \"total\": 7,
-    \"comment\": \"dolorem\",
-    \"billable\": true
+    \"started\": 9,
+    \"total\": 1,
+    \"comment\": \"architecto\",
+    \"billable\": false
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/task/15/time"
+    "http://localhost/api/task/2/time"
 );
 
 const headers = {
@@ -5797,10 +5994,10 @@ const headers = {
 };
 
 let body = {
-    "started": 3,
-    "total": 7,
-    "comment": "dolorem",
-    "billable": true
+    "started": 9,
+    "total": 1,
+    "comment": "architecto",
+    "billable": false
 };
 
 fetch(url, {
@@ -5902,10 +6099,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="PUTapi-task--id--time"
-               value="15"
+               value="2"
                data-component="url">
     <br>
-<p>Task identifier. Example: <code>15</code></p>
+<p>Task identifier. Example: <code>2</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -5914,10 +6111,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="started"                data-endpoint="PUTapi-task--id--time"
-               value="3"
+               value="9"
                data-component="body">
     <br>
-<p>Start time. Example: <code>3</code></p>
+<p>Start time. Example: <code>9</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>total</code></b>&nbsp;&nbsp;
@@ -5925,10 +6122,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="total"                data-endpoint="PUTapi-task--id--time"
-               value="7"
+               value="1"
                data-component="body">
     <br>
-<p>Total time in seconds. Example: <code>7</code></p>
+<p>Total time in seconds. Example: <code>1</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>comment</code></b>&nbsp;&nbsp;
@@ -5936,10 +6133,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="comment"                data-endpoint="PUTapi-task--id--time"
-               value="dolorem"
+               value="architecto"
                data-component="body">
     <br>
-<p>Comment. Example: <code>dolorem</code></p>
+<p>Comment. Example: <code>architecto</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>billable</code></b>&nbsp;&nbsp;
@@ -5960,7 +6157,7 @@ fetch(url, {
             <code>false</code>
         </label>
     <br>
-<p>Billable. Example: <code>true</code></p>
+<p>Billable. Example: <code>false</code></p>
         </div>
         </form>
 
@@ -5986,22 +6183,22 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/task/17/time/3" \
+    "http://localhost/api/task/15/time/1" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}" \
     --data "{
     \"started\": 5,
-    \"total\": 10,
-    \"comment\": \"voluptates\",
-    \"billable\": false
+    \"total\": 11,
+    \"comment\": \"odio\",
+    \"billable\": true
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/task/17/time/3"
+    "http://localhost/api/task/15/time/1"
 );
 
 const headers = {
@@ -6012,9 +6209,9 @@ const headers = {
 
 let body = {
     "started": 5,
-    "total": 10,
-    "comment": "voluptates",
-    "billable": false
+    "total": 11,
+    "comment": "odio",
+    "billable": true
 };
 
 fetch(url, {
@@ -6116,10 +6313,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="PUTapi-task--id--time--tid-"
-               value="17"
+               value="15"
                data-component="url">
     <br>
-<p>Task identifier. Example: <code>17</code></p>
+<p>Task identifier. Example: <code>15</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>tid</code></b>&nbsp;&nbsp;
@@ -6127,10 +6324,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="tid"                data-endpoint="PUTapi-task--id--time--tid-"
-               value="3"
+               value="1"
                data-component="url">
     <br>
-<p>Task time identifier. Example: <code>3</code></p>
+<p>Task time identifier. Example: <code>1</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -6150,10 +6347,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                name="total"                data-endpoint="PUTapi-task--id--time--tid-"
-               value="10"
+               value="11"
                data-component="body">
     <br>
-<p>Total time in seconds. Example: <code>10</code></p>
+<p>Total time in seconds. Example: <code>11</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>comment</code></b>&nbsp;&nbsp;
@@ -6161,10 +6358,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="comment"                data-endpoint="PUTapi-task--id--time--tid-"
-               value="voluptates"
+               value="odio"
                data-component="body">
     <br>
-<p>Comment. Example: <code>voluptates</code></p>
+<p>Comment. Example: <code>odio</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>billable</code></b>&nbsp;&nbsp;
@@ -6185,7 +6382,7 @@ fetch(url, {
             <code>false</code>
         </label>
     <br>
-<p>Billable. Example: <code>false</code></p>
+<p>Billable. Example: <code>true</code></p>
         </div>
         </form>
 
@@ -6211,7 +6408,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/api/task/7/time/5" \
+    "http://localhost/api/task/15/time/9" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
@@ -6219,7 +6416,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/task/7/time/5"
+    "http://localhost/api/task/15/time/9"
 );
 
 const headers = {
@@ -6326,10 +6523,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="DELETEapi-task--id--time--tid-"
-               value="7"
+               value="15"
                data-component="url">
     <br>
-<p>Task identifier. Example: <code>7</code></p>
+<p>Task identifier. Example: <code>15</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>tid</code></b>&nbsp;&nbsp;
@@ -6337,10 +6534,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="tid"                data-endpoint="DELETEapi-task--id--time--tid-"
-               value="5"
+               value="9"
                data-component="url">
     <br>
-<p>Task time identifier. Example: <code>5</code></p>
+<p>Task time identifier. Example: <code>9</code></p>
             </div>
                     </form>
 
@@ -6366,7 +6563,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/task/19/times?size=6&amp;page=5" \
+    --get "http://localhost/api/task/13/times?size=11&amp;page=16" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
@@ -6374,12 +6571,12 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/task/19/times"
+    "http://localhost/api/task/13/times"
 );
 
 const params = {
-    "size": "6",
-    "page": "5",
+    "size": "11",
+    "page": "16",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -6516,10 +6713,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="GETapi-task--id--times"
-               value="19"
+               value="13"
                data-component="url">
     <br>
-<p>Task identifier. Example: <code>19</code></p>
+<p>Task identifier. Example: <code>13</code></p>
             </div>
                         <h4 class="fancy-heading-panel"><b>Query Parameters</b></h4>
                                     <div style="padding-left: 28px; clear: unset;">
@@ -6528,10 +6725,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                name="size"                data-endpoint="GETapi-task--id--times"
-               value="6"
+               value="11"
                data-component="query">
     <br>
-<p>Number of rows. Default: 50 Example: <code>6</code></p>
+<p>Number of rows. Default: 50 Example: <code>11</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>page</code></b>&nbsp;&nbsp;
@@ -6539,10 +6736,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                name="page"                data-endpoint="GETapi-task--id--times"
-               value="5"
+               value="16"
                data-component="query">
     <br>
-<p>Number of page (pagination). Default: 1 Example: <code>5</code></p>
+<p>Number of page (pagination). Default: 1 Example: <code>16</code></p>
             </div>
                 </form>
 
@@ -6559,7 +6756,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/task/2/time/11" \
+    --get "http://localhost/api/task/18/time/11" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
@@ -6567,7 +6764,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/task/2/time/11"
+    "http://localhost/api/task/18/time/11"
 );
 
 const headers = {
@@ -6694,10 +6891,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="GETapi-task--id--time--tid-"
-               value="2"
+               value="18"
                data-component="url">
     <br>
-<p>Task identifier. Example: <code>2</code></p>
+<p>Task identifier. Example: <code>18</code></p>
             </div>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>tid</code></b>&nbsp;&nbsp;
@@ -6729,7 +6926,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/users?size=5&amp;page=16" \
+    --get "http://localhost/api/users?size=13&amp;page=5" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
@@ -6741,8 +6938,8 @@ fetch(url, {
 );
 
 const params = {
-    "size": "5",
-    "page": "16",
+    "size": "13",
+    "page": "5",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -6868,10 +7065,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                name="size"                data-endpoint="GETapi-users"
-               value="5"
+               value="13"
                data-component="query">
     <br>
-<p>Number of rows. Default: 50 Example: <code>5</code></p>
+<p>Number of rows. Default: 50 Example: <code>13</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>page</code></b>&nbsp;&nbsp;
@@ -6879,10 +7076,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                name="page"                data-endpoint="GETapi-users"
-               value="16"
+               value="5"
                data-component="query">
     <br>
-<p>Number of page (pagination). Default: 1 Example: <code>16</code></p>
+<p>Number of page (pagination). Default: 1 Example: <code>5</code></p>
             </div>
                 </form>
 
@@ -6904,13 +7101,13 @@ fetch(url, {
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}" \
     --data "{
-    \"firstname\": \"enim\",
-    \"lastname\": \"tenetur\",
-    \"email\": \"easton65@example.com\",
-    \"password\": \"5JKt\\\\_S0(*`\",
-    \"phone\": \"quidem\",
-    \"user_permission_id\": 20,
-    \"superuser\": true
+    \"firstname\": \"ut\",
+    \"lastname\": \"aut\",
+    \"email\": \"silas63@example.net\",
+    \"password\": \"&amp;]%8hONK\",
+    \"phone\": \"quibusdam\",
+    \"user_permission_id\": 18,
+    \"superuser\": false
 }"
 </code></pre></div>
 
@@ -6927,13 +7124,13 @@ const headers = {
 };
 
 let body = {
-    "firstname": "enim",
-    "lastname": "tenetur",
-    "email": "easton65@example.com",
-    "password": "5JKt\\_S0(*`",
-    "phone": "quidem",
-    "user_permission_id": 20,
-    "superuser": true
+    "firstname": "ut",
+    "lastname": "aut",
+    "email": "silas63@example.net",
+    "password": "&amp;]%8hONK",
+    "phone": "quibusdam",
+    "user_permission_id": 18,
+    "superuser": false
 };
 
 fetch(url, {
@@ -7035,10 +7232,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="firstname"                data-endpoint="PUTapi-user"
-               value="enim"
+               value="ut"
                data-component="body">
     <br>
-<p>User first name. Example: <code>enim</code></p>
+<p>User first name. Example: <code>ut</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>lastname</code></b>&nbsp;&nbsp;
@@ -7046,10 +7243,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="lastname"                data-endpoint="PUTapi-user"
-               value="tenetur"
+               value="aut"
                data-component="body">
     <br>
-<p>User last name. Example: <code>tenetur</code></p>
+<p>User last name. Example: <code>aut</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>email</code></b>&nbsp;&nbsp;
@@ -7057,10 +7254,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="email"                data-endpoint="PUTapi-user"
-               value="easton65@example.com"
+               value="silas63@example.net"
                data-component="body">
     <br>
-<p>User e-mail address. Example: <code>easton65@example.com</code></p>
+<p>User e-mail address. Example: <code>silas63@example.net</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>password</code></b>&nbsp;&nbsp;
@@ -7068,10 +7265,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="password"                data-endpoint="PUTapi-user"
-               value="5JKt\_S0(*`"
+               value="&]%8hONK"
                data-component="body">
     <br>
-<p>User password (min 8 characters, lowercase and uppercase letters, number, special characters). Example: `5JKt_S0(*``</p>
+<p>User password (min 8 characters, lowercase and uppercase letters, number, special characters). Example: <code>&amp;]%8hONK</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>phone</code></b>&nbsp;&nbsp;
@@ -7079,10 +7276,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="phone"                data-endpoint="PUTapi-user"
-               value="quidem"
+               value="quibusdam"
                data-component="body">
     <br>
-<p>User phone number. Example: <code>quidem</code></p>
+<p>User phone number. Example: <code>quibusdam</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>user_permission_id</code></b>&nbsp;&nbsp;
@@ -7090,10 +7287,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                name="user_permission_id"                data-endpoint="PUTapi-user"
-               value="20"
+               value="18"
                data-component="body">
     <br>
-<p>Permission group identifier (if not set default permission will be used). Example: <code>20</code></p>
+<p>Permission group identifier (if not set default permission will be used). Example: <code>18</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>superuser</code></b>&nbsp;&nbsp;
@@ -7114,7 +7311,7 @@ fetch(url, {
             <code>false</code>
         </label>
     <br>
-<p>If set true user have full access regardless of permissions. Example: <code>true</code></p>
+<p>If set true user have full access regardless of permissions. Example: <code>false</code></p>
         </div>
         </form>
 
@@ -7145,8 +7342,8 @@ fetch(url, {
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}" \
     --data "{
-    \"email\": \"ezekiel.schaefer@example.org\",
-    \"user_permission_id\": 8
+    \"email\": \"deangelo.stokes@example.net\",
+    \"user_permission_id\": 2
 }"
 </code></pre></div>
 
@@ -7163,8 +7360,8 @@ const headers = {
 };
 
 let body = {
-    "email": "ezekiel.schaefer@example.org",
-    "user_permission_id": 8
+    "email": "deangelo.stokes@example.net",
+    "user_permission_id": 2
 };
 
 fetch(url, {
@@ -7266,10 +7463,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="email"                data-endpoint="POSTapi-invite"
-               value="ezekiel.schaefer@example.org"
+               value="deangelo.stokes@example.net"
                data-component="body">
     <br>
-<p>User e-mail address. Example: <code>ezekiel.schaefer@example.org</code></p>
+<p>User e-mail address. Example: <code>deangelo.stokes@example.net</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>user_permission_id</code></b>&nbsp;&nbsp;
@@ -7277,10 +7474,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                name="user_permission_id"                data-endpoint="POSTapi-invite"
-               value="8"
+               value="2"
                data-component="body">
     <br>
-<p>Permission group identifier (if not set default permission will be used). Example: <code>8</code></p>
+<p>Permission group identifier (if not set default permission will be used). Example: <code>2</code></p>
         </div>
         </form>
 
@@ -7460,25 +7657,25 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/user/11" \
+    "http://localhost/api/user/3" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}" \
     --data "{
-    \"firstname\": \"incidunt\",
-    \"lastname\": \"vel\",
-    \"email\": \"towne.hortense@example.org\",
-    \"password\": \"F0y&gt;nIZJP1\",
-    \"phone\": \"et\",
-    \"user_permission_id\": 16,
-    \"superuser\": true
+    \"firstname\": \"praesentium\",
+    \"lastname\": \"suscipit\",
+    \"email\": \"lakin.elouise@example.org\",
+    \"password\": \"S6(Wnb@e6@cE9$Z&lt;,\",
+    \"phone\": \"a\",
+    \"user_permission_id\": 2,
+    \"superuser\": false
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/user/11"
+    "http://localhost/api/user/3"
 );
 
 const headers = {
@@ -7488,13 +7685,13 @@ const headers = {
 };
 
 let body = {
-    "firstname": "incidunt",
-    "lastname": "vel",
-    "email": "towne.hortense@example.org",
-    "password": "F0y&gt;nIZJP1",
-    "phone": "et",
-    "user_permission_id": 16,
-    "superuser": true
+    "firstname": "praesentium",
+    "lastname": "suscipit",
+    "email": "lakin.elouise@example.org",
+    "password": "S6(Wnb@e6@cE9$Z&lt;,",
+    "phone": "a",
+    "user_permission_id": 2,
+    "superuser": false
 };
 
 fetch(url, {
@@ -7586,10 +7783,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="PUTapi-user--id-"
-               value="11"
+               value="3"
                data-component="url">
     <br>
-<p>User identifier. Example: <code>11</code></p>
+<p>User identifier. Example: <code>3</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -7598,10 +7795,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="firstname"                data-endpoint="PUTapi-user--id-"
-               value="incidunt"
+               value="praesentium"
                data-component="body">
     <br>
-<p>User first name. Example: <code>incidunt</code></p>
+<p>User first name. Example: <code>praesentium</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>lastname</code></b>&nbsp;&nbsp;
@@ -7609,10 +7806,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="lastname"                data-endpoint="PUTapi-user--id-"
-               value="vel"
+               value="suscipit"
                data-component="body">
     <br>
-<p>User last name. Example: <code>vel</code></p>
+<p>User last name. Example: <code>suscipit</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>email</code></b>&nbsp;&nbsp;
@@ -7620,10 +7817,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="email"                data-endpoint="PUTapi-user--id-"
-               value="towne.hortense@example.org"
+               value="lakin.elouise@example.org"
                data-component="body">
     <br>
-<p>User e-mail address. Example: <code>towne.hortense@example.org</code></p>
+<p>User e-mail address. Example: <code>lakin.elouise@example.org</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>password</code></b>&nbsp;&nbsp;
@@ -7631,10 +7828,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="password"                data-endpoint="PUTapi-user--id-"
-               value="F0y>nIZJP1"
+               value="S6(Wnb@e6@cE9$Z<,"
                data-component="body">
     <br>
-<p>User password (min 8 characters, lowercase and uppercase letters, number, special characters). Example: <code>F0y&gt;nIZJP1</code></p>
+<p>User password (min 8 characters, lowercase and uppercase letters, number, special characters). Example: <code>S6(Wnb@e6@cE9$Z&lt;,</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>phone</code></b>&nbsp;&nbsp;
@@ -7642,10 +7839,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="phone"                data-endpoint="PUTapi-user--id-"
-               value="et"
+               value="a"
                data-component="body">
     <br>
-<p>User phone number. Example: <code>et</code></p>
+<p>User phone number. Example: <code>a</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>user_permission_id</code></b>&nbsp;&nbsp;
@@ -7653,10 +7850,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                name="user_permission_id"                data-endpoint="PUTapi-user--id-"
-               value="16"
+               value="2"
                data-component="body">
     <br>
-<p>Permission group identifier. Example: <code>16</code></p>
+<p>Permission group identifier. Example: <code>2</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>superuser</code></b>&nbsp;&nbsp;
@@ -7677,7 +7874,7 @@ fetch(url, {
             <code>false</code>
         </label>
     <br>
-<p>If set true user have full access regardless of permissions. Example: <code>true</code></p>
+<p>If set true user have full access regardless of permissions. Example: <code>false</code></p>
         </div>
         </form>
 
@@ -7703,7 +7900,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/api/user/7" \
+    "http://localhost/api/user/16" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
@@ -7711,7 +7908,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/user/7"
+    "http://localhost/api/user/16"
 );
 
 const headers = {
@@ -7818,10 +8015,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="DELETEapi-user--id-"
-               value="7"
+               value="16"
                data-component="url">
     <br>
-<p>User identifier. Example: <code>7</code></p>
+<p>User identifier. Example: <code>16</code></p>
             </div>
                     </form>
 
@@ -8130,11 +8327,11 @@ fetch(url, {
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}" \
     --data "{
-    \"firstname\": \"rerum\",
-    \"lastname\": \"accusantium\",
-    \"email\": \"pritchie@example.net\",
-    \"password\": \"@eNKT~9c\",
-    \"phone\": \"impedit\"
+    \"firstname\": \"velit\",
+    \"lastname\": \"voluptatem\",
+    \"email\": \"ofelia.hoeger@example.org\",
+    \"password\": \"pznQKyb=#K.ZIy\",
+    \"phone\": \"maxime\"
 }"
 </code></pre></div>
 
@@ -8151,11 +8348,11 @@ const headers = {
 };
 
 let body = {
-    "firstname": "rerum",
-    "lastname": "accusantium",
-    "email": "pritchie@example.net",
-    "password": "@eNKT~9c",
-    "phone": "impedit"
+    "firstname": "velit",
+    "lastname": "voluptatem",
+    "email": "ofelia.hoeger@example.org",
+    "password": "pznQKyb=#K.ZIy",
+    "phone": "maxime"
 };
 
 fetch(url, {
@@ -8247,10 +8444,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="firstname"                data-endpoint="PUTapi-profile"
-               value="rerum"
+               value="velit"
                data-component="body">
     <br>
-<p>User first name. Example: <code>rerum</code></p>
+<p>User first name. Example: <code>velit</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>lastname</code></b>&nbsp;&nbsp;
@@ -8258,10 +8455,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="lastname"                data-endpoint="PUTapi-profile"
-               value="accusantium"
+               value="voluptatem"
                data-component="body">
     <br>
-<p>User last name. Example: <code>accusantium</code></p>
+<p>User last name. Example: <code>voluptatem</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>email</code></b>&nbsp;&nbsp;
@@ -8269,10 +8466,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="email"                data-endpoint="PUTapi-profile"
-               value="pritchie@example.net"
+               value="ofelia.hoeger@example.org"
                data-component="body">
     <br>
-<p>User e-mail address. Example: <code>pritchie@example.net</code></p>
+<p>User e-mail address. Example: <code>ofelia.hoeger@example.org</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>password</code></b>&nbsp;&nbsp;
@@ -8280,10 +8477,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="password"                data-endpoint="PUTapi-profile"
-               value="@eNKT~9c"
+               value="pznQKyb=#K.ZIy"
                data-component="body">
     <br>
-<p>User password (min 8 characters, lowercase and uppercase letters, number, special characters). Example: <code>@eNKT~9c</code></p>
+<p>User password (min 8 characters, lowercase and uppercase letters, number, special characters). Example: <code>pznQKyb=#K.ZIy</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>phone</code></b>&nbsp;&nbsp;
@@ -8291,10 +8488,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="phone"                data-endpoint="PUTapi-profile"
-               value="impedit"
+               value="maxime"
                data-component="body">
     <br>
-<p>User phone number. Example: <code>impedit</code></p>
+<p>User phone number. Example: <code>maxime</code></p>
         </div>
         </form>
 
@@ -8447,7 +8644,8 @@ fetch(url, {
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}" \
     --data "{
-    \"flocale\": \"fur_IT\"
+    \"locale\": \"ps_AF\",
+    \"notifications\": \"quo\"
 }"
 </code></pre></div>
 
@@ -8464,7 +8662,8 @@ const headers = {
 };
 
 let body = {
-    "flocale": "fur_IT"
+    "locale": "ps_AF",
+    "notifications": "quo"
 };
 
 fetch(url, {
@@ -8551,15 +8750,26 @@ fetch(url, {
             </div>
                                 <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
-            <b style="line-height: 2;"><code>flocale</code></b>&nbsp;&nbsp;
+            <b style="line-height: 2;"><code>locale</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
-               name="flocale"                data-endpoint="PUTapi-settings"
-               value="fur_IT"
+               name="locale"                data-endpoint="PUTapi-settings"
+               value="ps_AF"
                data-component="body">
     <br>
-<p>Locale ex. pl. Example: <code>fur_IT</code></p>
+<p>Locale ex. pl. Example: <code>ps_AF</code></p>
+        </div>
+                <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>notifications</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
+<i>optional</i> &nbsp;
+                <input type="text" style="display: none"
+               name="notifications"                data-endpoint="PUTapi-settings"
+               value="quo"
+               data-component="body">
+    <br>
+<p>User e-mail notifications (separated by a comma) Example: <code>quo</code></p>
         </div>
         </form>
 
@@ -8816,6 +9026,146 @@ fetch(url, {
 <br>
 <p>User identifier</p>
         </div>
+                        <h2 id="user-management-GETapi-user-getActiveTimer">Get active timer</h2>
+
+<p>
+</p>
+
+<p>Get user active timer list.</p>
+
+<span id="example-requests-GETapi-user-getActiveTimer">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://localhost/api/user/getActiveTimer" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json" \
+    --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://localhost/api/user/getActiveTimer"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization:": "Bearer {TOKEN}",
+};
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-user-getActiveTimer">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;total&quot;: 100,
+    &quot;data&quot;: [
+        {
+            &quot;id&quot;: 1,
+            &quot;task_id&quot;: 12,
+            &quot;status&quot;: &quot;active&quot;,
+            &quot;total&quot;: 1,
+            &quot;task&quot;: &quot;Task name&quot;
+        }
+    ]
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-user-getActiveTimer" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-user-getActiveTimer"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-user-getActiveTimer" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-user-getActiveTimer" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-user-getActiveTimer"></code></pre>
+</span>
+<form id="form-GETapi-user-getActiveTimer" data-method="GET"
+      data-path="api/user/getActiveTimer"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-user-getActiveTimer', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-user-getActiveTimer"
+                    onclick="tryItOut('GETapi-user-getActiveTimer');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-user-getActiveTimer"
+                    onclick="cancelTryOut('GETapi-user-getActiveTimer');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-user-getActiveTimer" hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/user/getActiveTimer</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="GETapi-user-getActiveTimer"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="GETapi-user-getActiveTimer"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization:</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Authorization:"                data-endpoint="GETapi-user-getActiveTimer"
+               value="Bearer {TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {TOKEN}</code></p>
+            </div>
+                        </form>
+
+    <h3>Response</h3>
+    <h4 class="fancy-heading-panel"><b>Response Fields</b></h4>
+    <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>status</code></b>&nbsp;&nbsp;
+<small>boolean</small>&nbsp;
+ &nbsp;
+<br>
+<p>Update status</p>
+        </div>
                         <h2 id="user-management-GETapi-invite--token-">Validate invite token</h2>
 
 <p>
@@ -8958,21 +9308,21 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/invite/necessitatibus" \
+    "http://localhost/api/invite/similique" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"firstname\": \"architecto\",
-    \"lastname\": \"voluptatum\",
-    \"password\": \"!VDT7:T:0]7c^BVdo].\",
-    \"phone\": \"voluptates\"
+    \"firstname\": \"enim\",
+    \"lastname\": \"labore\",
+    \"password\": \"A#7cG}O,\'~1*l^H4DPj(\",
+    \"phone\": \"sunt\"
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/invite/necessitatibus"
+    "http://localhost/api/invite/similique"
 );
 
 const headers = {
@@ -8981,10 +9331,10 @@ const headers = {
 };
 
 let body = {
-    "firstname": "architecto",
-    "lastname": "voluptatum",
-    "password": "!VDT7:T:0]7c^BVdo].",
-    "phone": "voluptates"
+    "firstname": "enim",
+    "lastname": "labore",
+    "password": "A#7cG}O,'~1*l^H4DPj(",
+    "phone": "sunt"
 };
 
 fetch(url, {
@@ -9075,10 +9425,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="token"                data-endpoint="PUTapi-invite--token-"
-               value="necessitatibus"
+               value="similique"
                data-component="url">
     <br>
-<p>Invite token. Example: <code>necessitatibus</code></p>
+<p>Invite token. Example: <code>similique</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -9087,10 +9437,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="firstname"                data-endpoint="PUTapi-invite--token-"
-               value="architecto"
+               value="enim"
                data-component="body">
     <br>
-<p>User first name. Example: <code>architecto</code></p>
+<p>User first name. Example: <code>enim</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>lastname</code></b>&nbsp;&nbsp;
@@ -9098,10 +9448,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="lastname"                data-endpoint="PUTapi-invite--token-"
-               value="voluptatum"
+               value="labore"
                data-component="body">
     <br>
-<p>User last name. Example: <code>voluptatum</code></p>
+<p>User last name. Example: <code>labore</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>password</code></b>&nbsp;&nbsp;
@@ -9109,10 +9459,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="password"                data-endpoint="PUTapi-invite--token-"
-               value="!VDT7:T:0]7c^BVdo]."
+               value="A#7cG}O,'~1*l^H4DPj("
                data-component="body">
     <br>
-<p>User password (min 8 characters, lowercase and uppercase letters, number, special characters). Example: <code>!VDT7:T:0]7c^BVdo].</code></p>
+<p>User password (min 8 characters, lowercase and uppercase letters, number, special characters). Example: <code>A#7cG}O,'~1*l^H4DPj(</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>phone</code></b>&nbsp;&nbsp;
@@ -9120,10 +9470,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="phone"                data-endpoint="PUTapi-invite--token-"
-               value="voluptates"
+               value="sunt"
                data-component="body">
     <br>
-<p>User phone number. Example: <code>voluptates</code></p>
+<p>User phone number. Example: <code>sunt</code></p>
         </div>
         </form>
 
@@ -9153,7 +9503,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/permissions?size=2&amp;page=10" \
+    --get "http://localhost/api/permissions?size=4&amp;page=7" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
@@ -9165,8 +9515,8 @@ fetch(url, {
 );
 
 const params = {
-    "size": "2",
-    "page": "10",
+    "size": "4",
+    "page": "7",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -9294,10 +9644,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                name="size"                data-endpoint="GETapi-permissions"
-               value="2"
+               value="4"
                data-component="query">
     <br>
-<p>Number of rows. Default: 50 Example: <code>2</code></p>
+<p>Number of rows. Default: 50 Example: <code>4</code></p>
             </div>
                                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>page</code></b>&nbsp;&nbsp;
@@ -9305,10 +9655,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                name="page"                data-endpoint="GETapi-permissions"
-               value="10"
+               value="7"
                data-component="query">
     <br>
-<p>Number of page (pagination). Default: 1 Example: <code>10</code></p>
+<p>Number of page (pagination). Default: 1 Example: <code>7</code></p>
             </div>
                 </form>
 
@@ -9331,9 +9681,9 @@ projects:list,create,update,delete;users:list</p>
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}" \
     --data "{
-    \"name\": \"deleniti\",
-    \"permissions\": \"molestias\",
-    \"is_default\": false
+    \"name\": \"eum\",
+    \"permissions\": \"nihil\",
+    \"is_default\": true
 }"
 </code></pre></div>
 
@@ -9350,9 +9700,9 @@ const headers = {
 };
 
 let body = {
-    "name": "deleniti",
-    "permissions": "molestias",
-    "is_default": false
+    "name": "eum",
+    "permissions": "nihil",
+    "is_default": true
 };
 
 fetch(url, {
@@ -9459,10 +9809,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="name"                data-endpoint="PUTapi-permission"
-               value="deleniti"
+               value="eum"
                data-component="body">
     <br>
-<p>Group permission name. Example: <code>deleniti</code></p>
+<p>Group permission name. Example: <code>eum</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>permissions</code></b>&nbsp;&nbsp;
@@ -9470,10 +9820,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="permissions"                data-endpoint="PUTapi-permission"
-               value="molestias"
+               value="nihil"
                data-component="body">
     <br>
-<p>Permission. Example: <code>molestias</code></p>
+<p>Permission. Example: <code>nihil</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>is_default</code></b>&nbsp;&nbsp;
@@ -9494,7 +9844,7 @@ fetch(url, {
             <code>false</code>
         </label>
     <br>
-<p>Set permission default. Example: <code>false</code></p>
+<p>Set permission default. Example: <code>true</code></p>
         </div>
         </form>
 
@@ -9520,7 +9870,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/permission/1" \
+    --get "http://localhost/api/permission/15" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
@@ -9528,7 +9878,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/permission/1"
+    "http://localhost/api/permission/15"
 );
 
 const headers = {
@@ -9653,10 +10003,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="GETapi-permission--id-"
-               value="1"
+               value="15"
                data-component="url">
     <br>
-<p>Permission group identifier. Example: <code>1</code></p>
+<p>Permission group identifier. Example: <code>15</code></p>
             </div>
                     </form>
 
@@ -9673,13 +10023,13 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/permission/12" \
+    "http://localhost/api/permission/18" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}" \
     --data "{
-    \"name\": \"quia\",
-    \"permissions\": \"veritatis\",
+    \"name\": \"doloremque\",
+    \"permissions\": \"repellat\",
     \"is_default\": false
 }"
 </code></pre></div>
@@ -9687,7 +10037,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/permission/12"
+    "http://localhost/api/permission/18"
 );
 
 const headers = {
@@ -9697,8 +10047,8 @@ const headers = {
 };
 
 let body = {
-    "name": "quia",
-    "permissions": "veritatis",
+    "name": "doloremque",
+    "permissions": "repellat",
     "is_default": false
 };
 
@@ -9791,10 +10141,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="PUTapi-permission--id-"
-               value="12"
+               value="18"
                data-component="url">
     <br>
-<p>Permission group identifier. Example: <code>12</code></p>
+<p>Permission group identifier. Example: <code>18</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -9803,10 +10153,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="name"                data-endpoint="PUTapi-permission--id-"
-               value="quia"
+               value="doloremque"
                data-component="body">
     <br>
-<p>Group permission name. Example: <code>quia</code></p>
+<p>Group permission name. Example: <code>doloremque</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>permissions</code></b>&nbsp;&nbsp;
@@ -9814,10 +10164,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="permissions"                data-endpoint="PUTapi-permission--id-"
-               value="veritatis"
+               value="repellat"
                data-component="body">
     <br>
-<p>Permission. Example: <code>veritatis</code></p>
+<p>Permission. Example: <code>repellat</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>is_default</code></b>&nbsp;&nbsp;
@@ -9864,7 +10214,7 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/api/permission/16" \
+    "http://localhost/api/permission/3" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}"</code></pre></div>
@@ -9872,7 +10222,7 @@ fetch(url, {
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/permission/16"
+    "http://localhost/api/permission/3"
 );
 
 const headers = {
@@ -9979,10 +10329,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="DELETEapi-permission--id-"
-               value="16"
+               value="3"
                data-component="url">
     <br>
-<p>Permission group identifier. Example: <code>16</code></p>
+<p>Permission group identifier. Example: <code>3</code></p>
             </div>
                     </form>
 
@@ -10008,20 +10358,20 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/permission/16/add" \
+    "http://localhost/api/permission/9/add" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}" \
     --data "{
-    \"object\": \"ducimus\",
-    \"action\": \"illum\"
+    \"object\": \"inventore\",
+    \"action\": \"dolores\"
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/permission/16/add"
+    "http://localhost/api/permission/9/add"
 );
 
 const headers = {
@@ -10031,8 +10381,8 @@ const headers = {
 };
 
 let body = {
-    "object": "ducimus",
-    "action": "illum"
+    "object": "inventore",
+    "action": "dolores"
 };
 
 fetch(url, {
@@ -10134,10 +10484,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="PUTapi-permission--id--add"
-               value="16"
+               value="9"
                data-component="url">
     <br>
-<p>Permission group identifier. Example: <code>16</code></p>
+<p>Permission group identifier. Example: <code>9</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -10146,10 +10496,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="object"                data-endpoint="PUTapi-permission--id--add"
-               value="ducimus"
+               value="inventore"
                data-component="body">
     <br>
-<p>Object name. Example: <code>ducimus</code></p>
+<p>Object name. Example: <code>inventore</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>action</code></b>&nbsp;&nbsp;
@@ -10157,10 +10507,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="action"                data-endpoint="PUTapi-permission--id--add"
-               value="illum"
+               value="dolores"
                data-component="body">
     <br>
-<p>Action name (if not set, allow all actions). Example: <code>illum</code></p>
+<p>Action name (if not set, allow all actions). Example: <code>dolores</code></p>
         </div>
         </form>
 
@@ -10186,20 +10536,20 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/api/permission/19/del" \
+    "http://localhost/api/permission/10/del" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --header "Authorization:: Bearer {TOKEN}" \
     --data "{
-    \"object\": \"sed\",
-    \"action\": \"cumque\"
+    \"object\": \"veritatis\",
+    \"action\": \"facere\"
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/permission/19/del"
+    "http://localhost/api/permission/10/del"
 );
 
 const headers = {
@@ -10209,8 +10559,8 @@ const headers = {
 };
 
 let body = {
-    "object": "sed",
-    "action": "cumque"
+    "object": "veritatis",
+    "action": "facere"
 };
 
 fetch(url, {
@@ -10312,10 +10662,10 @@ fetch(url, {
  &nbsp;
                 <input type="number" style="display: none"
                name="id"                data-endpoint="DELETEapi-permission--id--del"
-               value="19"
+               value="10"
                data-component="url">
     <br>
-<p>Permission group identifier. Example: <code>19</code></p>
+<p>Permission group identifier. Example: <code>10</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -10324,10 +10674,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="object"                data-endpoint="DELETEapi-permission--id--del"
-               value="sed"
+               value="veritatis"
                data-component="body">
     <br>
-<p>Object name. Example: <code>sed</code></p>
+<p>Object name. Example: <code>veritatis</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>action</code></b>&nbsp;&nbsp;
@@ -10335,10 +10685,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="action"                data-endpoint="DELETEapi-permission--id--del"
-               value="cumque"
+               value="facere"
                data-component="body">
     <br>
-<p>Action name (if not set, allow all actions). Example: <code>cumque</code></p>
+<p>Action name (if not set, allow all actions). Example: <code>facere</code></p>
         </div>
         </form>
 
@@ -10603,7 +10953,7 @@ fetch(url, {
     --header "Accept: application/json" \
     --data "{
     \"email\": \"john@doe.com\",
-    \"source\": \"rerum\"
+    \"source\": \"dolorem\"
 }"
 </code></pre></div>
 
@@ -10620,7 +10970,7 @@ const headers = {
 
 let body = {
     "email": "john@doe.com",
-    "source": "rerum"
+    "source": "dolorem"
 };
 
 fetch(url, {
@@ -10734,10 +11084,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                name="source"                data-endpoint="POSTapi-register"
-               value="rerum"
+               value="dolorem"
                data-component="body">
     <br>
-<p>Register source. One of: app/www Example: <code>rerum</code></p>
+<p>Register source. One of: app/www Example: <code>dolorem</code></p>
         </div>
         </form>
 
@@ -10754,14 +11104,14 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/register/confirm/ullam" \
+    --get "http://localhost/api/register/confirm/eveniet" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/register/confirm/ullam"
+    "http://localhost/api/register/confirm/eveniet"
 );
 
 const headers = {
@@ -10868,10 +11218,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="token"                data-endpoint="GETapi-register-confirm--token-"
-               value="ullam"
+               value="eveniet"
                data-component="url">
     <br>
-<p>Register token. Example: <code>ullam</code></p>
+<p>Register token. Example: <code>eveniet</code></p>
             </div>
                     </form>
 
@@ -10888,22 +11238,22 @@ fetch(url, {
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/register/confirm/deserunt" \
+    "http://localhost/api/register/confirm/sit" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"firstname\": \"ab\",
-    \"lastname\": \"autem\",
-    \"password\": \"tuOAN()Ruj+[U,\",
-    \"firm_identifier\": \"dolore\",
-    \"phone\": \"nisi\"
+    \"firstname\": \"officiis\",
+    \"lastname\": \"blanditiis\",
+    \"password\": \"xmDcf`I9\",
+    \"firm_identifier\": \"alias\",
+    \"phone\": \"ullam\"
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/register/confirm/deserunt"
+    "http://localhost/api/register/confirm/sit"
 );
 
 const headers = {
@@ -10912,11 +11262,11 @@ const headers = {
 };
 
 let body = {
-    "firstname": "ab",
-    "lastname": "autem",
-    "password": "tuOAN()Ruj+[U,",
-    "firm_identifier": "dolore",
-    "phone": "nisi"
+    "firstname": "officiis",
+    "lastname": "blanditiis",
+    "password": "xmDcf`I9",
+    "firm_identifier": "alias",
+    "phone": "ullam"
 };
 
 fetch(url, {
@@ -11012,10 +11362,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="token"                data-endpoint="POSTapi-register-confirm--token-"
-               value="deserunt"
+               value="sit"
                data-component="url">
     <br>
-<p>Register token. Example: <code>deserunt</code></p>
+<p>Register token. Example: <code>sit</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -11024,10 +11374,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="firstname"                data-endpoint="POSTapi-register-confirm--token-"
-               value="ab"
+               value="officiis"
                data-component="body">
     <br>
-<p>User first name. Example: <code>ab</code></p>
+<p>User first name. Example: <code>officiis</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>lastname</code></b>&nbsp;&nbsp;
@@ -11035,10 +11385,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="lastname"                data-endpoint="POSTapi-register-confirm--token-"
-               value="autem"
+               value="blanditiis"
                data-component="body">
     <br>
-<p>User last name. Example: <code>autem</code></p>
+<p>User last name. Example: <code>blanditiis</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>password</code></b>&nbsp;&nbsp;
@@ -11046,10 +11396,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="password"                data-endpoint="POSTapi-register-confirm--token-"
-               value="tuOAN()Ruj+[U,"
+               value="xmDcf`I9"
                data-component="body">
     <br>
-<p>User password (min 8 characters, lowercase and uppercase letters, number, special characters). Example: <code>tuOAN()Ruj+[U,</code></p>
+<p>User password (min 8 characters, lowercase and uppercase letters, number, special characters). Example: <code>xmDcf</code>I9`</p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>firm_identifier</code></b>&nbsp;&nbsp;
@@ -11057,10 +11407,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="firm_identifier"                data-endpoint="POSTapi-register-confirm--token-"
-               value="dolore"
+               value="alias"
                data-component="body">
     <br>
-<p>User firm name. Example: <code>dolore</code></p>
+<p>User firm name. Example: <code>alias</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>phone</code></b>&nbsp;&nbsp;
@@ -11068,10 +11418,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="phone"                data-endpoint="POSTapi-register-confirm--token-"
-               value="nisi"
+               value="ullam"
                data-component="body">
     <br>
-<p>User phone number. Example: <code>nisi</code></p>
+<p>User phone number. Example: <code>ullam</code></p>
         </div>
         </form>
 
@@ -11101,10 +11451,10 @@ fetch(url, {
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"email\": \"yolanda.emard@example.com\",
-    \"password\": \"5AzbH9v$H\\\"=*\",
-    \"device_name\": \"ipsa\",
-    \"firm_id\": 6
+    \"email\": \"bkshlerin@example.com\",
+    \"password\": \"hX~C\\/BvYH\",
+    \"device_name\": \"architecto\",
+    \"firm_id\": 18
 }"
 </code></pre></div>
 
@@ -11120,10 +11470,10 @@ const headers = {
 };
 
 let body = {
-    "email": "yolanda.emard@example.com",
-    "password": "5AzbH9v$H\"=*",
-    "device_name": "ipsa",
-    "firm_id": 6
+    "email": "bkshlerin@example.com",
+    "password": "hX~C\/BvYH",
+    "device_name": "architecto",
+    "firm_id": 18
 };
 
 fetch(url, {
@@ -11219,10 +11569,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="email"                data-endpoint="POSTapi-login"
-               value="yolanda.emard@example.com"
+               value="bkshlerin@example.com"
                data-component="body">
     <br>
-<p>Account e-mail address Example: <code>yolanda.emard@example.com</code></p>
+<p>Account e-mail address Example: <code>bkshlerin@example.com</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>password</code></b>&nbsp;&nbsp;
@@ -11230,10 +11580,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="password"                data-endpoint="POSTapi-login"
-               value="5AzbH9v$H"=*"
+               value="hX~C/BvYH"
                data-component="body">
     <br>
-<p>Account password Example: <code>5AzbH9v$H"=*</code></p>
+<p>Account password Example: <code>hX~C/BvYH</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>device_name</code></b>&nbsp;&nbsp;
@@ -11241,10 +11591,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="device_name"                data-endpoint="POSTapi-login"
-               value="ipsa"
+               value="architecto"
                data-component="body">
     <br>
-<p>Device name Example: <code>ipsa</code></p>
+<p>Device name Example: <code>architecto</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>firm_id</code></b>&nbsp;&nbsp;
@@ -11252,10 +11602,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                name="firm_id"                data-endpoint="POSTapi-login"
-               value="6"
+               value="18"
                data-component="body">
     <br>
-<p>Firm identifier (required if e-mail address is register on two or more firms) Example: <code>6</code></p>
+<p>Firm identifier (required if e-mail address is register on two or more firms) Example: <code>18</code></p>
         </div>
         </form>
 
@@ -11285,8 +11635,8 @@ fetch(url, {
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"email\": \"loyce.abshire@example.net\",
-    \"firm_id\": 15
+    \"email\": \"rokeefe@example.org\",
+    \"firm_id\": 4
 }"
 </code></pre></div>
 
@@ -11302,8 +11652,8 @@ const headers = {
 };
 
 let body = {
-    "email": "loyce.abshire@example.net",
-    "firm_id": 15
+    "email": "rokeefe@example.org",
+    "firm_id": 4
 };
 
 fetch(url, {
@@ -11394,10 +11744,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="email"                data-endpoint="POSTapi-forgot-password"
-               value="loyce.abshire@example.net"
+               value="rokeefe@example.org"
                data-component="body">
     <br>
-<p>Account e-mail address Example: <code>loyce.abshire@example.net</code></p>
+<p>Account e-mail address Example: <code>rokeefe@example.org</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>firm_id</code></b>&nbsp;&nbsp;
@@ -11405,10 +11755,10 @@ fetch(url, {
 <i>optional</i> &nbsp;
                 <input type="number" style="display: none"
                name="firm_id"                data-endpoint="POSTapi-forgot-password"
-               value="15"
+               value="4"
                data-component="body">
     <br>
-<p>Firm identifier (if e-mail address exist in more than once firms) Example: <code>15</code></p>
+<p>Firm identifier (if e-mail address exist in more than once firms) Example: <code>4</code></p>
         </div>
         </form>
 
@@ -11438,8 +11788,8 @@ fetch(url, {
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"token\": \"ut\",
-    \"email\": \"omckenzie@example.org\"
+    \"token\": \"inventore\",
+    \"email\": \"hunter.lehner@example.com\"
 }"
 </code></pre></div>
 
@@ -11455,8 +11805,8 @@ const headers = {
 };
 
 let body = {
-    "token": "ut",
-    "email": "omckenzie@example.org"
+    "token": "inventore",
+    "email": "hunter.lehner@example.com"
 };
 
 fetch(url, {
@@ -11537,10 +11887,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="token"                data-endpoint="GETapi-reset-password"
-               value="ut"
+               value="inventore"
                data-component="body">
     <br>
-<p>forgot password token Example: <code>ut</code></p>
+<p>forgot password token Example: <code>inventore</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>email</code></b>&nbsp;&nbsp;
@@ -11548,10 +11898,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="email"                data-endpoint="GETapi-reset-password"
-               value="omckenzie@example.org"
+               value="hunter.lehner@example.com"
                data-component="body">
     <br>
-<p>Account e-mail address Example: <code>omckenzie@example.org</code></p>
+<p>Account e-mail address Example: <code>hunter.lehner@example.com</code></p>
         </div>
         </form>
 
@@ -11581,9 +11931,9 @@ fetch(url, {
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"token\": \"error\",
-    \"email\": \"block.nels@example.net\",
-    \"password\": \"w,@9b?\\\\?^=Ke\"
+    \"token\": \"amet\",
+    \"email\": \"percy64@example.net\",
+    \"password\": \"U=I7xn\\\"\\\\;aZo,mwea8\"
 }"
 </code></pre></div>
 
@@ -11599,9 +11949,9 @@ const headers = {
 };
 
 let body = {
-    "token": "error",
-    "email": "block.nels@example.net",
-    "password": "w,@9b?\\?^=Ke"
+    "token": "amet",
+    "email": "percy64@example.net",
+    "password": "U=I7xn\"\\;aZo,mwea8"
 };
 
 fetch(url, {
@@ -11682,10 +12032,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="token"                data-endpoint="POSTapi-reset-password"
-               value="error"
+               value="amet"
                data-component="body">
     <br>
-<p>forgot password token Example: <code>error</code></p>
+<p>forgot password token Example: <code>amet</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>email</code></b>&nbsp;&nbsp;
@@ -11693,10 +12043,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="email"                data-endpoint="POSTapi-reset-password"
-               value="block.nels@example.net"
+               value="percy64@example.net"
                data-component="body">
     <br>
-<p>Account e-mail address Example: <code>block.nels@example.net</code></p>
+<p>Account e-mail address Example: <code>percy64@example.net</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>password</code></b>&nbsp;&nbsp;
@@ -11704,10 +12054,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="password"                data-endpoint="POSTapi-reset-password"
-               value="w,@9b?\?^=Ke"
+               value="U=I7xn"\;aZo,mwea8"
                data-component="body">
     <br>
-<p>User password (min 8 characters, lowercase and uppercase letters, number, special characters). Example: <code>w,@9b?\?^=Ke</code></p>
+<p>User password (min 8 characters, lowercase and uppercase letters, number, special characters). Example: <code>U=I7xn"\;aZo,mwea8</code></p>
         </div>
         </form>
 
@@ -11735,7 +12085,7 @@ you must enter the company ID when logging in / remembering the password.</p>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/get-email-firm-ids?email=parisian.alexandra%40example.net" \
+    --get "http://localhost/api/get-email-firm-ids?email=xgreenfelder%40example.net" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
@@ -11746,7 +12096,7 @@ you must enter the company ID when logging in / remembering the password.</p>
 );
 
 const params = {
-    "email": "parisian.alexandra@example.net",
+    "email": "xgreenfelder@example.net",
 };
 Object.keys(params)
     .forEach(key =&gt; url.searchParams.append(key, params[key]));
@@ -11855,10 +12205,10 @@ fetch(url, {
  &nbsp;
                 <input type="text" style="display: none"
                name="email"                data-endpoint="GETapi-get-email-firm-ids"
-               value="parisian.alexandra@example.net"
+               value="xgreenfelder@example.net"
                data-component="query">
     <br>
-<p>Account e-mail address Example: <code>parisian.alexandra@example.net</code></p>
+<p>Account e-mail address Example: <code>xgreenfelder@example.net</code></p>
             </div>
                 </form>
 

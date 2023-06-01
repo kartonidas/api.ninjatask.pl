@@ -281,6 +281,8 @@ class User extends Authenticatable
         {
             $row = new UserSetting;
             $row->user_id = $this->id;
+            $row->locale = config("api.default_language");
+            $row->notifications = implode(",", config("api.notifications_default"));
             $row->save();
         }
         
@@ -293,7 +295,9 @@ class User extends Authenticatable
         
         if(!$settings)
             $settings = UserSetting::getDafaultValues();
-        
+            
+        $settings->notifications = explode(",", $settings->notifications);
+            
         return $settings;
     }
 }

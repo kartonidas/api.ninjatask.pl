@@ -13,9 +13,9 @@ class TaskComment extends Model
 {
     use DbTimestamp, File, User;
     
-    public function delete()
+    public function delete($withoutUuidScope = false)
     {
-        $attachments = $this->getAttachments();
+        $attachments = $this->getAttachments(null, $withoutUuidScope);
         foreach($attachments as $attachment)
             $attachment->delete();
         
