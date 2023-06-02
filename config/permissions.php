@@ -18,5 +18,9 @@ return [
             "module" => "Permissions",
             "operation" => ["list", "create", "update", "delete"]
         ],
+        "status" => [
+            "module" => "Statuses",
+            "operation" => ["list", "create", "update", "delete"]
+        ],
     ]
 ];

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Status;
 use App\Models\TaskAssignedUser;
 use App\Models\TaskTime;
 use App\Traits\File;
@@ -20,7 +21,7 @@ class Task extends Model
     
     public function scopeApiFields(Builder $query): void
     {
-        $query->select("id", "name", "description", "project_id", "priority", "completed", "created_at");
+        $query->select("id", "name", "description", "project_id", "status_id", "priority", "completed", "created_at");
     }
     
     public function calculateTotalTime()
@@ -50,18 +51,23 @@ class Task extends Model
     
     public function assignUsers($users)
     {
-        $users = array_filter($users);
-        foreach($users as $user)
+        if($users && is_array($users))
         {
-            if(!TaskAssignedUser::where("task_id", $this->id)->where("user_id", $user)->count())
+            $users = array_filter($users);
+            foreach($users as $user)
             {
-                $assign = new TaskAssignedUser;
-                $assign->task_id = $this->id;
-                $assign->user_id = $user;
-                $assign->save();
+                if(!TaskAssignedUser::where("task_id", $this->id)->where("user_id", $user)->count())
+                {
+                    $assign = new TaskAssignedUser;
+                    $assign->task_id = $this->id;
+                    $assign->user_id = $user;
+                    $assign->save();
+                }
             }
+            TaskAssignedUser::where("task_id", $this->id)->whereNotIn("user_id", $users)->delete();
         }
-        TaskAssignedUser::where("task_id", $this->id)->whereNotIn("user_id", $users)->delete();
+        else
+            TaskAssignedUser::where("task_id", $this->id)->delete();
     }
     
     public function getActiveTaskTime() {
@@ -91,5 +97,25 @@ class Task extends Model
         $out["total_logged"] = TaskTime::where("task_id", $this->id)->where("user_id", Auth::user()->id)->where("status", "!=", TaskTime::ACTIVE)->sum("total") + $activeTotalTime;
         
         return $out;
+    }
+    
+    private static $statuses = null;
+    public function getStatusName()
+    {
+        if(static::$statuses == null)
+        {
+            static::$statuses = [];
+            $statuses = Status::all();
+            if(!$statuses->isEmpty())
+            {
+                foreach($statuses as $status)
+                    static::$statuses[$status->id]= $status->name;
+            }
+        }
+        
+        if(!empty(static::$statuses[$this->status_id]))
+            return static::$statuses[$this->status_id];
+        
+        return "-";
     }
 }

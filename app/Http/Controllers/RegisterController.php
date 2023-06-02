@@ -50,6 +50,7 @@ class RegisterController extends Controller
             $user->activated = 0;
             $user->owner = 1;
             $user->superuser = 1;
+            $user->default_locale = app()->getLocale();
             $user->save();
         }
         
@@ -135,6 +136,7 @@ class RegisterController extends Controller
             $user->lastname = $request->input("lastname");
             $user->phone = $request->input("phone");
             $user->password = Hash::make($request->input("password"));
+            $user->default_locale = app()->getLocale();
             $user->confirm();
             
             $user->ensureFirm($request->input("firm_identifier"));

@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Laravel",
-        "_postman_id": "b56260bc-3e60-47cc-b04c-b4003a657972",
+        "_postman_id": "9df42ba6-f564-407c-bb43-a3c70cc25068",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -28,18 +28,18 @@
                             "query": [
                                 {
                                     "key": "size",
-                                    "value": "3",
+                                    "value": "11",
                                     "description": "Number of rows. Default: 50",
                                     "disabled": false
                                 },
                                 {
                                     "key": "page",
-                                    "value": "8",
+                                    "value": "1",
                                     "description": "Number of page (pagination). Default: 1",
                                     "disabled": false
                                 }
                             ],
-                            "raw": "{{baseUrl}}\/api\/projects?size=3&page=8"
+                            "raw": "{{baseUrl}}\/api\/projects?size=11&page=1"
                         },
                         "method": "GET",
                         "header": [
@@ -97,7 +97,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"blanditiis\",\"location\":\"velit\",\"description\":\"Sint dolorem qui dolorum nulla placeat expedita repellendus.\",\"owner\":\"et\"}"
+                            "raw": "{\"name\":\"saepe\",\"location\":\"maiores\",\"description\":\"Porro quis quia nesciunt cupiditate sint ut.\",\"owner\":\"quas\"}"
                         },
                         "description": "Create new project.",
                         "auth": {
@@ -118,7 +118,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "4",
+                                    "value": "16",
                                     "description": "Project identifier."
                                 }
                             ]
@@ -171,7 +171,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "9",
+                                    "value": "2",
                                     "description": "Project identifier."
                                 }
                             ]
@@ -193,7 +193,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"modi\",\"location\":\"optio\",\"description\":\"Atque repudiandae ab eligendi cum.\",\"owner\":\"aspernatur\"}"
+                            "raw": "{\"name\":\"non\",\"location\":\"qui\",\"description\":\"Fugit dolorum et quas error illum minus ea.\",\"owner\":\"aliquam\"}"
                         },
                         "description": "Update project.",
                         "auth": {
@@ -214,7 +214,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "12",
+                                    "value": "16",
                                     "description": "Project identifier."
                                 }
                             ]
@@ -336,6 +336,242 @@
             ]
         },
         {
+            "name": "Statuses",
+            "description": "",
+            "item": [
+                {
+                    "name": "Get task statuses list",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/statuses",
+                            "query": [
+                                {
+                                    "key": "size",
+                                    "value": "3",
+                                    "description": "Number of rows. Default: 50",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "3",
+                                    "description": "Number of page (pagination). Default: 1",
+                                    "disabled": false
+                                }
+                            ],
+                            "raw": "{{baseUrl}}\/api\/statuses?size=3&page=3"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Return task statuses list.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"total_rows\": 100, \"total_pages\": \"4\", \"current_page\": 1, \"has_more\": true, \"data\": [{\"id\": 1, \"name\": \"Test project\", \"is_default\": 1, \"close_task\": 0, \"can_delete\": 1}]}]}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Create new status",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/status",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/status"
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"a\",\"is_default\":true,\"close_task\":true}"
+                        },
+                        "description": "Create new status.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get task status details",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/status\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/status\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "18",
+                                    "description": "Status identifier."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Return task status details.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"id\": 1, \"name\": \"Test project\", \"is_default\": 1, \"close_task\": 0, \"can_delete\": 1}]}",
+                            "name": ""
+                        },
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"error\":true,\"message\":\"Status does not exist\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Update task status",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/status\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/status\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "5",
+                                    "description": "Status identifier."
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"name\":\"rerum\",\"is_default\":true,\"close_task\":true}"
+                        },
+                        "description": "Update task status.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete status",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/status\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/status\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "8",
+                                    "description": "Status identifier."
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Authorization:",
+                                "value": "Bearer {TOKEN}"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Delete status.",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 404,
+                            "body": "{\"error\":true,\"message\":\"Status does not exist\"}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "name": "Task comments",
             "description": "",
             "item": [
@@ -348,23 +584,23 @@
                             "query": [
                                 {
                                     "key": "size",
-                                    "value": "8",
+                                    "value": "2",
                                     "description": "Number of rows. Default: 50",
                                     "disabled": false
                                 },
                                 {
                                     "key": "page",
-                                    "value": "18",
+                                    "value": "19",
                                     "description": "Number of page (pagination). Default: 1",
                                     "disabled": false
                                 }
                             ],
-                            "raw": "{{baseUrl}}\/api\/task\/:id\/comments?size=8&page=18",
+                            "raw": "{{baseUrl}}\/api\/task\/:id\/comments?size=2&page=19",
                             "variable": [
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "20",
+                                    "value": "3",
                                     "description": "Task identifier."
                                 }
                             ]
@@ -408,23 +644,23 @@
                             "query": [
                                 {
                                     "key": "size",
-                                    "value": "16",
+                                    "value": "6",
                                     "description": "Number of rows. Default: 50",
                                     "disabled": false
                                 }
                             ],
-                            "raw": "{{baseUrl}}\/api\/task\/:id\/comments\/load-more\/:lid?size=16",
+                            "raw": "{{baseUrl}}\/api\/task\/:id\/comments\/load-more\/:lid?size=6",
                             "variable": [
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "2",
+                                    "value": "16",
                                     "description": "Task identifier."
                                 },
                                 {
                                     "id": "lid",
                                     "key": "lid",
-                                    "value": "13",
+                                    "value": "6",
                                     "description": "Last displayed comment ID."
                                 }
                             ]
@@ -485,7 +721,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"id\":13,\"comment\":\"aspernatur\",\"attachments\":[\"veritatis\"]}"
+                            "raw": "{\"id\":10,\"comment\":\"aut\",\"attachments\":[\"aut\"]}"
                         },
                         "description": "Create new comment.",
                         "auth": {
@@ -506,13 +742,13 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "5",
+                                    "value": "13",
                                     "description": "Task identifier."
                                 },
                                 {
                                     "id": "cid",
                                     "key": "cid",
-                                    "value": "19",
+                                    "value": "10",
                                     "description": "Comment identifier."
                                 }
                             ]
@@ -565,7 +801,7 @@
                                 {
                                     "id": "cid",
                                     "key": "cid",
-                                    "value": "9",
+                                    "value": "19",
                                     "description": "Comment identifier."
                                 }
                             ]
@@ -587,7 +823,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"id\":8,\"comment\":\"voluptates\"}"
+                            "raw": "{\"id\":4,\"comment\":\"fugit\"}"
                         },
                         "description": "Update comment.",
                         "auth": {
@@ -608,7 +844,7 @@
                                 {
                                     "id": "cid",
                                     "key": "cid",
-                                    "value": "9",
+                                    "value": "8",
                                     "description": "Comment identifier."
                                 }
                             ]
@@ -630,7 +866,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"id\":18}"
+                            "raw": "{\"id\":12}"
                         },
                         "description": "Delete comment.",
                         "auth": {
@@ -658,19 +894,19 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "1",
+                                    "value": "2",
                                     "description": "Task identifier."
                                 },
                                 {
                                     "id": "cid",
                                     "key": "cid",
-                                    "value": "1",
+                                    "value": "13",
                                     "description": "Comment identifier."
                                 },
                                 {
                                     "id": "aid",
                                     "key": "aid",
-                                    "value": "10",
+                                    "value": "17",
                                     "description": "Attachment identifier."
                                 }
                             ]
@@ -723,13 +959,13 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "14",
+                                    "value": "4",
                                     "description": "Task identifier."
                                 },
                                 {
                                     "id": "cid",
                                     "key": "cid",
-                                    "value": "15",
+                                    "value": "3",
                                     "description": "Comment identifier."
                                 }
                             ]
@@ -751,7 +987,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"possimus\",\"file\":\"quaerat\",\"description\":\"Molestiae alias exercitationem non ut est temporibus debitis.\"}"
+                            "raw": "{\"name\":\"consectetur\",\"file\":\"possimus\",\"description\":\"Iure sint ducimus occaecati aut accusantium eum perferendis.\"}"
                         },
                         "description": "Add attachment to comment.",
                         "auth": {
@@ -785,13 +1021,13 @@
                                 {
                                     "id": "cid",
                                     "key": "cid",
-                                    "value": "19",
+                                    "value": "9",
                                     "description": "Comment identifier."
                                 },
                                 {
                                     "id": "aid",
                                     "key": "aid",
-                                    "value": "19",
+                                    "value": "6",
                                     "description": "Attachment identifier."
                                 }
                             ]
@@ -841,7 +1077,7 @@
                             "query": [
                                 {
                                     "key": "size",
-                                    "value": "8",
+                                    "value": "5",
                                     "description": "Number of rows. Default: 50",
                                     "disabled": false
                                 },
@@ -852,12 +1088,12 @@
                                     "disabled": false
                                 }
                             ],
-                            "raw": "{{baseUrl}}\/api\/tasks\/:id?size=8&page=13",
+                            "raw": "{{baseUrl}}\/api\/tasks\/:id?size=5&page=13",
                             "variable": [
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "15",
+                                    "value": "8",
                                     "description": "Project identifier."
                                 }
                             ]
@@ -887,7 +1123,7 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\"total_rows\": 100, \"total_pages\": \"4\", \"current_page\": 1, \"has_more\": true, \"data\": [{\"id\": \"1\", \"name\": \"Example task\", \"description\": \"Example description\", \"project_id\": 1, \"priority\" : 2, \"created_at\": \"2020-01-01 10:00:00\", \"assigned_to\": [1,2], \"attachments\": [{\"id\": 1, \"user_id\": 1, \"type\": \"tasks\", \"filename\": \"filename.ext\", \"orig_name\": \"filename.ext\", \"extension\": \"ext\", \"size\": 100, \"description\": \"Example description\", \"created_at\": \"2020-01-01 10:00:00\", \"base64\": \"Base64 encode file content\"}], \"timer\": {\"state\": \"active\", \"total\": 250, \"total_logged\": 1000}}], \"project_name\": \"Project name\"}",
+                            "body": "{\"total_rows\": 100, \"total_pages\": \"4\", \"current_page\": 1, \"has_more\": true, \"data\": [{\"id\": \"1\", \"name\": \"Example task\", \"description\": \"Example description\", \"project_id\": 1, \"priority\" : 2, \"status_id\": 2, \"status\": \"To do\", \"created_at\": \"2020-01-01 10:00:00\", \"assigned_to\": [1,2], \"attachments\": [{\"id\": 1, \"user_id\": 1, \"type\": \"tasks\", \"filename\": \"filename.ext\", \"orig_name\": \"filename.ext\", \"extension\": \"ext\", \"size\": 100, \"description\": \"Example description\", \"created_at\": \"2020-01-01 10:00:00\", \"base64\": \"Base64 encode file content\"}], \"timer\": {\"state\": \"active\", \"total\": 250, \"total_logged\": 1000}}], \"project_name\": \"Project name\"}",
                             "name": ""
                         }
                     ]
@@ -918,7 +1154,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"project_id\":11,\"name\":\"culpa\",\"description\":\"Quam nulla sequi ut officia repellat qui distinctio.\",\"users\":[\"sint\"],\"attachments\":[\"aut\"]}"
+                            "raw": "{\"project_id\":7,\"status_id\":19,\"name\":\"architecto\",\"description\":\"Ducimus ipsa dolorem ut dolorem illum officiis.\",\"users\":[\"ea\"],\"attachments\":[\"illum\"]}"
                         },
                         "description": "Create new task.",
                         "auth": {
@@ -939,7 +1175,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "15",
+                                    "value": "12",
                                     "description": "Task identifier."
                                 }
                             ]
@@ -969,7 +1205,7 @@
                         {
                             "header": [],
                             "code": 200,
-                            "body": "{\"id\": 1, \"name\": \"Example task\", \"description\": \"Example description\", \"project_id\": 1, \"priority\" : 2, \"created_at\": \"2020-01-01 10:00:00\", \"assigned_to\": [1,2], \"attachments\": [{\"id\": 1, \"user_id\": 1, \"type\": \"tasks\", \"filename\": \"filename.ext\", \"orig_name\": \"filename.ext\", \"extension\": \"ext\", \"size\": 100, \"description\": \"Example description\", \"created_at\": \"2020-01-01 10:00:00\", \"base64\": \"Base64 encode file content\"}], \"timer\": {\"state\": \"active\", \"total\": 250, \"total_logged\": 1000}, \"project_name\": \"Project name\"}",
+                            "body": "{\"id\": 1, \"name\": \"Example task\", \"description\": \"Example description\", \"project_id\": 1, \"priority\" : 2, \"status_id\": 2, \"status\": \"To do\", \"created_at\": \"2020-01-01 10:00:00\", \"assigned_to\": [1,2], \"attachments\": [{\"id\": 1, \"user_id\": 1, \"type\": \"tasks\", \"filename\": \"filename.ext\", \"orig_name\": \"filename.ext\", \"extension\": \"ext\", \"size\": 100, \"description\": \"Example description\", \"created_at\": \"2020-01-01 10:00:00\", \"base64\": \"Base64 encode file content\"}], \"timer\": {\"state\": \"active\", \"total\": 250, \"total_logged\": 1000}, \"project_name\": \"Project name\"}",
                             "name": ""
                         },
                         {
@@ -992,7 +1228,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "19",
+                                    "value": "7",
                                     "description": "Task identifier."
                                 }
                             ]
@@ -1014,7 +1250,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"omnis\",\"description\":\"Iusto magni et in quaerat aut.\",\"users\":19}"
+                            "raw": "{\"name\":\"quo\",\"status_id\":18,\"description\":\"Deserunt ipsa dolore adipisci molestiae dolore.\",\"users\":6}"
                         },
                         "description": "Update task.",
                         "auth": {
@@ -1035,7 +1271,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "6",
+                                    "value": "1",
                                     "description": "Task identifier."
                                 }
                             ]
@@ -1082,7 +1318,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "6",
+                                    "value": "9",
                                     "description": "Task identifier."
                                 }
                             ]
@@ -1104,7 +1340,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_id\":16}"
+                            "raw": "{\"user_id\":18}"
                         },
                         "description": "Assign user to task.",
                         "auth": {
@@ -1132,7 +1368,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "1",
+                                    "value": "12",
                                     "description": "Task identifier."
                                 }
                             ]
@@ -1154,7 +1390,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"user_id\":10}"
+                            "raw": "{\"user_id\":7}"
                         },
                         "description": "Deassign user from task.",
                         "auth": {
@@ -1188,7 +1424,7 @@
                                 {
                                     "id": "aid",
                                     "key": "aid",
-                                    "value": "10",
+                                    "value": "20",
                                     "description": "Attachment identifier."
                                 }
                             ]
@@ -1241,7 +1477,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "19",
+                                    "value": "14",
                                     "description": "Task identifier."
                                 }
                             ]
@@ -1263,7 +1499,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"et\",\"base64\":\"atque\",\"description\":\"Et dignissimos id a maxime delectus.\"}"
+                            "raw": "{\"name\":\"facilis\",\"base64\":\"beatae\",\"description\":\"Facilis similique voluptas qui magni eaque.\"}"
                         },
                         "description": "Add attachment to task.",
                         "auth": {
@@ -1291,13 +1527,13 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "18",
+                                    "value": "4",
                                     "description": "Task identifier."
                                 },
                                 {
                                     "id": "aid",
                                     "key": "aid",
-                                    "value": "12",
+                                    "value": "3",
                                     "description": "Attachment identifier."
                                 }
                             ]
@@ -1344,7 +1580,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "4",
+                                    "value": "3",
                                     "description": "optional Task identifier."
                                 }
                             ]
@@ -1391,7 +1627,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "5",
+                                    "value": "12",
                                     "description": "optional Task identifier."
                                 }
                             ]
@@ -1420,7 +1656,7 @@
                     "response": []
                 },
                 {
-                    "name": "Close task",
+                    "name": "Open task",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -1431,7 +1667,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "10",
+                                    "value": "20",
                                     "description": "optional Task identifier."
                                 }
                             ]
@@ -1555,7 +1791,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "10",
+                                    "value": "20",
                                     "description": "Task identifier."
                                 }
                             ]
@@ -1602,7 +1838,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "9",
+                                    "value": "10",
                                     "description": "Task identifier."
                                 }
                             ]
@@ -1655,7 +1891,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "18",
+                                    "value": "14",
                                     "description": "Task identifier."
                                 }
                             ]
@@ -1708,7 +1944,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "2",
+                                    "value": "9",
                                     "description": "Task identifier."
                                 }
                             ]
@@ -1730,7 +1966,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"started\":9,\"total\":1,\"comment\":\"architecto\",\"billable\":false}"
+                            "raw": "{\"started\":3,\"total\":15,\"comment\":\"nostrum\",\"billable\":true}"
                         },
                         "description": "Log task spend time.",
                         "auth": {
@@ -1758,13 +1994,13 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "15",
+                                    "value": "13",
                                     "description": "Task identifier."
                                 },
                                 {
                                     "id": "tid",
                                     "key": "tid",
-                                    "value": "1",
+                                    "value": "3",
                                     "description": "Task time identifier."
                                 }
                             ]
@@ -1786,7 +2022,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"started\":5,\"total\":11,\"comment\":\"odio\",\"billable\":true}"
+                            "raw": "{\"started\":1,\"total\":3,\"comment\":\"veritatis\",\"billable\":false}"
                         },
                         "description": "Update log task spend time.",
                         "auth": {
@@ -1814,13 +2050,13 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "15",
+                                    "value": "4",
                                     "description": "Task identifier."
                                 },
                                 {
                                     "id": "tid",
                                     "key": "tid",
-                                    "value": "9",
+                                    "value": "7",
                                     "description": "Task time identifier."
                                 }
                             ]
@@ -1864,23 +2100,23 @@
                             "query": [
                                 {
                                     "key": "size",
-                                    "value": "11",
+                                    "value": "8",
                                     "description": "Number of rows. Default: 50",
                                     "disabled": false
                                 },
                                 {
                                     "key": "page",
-                                    "value": "16",
+                                    "value": "17",
                                     "description": "Number of page (pagination). Default: 1",
                                     "disabled": false
                                 }
                             ],
-                            "raw": "{{baseUrl}}\/api\/task\/:id\/times?size=11&page=16",
+                            "raw": "{{baseUrl}}\/api\/task\/:id\/times?size=8&page=17",
                             "variable": [
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "13",
+                                    "value": "16",
                                     "description": "Task identifier."
                                 }
                             ]
@@ -1933,13 +2169,13 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "18",
+                                    "value": "15",
                                     "description": "Task identifier."
                                 },
                                 {
                                     "id": "tid",
                                     "key": "tid",
-                                    "value": "11",
+                                    "value": "3",
                                     "description": "Task time identifier."
                                 }
                             ]
@@ -1995,18 +2231,18 @@
                             "query": [
                                 {
                                     "key": "size",
-                                    "value": "13",
+                                    "value": "15",
                                     "description": "Number of rows. Default: 50",
                                     "disabled": false
                                 },
                                 {
                                     "key": "page",
-                                    "value": "5",
+                                    "value": "15",
                                     "description": "Number of page (pagination). Default: 1",
                                     "disabled": false
                                 }
                             ],
-                            "raw": "{{baseUrl}}\/api\/users?size=13&page=5"
+                            "raw": "{{baseUrl}}\/api\/users?size=15&page=15"
                         },
                         "method": "GET",
                         "header": [
@@ -2064,7 +2300,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"firstname\":\"ut\",\"lastname\":\"aut\",\"email\":\"silas63@example.net\",\"password\":\"&]%8hONK\",\"phone\":\"quibusdam\",\"user_permission_id\":18,\"superuser\":false}"
+                            "raw": "{\"firstname\":\"assumenda\",\"lastname\":\"dolor\",\"email\":\"gislason.aditya@example.org\",\"password\":\".e23cl\\\"TP\",\"phone\":\"dolores\",\"user_permission_id\":20,\"superuser\":true}"
                         },
                         "description": "Create user account. After create account is ready to use.",
                         "auth": {
@@ -2106,7 +2342,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"deangelo.stokes@example.net\",\"user_permission_id\":2}"
+                            "raw": "{\"email\":\"koelpin.anabelle@example.net\",\"user_permission_id\":17}"
                         },
                         "description": "Send invitation to the email address provided.",
                         "auth": {
@@ -2134,7 +2370,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "18",
+                                    "value": "8",
                                     "description": "User identifier."
                                 }
                             ]
@@ -2187,7 +2423,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "3",
+                                    "value": "13",
                                     "description": "User identifier."
                                 }
                             ]
@@ -2209,7 +2445,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"firstname\":\"praesentium\",\"lastname\":\"suscipit\",\"email\":\"lakin.elouise@example.org\",\"password\":\"S6(Wnb@e6@cE9$Z<,\",\"phone\":\"a\",\"user_permission_id\":2,\"superuser\":false}"
+                            "raw": "{\"firstname\":\"quibusdam\",\"lastname\":\"maiores\",\"email\":\"ilegros@example.com\",\"password\":\"*'e\\\"XK5Z)\",\"phone\":\"aliquid\",\"user_permission_id\":9,\"superuser\":false}"
                         },
                         "description": "Update user account data.",
                         "auth": {
@@ -2369,7 +2605,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"firstname\":\"velit\",\"lastname\":\"voluptatem\",\"email\":\"ofelia.hoeger@example.org\",\"password\":\"pznQKyb=#K.ZIy\",\"phone\":\"maxime\"}"
+                            "raw": "{\"firstname\":\"magnam\",\"lastname\":\"earum\",\"email\":\"nhills@example.net\",\"password\":\"=rx>*_#t##\",\"phone\":\"voluptas\"}"
                         },
                         "description": "User profile.",
                         "auth": {
@@ -2443,7 +2679,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"locale\":\"ps_AF\",\"notifications\":\"quo\"}"
+                            "raw": "{\"locale\":\"ha_SD\",\"notifications\":\"ut\"}"
                         },
                         "description": "User settings.",
                         "auth": {
@@ -2567,7 +2803,7 @@
                                 {
                                     "id": "token",
                                     "key": "token",
-                                    "value": "et",
+                                    "value": "voluptatem",
                                     "description": "Invite token from invitation message."
                                 }
                             ]
@@ -2616,7 +2852,7 @@
                                 {
                                     "id": "token",
                                     "key": "token",
-                                    "value": "similique",
+                                    "value": "rerum",
                                     "description": "Invite token."
                                 }
                             ]
@@ -2634,7 +2870,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"firstname\":\"enim\",\"lastname\":\"labore\",\"password\":\"A#7cG}O,'~1*l^H4DPj(\",\"phone\":\"sunt\"}"
+                            "raw": "{\"firstname\":\"sit\",\"lastname\":\"autem\",\"password\":\"dWeV+xT64K[RB2:Sf[\",\"phone\":\"dolorem\"}"
                         },
                         "description": "Confirm invitation and create new user account.",
                         "auth": {
@@ -2665,18 +2901,18 @@
                             "query": [
                                 {
                                     "key": "size",
-                                    "value": "4",
+                                    "value": "8",
                                     "description": "Number of rows. Default: 50",
                                     "disabled": false
                                 },
                                 {
                                     "key": "page",
-                                    "value": "7",
+                                    "value": "8",
                                     "description": "Number of page (pagination). Default: 1",
                                     "disabled": false
                                 }
                             ],
-                            "raw": "{{baseUrl}}\/api\/permissions?size=4&page=7"
+                            "raw": "{{baseUrl}}\/api\/permissions?size=8&page=8"
                         },
                         "method": "GET",
                         "header": [
@@ -2734,7 +2970,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"eum\",\"permissions\":\"nihil\",\"is_default\":true}"
+                            "raw": "{\"name\":\"doloribus\",\"permissions\":\"voluptatem\",\"is_default\":false}"
                         },
                         "description": "Create new persmission group. Permissions should look like this:\nprojects:list,create,update,delete;users:list",
                         "auth": {
@@ -2762,7 +2998,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "15",
+                                    "value": "4",
                                     "description": "Permission group identifier."
                                 }
                             ]
@@ -2815,7 +3051,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "18",
+                                    "value": "1",
                                     "description": "Permission group identifier."
                                 }
                             ]
@@ -2837,7 +3073,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"doloremque\",\"permissions\":\"repellat\",\"is_default\":false}"
+                            "raw": "{\"name\":\"error\",\"permissions\":\"libero\",\"is_default\":false}"
                         },
                         "description": "Update persmission group.",
                         "auth": {
@@ -2858,7 +3094,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "3",
+                                    "value": "6",
                                     "description": "Permission group identifier."
                                 }
                             ]
@@ -2905,7 +3141,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "9",
+                                    "value": "20",
                                     "description": "Permission group identifier."
                                 }
                             ]
@@ -2927,7 +3163,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"object\":\"inventore\",\"action\":\"dolores\"}"
+                            "raw": "{\"object\":\"consequatur\",\"action\":\"necessitatibus\"}"
                         },
                         "description": "Add permission to persmission group.",
                         "auth": {
@@ -2955,7 +3191,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "10",
+                                    "value": "16",
                                     "description": "Permission group identifier."
                                 }
                             ]
@@ -2977,7 +3213,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"object\":\"veritatis\",\"action\":\"facere\"}"
+                            "raw": "{\"object\":\"qui\",\"action\":\"quia\"}"
                         },
                         "description": "Delete permission from persmission group.",
                         "auth": {
@@ -3088,7 +3324,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"john@doe.com\",\"source\":\"dolorem\"}"
+                            "raw": "{\"email\":\"john@doe.com\",\"source\":\"recusandae\"}"
                         },
                         "description": "Create new user account. After registration, a confirmation link is sent to the provided e-mail address.",
                         "auth": {
@@ -3122,7 +3358,7 @@
                                 {
                                     "id": "token",
                                     "key": "token",
-                                    "value": "eveniet",
+                                    "value": "aut",
                                     "description": "Register token."
                                 }
                             ]
@@ -3171,7 +3407,7 @@
                                 {
                                     "id": "token",
                                     "key": "token",
-                                    "value": "sit",
+                                    "value": "ut",
                                     "description": "Register token."
                                 }
                             ]
@@ -3189,7 +3425,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"firstname\":\"officiis\",\"lastname\":\"blanditiis\",\"password\":\"xmDcf`I9\",\"firm_identifier\":\"alias\",\"phone\":\"ullam\"}"
+                            "raw": "{\"firstname\":\"at\",\"lastname\":\"quo\",\"password\":\">S~]_OPdU#92\",\"firm_identifier\":\"quis\",\"phone\":\"natus\"}"
                         },
                         "description": "Confirm register and finish registration.",
                         "auth": {
@@ -3227,7 +3463,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"bkshlerin@example.com\",\"password\":\"hX~C\\\/BvYH\",\"device_name\":\"architecto\",\"firm_id\":18}"
+                            "raw": "{\"email\":\"iherzog@example.com\",\"password\":\"FY~14iN'GZ%)\",\"device_name\":\"omnis\",\"firm_id\":4}"
                         },
                         "description": "Return auth bearer Token.",
                         "auth": {
@@ -3235,6 +3471,12 @@
                         }
                     },
                     "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "[{\"token\": \"xxxxxxxx\", \"firstname\": \"John\", \"lastname\": \"Doe\", \"locale\": \"pl\", \"owner\": 0}]",
+                            "name": ""
+                        },
                         {
                             "header": [],
                             "code": 422,
@@ -3265,7 +3507,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"rokeefe@example.org\",\"firm_id\":4}"
+                            "raw": "{\"email\":\"xauer@example.net\",\"firm_id\":6}"
                         },
                         "description": "Send password reset link",
                         "auth": {
@@ -3303,7 +3545,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"token\":\"inventore\",\"email\":\"hunter.lehner@example.com\"}"
+                            "raw": "{\"token\":\"perferendis\",\"email\":\"alison29@example.com\"}"
                         },
                         "description": "Validate token reset password",
                         "auth": {
@@ -3334,7 +3576,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"token\":\"amet\",\"email\":\"percy64@example.net\",\"password\":\"U=I7xn\\\"\\\\;aZo,mwea8\"}"
+                            "raw": "{\"token\":\"non\",\"email\":\"qjohns@example.net\",\"password\":\"Oy,3^3Z^eO+Bgou\"}"
                         },
                         "description": "Send password reset link",
                         "auth": {
@@ -3352,12 +3594,12 @@
                             "query": [
                                 {
                                     "key": "email",
-                                    "value": "xgreenfelder%40example.net",
+                                    "value": "pfeffer.domenick%40example.org",
                                     "description": "Account e-mail address",
                                     "disabled": false
                                 }
                             ],
-                            "raw": "{{baseUrl}}\/api\/get-email-firm-ids?email=xgreenfelder%40example.net"
+                            "raw": "{{baseUrl}}\/api\/get-email-firm-ids?email=pfeffer.domenick%40example.org"
                         },
                         "method": "GET",
                         "header": [

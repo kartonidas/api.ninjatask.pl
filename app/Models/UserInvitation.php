@@ -10,7 +10,7 @@ class UserInvitation extends Model
 {
     public function getConfirmationUrl()
     {
-        return env("FRONTEND_URL") . "?invitation=" . $this->token;
+        return env("FRONTEND_URL") . $this->default_locale . "/invitation/" . $this->token;
     }
     
     public static function removeExpiredInvitationsToken()

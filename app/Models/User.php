@@ -24,6 +24,7 @@ use App\Mail\Register\WelcomeMessage;
 use App\Mail\User\ForgotPasswordMessage;
 use App\Models\Firm;
 use App\Models\PasswordResetToken;
+use App\Models\Status;
 use App\Models\UserPermission;
 use App\Models\UserRegisterToken;
 use App\Models\UserSetting;
@@ -254,6 +255,9 @@ class User extends Authenticatable
         $defaultPermissions->is_default = 1;
         $defaultPermissions->permissions = implode(";", $permissions);
         $defaultPermissions->saveQuietly();
+        
+        Status::createDefaultStatuses($this->getUuid());
+        $this->ensureAccountSettings();
     }
     
     public function getAllUserPermissions()
@@ -281,7 +285,7 @@ class User extends Authenticatable
         {
             $row = new UserSetting;
             $row->user_id = $this->id;
-            $row->locale = config("api.default_language");
+            $row->locale = $this->default_locale;
             $row->notifications = implode(",", config("api.notifications_default"));
             $row->save();
         }

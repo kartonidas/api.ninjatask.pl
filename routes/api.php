@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TaskCommentController;
 use App\Http\Controllers\TaskTimeController;
@@ -98,6 +99,13 @@ Route::middleware(['auth:sanctum', 'locale'])->group(function () use($router) {
     $router->get('/task/{id}/comment/{cid}/attachment/{aid}', [TaskCommentController::class, "getAttachment"])->where("id", "[0-9]+")->where("cid", "[0-9]+")->where("aid", "[0-9]+");
     $router->post('/task/{id}/comment/{cid}/attachment', [TaskCommentController::class, "addAttachment"])->where("id", "[0-9]+")->where("cid", "[0-9]+");
     $router->delete('/task/{id}/comment/{cid}/attachment/{aid}', [TaskCommentController::class, "removeAttachment"])->where("id", "[0-9]+")->where("cid", "[0-9]+")->where("aid", "[0-9]+");
+    
+    // STATUSY
+    $router->get('/statuses', [StatusController::class, "list"]);
+    $router->put('/status', [StatusController::class, "create"]);
+    $router->get('/status/{id}', [StatusController::class, "get"])->where("id", "[0-9]+");
+    $router->put('/status/{id}', [StatusController::class, "update"])->where("id", "[0-9]+");
+    $router->delete('/status/{id}', [StatusController::class, "delete"])->where("id", "[0-9]+");
 });
 
 Route::middleware(['locale'])->group(function () use($router) {

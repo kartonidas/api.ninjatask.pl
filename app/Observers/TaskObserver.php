@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use Illuminate\Support\Facades\Mail;
 use App\Models\Notification;
+use App\Models\Status;
 use App\Models\Task;
 use App\Models\TaskAssignedUser;
 use App\Models\TaskComment;
@@ -11,6 +12,19 @@ use App\Models\TaskTime;
 
 class TaskObserver
 {
+    public function updated(Task $task): void
+    {
+        if($task->isDirty("status_id") && !$task->completed)
+        {
+            $status = Status::find($task->status_id);
+            if($status && $status->close_task)
+            {
+                $task->completed = 1;
+                $task->saveQuietly();
+            }
+        }
+    }
+    
     public function forceDeleting(Task $task): void
     {
         // Remove task attachments

@@ -1,0 +1,74 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Task;
+
+class Status extends Model
+{
+    use \App\Traits\UuidTrait {
+        boot as traitBoot;
+    }
+    
+    public static function getDefaultStatuses()
+    {
+        return [
+            [__("New"), 1, 0],
+            [__("In progress"), 0, 0],
+            [__("Done"), 0, 1],
+        ];
+    }
+    
+    public static function createDefaultStatuses($uuid)
+    {
+        foreach(self::getDefaultStatuses() as $status)
+        {
+            $row = new self;
+            $row->uuid = $uuid;
+            $row->name = $status[0];
+            $row->is_default = $status[1];
+            $row->close_task = $status[2];
+            $row->saveQuietly();
+        }
+    }
+    
+    public function scopeApiFields(Builder $query): void
+    {
+        $query->select("id", "name", "is_default", "close_task");
+    }
+    
+    public function getTaskCount()
+    {
+        return Task::where("status_id", $this->id)->count();
+    }
+    
+    public function canDelete()
+    {
+        $cnt = Task::where("status_id", $this->id)->count();
+        if($cnt > 0)
+            return false;
+        return true;
+    }
+    
+    public function delete()
+    {
+        if($this->canDelete())
+            return parent::delete();
+    }
+    
+    public function isDefaultFlag()
+    {
+        if($this->is_default)
+        {
+            foreach(self::where("id", "!=", $this->id)->get() as $row)
+            {
+                $row->is_default = 0;
+                $row->save();
+            }
+        }
+    }
+}

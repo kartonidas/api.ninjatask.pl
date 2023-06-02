@@ -34,7 +34,7 @@ class UserController extends Controller
     * @bodyParam password string required Account password
     * @bodyParam device_name string required Device name
     * @bodyParam firm_id integer Firm identifier (required if e-mail address is register on two or more firms)
-    * @responseField token string Auth token
+    * @response 200 [{"token": "xxxxxxxx", "firstname": "John", "lastname": "Doe", "locale": "pl", "owner": 0}]
     * @response 422 {"error":true,"message":"The provided credentials are incorrect.","errors":{"email":["The provided credentials are incorrect."]}}
     * @group User registation
     */
@@ -72,6 +72,7 @@ class UserController extends Controller
             "firstname" => $user->firstname,
             "lastname" => $user->lastname,
             "locale" => $settings->locale,
+            "owner" => $user->owner,
         ];
         
         return response()->json($out);
@@ -321,6 +322,7 @@ class UserController extends Controller
         $user->activated = 1;
         $user->user_permission_id = $permissionId;
         $user->superuser = $request->input("superuser", 0);
+        $user->default_locale = app()->getLocale();
         $user->save();
         
         return $user->id;
@@ -366,6 +368,7 @@ class UserController extends Controller
         $invitation->firm_id = Auth::user()->getFirm()->id;
         $invitation->invited_by = Auth::user()->id;
         $invitation->email = $request->input("email");
+        $invitation->default_locale = app()->getLocale();
         $invitation->user_permission_id = $permissionId;
         $invitation->save();
         
@@ -427,6 +430,7 @@ class UserController extends Controller
         $user->activated = 1;
         $user->user_permission_id = $token->user_permission_id;
         $user->email_verified_at = date("Y-m-d H:i:s");
+        $user->default_locale = app()->getLocale();
         $user->save();
         $user->sendWelcomeMessage();
         
