@@ -221,16 +221,43 @@ class UserController extends Controller
         $request->validate([
             "size" => "nullable|integer|gt:0",
             "page" => "nullable|integer|gt:0",
+            "lastname" => "nullable|max:200",
+            "email" => "nullable|max:200",
+            "phone" => "nullable|max:200",
+            "permission" => ["nullable", Rule::in(array_merge(UserPermission::getIds(), ["owner", "superuser"]))],
         ]);
         
         $size = $request->input("size", config("api.list.size"));
         $page = $request->input("page", 1);
         
+        $searchLastname = $request->input("lastname", null);
+        $searchEmail = $request->input("email", null);
+        $searchPhone = $request->input("phone", null);
+        $searchPermission = $request->input("permission", null);
+        
         $firm = Auth::user()->getFirm();
         $users = User
             ::apiFields()
-            ->byFirm()
-            ->take($size)
+            ->byFirm();
+            
+        if($searchLastname)
+            $users->where("lastname", "LIKE", "%" . $searchLastname . "%");
+        if($searchEmail)
+            $users->where("email", "LIKE", "%" . $searchEmail . "%");
+        if($searchPhone)
+            $users->where("phone", "LIKE", "%" . $searchPhone . "%");
+        if($searchPermission)
+        {
+            if($searchPermission == "owner")
+                $users->where("owner", 1);
+            elseif($searchPermission == "superuser")
+                $users->where("superuser", 1);
+            else
+                $users->where("user_permission_id", intval($searchPermission));
+        }
+        $total = $users->count();
+            
+        $users = $users->take($size)
             ->skip(($page-1)*$size)
             ->orderBy("owner", "DESC")
             ->orderBy("superuser", "DESC")
@@ -254,7 +281,6 @@ class UserController extends Controller
             
         }
             
-        $total = User::where("firm_id", $firm->id)->count();
         $out = [
             "total_rows" => $total,
             "total_pages" => ceil($total / $size),

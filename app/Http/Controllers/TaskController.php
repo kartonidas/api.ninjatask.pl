@@ -29,7 +29,12 @@ class TaskController extends Controller
     * @urlParam id integer required Project identifier.
     * @queryParam size integer Number of rows. Default: 50
     * @queryParam page integer Number of page (pagination). Default: 1
-    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": "1", "name": "Example task", "description": "Example description", "project_id": 1, "priority" : 2, "status_id": 2, "status": "To do", "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "timer": {"state": "active", "total": 250, "total_logged": 1000}}], "project_name": "Project name"}
+    * @queryParam query string Search task by name Default: "task name"
+    * @queryParam users integer Search task by assigned usrs. Default: [2]
+    * @queryParam status integer Search task by task status identifier. Default: 1
+    * @queryParam priority integer Search task by task priority. Default: 1
+    * @queryParam state string Search task by task state (one of: opened, closed). Default: opened
+    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": "1", "name": "Example task", "description": "Example description", "project_id": 1, "priority" : 2, "status_id": 2, "status": "To do", "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "timer": {"state": "active", "total": 250, "total_logged": 1000}, "completed": 1, "status": "Done"}], "project_name": "Project name"}
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
     */
@@ -44,21 +49,62 @@ class TaskController extends Controller
         $request->validate([
             "size" => "nullable|integer|gt:0",
             "page" => "nullable|integer|gt:0",
+            "query" => "nullable|max:200",
+            "users" => ["nullable", "array"],
+            "status" => ["nullable", "integer", Rule::in($this->getAllowedStatuses())],
+            "priority" => ["nullable", "integer", Rule::in([1,2,3])],
+            "state" => ["nullable", Rule::in(["opened", "closed"])],
         ]);
         
         $size = $request->input("size", config("api.list.size"));
         $page = $request->input("page", 1);
+        
+        $searchQuery = $request->input("query", null);
+        $searchUsers = $request->input("users", null);
+        $searchStatus = $request->input("status", null);
+        $searchPriority = $request->input("priority", null);
+        $searchState = $request->input("state", null);
 
         $tasks = Task
             ::apiFields()
-            ->where("project_id", $id)
-            ->take($size)
+            ->where("project_id", $id);
+            
+        if($searchStatus)
+            $tasks->where("status_id", $searchStatus);
+        if($searchPriority)
+            $tasks->where("priority", $searchPriority);
+        if($searchState)
+            $tasks->where("completed", $searchState == "opened" ? 0 : 1);
+        if($searchUsers)
+        {
+            $taskAddignedIds = [-1];
+            $assigned = TaskAssignedUser::select("task_id")->whereIn("user_id", $searchUsers)->get();
+            if(!$assigned->isEmpty())
+            {
+                foreach($assigned as $a)
+                    $taskAddignedIds[] = $a->task_id;
+            }
+            $taskAddignedIds = array_unique($taskAddignedIds);
+            $tasks->whereIn("id", $taskAddignedIds);
+        }
+        if($searchQuery)
+        {
+            $tasks->where(function($q) use($searchQuery) {
+                $q
+                    ->where("name", "LIKE", "%" . $searchQuery . "%")
+                    ->orWhere("description", "LIKE", "%" . $searchQuery . "%");
+            });
+        }
+        
+        $total = $tasks->count();
+            
+        $tasks = $tasks->take($size)
             ->skip(($page-1)*$size)
             ->orderBy("completed", "ASC")
             ->orderBy("priority", "DESC")
             ->orderBy("updated_at", "DESC")
             ->get();
-        
+            
         foreach($tasks as $k => $task)
         {
             $tasks[$k]->assigned_to = $task->getAssignedUserIds();
@@ -68,7 +114,6 @@ class TaskController extends Controller
             $tasks[$k]->status = $task->getStatusName();
         }
         
-        $total = Task::where("project_id", $id)->count();
         $out = [
             "total_rows" => $total,
             "total_pages" => ceil($total / $size),
@@ -86,7 +131,7 @@ class TaskController extends Controller
     *
     * Return task details.
     * @urlParam id integer required Task identifier.
-    * @response 200 {"id": 1, "name": "Example task", "description": "Example description", "project_id": 1, "priority" : 2, "status_id": 2, "status": "To do", "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "timer": {"state": "active", "total": 250, "total_logged": 1000}, "project_name": "Project name"}
+    * @response 200 {"id": 1, "name": "Example task", "description": "Example description", "project_id": 1, "priority" : 2, "status_id": 2, "status": "To do", "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "timer": {"state": "active", "total": 250, "total_logged": 1000}, "completed": 1, "status": "Done", "project_name": "Project name"}
     * @response 404 {"error":true,"message":"Task does not exist"}
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
@@ -475,6 +520,7 @@ class TaskController extends Controller
             throw new InvalidStatus(__("The task is currently closed"));
         
         $task->completed = 1;
+        $task->completed_at = date("Y-m-d H:i:s");
         $task->save();
         
         return true;
@@ -510,7 +556,7 @@ class TaskController extends Controller
     * My work
     *
     * Get logged user opened and assigned tasks.
-    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": "1", "name": "Example task", "description": "Example description", "project_id": 1, "priority" : 2, "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "timer": {"state": "active", "total": 250, "total_logged": 1000}}]}
+    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": "1", "name": "Example task", "description": "Example description", "project_id": 1, "priority" : 2, "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "timer": {"state": "active", "total": 250, "total_logged": 1000}, "completed": 1, "status": "Done"}]}
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
     */
@@ -551,6 +597,7 @@ class TaskController extends Controller
             $tasks[$k]->attachments = $task->getAttachments();
             $tasks[$k]->timer = $task->getActiveTaskTime();
             $tasks[$k]->completed = $task->completed == 1;
+            $tasks[$k]->status = $task->getStatusName();
         }
         
         $out = [

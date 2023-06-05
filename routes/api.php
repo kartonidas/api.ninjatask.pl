@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\IndexController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\RegisterController;
@@ -25,6 +26,8 @@ use App\Http\Controllers\UserController;
 
 Route::middleware(['auth:sanctum', 'locale'])->group(function () use($router) {
     $router->get('/logout', [UserController::class, "logout"]);
+    
+    $router->get('/dashboard', [IndexController::class, "dashboard"]);
     
     // PROJEKTY
     $router->get('/projects', [ProjectController::class, "list"]);

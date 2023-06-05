@@ -20,6 +20,7 @@ class TaskObserver
             if($status && $status->close_task)
             {
                 $task->completed = 1;
+                $task->completed_at = date("Y-m-d H:i:s");
                 $task->saveQuietly();
             }
         }
