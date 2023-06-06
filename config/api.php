@@ -47,5 +47,16 @@ return [
         "task:assign",
         "task:change_status_assigned",
         "task:add_comment_assigned",
+    ],
+    "invoice" => [
+        "invoice_city" => "Piotrków Tryb.",
+        "name" => "Artur Patura - netextend.pl",
+        "address" => "Łódzka",
+        "street_no" => "46",
+        "apartment_no" => "48",
+        "post_code" => "97-300",
+        "city" => "Piotrków Tryb.",
+        "nip" => "PL7712671332",
+        "invoice_person" => "Artur Patura"
     ]
 ];

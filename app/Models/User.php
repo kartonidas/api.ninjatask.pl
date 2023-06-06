@@ -190,6 +190,11 @@ class User extends Authenticatable
                 $firm = new Firm;
                 $firm->uuid = Str::uuid()->toString();
                 $firm->identifier = $identifier;
+                $firm->firstname = $this->firstname;
+                $firm->lastname = $this->lastname;
+                $firm->email = $this->email;
+                $firm->phone = $this->phone;
+                $firm->name = $identifier;
                 $firm->save();
                 
                 $this->firm_id = $firm->id;

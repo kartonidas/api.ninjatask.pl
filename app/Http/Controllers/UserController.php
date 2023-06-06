@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password as RulePassword;
 use Illuminate\Validation\ValidationException;
+use App\Exceptions\AccessDenied;
 use App\Exceptions\Exception;
 use App\Exceptions\ObjectNotExist;
 use App\Exceptions\UserExist;
@@ -823,5 +824,83 @@ class UserController extends Controller
     public function getPermissions()
     {
         return Auth::user()->getAllUserPermissions();
+    }
+    
+    /**
+    * Get firm data
+    *
+    * Get firm data
+    * @header Authorization: Bearer {TOKEN}
+    * @response 200 {"identifier": "Firm ID", "firstname": "John", "lastname": "Doe", "email": "example@com.pl", "nip": "0123456789", "name": "Firm name", "street": "Street name", "house_no": "12", "apartment_no": "1A", "city": "London", "zip": "91-000", "country_id": 123, "phone": "888777666"}
+    * @group User management
+    */
+    public function getFirmData()
+    {
+        return Firm::apiFields()->where("id", Auth::user()->firm_id)->first();
+    }
+    
+    /**
+    * Update firm data
+    *
+    * Update firm data
+    * @bodyParam firstname string Owner first name.
+    * @bodyParam lastname string Owner last name.
+    * @bodyParam email string Firm e-mail address.
+    * @bodyParam nip string NIP.
+    * @bodyParam name string Firm name.
+    * @bodyParam street string Firm street.
+    * @bodyParam house_no string Firm house no.
+    * @bodyParam apartment_no string Firm apartment no.
+    * @bodyParam city string Firm city.
+    * @bodyParam zip string Firm zip.
+    * @bodyParam country_id integer Firm country identifier.
+    * @bodyParam phone string Firm phone.
+    * @header Authorization: Bearer {TOKEN}
+    * @group User management
+    */
+    public function firmDataUpdate(Request $request)
+    {
+        if(!Auth::user()->owner)
+            throw new AccessDenied(__("Access denied"));
+        
+        $firm = Auth::user()->getFirm();
+        
+        $rules = [
+            "firstname" => "required|max:100",
+            "lastname" => "required|max:100",
+            "email" => "required|email",
+            "nip" => ["nullable", new \App\Rules\Nip],
+            "name" => "nullable|max:200",
+            "street" => "required|max:80",
+            "house_no" => "required|max:20",
+            "apartment_no" => "nullable|max:20",
+            "city" => "required|max:120",
+            "zip" => "required|max:10",
+            "country_id" => "nullable|integer",
+            "phone" => "nullable|max:50",
+        ];
+        
+        $validate = [];
+        $updateFields = ["firstname", "lastname", "email", "nip", "name", "street", "house_no", "apartment_no", "city", "zip", "country_id", "phone"];
+        foreach($updateFields as $field)
+        {
+            if($request->has($field))
+            {
+                if(!empty($rules[$field]))
+                    $validate[$field] = $rules[$field];
+            }
+        }
+        
+        if(!empty($validate))
+            $request->validate($validate);
+        
+        foreach($updateFields as $field)
+        {
+            if($request->has($field))
+                $firm->{$field} = $request->input($field);
+        }
+        $firm->save();
+            
+        return true;
     }
 }

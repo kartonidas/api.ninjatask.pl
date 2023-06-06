@@ -4,6 +4,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\IndexController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\RegisterController;
@@ -109,6 +112,19 @@ Route::middleware(['auth:sanctum', 'locale'])->group(function () use($router) {
     $router->get('/status/{id}', [StatusController::class, "get"])->where("id", "[0-9]+");
     $router->put('/status/{id}', [StatusController::class, "update"])->where("id", "[0-9]+");
     $router->delete('/status/{id}', [StatusController::class, "delete"])->where("id", "[0-9]+");
+    
+    // ZAMÓWIENIA / PŁATNOŚCI
+    $router->get('/payment/status/{md5}', [PaymentController::class, "status"]);
+    $router->post('/order/create', [OrderController::class, "create"]);
+    
+    $router->get('/invoices', [OrderController::class, "invoices"]);
+    $router->get('/invoice/{id}', [OrderController::class, "invoice"])->where("id", "[0-9]+");
+    
+    $router->get('/firm-data', [UserController::class, "getFirmData"]);
+    $router->post('/firm-data', [UserController::class, "firmDataUpdate"]);
+    
+    $router->get('/notifications', [NotificationController::class, "list"]);
+    $router->put('/notification/read/{id}', [NotificationController::class, "setRead"])->where("id", "[0-9]+");
 });
 
 Route::middleware(['locale'])->group(function () use($router) {

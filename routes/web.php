@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,10 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+$router->post('/ipn/paynow', [PaymentController::class, "ipnPaynow"]);
 
-Route::get('/login', function () {
-    return view('welcome');
-})->name('login');
+Route::get('/', function () {
+});

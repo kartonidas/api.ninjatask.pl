@@ -113,7 +113,7 @@ class TaskTimeController extends Controller
         $timer->status = TaskTime::FINISHED;
         $timer->finished = $time;
         $timer->timer_started = null;
-        $timer->total = $total;
+        $timer->total = self::roundTime($total);
         $timer->save();
         
         return $task->getActiveTaskTime();
@@ -154,7 +154,7 @@ class TaskTimeController extends Controller
         $timer->status = TaskTime::FINISHED;
         $timer->started = $request->input("started");
         $timer->finished = $request->input("started") + $request->input("total");
-        $timer->total = $request->input("total");
+        $timer->total = self::roundTime($request->input("total"));
         $timer->billable = $request->input("billable", 0);
         $timer->comment = $request->input("comment");
         $timer->save();
@@ -216,7 +216,12 @@ class TaskTimeController extends Controller
         foreach($updateFields as $field)
         {
             if($request->has($field))
-                $timer->{$field} = $request->input($field);
+            {
+                if($field == "total")
+                    $timer->{$field} = self::roundTime($request->input($field));
+                else
+                    $timer->{$field} = $request->input($field);
+            }
         }
         
         $timer->finished = $timer->started + $timer->total;
@@ -341,5 +346,24 @@ class TaskTimeController extends Controller
         
         $timer->delete();
         return true;
+    }
+    
+    private static function roundTime($total)
+    {
+        if($total < 60)
+            $total = 60;
+        else
+        {
+            $diff = $total % 60;
+            if($diff > 0)
+            {
+                if($diff > 30)
+                    $total = $total + (60 - $diff);
+                else
+                    $total = $total - $diff;
+            }
+        }
+        
+        return $total;
     }
 }

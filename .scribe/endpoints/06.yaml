@@ -1,17 +1,17 @@
-name: 'Task comments'
+name: 'Task time'
 description: ''
 endpoints:
   -
     httpMethods:
-      - GET
-    uri: 'api/task/{id}/comments'
+      - POST
+    uri: 'api/task/{id}/time/start'
     metadata:
-      groupName: 'Task comments'
+      groupName: 'Task time'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get task comments list'
-      description: 'Return task comments list.'
+      title: 'Start task timer'
+      description: 'Start task timer (log time).'
       authenticated: false
       custom: []
     headers:
@@ -23,36 +23,20 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 3
+        example: 15
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 3
-    queryParameters:
-      size:
-        name: size
-        description: 'Number of rows. Default: 50'
-        required: false
-        example: 2
-        type: integer
-        custom: []
-      page:
-        name: page
-        description: 'Number of page (pagination). Default: 1'
-        required: false
-        example: 19
-        type: integer
-        custom: []
-    cleanQueryParameters:
-      size: 2
-      page: 19
+      id: 15
+    queryParameters: []
+    cleanQueryParameters: []
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
     responses:
       -
-        status: 200
-        content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "comment": "Example comment", "user_id": 1, "created_at": "2020-01-01 10:00:00", "attachments": [{"id": 1, "user_id": 1, "type": "task_comments", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "can_delete": true, "user": "John Doe", "_me": true}]}'
+        status: 404
+        content: '{"error":true,"message":"Task does not exist"}'
         headers: []
         description: ''
         custom: []
@@ -64,15 +48,15 @@ endpoints:
     custom: []
   -
     httpMethods:
-      - GET
-    uri: 'api/task/{id}/comments/load-more/{lid}'
+      - POST
+    uri: 'api/task/{id}/time/stop'
     metadata:
-      groupName: 'Task comments'
+      groupName: 'Task time'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Load more comments'
-      description: 'Load more comments.'
+      title: 'Stop task timer'
+      description: 'Stop task timer (log time).'
       authenticated: false
       custom: []
     headers:
@@ -84,144 +68,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 16
-        type: integer
-        custom: []
-      lid:
-        name: lid
-        description: 'Last displayed comment ID.'
-        required: true
-        example: 6
+        example: 17
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 16
-      lid: 6
-    queryParameters:
-      size:
-        name: size
-        description: 'Number of rows. Default: 50'
-        required: false
-        example: 6
-        type: integer
-        custom: []
-    cleanQueryParameters:
-      size: 6
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "comment": "Example comment", "user_id": 1, "created_at": "2020-01-01 10:00:00", "attachments": [{"id": 1, "user_id": 1, "type": "task_comments", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "can_delete": true, "user": "John Doe", "_me": true}]}'
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - PUT
-    uri: 'api/task/{id}/comment'
-    metadata:
-      groupName: 'Task comments'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Create new comment'
-      description: 'Create new comment.'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-      'Authorization:': 'Bearer {TOKEN}'
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      id:
-        name: id
-        description: 'Task identifier.'
-        required: true
-        example: 10
-        type: integer
-        custom: []
-      comment:
-        name: comment
-        description: Comment.
-        required: true
-        example: aut
-        type: string
-        custom: []
-      attachments:
-        name: attachments
-        description: 'of files attach to task ([{"name": "File name", "base64": Base64 encoded file, "description": "Optional file description"}])'
-        required: false
-        example:
-          - aut
-        type: 'string[]'
-        custom: []
-    cleanBodyParameters:
-      id: 10
-      comment: aut
-      attachments:
-        - aut
-    fileParameters: []
-    responses: []
-    responseFields:
-      id:
-        name: id
-        description: 'The id of the newly created comment'
-        required: false
-        example: null
-        type: integer
-        custom: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/task/{id}/comment/{cid}'
-    metadata:
-      groupName: 'Task comments'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get task comment details'
-      description: 'Return task comment details.'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-      'Authorization:': 'Bearer {TOKEN}'
-    urlParameters:
-      id:
-        name: id
-        description: 'Task identifier.'
-        required: true
-        example: 13
-        type: integer
-        custom: []
-      cid:
-        name: cid
-        description: 'Comment identifier.'
-        required: true
-        example: 10
-        type: integer
-        custom: []
-    cleanUrlParameters:
-      id: 13
-      cid: 10
+      id: 17
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -230,13 +81,64 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"id": 1, "comment": "Example comment", "user_id": "1", "created_at": "2020-01-01 10:00:00", "attachments": [{"id": 1, "user_id": 1, "type": "task_comments", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "can_delete": true, "user" : "John Doe", "_me": true}'
+        content: '{"state": "active", "total": 250, "total_logged": 1000}'
         headers: []
         description: ''
         custom: []
       -
         status: 404
-        content: '{"error":true,"message":"Comment does not exist"}'
+        content: '{"error":true,"message":"Task does not exist"}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: 'api/task/{id}/time/pause'
+    metadata:
+      groupName: 'Task time'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Pause task timer'
+      description: 'Pause task timer (log time).'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters:
+      id:
+        name: id
+        description: 'Task identifier.'
+        required: true
+        example: 18
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 18
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"state": "active", "total": 250, "total_logged": 1000}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: '{"error":true,"message":"Task does not exist"}'
         headers: []
         description: ''
         custom: []
@@ -249,14 +151,14 @@ endpoints:
   -
     httpMethods:
       - PUT
-    uri: 'api/task/{id}/comment/{cid}'
+    uri: 'api/task/{id}/time'
     metadata:
-      groupName: 'Task comments'
+      groupName: 'Task time'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Update comment'
-      description: 'Update comment.'
+      title: 'Log task spend time'
+      description: 'Log task spend time.'
       authenticated: false
       custom: []
     headers:
@@ -264,41 +166,155 @@ endpoints:
       Accept: application/json
       'Authorization:': 'Bearer {TOKEN}'
     urlParameters:
-      cid:
-        name: cid
-        description: 'Comment identifier.'
-        required: true
-        example: 19
-        type: integer
-        custom: []
-    cleanUrlParameters:
-      cid: 19
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
       id:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 4
+        example: 9
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 9
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      started:
+        name: started
+        description: 'Start time.'
+        required: true
+        example: 16
+        type: integer
+        custom: []
+      total:
+        name: total
+        description: 'Total time in seconds.'
+        required: true
+        example: 2
         type: integer
         custom: []
       comment:
         name: comment
-        description: comment.
+        description: Comment.
         required: false
-        example: fugit
+        example: sunt
         type: string
         custom: []
+      billable:
+        name: billable
+        description: Billable.
+        required: false
+        example: false
+        type: boolean
+        custom: []
     cleanBodyParameters:
-      id: 4
-      comment: fugit
+      started: 16
+      total: 2
+      comment: sunt
+      billable: false
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 404
+        content: '{"error":true,"message":"Task does not exist"}'
+        headers: []
+        description: ''
+        custom: []
     responseFields:
       status:
         name: status
-        description: 'Update status'
+        description: Status
+        required: false
+        example: null
+        type: boolean
+        custom: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+    uri: 'api/task/{id}/time/{tid}'
+    metadata:
+      groupName: 'Task time'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update log task spend time'
+      description: 'Update log task spend time.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters:
+      id:
+        name: id
+        description: 'Task identifier.'
+        required: true
+        example: 17
+        type: integer
+        custom: []
+      tid:
+        name: tid
+        description: 'Task time identifier.'
+        required: true
+        example: 6
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 17
+      tid: 6
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      started:
+        name: started
+        description: 'Start time.'
+        required: false
+        example: 9
+        type: integer
+        custom: []
+      total:
+        name: total
+        description: 'Total time in seconds.'
+        required: false
+        example: 8
+        type: integer
+        custom: []
+      comment:
+        name: comment
+        description: Comment.
+        required: false
+        example: numquam
+        type: string
+        custom: []
+      billable:
+        name: billable
+        description: Billable.
+        required: false
+        example: true
+        type: boolean
+        custom: []
+    cleanBodyParameters:
+      started: 9
+      total: 8
+      comment: numquam
+      billable: true
+    fileParameters: []
+    responses:
+      -
+        status: 404
+        content: '{"error":true,"message":"Task does not exist"}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields:
+      status:
+        name: status
+        description: Status
         required: false
         example: null
         type: boolean
@@ -311,14 +327,14 @@ endpoints:
   -
     httpMethods:
       - DELETE
-    uri: 'api/task/{id}/comment/{cid}'
+    uri: 'api/task/{id}/time/{tid}'
     metadata:
-      groupName: 'Task comments'
+      groupName: 'Task time'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Delete comment'
-      description: 'Delete comment.'
+      title: 'Delete task log time'
+      description: 'Delete task log time.'
       authenticated: false
       custom: []
     headers:
@@ -326,27 +342,27 @@ endpoints:
       Accept: application/json
       'Authorization:': 'Bearer {TOKEN}'
     urlParameters:
-      cid:
-        name: cid
-        description: 'Comment identifier.'
-        required: true
-        example: 8
-        type: integer
-        custom: []
-    cleanUrlParameters:
-      cid: 8
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
       id:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 12
+        example: 11
         type: integer
         custom: []
-    cleanBodyParameters:
-      id: 12
+      tid:
+        name: tid
+        description: 'Task time identifier.'
+        required: true
+        example: 2
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 11
+      tid: 2
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
     fileParameters: []
     responses:
       -
@@ -371,14 +387,14 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: 'api/task/{id}/comment/{cid}/attachment/{aid}'
+    uri: 'api/task/{id}/times'
     metadata:
-      groupName: 'Task comments'
+      groupName: 'Task time'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get attachment from comment'
-      description: 'Get attachment from comment.'
+      title: 'Get task spend time rows'
+      description: 'Get task spend time rows.'
       authenticated: false
       custom: []
     headers:
@@ -393,33 +409,33 @@ endpoints:
         example: 2
         type: integer
         custom: []
-      cid:
-        name: cid
-        description: 'Comment identifier.'
-        required: true
+    cleanUrlParameters:
+      id: 2
+    queryParameters:
+      size:
+        name: size
+        description: 'Number of rows. Default: 50'
+        required: false
         example: 13
         type: integer
         custom: []
-      aid:
-        name: aid
-        description: 'Attachment identifier.'
-        required: true
-        example: 17
+      page:
+        name: page
+        description: 'Number of page (pagination). Default: 1'
+        required: false
+        example: 6
         type: integer
         custom: []
-    cleanUrlParameters:
-      id: 2
-      cid: 13
-      aid: 17
-    queryParameters: []
-    cleanQueryParameters: []
+    cleanQueryParameters:
+      size: 13
+      page: 6
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
     responses:
       -
         status: 200
-        content: '{"id": 1, "user_id": 1, "type": "task_comments", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}'
+        content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "status": "active", "task_id": "1", "user_id": 1, "started": "1680843163", "finished": 1680843163, "timer_started": 0, "total": 600, "comment": "Example comment", "billable": 0, "_me": true, "user": "John Doe"}]}'
         headers: []
         description: ''
         custom: []
@@ -437,15 +453,15 @@ endpoints:
     custom: []
   -
     httpMethods:
-      - POST
-    uri: 'api/task/{id}/comment/{cid}/attachment'
+      - GET
+    uri: 'api/task/{id}/time/{tid}'
     metadata:
-      groupName: 'Task comments'
+      groupName: 'Task time'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Add attachment to comment'
-      description: 'Add attachment to comment.'
+      title: 'Get task spend time row'
+      description: 'Get task spend time row.'
       authenticated: false
       custom: []
     headers:
@@ -457,111 +473,19 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 4
+        example: 10
         type: integer
         custom: []
-      cid:
-        name: cid
-        description: 'Comment identifier.'
+      tid:
+        name: tid
+        description: 'Task time identifier.'
         required: true
-        example: 3
-        type: integer
-        custom: []
-    cleanUrlParameters:
-      id: 4
-      cid: 3
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      name:
-        name: name
-        description: 'File name.'
-        required: true
-        example: consectetur
-        type: string
-        custom: []
-      file:
-        name: file
-        description: 'Base64 encode file content".'
-        required: true
-        example: possimus
-        type: string
-        custom: []
-      description:
-        name: description
-        description: 'Description".'
-        required: false
-        example: 'Iure sint ducimus occaecati aut accusantium eum perferendis.'
-        type: string
-        custom: []
-    cleanBodyParameters:
-      name: consectetur
-      file: possimus
-      description: 'Iure sint ducimus occaecati aut accusantium eum perferendis.'
-    fileParameters: []
-    responses:
-      -
-        status: 404
-        content: '{"error":true,"message":"Task does not exist"}'
-        headers: []
-        description: ''
-        custom: []
-    responseFields:
-      status:
-        name: status
-        description: 'Add attachment status'
-        required: false
-        example: null
-        type: boolean
-        custom: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - DELETE
-    uri: 'api/task/{id}/comment/{cid}/attachment/{aid}'
-    metadata:
-      groupName: 'Task comments'
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Remove attachment from comment'
-      description: 'Remove attachment from comment.'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-      'Authorization:': 'Bearer {TOKEN}'
-    urlParameters:
-      id:
-        name: id
-        description: 'Task identifier.'
-        required: true
-        example: 19
-        type: integer
-        custom: []
-      cid:
-        name: cid
-        description: 'Comment identifier.'
-        required: true
-        example: 9
-        type: integer
-        custom: []
-      aid:
-        name: aid
-        description: 'Attachment identifier.'
-        required: true
-        example: 6
+        example: 7
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 19
-      cid: 9
-      aid: 6
+      id: 10
+      tid: 7
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -569,19 +493,18 @@ endpoints:
     fileParameters: []
     responses:
       -
+        status: 200
+        content: '{"id": 1, "status": "active", "task_id": "1", "user_id": 1, "started": "1680843163", "finished": 1680843163, "timer_started": 0, "total": 600, "comment": "Example comment", "billable": 0, "_me": true, "user": "John Doe"}'
+        headers: []
+        description: ''
+        custom: []
+      -
         status: 404
         content: '{"error":true,"message":"Task does not exist"}'
         headers: []
         description: ''
         custom: []
-    responseFields:
-      status:
-        name: status
-        description: 'Remove attachment status'
-        required: false
-        example: null
-        type: boolean
-        custom: []
+    responseFields: []
     auth: []
     controller: null
     method: null

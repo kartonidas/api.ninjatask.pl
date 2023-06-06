@@ -1,0 +1,291 @@
+name: Statuses
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: api/statuses
+    metadata:
+      groupName: Statuses
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get task statuses list'
+      description: 'Return task statuses list.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      size:
+        name: size
+        description: 'Number of rows. Default: 50'
+        required: false
+        example: 7
+        type: integer
+        custom: []
+      page:
+        name: page
+        description: 'Number of page (pagination). Default: 1'
+        required: false
+        example: 19
+        type: integer
+        custom: []
+    cleanQueryParameters:
+      size: 7
+      page: 19
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "name": "Test project", "is_default": 1, "close_task": 0, "can_delete": 1}]}]}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+    uri: api/status
+    metadata:
+      groupName: Statuses
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create new status'
+      description: 'Create new status.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        name: name
+        description: 'Status name.'
+        required: true
+        example: ut
+        type: string
+        custom: []
+      is_default:
+        name: is_default
+        description: 'Set default status.'
+        required: false
+        example: false
+        type: boolean
+        custom: []
+      close_task:
+        name: close_task
+        description: 'Setting the status will close the task.'
+        required: false
+        example: false
+        type: boolean
+        custom: []
+    cleanBodyParameters:
+      name: ut
+      is_default: false
+      close_task: false
+    fileParameters: []
+    responses: []
+    responseFields:
+      id:
+        name: id
+        description: 'The id of the newly created status'
+        required: false
+        example: null
+        type: integer
+        custom: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/status/{id}'
+    metadata:
+      groupName: Statuses
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get task status details'
+      description: 'Return task status details.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters:
+      id:
+        name: id
+        description: 'Status identifier.'
+        required: true
+        example: 5
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 5
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"id": 1, "name": "Test project", "is_default": 1, "close_task": 0, "can_delete": 1}]}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: '{"error":true,"message":"Status does not exist"}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+    uri: 'api/status/{id}'
+    metadata:
+      groupName: Statuses
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update task status'
+      description: 'Update task status.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters:
+      id:
+        name: id
+        description: 'Status identifier.'
+        required: true
+        example: 19
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 19
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        name: name
+        description: 'Status name.'
+        required: false
+        example: sed
+        type: string
+        custom: []
+      is_default:
+        name: is_default
+        description: 'Set default status.'
+        required: false
+        example: false
+        type: boolean
+        custom: []
+      close_task:
+        name: close_task
+        description: 'Setting the status will close the task.'
+        required: false
+        example: true
+        type: boolean
+        custom: []
+    cleanBodyParameters:
+      name: sed
+      is_default: false
+      close_task: true
+    fileParameters: []
+    responses: []
+    responseFields:
+      status:
+        name: status
+        description: 'Update status'
+        required: false
+        example: null
+        type: boolean
+        custom: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/status/{id}'
+    metadata:
+      groupName: Statuses
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete status'
+      description: 'Delete status.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters:
+      id:
+        name: id
+        description: 'Status identifier.'
+        required: true
+        example: 12
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 12
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 404
+        content: '{"error":true,"message":"Status does not exist"}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields:
+      status:
+        name: status
+        description: 'Delete status'
+        required: false
+        example: null
+        type: boolean
+        custom: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
