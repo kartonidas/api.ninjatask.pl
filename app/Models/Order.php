@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Subscription\Activated;
 use App\Models\Firm;
 use App\Models\Invoice;
 use App\Models\Subscription;
@@ -25,8 +27,11 @@ class Order extends Model
 
             switch($this->type) {
                 case "subscription":
-                    // Dodanie wpisu do user_packages
-                    Subscription::addPackageFromOrder($this);
+                    $subscription = Subscription::addPackageFromOrder($this);
+                    
+                    $owner = Firm::getOwnerByUuid($this->uuid);
+                    if($owner)
+                        Mail::to($owner->email)->locale($owner->getLocale())->queue(new Activated($subscription));
                     
                     $items = [];
                     $items[] = [

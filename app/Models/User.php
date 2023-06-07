@@ -97,7 +97,7 @@ class User extends Authenticatable
         $tokenRow->save();
         
         $url = env("FRONTEND_URL") . app()->getLocale() . "/reset-password?token=" . $token . "&email=" . $this->email;
-        Mail::to($this->email)->send(new ForgotPasswordMessage($url));
+        Mail::to($this->email)->locale(app()->getLocale())->queue(new ForgotPasswordMessage($url));
     }
     
     public static function userTokenResetPassword($data)
@@ -163,12 +163,12 @@ class User extends Authenticatable
     
     public function sendInitMessage($token, $source = "www")
     {
-        Mail::to($this->email)->send(new InitMessage($this, $token, $source));
+        Mail::to($this->email)->locale(app()->getLocale())->queue(new InitMessage($this, $token, $source));
     }
     
     public function sendWelcomeMessage()
     {
-        Mail::to($this->email)->send(new WelcomeMessage($this));
+        Mail::to($this->email)->locale(app()->getLocale())->queue(new WelcomeMessage($this));
     }
     
     public function confirm()
@@ -303,10 +303,19 @@ class User extends Authenticatable
         $settings = UserSetting::apiFields()->where("user_id", $this->id)->first();
         
         if(!$settings)
+        {
             $settings = UserSetting::getDafaultValues();
+            $settings->locale = $this->default_locale;
+        }
             
         $settings->notifications = explode(",", $settings->notifications);
             
         return $settings;
+    }
+    
+    public function getLocale()
+    {
+        $settings = $this->getAccountSettings();
+        return !empty($settings->locale) ? $settings->locale : config("api.default_language");
     }
 }

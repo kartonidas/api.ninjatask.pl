@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Project;
+use App\Models\Subscription;
 use App\Models\Task;
 use App\Models\TaskComment;
 use App\Models\User;
@@ -187,6 +188,25 @@ class IndexController extends Controller
                     "created" => $comment->created_at,
                 ];
             }
+        }
+        return $out;
+    }
+    
+    /**
+    * Get active subscription
+    */
+    public function getActiveSubscription()
+    {
+        $out = [];
+        $subscription = Subscription::where("status", Subscription::STATUS_ACTIVE)->first();
+        if($subscription)
+        {
+            $out = [
+                "start" => $subscription->start,
+                "start_date" => date("Y-m-d H:i:s", $subscription->start),
+                "end" => $subscription->end,
+                "end_date" => date("Y-m-d H:i:s", $subscription->end),
+            ];
         }
         return $out;
     }

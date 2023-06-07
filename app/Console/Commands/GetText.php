@@ -63,7 +63,7 @@ class GetText extends Command
     {
         $extensions = ["php", "js"];
         $directiories = [
-            base_path() . "/app/Http/Controllers",
+            base_path() . "/app",
             base_path() . "/resources/views",
             base_path() . "/app/Models",
         ];

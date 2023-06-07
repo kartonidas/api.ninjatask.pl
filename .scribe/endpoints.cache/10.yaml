@@ -27,11 +27,11 @@ endpoints:
         name: package
         description: 'Package name (one of: p1)'
         required: false
-        example: adipisci
+        example: voluptatem
         type: string
         custom: []
     cleanQueryParameters:
-      package: adipisci
+      package: voluptatem
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -72,19 +72,19 @@ endpoints:
         name: size
         description: 'Number of rows. Default: 50'
         required: false
-        example: 20
+        example: 19
         type: integer
         custom: []
       page:
         name: page
         description: 'Number of page (pagination). Default: 1'
         required: false
-        example: 8
+        example: 13
         type: integer
         custom: []
     cleanQueryParameters:
-      size: 20
-      page: 8
+      size: 19
+      page: 13
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []

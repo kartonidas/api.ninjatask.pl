@@ -6,6 +6,7 @@ use PDF;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Firm;
+use App\Models\InvoiceData;
 use App\Traits\DbTimestamp;
 
 class Invoice extends Model
@@ -20,9 +21,14 @@ class Invoice extends Model
         $query->select("id", "order_id", "full_number", "date", "nip", "name", "street", "house_no", "apartment_no", "zip","city", "amount", "gross", "items", "generated", "created_at");
     }
     
-    public static function getInvoiceData()
+    private static function getActiveInvoiceDataId()
     {
-        return config("api.invoice");
+        return InvoiceData::getActiveData()->id;
+    }
+    
+    public function getInvoiceData()
+    {
+        return InvoiceData::find($this->invoice_data_id);
     }
 
     public static function getInvoiceDir()
@@ -44,10 +50,11 @@ class Invoice extends Model
         $accountFirmData = Firm::where("uuid", $uuid)->withoutGlobalScopes()->first();
         if(!$accountFirmData)
             throw new \Exception("Wystąpił nieokreślony błąd!");
-
+        
         $inv = new Invoice;
         $inv->withoutGlobalScopes();
         $inv->uuid = $uuid;
+        $inv->invoice_data_id = self::getActiveInvoiceDataId();
         $inv->order_id = $order_id;
         $inv->setInvoiceNumber($date);
         $inv->date = date("Y-m-d", $date);

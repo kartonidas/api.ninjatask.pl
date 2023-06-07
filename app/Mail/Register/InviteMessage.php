@@ -20,6 +20,11 @@ class InviteMessage extends Mailable
     public function __construct(public User $user, public string $url)
     {
     }
+    
+    public function getTitle()
+    {
+        return __('Invitation to Activate Your Account in Our Application');
+    }
 
     /**
      * Get the message envelope.
@@ -27,7 +32,7 @@ class InviteMessage extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'API invite Message',
+            subject: $this->getTitle(),
         );
     }
 
@@ -36,13 +41,15 @@ class InviteMessage extends Mailable
      */
     public function content(): Content
     {
-        $locale = app()->getLocale();
-        $view = 'emails.' . $locale . '.register.invite';
+        $view = 'emails.' . $this->locale . '.register.invite';
         if(!view()->exists($view))
             $view = 'emails.'.config("api.default_language").'.register.invite';
             
         return new Content(
             view: $view,
+            with: [
+                "title" => $this->getTitle()
+            ]
         );
     }
 

@@ -21,6 +21,11 @@ class InitMessage extends Mailable
     public function __construct(public User $user, public UserRegisterToken $token, public string $source)
     {
     }
+    
+    public function getTitle()
+    {
+        return __('Thank you for registering! Please confirm and complete your information.');
+    }
 
     /**
      * Get the message envelope.
@@ -28,7 +33,7 @@ class InitMessage extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'API Init Message',
+            subject: $this->getTitle(),
         );
     }
 
@@ -37,15 +42,15 @@ class InitMessage extends Mailable
      */
     public function content(): Content
     {
-        $locale = app()->getLocale();
-        $view = 'emails.' . $locale . '.register.init';
+        $view = 'emails.' . $this->locale . '.register.init';
         if(!view()->exists($view))
             $view = 'emails.'.config("api.default_language").'.register.init';
             
         return new Content(
             view: $view,
             with: [
-                "locale" => $locale,
+                "locale" => $this->locale,
+                "title" => $this->getTitle()
             ],
         );
     }

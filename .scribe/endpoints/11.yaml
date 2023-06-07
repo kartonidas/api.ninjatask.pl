@@ -25,19 +25,19 @@ endpoints:
         name: size
         description: 'Number of rows. Default: 50'
         required: false
-        example: 13
+        example: 14
         type: integer
         custom: []
       page:
         name: page
         description: 'Number of page (pagination). Default: 1'
         required: false
-        example: 9
+        example: 1
         type: integer
         custom: []
     cleanQueryParameters:
-      size: 13
-      page: 9
+      size: 14
+      page: 1
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []

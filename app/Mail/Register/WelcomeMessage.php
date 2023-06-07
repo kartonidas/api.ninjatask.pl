@@ -20,6 +20,11 @@ class WelcomeMessage extends Mailable
     public function __construct(public User $user)
     {
     }
+    
+    public function getTitle()
+    {
+        return __('Thank you for completing your registration in our app!');
+    }
 
     /**
      * Get the message envelope.
@@ -27,7 +32,7 @@ class WelcomeMessage extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'API Welcome Message',
+            subject: $this->getTitle(),
         );
     }
 
@@ -36,13 +41,16 @@ class WelcomeMessage extends Mailable
      */
     public function content(): Content
     {
-        $locale = app()->getLocale();
-        $view = 'emails.' . $locale . '.register.welcome';
+        $view = 'emails.' . $this->locale . '.register.welcome';
         if(!view()->exists($view))
             $view = 'emails.'.config("api.default_language").'.register.welcome';
             
         return new Content(
             view: $view,
+            with: [
+                "title" => $this->getTitle(),
+                "locale" => $this->locale,
+            ]
         );
     }
 

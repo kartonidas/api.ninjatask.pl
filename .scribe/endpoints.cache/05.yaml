@@ -25,69 +25,69 @@ endpoints:
         name: id
         description: 'Project identifier.'
         required: true
-        example: 13
+        example: 16
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 13
+      id: 16
     queryParameters:
       size:
         name: size
         description: 'Number of rows. Default: 50'
         required: false
-        example: 16
+        example: 6
         type: integer
         custom: []
       page:
         name: page
         description: 'Number of page (pagination). Default: 1'
         required: false
-        example: 11
+        example: 15
         type: integer
         custom: []
       query:
         name: query
         description: 'Search task by name Default: "task name"'
         required: false
-        example: ipsum
+        example: sed
         type: string
         custom: []
       users:
         name: users
         description: 'Search task by assigned usrs. Default: [2]'
         required: false
-        example: 17
+        example: 19
         type: integer
         custom: []
       status:
         name: status
         description: 'Search task by task status identifier. Default: 1'
         required: false
-        example: 11
+        example: 4
         type: integer
         custom: []
       priority:
         name: priority
         description: 'Search task by task priority. Default: 1'
         required: false
-        example: 10
+        example: 3
         type: integer
         custom: []
       state:
         name: state
         description: 'Search task by task state (one of: opened, closed). Default: opened'
         required: false
-        example: unde
+        example: inventore
         type: string
         custom: []
     cleanQueryParameters:
-      size: 16
-      page: 11
-      query: ipsum
-      users: 17
-      status: 11
-      priority: 10
-      state: unde
+      size: 6
+      page: 15
+      query: sed
+      users: 19
+      status: 4
+      priority: 3
+      state: inventore
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -130,28 +130,28 @@ endpoints:
         name: project_id
         description: 'Project identifier.'
         required: true
-        example: 13
+        example: 18
         type: integer
         custom: []
       status_id:
         name: status_id
         description: 'Status identifier.'
         required: false
-        example: 17
+        example: 18
         type: integer
         custom: []
       name:
         name: name
         description: 'Task name.'
         required: true
-        example: asperiores
+        example: totam
         type: string
         custom: []
       description:
         name: description
         description: 'Task description.'
         required: false
-        example: 'Et facilis ea ut ex.'
+        example: 'Facere et harum nihil rerum beatae ipsum eum quod.'
         type: string
         custom: []
       users:
@@ -159,7 +159,7 @@ endpoints:
         description: 'Array of users identifier assigned to task.'
         required: false
         example:
-          - dolore
+          - impedit
         type: 'string[]'
         custom: []
       attachments:
@@ -167,18 +167,18 @@ endpoints:
         description: 'Array of files attach to task ([{"name": "File name", "base64": Base64 encoded file, "description": "Optional file description"}])'
         required: false
         example:
-          - libero
+          - ipsam
         type: 'string[]'
         custom: []
     cleanBodyParameters:
-      project_id: 13
-      status_id: 17
-      name: asperiores
-      description: 'Et facilis ea ut ex.'
+      project_id: 18
+      status_id: 18
+      name: totam
+      description: 'Facere et harum nihil rerum beatae ipsum eum quod.'
       users:
-        - dolore
+        - impedit
       attachments:
-        - libero
+        - ipsam
     fileParameters: []
     responses: []
     responseFields:
@@ -267,11 +267,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 16
+        example: 12
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 16
+      id: 12
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -279,35 +279,35 @@ endpoints:
         name: name
         description: 'Task name.'
         required: false
-        example: molestias
+        example: rerum
         type: string
         custom: []
       status_id:
         name: status_id
         description: 'Status identifier.'
         required: false
-        example: 18
+        example: 16
         type: integer
         custom: []
       description:
         name: description
         description: 'Task description.'
         required: false
-        example: 'Esse et ratione enim non et error sunt quia.'
+        example: 'Ad perferendis rerum neque assumenda ut ratione.'
         type: string
         custom: []
       users:
         name: users
         description: 'Array of users identifier assigned to task.'
         required: false
-        example: 13
+        example: 19
         type: integer
         custom: []
     cleanBodyParameters:
-      name: molestias
-      status_id: 18
-      description: 'Esse et ratione enim non et error sunt quia.'
-      users: 13
+      name: rerum
+      status_id: 16
+      description: 'Ad perferendis rerum neque assumenda ut ratione.'
+      users: 19
     fileParameters: []
     responses: []
     responseFields:
@@ -345,11 +345,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 3
+        example: 14
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 3
+      id: 14
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -397,11 +397,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 6
+        example: 10
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 6
+      id: 10
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -409,11 +409,11 @@ endpoints:
         name: user_id
         description: 'User identifier.'
         required: true
-        example: 5
+        example: 6
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 5
+      user_id: 6
     fileParameters: []
     responses:
       -
@@ -457,11 +457,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 9
+        example: 5
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 9
+      id: 5
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -469,11 +469,11 @@ endpoints:
         name: user_id
         description: 'User identifier.'
         required: true
-        example: 3
+        example: 8
         type: integer
         custom: []
     cleanBodyParameters:
-      user_id: 3
+      user_id: 8
     fileParameters: []
     responses:
       -
@@ -517,19 +517,19 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 19
+        example: 1
         type: integer
         custom: []
       aid:
         name: aid
         description: 'Attachment identifier.'
         required: true
-        example: 9
+        example: 3
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 19
-      aid: 9
+      id: 1
+      aid: 3
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -576,11 +576,11 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 16
+        example: 17
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 16
+      id: 17
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -588,27 +588,27 @@ endpoints:
         name: name
         description: 'File name.'
         required: true
-        example: nobis
+        example: voluptas
         type: string
         custom: []
       base64:
         name: base64
         description: 'Base64 encode file content".'
         required: true
-        example: hic
+        example: numquam
         type: string
         custom: []
       description:
         name: description
         description: 'Description".'
         required: false
-        example: 'Laborum dicta qui et.'
+        example: 'Minima nam fugit esse accusantium voluptate molestiae.'
         type: string
         custom: []
     cleanBodyParameters:
-      name: nobis
-      base64: hic
-      description: 'Laborum dicta qui et.'
+      name: voluptas
+      base64: numquam
+      description: 'Minima nam fugit esse accusantium voluptate molestiae.'
     fileParameters: []
     responses:
       -
@@ -652,19 +652,19 @@ endpoints:
         name: id
         description: 'Task identifier.'
         required: true
-        example: 1
+        example: 17
         type: integer
         custom: []
       aid:
         name: aid
         description: 'Attachment identifier.'
         required: true
-        example: 1
+        example: 14
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 1
-      aid: 1
+      id: 17
+      aid: 14
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -712,11 +712,11 @@ endpoints:
         name: id
         description: 'optional Task identifier.'
         required: false
-        example: 6
+        example: 3
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 6
+      id: 3
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -803,11 +803,11 @@ endpoints:
         name: id
         description: 'optional Task identifier.'
         required: false
-        example: 15
+        example: 13
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 15
+      id: 13
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []

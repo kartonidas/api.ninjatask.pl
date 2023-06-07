@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use App\Models\Task;
 use App\Models\User;
 
 class AssignedMessage extends Mailable
@@ -17,8 +18,13 @@ class AssignedMessage extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public string $url, public string $userLocale)
+    public function __construct(public string $url, public Task $task)
     {
+    }
+    
+    public function getTitle()
+    {
+        return __('New task assigned to your account');
     }
 
     /**
@@ -27,7 +33,7 @@ class AssignedMessage extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: __('New task'),
+            subject: $this->getTitle(),
         );
     }
 
@@ -36,12 +42,16 @@ class AssignedMessage extends Mailable
      */
     public function content(): Content
     {
-        $view = 'emails.' . $this->userLocale . '.task.assigned';
+        $view = 'emails.' . $this->locale . '.task.assigned';
         if(!view()->exists($view))
             $view = 'emails.'.config("api.default_language").'.task.assigned';
         
         return new Content(
             view: $view,
+            with: [
+                "title" => $this->getTitle(),
+                "task" => $this->task,
+            ]
         );
     }
 

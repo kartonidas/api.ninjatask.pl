@@ -20,6 +20,11 @@ class ForgotPasswordMessage extends Mailable
     public function __construct(public string $url)
     {
     }
+    
+    public function getTitle()
+    {
+        return __('Procedure for resetting your password in our application');
+    }
 
     /**
      * Get the message envelope.
@@ -27,7 +32,7 @@ class ForgotPasswordMessage extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: __('Forgot password'),
+            subject: $this->getTitle(),
         );
     }
 
@@ -36,13 +41,15 @@ class ForgotPasswordMessage extends Mailable
      */
     public function content(): Content
     {
-        $locale = app()->getLocale();
-        $view = 'emails.' . $locale . '.user.forgot-password';
+        $view = 'emails.' . $this->locale . '.user.forgot-password';
         if(!view()->exists($view))
             $view = 'emails.'.config("api.default_language").'.user.forgot-password';
         
         return new Content(
             view: $view,
+            with: [
+                "title" => $this->getTitle(),
+            ]
         );
     }
 

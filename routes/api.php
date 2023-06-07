@@ -28,9 +28,11 @@ use App\Http\Controllers\UserController;
 */
 
 Route::middleware(['auth:sanctum', 'locale'])->group(function () use($router) {
+    $router->get("/is-login", [UserController::class, "isLogin"]);
     $router->get('/logout', [UserController::class, "logout"]);
     
     $router->get('/dashboard', [IndexController::class, "dashboard"]);
+    $router->get('/subscription', [IndexController::class, "getActiveSubscription"]);
     
     // PROJEKTY
     $router->get('/projects', [ProjectController::class, "list"]);

@@ -63,7 +63,7 @@
 </style>
 
 <?php
-    $invoiceData = \App\Models\Invoice::getInvoiceData();
+    $invoiceData = $data->getInvoiceData();
 ?>
 
 <table id="header-table">
@@ -86,7 +86,7 @@
         <td>
             <span style="font-size:14px"><strong>{{ $data->date }}</strong></span>
             <br />
-            {{ $invoiceData["invoice_city"] }}
+            {{ $invoiceData->invoice_city }}
         </td>
     </tr>
 </table>
@@ -94,9 +94,9 @@
 <table id="header-table">
     <tr>
         <td style="text-align: left">
-            <div>Sprzedawca: <strong>{{ $invoiceData["name"] }}</strong></div>
-            Adres: <strong>{{ $invoiceData["address"] }} {{ $invoiceData["street_no"] }} @if($invoiceData["apartment_no"])/ {{ $invoiceData["apartment_no"] }}@endif, {{ $invoiceData["post_code"] }} {{ $invoiceData["city"] }}</strong><br />
-            NIP: <strong>{{ $invoiceData["nip"] }}</strong>
+            <div>Sprzedawca: <strong>{{ $invoiceData->name }}</strong></div>
+            Adres: <strong>{{ $invoiceData->address }} {{ $invoiceData->street_no }} @if($invoiceData->apartment_no)/ {{ $invoiceData->apartment_no }}@endif, {{ $invoiceData->post_code }} {{ $invoiceData->city }}</strong><br />
+            NIP: <strong>{{ $invoiceData->nip }}</strong>
         </td>
         <td style="text-align: left">
             <div>Odbiorca: <strong>{{ $data->name }}</strong></div>
@@ -196,7 +196,7 @@
 
 <div style="margin-top:80px">
     <div style="float:left; width:40%">
-        <div style="font-size:11px; text-align:center;">{{ $invoiceData["invoice_person"] }}</div>
+        <div style="font-size:11px; text-align:center;">{{ $invoiceData->invoice_person }}</div>
         <div style="font-size:11px; text-align:center; border-top: 1px solid black;">Osoba upoważniona do wystawienia faktury</div>
     </div>
 

@@ -903,4 +903,26 @@ class UserController extends Controller
             
         return true;
     }
+    
+    /**
+    * Check user is login
+    *
+    * Check user is login
+    * @response 200 [{"firstname": "John", "lastname": "Doe", "locale": "pl", "owner": 0}]
+    * @response 422 {"error":true,"message":"The provided credentials are incorrect.","errors":{"email":["The provided credentials are incorrect."]}}
+    *
+    * @group User registation
+    */
+    public function isLogin(Request $request)
+    {
+        $settings = Auth::user()->getAccountSettings();
+        
+        $out = [
+            "firstname" => Auth::user()->firstname,
+            "lastname" => Auth::user()->lastname,
+            "locale" => $settings->locale,
+            "owner" => Auth::user()->owner,
+        ];
+        return $out;
+    }
 }

@@ -38,8 +38,12 @@ class Notification extends Model
                 case "task:assign":
                     if(in_array($type, $settings->notifications))
                     {
-                        $url = env("FRONTEND_URL") . "task/" . $row->object_id;
-                        Mail::to($user->email)->send(new AssignedMessage($url, $settings->locale));
+                        $task = Task::find($row->object_id);
+                        if($task)
+                        {
+                            $url = env("FRONTEND_URL") . "task/" . $row->object_id;
+                            Mail::to($user->email)->locale($settings->locale)->queue(new AssignedMessage($url, $task));
+                        }
                     }
                 break;
             }
