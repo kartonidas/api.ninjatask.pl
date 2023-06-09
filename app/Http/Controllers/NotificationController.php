@@ -80,4 +80,28 @@ class NotificationController extends Controller
             $notification->save();
         }
     }
+    
+    /**
+    * Get notification
+    *
+    * Get notification.
+    * @queryParam id integer notification identifier
+    * @header Authorization: Bearer {TOKEN}
+    * @group Notifications
+    */
+    public function get(Request $request, $id)
+    {
+        $notification = Notification::where("id", $id)->where("user_id", Auth::user()->id)->first();
+        if(!$notification)
+            throw new ObjectNotExist(__("Notification not exists"));
+        
+        if(!$notification->read)
+        {
+            $notification->read = 1;
+            $notification->read_time = date("Y-m-d H:i:s");
+            $notification->save();
+        }
+        
+        return $notification;
+    }
 }

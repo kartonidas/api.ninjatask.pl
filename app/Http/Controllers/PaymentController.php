@@ -17,7 +17,7 @@ class PaymentController extends Controller
     {
         $json = file_get_contents("php://input");
         $result = json_decode($json);
-        file_put_contents(storage_path("log.txt"), print_r($result, true), FILE_APPEND);
+        
         $md5 = $result->externalId;
         $data = Payment::where("md5", $md5)->first();
         if(!$data || $data->type != "paynow")

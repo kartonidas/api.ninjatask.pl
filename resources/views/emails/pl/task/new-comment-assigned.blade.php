@@ -6,26 +6,24 @@
 
 @section("content")
     <p>
-        A new task has been assigned to your account.
+        W zadaniu do którego jesteś przypisany został dodany komentarz.
     </p>
     
     <p>
-        <b>Task name:</b>
+        <b>Nazwa zadania:</b>
         <br/>
         {{ $task->name }}
     </p>
-    @if(!empty($task->description))
-        <p>
-            <b>Task description:</b>
-            <br/>
-            {{ strip_tags($task->description) }}
-        </p>
-    @endif
     <p>
-        To go to the details of the task, click on the link below:
+        <b>Komentarz:</b>
+        <br/>
+        {{ strip_tags($comment->comment) }}
+    </p>
+    <p>
+        Aby przejść do szczegółów zadania kliknij w poniższy link:
         <div style="text-align: left; margin-top: 10px; margin-bottom: 10px">
             <a href="{{ $url }}" style="display:inline-block; background-color: #506fd9; color: white; padding: 10px; text-decoration: none; border-radius: 5px;">
-                Go to task
+                Zobacz zadanie
             </a>
         </div>
     </p>

@@ -5,9 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\Subscription\Expired;
 use App\Models\ExpirationNotify;
+use App\Models\Firm;
 use App\Models\Order;
 
 class Subscription extends Model
@@ -31,17 +30,25 @@ class Subscription extends Model
             $row->start = time();
             $row->end = strtotime(self::getPeriod($order->months), strtotime(date("Y-m-d") . " 23:59:59"));
             $row->saveQuietly();
+            
+            $notificationType = "subscription:activated";
         }
         else
         {
             $row->end = strtotime(self::getPeriod($order->months), $row->end);
             $row->saveQuietly();
+            
+            $notificationType = "subscription:renewed";
         }
 
         $order->subscription_id = $row->id;
         $order->saveQuietly();
         
         ExpirationNotify::where("subscription_id", $row->id)->delete();
+        
+        $owner = Firm::getOwnerByUuid($row->uuid);
+        if($owner && !empty($notificationType))
+            Notification::notify($owner->id, -1, $row->id, $notificationType);
         
         return $row;
     }
@@ -61,18 +68,10 @@ class Subscription extends Model
             $this->saveQuietly();
             
             // wysłanie powiadomienia
-            $firm = Firm::where("uuid", $this->uuid)->first();
-            if($firm)
-            {
-                $user = User::where("firm_id", $firm->id)->where("owner", 1)->first();
-                if($user)
-                {
-                    $settings = $user->getAccountSettings();
-                    $locale = !empty($settings->locale) ? $settings->locale : config("api.default_language");
-                    
-                    Mail::to($user->email)->locale($locale)->queue(new Expired($this));
-                }
-            }
+            
+            $owner = Firm::getOwnerByUuid($this->uuid);
+            if($owner)
+                Notification::notify($owner->id, -1, $this->id, "subscription:expired");
         }
     }
 

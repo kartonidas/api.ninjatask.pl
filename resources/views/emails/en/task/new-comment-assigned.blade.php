@@ -6,7 +6,7 @@
 
 @section("content")
     <p>
-        A new task has been assigned to your account.
+        A comment has been added to the task you are assigned to.
     </p>
     
     <p>
@@ -14,13 +14,11 @@
         <br/>
         {{ $task->name }}
     </p>
-    @if(!empty($task->description))
-        <p>
-            <b>Task description:</b>
-            <br/>
-            {{ strip_tags($task->description) }}
-        </p>
-    @endif
+    <p>
+        <b>Comment:</b>
+        <br/>
+        {{ strip_tags($comment->comment) }}
+    </p>
     <p>
         To go to the details of the task, click on the link below:
         <div style="text-align: left; margin-top: 10px; margin-bottom: 10px">

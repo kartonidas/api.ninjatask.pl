@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Mail\Subscription;
+namespace App\Mail\Task;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -8,22 +8,24 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use App\Models\Subscription;
+use App\Models\Task;
+use App\Models\TaskComment;
+use App\Models\User;
 
-class Activated extends Mailable
+class NewCommentAssigned extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(public Subscription $subscription)
+    public function __construct(public string $url, public TaskComment $comment, public Task $task)
     {
     }
     
     public function getTitle()
     {
-        return __('Thank you for purchase premium package!');
+        return __('A new comment in the task you are assigned to');
     }
 
     /**
@@ -41,17 +43,17 @@ class Activated extends Mailable
      */
     public function content(): Content
     {
-        $view = 'emails.' . $this->locale . '.subscription.activated';
+        $view = 'emails.' . $this->locale . '.task.new-comment-assigned';
         if(!view()->exists($view))
-            $view = 'emails.'.config("api.default_language").'.subscription.activated';
-            
+            $view = 'emails.'.config("api.default_language").'.task.new-comment-assigned';
+        
         return new Content(
             view: $view,
             with: [
-                "locale" => $this->locale,
-                "subscription" => $this->subscription,
                 "title" => $this->getTitle(),
-            ],
+                "task" => $this->task,
+                "comment" => $this->comment,
+            ]
         );
     }
 

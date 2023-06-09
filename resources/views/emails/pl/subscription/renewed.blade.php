@@ -6,7 +6,7 @@
 
 @section("content")
     <p>
-        Chcielibyśmy serdecznie podziękować Ci za wykupienie pakietu premium naszej usługi! Cieszymy się, że dołączyłeś/dołączyłaś do naszej społeczności i chcesz korzystać z pełnego zakresu naszych usług.
+        Chcielibyśmy serdecznie podziękować Ci za odnowienie pakietu premium naszej usługi! Cieszymy się, że nadal chcesz korzystać z pełnego zakresu naszych usług.
     </p>
     <p>
         Zobowiązujemy się do zapewnienia Ci najwyższej jakości obsługi i stałego doskonalenia naszej usługi. Twój udział w naszej społeczności jest dla nas niezmiernie ważny, dlatego staramy się ciągle rozwijać, uwzględniając opinie i sugestie naszych użytkowników.

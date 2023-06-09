@@ -6,16 +6,16 @@
 
 @section("content")
     <p>
-        We would like to remind you that your subscription to our service is nearing its expiration. In {{ $days }} days, your subscription term will come to an end.
+        We would like to remind you that your premium package its expiration. In {{ $days }} days, your premium package term will come to an end.
     </p>
     <p>
-        We want to emphasize that your subscription provides you with access to the full range of features and benefits offered by our service. Therefore, we encourage you to renew your subscription to ensure uninterrupted access to these services.
+        We want to emphasize that your premium package provides you with access to the full range of features and benefits offered by our service. Therefore, we encourage you to renew your subscription to ensure uninterrupted access to these services.
     </p>
     <p>
-        To renew your subscription, click the link below.
+        To renew your premium package, click the link below.
         <div style="text-align: left; margin-top: 10px; margin-bottom: 10px">
             <a href="{{ env("FRONTEND_URL") }}subscription" style="display:inline-block; background-color: #506fd9; color: white; padding: 10px; text-decoration: none; border-radius: 5px;">
-                Renew subscription
+                Renew premium package
             </a>
         </div>
     </p>

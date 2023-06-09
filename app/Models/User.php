@@ -130,7 +130,7 @@ class User extends Authenticatable
     
     public function scopeApiFields(Builder $query): void
     {
-        $query->select("id", "firstname", "lastname", "phone", "email", "activated", "owner", "superuser", "user_permission_id");
+        $query->select("id", "firstname", "lastname", "phone", "email", "activated", "owner", "superuser", "user_permission_id", "default_locale");
     }
     
     public function scopeNoDelete(Builder $query): void

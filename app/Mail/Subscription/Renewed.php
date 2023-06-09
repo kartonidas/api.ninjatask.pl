@@ -10,7 +10,7 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Subscription;
 
-class Activated extends Mailable
+class Renewed extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -23,7 +23,7 @@ class Activated extends Mailable
     
     public function getTitle()
     {
-        return __('Thank you for purchase premium package!');
+        return __('Thank you for renew premium package!');
     }
 
     /**
@@ -41,9 +41,9 @@ class Activated extends Mailable
      */
     public function content(): Content
     {
-        $view = 'emails.' . $this->locale . '.subscription.activated';
+        $view = 'emails.' . $this->locale . '.subscription.renewed';
         if(!view()->exists($view))
-            $view = 'emails.'.config("api.default_language").'.subscription.activated';
+            $view = 'emails.'.config("api.default_language").'.subscription.renewed';
             
         return new Content(
             view: $view,

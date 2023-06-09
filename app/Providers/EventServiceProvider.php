@@ -14,6 +14,8 @@ use App\Models\Task;
 use App\Observers\TaskObserver;
 use App\Models\TaskAssignedUser;
 use App\Observers\TaskAssignedUserObserver;
+use App\Models\TaskComment;
+use App\Observers\TaskCommentObserver;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -37,6 +39,7 @@ class EventServiceProvider extends ServiceProvider
         TaskTime::observe(TaskTimeObserver::class);
         Task::observe(TaskObserver::class);
         TaskAssignedUser::observe(TaskAssignedUserObserver::class);
+        TaskComment::observe(TaskCommentObserver::class);
     }
 
     /**

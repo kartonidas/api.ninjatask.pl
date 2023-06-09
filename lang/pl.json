@@ -100,5 +100,13 @@
     "Procedure for resetting your password in our application": "Procedura zmiany has\u0142a w naszej aplikacji",
     "Invitation to Activate Your Account in Our Application": "Zaproszenie do aktywacji konta w naszej aplikacji",
     "Reminder: Expiring Subscription in %s Days": "Przypomnienie: subskrypcja wyga\u015bnie za %s dni",
-    " Thank you for subscribing!": " Dziękujemy za wykupienie subskrypcji!"
+    " Thank you for subscribing!": " Dzi\u0119kujemy za wykupienie subskrypcji!",
+    "Your premium package expired": "Tw\u00f3j pakiet premium wygas\u0142",
+    "Reminder: Expiring premium package in %s Days": "Przypomnienie: Pakiet premium wyga\u015bnie za %s dni",
+    "Thank you for purchase premium package!": "Dzi\u0119kujemy za wykupienie pakietu premium!",
+    "Thank you for renew premium package!": "Dzi\u0119kujemy za odnowienie pakietu premium!",
+    "A new comment in the task you are assigned to": "Nowy komentarz w zadaniu do którego jesteś przypisany",
+    "Changing the status in a task you created": "Zmiana statusu zadania które utworzyłeś",
+    "Change of status in the task to which you are assigned": "Zmiana statusu zadania do którego jesteś przypisany",
+    "New comment in the task you created": "Nowy komentarz w zadaniu które utworzyłeś"
 }

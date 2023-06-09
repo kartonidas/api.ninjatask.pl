@@ -20,7 +20,7 @@ class RemoveDeletedTasks extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Pernamently removed deleted tasks';
 
     /**
      * Execute the console command.

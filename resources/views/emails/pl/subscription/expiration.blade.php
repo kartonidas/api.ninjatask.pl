@@ -6,16 +6,16 @@
 
 @section("content")
     <p>
-        Chcielibyśmy przypomnieć Ci, że Twoja subskrypcja naszego serwisu zbliża się do końca. Za {{ $days }} dni termin ważności Twojej subskrypcji wygaśnie.
+        Chcielibyśmy przypomnieć Ci, że Twój pakiet premium zbliża się do końca. Za {{ $days }} dni termin ważności Twojego pakietu wygaśnie.
     </p>
     <p>
-        Przypominamy, że subskrypcja umożliwia Ci korzystanie z pełnych funkcjonalności naszego serwisu i cieszenie się jego korzyściami. W związku z tym, zachęcamy Cię do przedłużenia subskrypcji, aby nie przerwać Ci dostępu do tych usług.
+        Przypominamy, że pakiet premium umożliwia Ci korzystanie z pełnych funkcjonalności naszego serwisu i cieszenie się jego korzyściami. W związku z tym, zachęcamy Cię do przedłużenia pakietu, aby nie przerwać Ci dostępu do tych usług.
     </p>
     <p>
-        Aby przedłużyć subskrypcję, kliknij poniższy link.
+        Aby przedłużyć pakiet, kliknij poniższy link.
         <div style="text-align: left; margin-top: 10px; margin-bottom: 10px">
             <a href="{{ env("FRONTEND_URL") }}subscription" style="display:inline-block; background-color: #506fd9; color: white; padding: 10px; text-decoration: none; border-radius: 5px;">
-                Przedłuż subskrypcję
+                Przedłuż pakiet
             </a>
         </div>
     </p>

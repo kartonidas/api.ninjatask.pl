@@ -10,13 +10,13 @@
     </p>
     
     <p>
-        Nazwa zadania:
+        <b>Nazwa zadania:</b>
         <br/>
         {{ $task->name }}
     </p>
     @if(!empty($task->description))
         <p>
-            Opis zadania:
+            <b>Opis zadania:</b>
             <br/>
             {{ strip_tags($task->description) }}
         </p>

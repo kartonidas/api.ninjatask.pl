@@ -74,7 +74,7 @@ class Invoice extends Model
         
         $ownerAccount = $accountFirmData->getOwner();
         if($ownerAccount)
-            Notification::notify($ownerAccount->id, $inv->id, "invoice:generated");
+            Notification::notify($ownerAccount->id, -1, $inv->id, "invoice:generated");
 
         return $inv->id;
     }

@@ -126,6 +126,7 @@ Route::middleware(['auth:sanctum', 'locale'])->group(function () use($router) {
     $router->post('/firm-data', [UserController::class, "firmDataUpdate"]);
     
     $router->get('/notifications', [NotificationController::class, "list"]);
+    $router->get('/notification/{id}', [NotificationController::class, "get"])->where("id", "[0-9]+");
     $router->put('/notification/read/{id}', [NotificationController::class, "setRead"])->where("id", "[0-9]+");
 });
 

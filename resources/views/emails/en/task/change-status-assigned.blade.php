@@ -6,7 +6,7 @@
 
 @section("content")
     <p>
-        A new task has been assigned to your account.
+        The status of the task you are assigned to has been changed.
     </p>
     
     <p>
@@ -14,13 +14,11 @@
         <br/>
         {{ $task->name }}
     </p>
-    @if(!empty($task->description))
-        <p>
-            <b>Task description:</b>
-            <br/>
-            {{ strip_tags($task->description) }}
-        </p>
-    @endif
+    <p>
+        <b>New status:</b>
+        <br/>
+        {{ $task->getStatusName($task->uuid) }}
+    </p>
     <p>
         To go to the details of the task, click on the link below:
         <div style="text-align: left; margin-top: 10px; margin-bottom: 10px">

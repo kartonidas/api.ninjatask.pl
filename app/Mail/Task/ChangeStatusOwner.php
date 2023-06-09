@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Mail\Subscription;
+namespace App\Mail\Task;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -8,22 +8,23 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use App\Models\Subscription;
+use App\Models\Task;
+use App\Models\User;
 
-class Activated extends Mailable
+class ChangeStatusOwner extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(public Subscription $subscription)
+    public function __construct(public string $url, public Task $task)
     {
     }
     
     public function getTitle()
     {
-        return __('Thank you for purchase premium package!');
+        return __('Changing the status in a task you created');
     }
 
     /**
@@ -41,17 +42,16 @@ class Activated extends Mailable
      */
     public function content(): Content
     {
-        $view = 'emails.' . $this->locale . '.subscription.activated';
+        $view = 'emails.' . $this->locale . '.task.change-status-owner';
         if(!view()->exists($view))
-            $view = 'emails.'.config("api.default_language").'.subscription.activated';
-            
+            $view = 'emails.'.config("api.default_language").'.task.update-status-author';
+        
         return new Content(
             view: $view,
             with: [
-                "locale" => $this->locale,
-                "subscription" => $this->subscription,
                 "title" => $this->getTitle(),
-            ],
+                "task" => $this->task,
+            ]
         );
     }
 

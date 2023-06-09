@@ -6,10 +6,9 @@ use DateTime;
 use DateInterval;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\Subscription\Expiration;
 use App\Models\ExpirationNotify;
 use App\Models\Firm;
+use App\Models\Notification;
 use App\Models\Subscription;
 use App\Models\User;
 
@@ -55,7 +54,7 @@ class ExpirationSubscription extends Command
                 $owner = Firm::getOwnerByUuid($row->uuid);
                 if($owner)
                 {
-                    Mail::to($owner->email)->locale($owner->getLocale())->queue(new Expiration($row, $days));
+                    Notification::notify($owner->id, -1, $row->id, "subscription:expiration3");
                                             
                     $eNotify = new ExpirationNotify;
                     $eNotify->subscription_id = $row->id;

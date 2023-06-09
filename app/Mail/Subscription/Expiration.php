@@ -24,7 +24,7 @@ class Expiration extends Mailable
     
     public function getTitle()
     {
-        return sprintf(__('Reminder: Expiring Subscription in %s Days'), $this->days);
+        return sprintf(__('Reminder: Expiring premium package in %s Days'), $this->days);
     }
 
     /**

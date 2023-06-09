@@ -6,7 +6,7 @@
 
 @section("content")
     <p>
-        We would like to extend our heartfelt thanks to you for purchasing the premium package of our service! We are delighted that you have joined our community and are interested in availing the full range of our offerings.
+        We would like to extend our heartfelt thanks to you for renewed the premium package of our service! We are glad that you still want to use the full range of our services.
     </p>
     <p>
         We are committed to delivering the highest quality of service and continuously improving our offerings. Your participation in our community is immensely valuable to us, and we strive to grow by incorporating the feedback and suggestions of our users.

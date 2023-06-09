@@ -100,12 +100,12 @@ class Task extends Model
     }
     
     private static $statuses = null;
-    public function getStatusName()
+    public function getStatusName($uuid = null)
     {
         if(static::$statuses == null)
         {
             static::$statuses = [];
-            $statuses = Status::all();
+            $statuses = $uuid === null ? Status::all() : Status::withoutGlobalScopes()->where("uuid", $uuid)->get();
             if(!$statuses->isEmpty())
             {
                 foreach($statuses as $status)
