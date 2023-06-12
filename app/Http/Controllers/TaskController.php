@@ -9,12 +9,14 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\File as RuleFile;
 use Illuminate\Validation\ValidationException;
+use App\Exceptions\AccessDenied;
 use App\Exceptions\InvalidStatus;
 use App\Exceptions\ObjectExist;
 use App\Exceptions\ObjectNotExist;
 use App\Models\File;
 use App\Models\Project;
 use App\Models\Status;
+use App\Models\Subscription;
 use App\Models\Task;
 use App\Models\TaskAssignedUser;
 use App\Models\User;
@@ -173,6 +175,7 @@ class TaskController extends Controller
     public function create(Request $request)
     {
         User::checkAccess("task:create");
+        Subscription::checkPackage("task");
         
         self::prepareSelfAssignedId($request);
         
@@ -223,11 +226,17 @@ class TaskController extends Controller
     */
     public function update(Request $request, $id)
     {
-        User::checkAccess("task:update");
+        $task = Task::find($id);
+        
+        try {
+            User::checkAccess("task:update");
+        } catch(AccessDenied $e) {
+            if($task && !in_array(Auth::user()->id, $task->getAssignedUserIds()))
+                throw $e;
+        }
         
         self::prepareSelfAssignedId($request);
         
-        $task = Task::find($id);
         if(!$task)
             throw new ObjectNotExist(__("Task does not exist"));
         
@@ -510,9 +519,14 @@ class TaskController extends Controller
     */
     public function close(Request $request, $id = 0)
     {
-        User::checkAccess("task:update");
-        
         $task = Task::find($id);
+        try {
+            User::checkAccess("task:update");
+        } catch(AccessDenied $e) {
+            if($task && !in_array(Auth::user()->id, $task->getAssignedUserIds()))
+                throw $e;
+        }
+        
         if(!$task)
             throw new ObjectNotExist(__("Task does not exist"));
         
@@ -537,9 +551,14 @@ class TaskController extends Controller
     */
     public function open(Request $request, $id = 0)
     {
-        User::checkAccess("task:update");
-        
         $task = Task::find($id);
+        try {
+            User::checkAccess("task:update");
+        } catch(AccessDenied $e) {
+            if($task && !in_array(Auth::user()->id, $task->getAssignedUserIds()))
+                throw $e;
+        }
+        
         if(!$task)
             throw new ObjectNotExist(__("Task does not exist"));
         

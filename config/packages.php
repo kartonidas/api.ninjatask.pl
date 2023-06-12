@@ -16,5 +16,10 @@
                 "vat" => 23,
                 "months" => 12,
             ]
+        ],
+        "free" => [
+            "projects" => 2,
+            "tasks" => 2,
+            "space" => 10485760
         ]
     ];

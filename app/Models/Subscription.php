@@ -5,9 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use App\Exceptions\OutOffLimit;
 use App\Models\ExpirationNotify;
 use App\Models\Firm;
+use App\Models\Limit;
 use App\Models\Order;
+use App\Models\Project;
+use App\Models\Task;
 
 class Subscription extends Model
 {
@@ -86,6 +90,31 @@ class Subscription extends Model
         if(!$activePackages->isEmpty()) {
             foreach($activePackages as $row)
                 $row->expire("auto_expire");
+        }
+    }
+    
+    public static function checkPackage($type)
+    {
+        $subscription = Subscription::where("status", Subscription::STATUS_ACTIVE)->first();
+        if(!$subscription)
+        {
+            $current = Limit::first();
+            $limits = config("packages.free");
+            switch($type)
+            {
+                case "task":
+                    if($current && $current->tasks >= $limits["tasks"])
+                        throw new OutOffLimit(__("Exceeded the maximum number of tasks on the free account"));
+                break;
+                case "project":
+                    if($current && $current->projects >= $limits["projects"])
+                        throw new OutOffLimit(__("Exceeded the maximum number of projects on the free account"));
+                break;
+                case "space":
+                    if($current && $current->space >= $limits["space"])
+                        throw new OutOffLimit(__("Maximum file size exceeded"));
+                break;
+            }
         }
     }
 }

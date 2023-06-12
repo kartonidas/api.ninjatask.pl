@@ -16,6 +16,10 @@ use App\Models\TaskAssignedUser;
 use App\Observers\TaskAssignedUserObserver;
 use App\Models\TaskComment;
 use App\Observers\TaskCommentObserver;
+use App\Models\Project;
+use App\Observers\ProjectObserver;
+use App\Models\File;
+use App\Observers\FileObserver;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -40,6 +44,8 @@ class EventServiceProvider extends ServiceProvider
         Task::observe(TaskObserver::class);
         TaskAssignedUser::observe(TaskAssignedUserObserver::class);
         TaskComment::observe(TaskCommentObserver::class);
+        Project::observe(ProjectObserver::class);
+        File::observe(FileObserver::class);
     }
 
     /**

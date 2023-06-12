@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use App\Models\Project;
+use App\Models\Subscription;
 use App\Models\Task;
 use App\Models\TaskAssignedUser;
 use App\Models\User;
@@ -99,6 +100,7 @@ class ProjectController extends Controller
     public function create(Request $request)
     {
         User::checkAccess("project:create");
+        Subscription::checkPackage("project");
         
         $request->validate([
             "name" => "required|max:250",

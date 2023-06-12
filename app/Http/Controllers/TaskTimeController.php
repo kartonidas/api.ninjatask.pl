@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use App\Exceptions\AccessDenied;
 use App\Exceptions\InvalidStatus;
 use App\Exceptions\ObjectExist;
 use App\Exceptions\ObjectNotExist;
@@ -192,6 +193,9 @@ class TaskTimeController extends Controller
         if($timer->status != TaskTime::FINISHED)
             throw new InvalidStatus(__("Task time invalid status"));
         
+        if(!$timer->canEdit())
+            throw new AccessDenied(__("Access denied"));
+        
         $rules = [
             "started" => "required|integer|gt:0",
             "total" => "required|integer|gt:0",
@@ -236,7 +240,7 @@ class TaskTimeController extends Controller
     * @urlParam id integer required Task identifier.
     * @queryParam size integer Number of rows. Default: 50
     * @queryParam page integer Number of page (pagination). Default: 1
-    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "status": "active", "task_id": "1", "user_id": 1, "started": "1680843163", "finished": 1680843163, "timer_started": 0, "total": 600, "comment": "Example comment", "billable": 0, "_me": true, "user": "John Doe"}]}
+    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "status": "active", "task_id": "1", "user_id": 1, "started": "1680843163", "finished": 1680843163, "timer_started": 0, "total": 600, "comment": "Example comment", "billable": 0, "_me": true, "can_delete" : false, "can_edit": false, "user": "John Doe"}]}
     * @response 404 {"error":true,"message":"Task does not exist"}
     * @header Authorization: Bearer {TOKEN}
     * @group Task time
@@ -272,6 +276,8 @@ class TaskTimeController extends Controller
         {
             $times[$k]->user = $time->getUserName();
             $times[$k]->_me = $time->user_id == Auth::user()->id;
+            $times[$k]->can_delete = $time->canDelete();
+            $times[$k]->can_edit = $time->canEdit();
             $times[$k]->billable = $time->billable == 1;
         }
         
@@ -293,7 +299,7 @@ class TaskTimeController extends Controller
     * Get task spend time row.
     * @urlParam id integer required Task identifier.
     * @urlParam tid integer required Task time identifier.
-    * @response 200 {"id": 1, "status": "active", "task_id": "1", "user_id": 1, "started": "1680843163", "finished": 1680843163, "timer_started": 0, "total": 600, "comment": "Example comment", "billable": 0, "_me": true, "user": "John Doe"}
+    * @response 200 {"id": 1, "status": "active", "task_id": "1", "user_id": 1, "started": "1680843163", "finished": 1680843163, "timer_started": 0, "total": 600, "comment": "Example comment", "billable": 0, "_me": true, "can_delete": false, "can_edit": false, "user": "John Doe"}
     * @response 404 {"error":true,"message":"Task does not exist"}
     * @header Authorization: Bearer {TOKEN}
     * @group Task time
@@ -316,6 +322,8 @@ class TaskTimeController extends Controller
         $time->user = $time->getUserName();
         $time->_me = $time->user_id == Auth::user()->id;
         $time->billable = $time->billable == 1;
+        $time->can_delete = $time->canDelete();
+        $time->can_edit = $time->canEdit();
         
         return $time;
     }
@@ -343,6 +351,9 @@ class TaskTimeController extends Controller
         $timer = TaskTime::where("task_id", $taskId)->find($id);
         if(!$timer)
             throw new ObjectNotExist(__("Task time does not exist"));
+        
+        if(!$timer->canDelete())
+            throw new AccessDenied(__("Access denied"));
         
         $timer->delete();
         return true;

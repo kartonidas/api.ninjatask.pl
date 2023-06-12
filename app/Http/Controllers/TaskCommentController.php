@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rules\File as RuleFile;
+use App\Exceptions\AccessDenied;
 use App\Exceptions\InvalidStatus;
 use App\Exceptions\ObjectExist;
 use App\Exceptions\ObjectNotExist;
@@ -225,6 +226,9 @@ class TaskCommentController extends Controller
         if(!$comment)
             throw new ObjectNotExist(__("Comment does not exist"));
         
+        if($comment->user_id != Auth::user()->id)
+            throw new AccessDenied(__("Access denied"));
+        
         $rules = [
             "comment" => "required|max:10000",
         ];
@@ -275,6 +279,9 @@ class TaskCommentController extends Controller
         $comment = TaskComment::where("task_id", $taskId)->apiFields()->find($id);
         if(!$comment)
             throw new ObjectNotExist(__("Comment does not exist"));
+        
+        if(!$comment->canDelete())
+            throw new AccessDenied(__("Access denied"));
         
         $comment->delete();
         return true;

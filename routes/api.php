@@ -33,6 +33,7 @@ Route::middleware(['auth:sanctum', 'locale'])->group(function () use($router) {
     
     $router->get('/dashboard', [IndexController::class, "dashboard"]);
     $router->get('/subscription', [IndexController::class, "getActiveSubscription"]);
+    $router->get('/current-stats', [IndexController::class, "getCurrentStats"]);
     
     // PROJEKTY
     $router->get('/projects', [ProjectController::class, "list"]);

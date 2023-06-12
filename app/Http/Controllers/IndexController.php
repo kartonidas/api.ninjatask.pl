@@ -7,6 +7,7 @@ use DateInterval;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Limit;
 use App\Models\Project;
 use App\Models\Subscription;
 use App\Models\Task;
@@ -194,6 +195,7 @@ class IndexController extends Controller
     
     /**
     * Get active subscription
+    * @response 200 {"start": 1686580275, "start_date": "2023-01-02 10:00:12", "end": 1686580275, "end_date": "2023-01-02 11:00:12"}
     */
     public function getActiveSubscription()
     {
@@ -209,5 +211,14 @@ class IndexController extends Controller
             ];
         }
         return $out;
+    }
+    
+    /**
+    * Get current stats
+    * @response 200 {"tasks": 18, "projects": 2, "space": 512012}
+    */
+    public function getCurrentStats()
+    {
+        return Limit::select("tasks", "projects", "space")->first();
     }
 }

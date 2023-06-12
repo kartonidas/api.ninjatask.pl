@@ -15,7 +15,7 @@ class TaskComment extends Model
     
     public function delete($withoutUuidScope = false)
     {
-        $attachments = $this->getAttachments(null, $withoutUuidScope);
+        $attachments = $this->getAttachmentsToDeleted(null, $withoutUuidScope);
         foreach($attachments as $attachment)
             $attachment->delete();
         

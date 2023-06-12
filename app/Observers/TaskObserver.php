@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use Illuminate\Support\Facades\Auth;
+use App\Jobs\LimitsCalculate;
 use App\Models\Notification;
 use App\Models\Status;
 use App\Models\Task;
@@ -12,6 +13,16 @@ use App\Models\TaskTime;
 
 class TaskObserver
 {
+    public function created(Task $task): void
+    {
+        LimitsCalculate::dispatch($task->uuid);
+    }
+    
+    public function deleted(Task $task): void
+    {
+        LimitsCalculate::dispatch($task->uuid);
+    }
+    
     public function updated(Task $task): void
     {
         if($task->isDirty("status_id") && !$task->completed)

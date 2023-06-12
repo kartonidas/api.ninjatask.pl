@@ -130,7 +130,17 @@ trait File
             $files->apiFields();
     
         return $files->get();
+    }
     
+    public function getAttachmentsToDeleted($type = null, $withoutUuidScope = false)
+    {
+        if($type === null) $type = $this->getType();
+        
+        $files = FileModel::where("type", $type)->where("object_id", $this->id)->orderBy("created_at", "DESC");
+        if($withoutUuidScope)
+            $files->withoutGlobalscopes();
+    
+        return $files->get();
     }
     
     public function attachBase64File($attachments = [], $allowedExtensions = [])
