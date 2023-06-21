@@ -130,7 +130,7 @@ class User extends Authenticatable
     
     public function scopeApiFields(Builder $query): void
     {
-        $query->select("id", "firstname", "lastname", "phone", "email", "activated", "owner", "superuser", "user_permission_id", "default_locale");
+        $query->select("id", "firstname", "lastname", "phone", "email", "activated", "owner", "superuser", "user_permission_id", "default_locale", "avatar");
     }
     
     public function scopeNoDelete(Builder $query): void
@@ -317,5 +317,21 @@ class User extends Authenticatable
     {
         $settings = $this->getAccountSettings();
         return !empty($settings->locale) ? $settings->locale : config("api.default_language");
+    }
+    
+    public function getUserAvatar($uuid = null)
+    {
+        if($this->avatar)
+        {
+            $avatar = File::getUploadDirectory("avatar", true, $uuid) . "/" . $this->avatar;
+            if(file_exists($avatar))
+            {
+                $type = pathinfo($avatar, PATHINFO_EXTENSION);
+                $data = file_get_contents($avatar);
+                return "data:image/" . $type . ";base64," . base64_encode($data);
+            }
+        }
+
+        return false;
     }
 }

@@ -10,6 +10,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\StatsController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TaskCommentController;
@@ -34,6 +35,7 @@ Route::middleware(['auth:sanctum', 'locale'])->group(function () use($router) {
     $router->get('/dashboard', [IndexController::class, "dashboard"]);
     $router->get('/subscription', [IndexController::class, "getActiveSubscription"]);
     $router->get('/current-stats', [IndexController::class, "getCurrentStats"]);
+    $router->get('/search', [IndexController::class, "search"]);
     
     // PROJEKTY
     $router->get('/projects', [ProjectController::class, "list"]);
@@ -54,6 +56,7 @@ Route::middleware(['auth:sanctum', 'locale'])->group(function () use($router) {
     $router->get('/user/permission', [UserController::class, "getPermissions"]);
     $router->get('/profile', [UserController::class, "profile"]);
     $router->put('/profile', [UserController::class, "profileUpdate"]);
+    $router->post('/profile/avatar', [UserController::class, "profileAvatarUpdate"]);
     $router->get('/settings', [UserController::class, "settings"]);
     $router->put('/settings', [UserController::class, "settingsUpdate"]);
     
@@ -129,6 +132,14 @@ Route::middleware(['auth:sanctum', 'locale'])->group(function () use($router) {
     $router->get('/notifications', [NotificationController::class, "list"]);
     $router->get('/notification/{id}', [NotificationController::class, "get"])->where("id", "[0-9]+");
     $router->put('/notification/read/{id}', [NotificationController::class, "setRead"])->where("id", "[0-9]+");
+    
+    // STATYSTYKI
+    $router->get('/stats/user/{id}/daily', [StatsController::class, "userDaily"])->where("id", "[0-9]+");
+    $router->get('/stats/user/{id}/monthly', [StatsController::class, "userMonthly"])->where("id", "[0-9]+");
+    $router->get('/stats/project/{id}/daily', [StatsController::class, "projectDaily"])->where("id", "[0-9]+");
+    $router->get('/stats/project/{id}/monthly', [StatsController::class, "projectMonthly"])->where("id", "[0-9]+");
+    $router->get('/stats/task/{id}/daily', [StatsController::class, "taskDaily"])->where("id", "[0-9]+");
+    $router->get('/stats/task/{id}/monthly', [StatsController::class, "taskMonthly"])->where("id", "[0-9]+");
 });
 
 Route::middleware(['locale'])->group(function () use($router) {

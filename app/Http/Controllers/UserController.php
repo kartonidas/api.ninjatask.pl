@@ -12,11 +12,13 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password as RulePassword;
 use Illuminate\Validation\ValidationException;
+use Intervention\Image\Facades\Image;
 use App\Exceptions\AccessDenied;
 use App\Exceptions\Exception;
 use App\Exceptions\ObjectNotExist;
 use App\Exceptions\UserExist;
 use App\Models\Firm;
+use App\Models\File;
 use App\Models\PasswordResetToken;
 use App\Models\Task;
 use App\Models\TaskTime;
@@ -74,6 +76,7 @@ class UserController extends Controller
             "lastname" => $user->lastname,
             "locale" => $settings->locale,
             "owner" => $user->owner,
+            "avatar" => $user->getUserAvatar($user->getUuid()),
         ];
         
         return response()->json($out);
@@ -236,7 +239,6 @@ class UserController extends Controller
         $searchPhone = $request->input("phone", null);
         $searchPermission = $request->input("permission", null);
         
-        $firm = Auth::user()->getFirm();
         $users = User
             ::apiFields()
             ->byFirm();
@@ -609,6 +611,7 @@ class UserController extends Controller
         $user->activated = $user->activated == 1;
         $user->owner = $user->owner == 1;
         $user->superuser = $user->superuser == 1;
+        $user->avatar = $user->getUserAvatar();
         
         $user->user_permission_name = "";
         if(!$user->superuser && $user->user_permission_id > 0) {
@@ -681,6 +684,63 @@ class UserController extends Controller
         $user->save();
             
         return true;
+    }
+    
+    /**
+    * Update user profile avatar
+    *
+    * User profile avatar.
+    * @bodyParam file file avatar file.
+    * @responseField status boolean Update status
+
+    * @header Authorization: Bearer {TOKEN}
+    * @group User management
+    */
+    public function profileAvatarUpdate(Request $request)
+    {
+        $user = User::byFirm()->apiFields()->find(Auth::user()->id);
+        if(!$user)
+            throw new ObjectNotExist(__("User does not exist"));
+        
+        $request->validate([
+            "avatar" => "nullable|file|mimes:jpg,png|max:100"
+        ]);
+        
+        if($request->has("avatar"))
+        {
+            if($user->avatar && file_exists(File::getUploadDirectory("avatar") . "/" . $user->avatar))
+                unlink(File::getUploadDirectory("avatar") . "/" . $user->avatar);
+                
+            $relativeDirectory = File::getUploadDirectory("avatar", false);
+            $extension = $request->file("avatar")->getClientOriginalExtension();
+            $filename = bin2hex(openssl_random_pseudo_bytes(16)) . "." . $extension;
+            $path = $request->file("avatar")->storeAs($relativeDirectory, $filename, "upload");
+            
+            
+            if(file_exists(File::getUploadDirectory("avatar") . "/" . $filename))
+            {
+                $img = Image::make(File::getUploadDirectory("avatar") . "/" . $filename);
+                $img->resize(100, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $img->save(File::getUploadDirectory("avatar") . "/" . $filename);
+            }
+            
+            $user->avatar = $filename;
+            $user->save();
+        }
+        else
+        {
+            if($user->avatar && file_exists(File::getUploadDirectory("avatar") . "/" . $user->avatar))
+                unlink(File::getUploadDirectory("avatar") . "/" . $user->avatar);
+                
+            $user->avatar = null;
+            $user->save();
+        }
+        
+        return [
+            "avatar" => $user->getUserAvatar(),
+        ];
     }
     
     /**
@@ -922,6 +982,7 @@ class UserController extends Controller
             "lastname" => Auth::user()->lastname,
             "locale" => $settings->locale,
             "owner" => Auth::user()->owner,
+            "avatar" => Auth::user()->getUserAvatar(),
         ];
         return $out;
     }

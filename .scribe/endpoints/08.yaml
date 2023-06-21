@@ -32,12 +32,12 @@ endpoints:
         name: page
         description: 'Number of page (pagination). Default: 1'
         required: false
-        example: 3
+        example: 13
         type: integer
         custom: []
     cleanQueryParameters:
       size: 9
-      page: 3
+      page: 13
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -80,27 +80,27 @@ endpoints:
         name: name
         description: 'Status name.'
         required: true
-        example: sit
+        example: occaecati
         type: string
         custom: []
       is_default:
         name: is_default
         description: 'Set default status.'
         required: false
-        example: true
+        example: false
         type: boolean
         custom: []
       close_task:
         name: close_task
         description: 'Setting the status will close the task.'
         required: false
-        example: true
+        example: false
         type: boolean
         custom: []
     cleanBodyParameters:
-      name: sit
-      is_default: true
-      close_task: true
+      name: occaecati
+      is_default: false
+      close_task: false
     fileParameters: []
     responses: []
     responseFields:
@@ -138,11 +138,11 @@ endpoints:
         name: id
         description: 'Status identifier.'
         required: true
-        example: 9
+        example: 11
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 9
+      id: 11
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -201,7 +201,7 @@ endpoints:
         name: name
         description: 'Status name.'
         required: false
-        example: ullam
+        example: incidunt
         type: string
         custom: []
       is_default:
@@ -215,13 +215,13 @@ endpoints:
         name: close_task
         description: 'Setting the status will close the task.'
         required: false
-        example: false
+        example: true
         type: boolean
         custom: []
     cleanBodyParameters:
-      name: ullam
+      name: incidunt
       is_default: true
-      close_task: false
+      close_task: true
     fileParameters: []
     responses: []
     responseFields:
@@ -259,11 +259,11 @@ endpoints:
         name: id
         description: 'Status identifier.'
         required: true
-        example: 11
+        example: 2
         type: integer
         custom: []
     cleanUrlParameters:
-      id: 11
+      id: 2
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []

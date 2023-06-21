@@ -93,7 +93,7 @@ class Subscription extends Model
         }
     }
     
-    public static function checkPackage($type)
+    public static function checkPackage($type, $exception = true)
     {
         $subscription = Subscription::where("status", Subscription::STATUS_ACTIVE)->first();
         if(!$subscription)
@@ -104,17 +104,30 @@ class Subscription extends Model
             {
                 case "task":
                     if($current && $current->tasks >= $limits["tasks"])
-                        throw new OutOffLimit(__("Exceeded the maximum number of tasks on the free account"));
+                    {
+                        if($exception)
+                            throw new OutOffLimit(__("Exceeded the maximum number of tasks on the free account"));
+                        return false;
+                    }
                 break;
                 case "project":
                     if($current && $current->projects >= $limits["projects"])
-                        throw new OutOffLimit(__("Exceeded the maximum number of projects on the free account"));
+                    {
+                        if($exception)
+                            throw new OutOffLimit(__("Exceeded the maximum number of projects on the free account"));
+                        return false;
+                    }
                 break;
                 case "space":
                     if($current && $current->space >= $limits["space"])
-                        throw new OutOffLimit(__("Maximum file size exceeded"));
+                    {
+                        if($exception)
+                            throw new OutOffLimit(__("Maximum file size exceeded"));
+                        return false;
+                    }
                 break;
             }
         }
+        return true;
     }
 }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\ProjectDeletedTask;
 use App\Models\Task;
 use App\Traits\DbTimestamp;
 
@@ -21,7 +22,13 @@ class Project extends Model
         if(!$tasks->isEmpty())
         {
             foreach($tasks as $task)
+            {
                 $task->delete();
+                $pdt = new ProjectDeletedTask;
+                $pdt->project_id = $this->id;
+                $pdt->task_id = $task->id;
+                $pdt->save();
+            }
         }
         return parent::delete();
     }

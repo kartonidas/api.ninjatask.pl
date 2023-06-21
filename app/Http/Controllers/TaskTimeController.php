@@ -10,6 +10,7 @@ use App\Exceptions\AccessDenied;
 use App\Exceptions\InvalidStatus;
 use App\Exceptions\ObjectExist;
 use App\Exceptions\ObjectNotExist;
+use App\Libraries\Helper;
 use App\Models\Project;
 use App\Models\User;
 use App\Models\Task;
@@ -43,6 +44,7 @@ class TaskTimeController extends Controller
         if(!$timer)
         {
             $timer = new TaskTime;
+            $timer->uuid = Auth::user()->getUuid();
             $timer->task_id = $id;
             $timer->started = $time;
             $timer->user_id = Auth::user()->id;
@@ -150,6 +152,7 @@ class TaskTimeController extends Controller
         ]);
         
         $timer = new TaskTime;
+        $timer->uuid = Auth::user()->getUuid();
         $timer->task_id = $id;
         $timer->user_id = Auth::user()->id;
         $timer->status = TaskTime::FINISHED;
@@ -361,20 +364,6 @@ class TaskTimeController extends Controller
     
     private static function roundTime($total)
     {
-        if($total < 60)
-            $total = 60;
-        else
-        {
-            $diff = $total % 60;
-            if($diff > 0)
-            {
-                if($diff > 30)
-                    $total = $total + (60 - $diff);
-                else
-                    $total = $total - $diff;
-            }
-        }
-        
-        return $total;
+        return Helper::roundTime($total);
     }
 }

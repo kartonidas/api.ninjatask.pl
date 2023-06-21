@@ -51,7 +51,173 @@ paths:
           example: application/json
           schema:
             type: string
-      responses: {  }
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  start: 1686580275
+                  start_date: '2023-01-02 10:00:12'
+                  end: 1686580275
+                  end_date: '2023-01-02 11:00:12'
+                properties:
+                  start:
+                    type: integer
+                    example: 1686580275
+                  start_date:
+                    type: string
+                    example: '2023-01-02 10:00:12'
+                  end:
+                    type: integer
+                    example: 1686580275
+                  end_date:
+                    type: string
+                    example: '2023-01-02 11:00:12'
+      tags:
+        - Endpoints
+      security: []
+  /api/current-stats:
+    get:
+      summary: 'Get current stats'
+      operationId: getCurrentStats
+      description: ''
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  tasks: 18
+                  can_add_task: true
+                  projects: 2
+                  can_add_project: false
+                  space: 512012
+                  can_add_files: false
+                properties:
+                  tasks:
+                    type: integer
+                    example: 18
+                  can_add_task:
+                    type: boolean
+                    example: true
+                  projects:
+                    type: integer
+                    example: 2
+                  can_add_project:
+                    type: boolean
+                    example: false
+                  space:
+                    type: integer
+                    example: 512012
+                  can_add_files:
+                    type: boolean
+                    example: false
+      tags:
+        - Endpoints
+      security: []
+  /api/search:
+    get:
+      summary: 'Search task / projects'
+      operationId: searchTaskProjects
+      description: ''
+      parameters:
+        -
+          in: query
+          name: size
+          description: 'Number of rows. Default: 50'
+          example: 18
+          required: false
+          schema:
+            type: integer
+            description: 'Number of rows. Default: 50'
+            example: 18
+        -
+          in: query
+          name: page
+          description: 'Number of page (pagination). Default: 1'
+          example: 6
+          required: false
+          schema:
+            type: integer
+            description: 'Number of page (pagination). Default: 1'
+            example: 6
+        -
+          in: query
+          name: q
+          description: 'search phrase'
+          example: est
+          required: false
+          schema:
+            type: string
+            description: 'search phrase'
+            example: est
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  tasks: 18
+                  can_add_task: true
+                  projects: 2
+                  can_add_project: false
+                  space: 512012
+                  can_add_files: false
+                properties:
+                  tasks:
+                    type: integer
+                    example: 18
+                  can_add_task:
+                    type: boolean
+                    example: true
+                  projects:
+                    type: integer
+                    example: 2
+                  can_add_project:
+                    type: boolean
+                    example: false
+                  space:
+                    type: integer
+                    example: 512012
+                  can_add_files:
+                    type: boolean
+                    example: false
       tags:
         - Endpoints
       security: []
@@ -65,22 +231,22 @@ paths:
           in: query
           name: size
           description: 'Number of rows. Default: 50'
-          example: 14
+          example: 4
           required: false
           schema:
             type: integer
             description: 'Number of rows. Default: 50'
-            example: 14
+            example: 4
         -
           in: query
           name: page
           description: 'Number of page (pagination). Default: 1'
-          example: 1
+          example: 3
           required: false
           schema:
             type: integer
             description: 'Number of page (pagination). Default: 1'
-            example: 1
+            example: 3
         -
           in: header
           name: Content-Type
@@ -113,6 +279,47 @@ paths:
       tags:
         - Notifications
       security: []
+  '/api/notification/{id}':
+    get:
+      summary: 'Get notification'
+      operationId: getNotification
+      description: 'Get notification.'
+      parameters:
+        -
+          in: query
+          name: id
+          description: 'notification identifier'
+          example: 8
+          required: false
+          schema:
+            type: integer
+            description: 'notification identifier'
+            example: 8
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - Notifications
+      security: []
   '/api/notification/read/{id}':
     put:
       summary: 'Set notification as read'
@@ -123,12 +330,12 @@ paths:
           in: query
           name: id
           description: 'notification identifier'
-          example: 3
+          example: 17
           required: false
           schema:
             type: integer
             description: 'notification identifier'
-            example: 3
+            example: 17
         -
           in: header
           name: Content-Type
@@ -164,12 +371,12 @@ paths:
           in: query
           name: package
           description: 'Package name (one of: p1)'
-          example: voluptatem
+          example: ex
           required: false
           schema:
             type: string
             description: 'Package name (one of: p1)'
-            example: voluptatem
+            example: ex
         -
           in: header
           name: Content-Type
@@ -227,12 +434,12 @@ paths:
           in: query
           name: page
           description: 'Number of page (pagination). Default: 1'
-          example: 13
+          example: 10
           required: false
           schema:
             type: integer
             description: 'Number of page (pagination). Default: 1'
-            example: 13
+            example: 10
         -
           in: header
           name: Content-Type
@@ -349,22 +556,22 @@ paths:
           in: query
           name: size
           description: 'Number of rows. Default: 50'
-          example: 11
+          example: 14
           required: false
           schema:
             type: integer
             description: 'Number of rows. Default: 50'
-            example: 11
+            example: 14
         -
           in: query
           name: page
           description: 'Number of page (pagination). Default: 1'
-          example: 2
+          example: 5
           required: false
           schema:
             type: integer
             description: 'Number of page (pagination). Default: 1'
-            example: 2
+            example: 5
         -
           in: header
           name: Content-Type
@@ -522,19 +729,19 @@ paths:
                 name:
                   type: string
                   description: 'Project name.'
-                  example: id
+                  example: alias
                 location:
                   type: string
                   description: 'Project location.'
-                  example: est
+                  example: maxime
                 description:
                   type: string
                   description: 'Project description.'
-                  example: 'Nihil id reprehenderit sint odit.'
+                  example: 'Molestias et inventore saepe sint illum odio corrupti.'
                 owner:
                   type: string
                   description: 'Project owner.'
-                  example: et
+                  example: cupiditate
               required:
                 - name
       security: []
@@ -680,19 +887,19 @@ paths:
                 name:
                   type: string
                   description: 'Project name.'
-                  example: quia
+                  example: eligendi
                 location:
                   type: string
                   description: 'Project location.'
-                  example: esse
+                  example: aut
                 description:
                   type: string
                   description: 'Project description.'
-                  example: 'Eveniet fugit quas provident et quia aliquam illo.'
+                  example: 'Velit qui mollitia corrupti voluptate necessitatibus.'
                 owner:
                   type: string
                   description: 'Project owner.'
-                  example: aut
+                  example: assumenda
       security: []
     delete:
       summary: 'Delete project'
@@ -745,7 +952,7 @@ paths:
         in: path
         name: id
         description: 'Project identifier.'
-        example: 15
+        example: 8
         required: true
         schema:
           type: integer
@@ -841,6 +1048,782 @@ paths:
       tags:
         - Projects
       security: []
+  '/api/stats/user/{id}/daily':
+    get:
+      summary: 'Get daily user stats'
+      operationId: getDailyUserStats
+      description: 'Return daily user stats.'
+      parameters:
+        -
+          in: query
+          name: month
+          description: 'Month in format: "YYYY-MM", Default current month'
+          example: quae
+          required: false
+          schema:
+            type: string
+            description: 'Month in format: "YYYY-MM", Default current month'
+            example: quae
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  user:
+                    id: '1'
+                    firstname: John
+                    lastname: Doe
+                  month: 2022-12
+                  stats:
+                    -
+                      '2023-06-30':
+                        total: 86400
+                        objects:
+                          '1':
+                            id: 1
+                            name: 'John Doe'
+                            total: 86400
+                  allowed:
+                    - 2022-12
+                    - 2023-01
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: '1'
+                      firstname:
+                        type: string
+                        example: John
+                      lastname:
+                        type: string
+                        example: Doe
+                  month:
+                    type: string
+                    example: 2022-12
+                  stats:
+                    type: array
+                    example:
+                      -
+                        '2023-06-30':
+                          total: 86400
+                          objects:
+                            1:
+                              id: 1
+                              name: 'John Doe'
+                              total: 86400
+                    items:
+                      type: object
+                      properties:
+                        '2023-06-30':
+                          type: object
+                          properties:
+                            total:
+                              type: integer
+                              example: 86400
+                            objects:
+                              type: object
+                              properties:
+                                1:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: integer
+                                      example: 1
+                                    name:
+                                      type: string
+                                      example: 'John Doe'
+                                    total:
+                                      type: integer
+                                      example: 86400
+                  allowed:
+                    type: array
+                    example:
+                      - 2022-12
+                      - 2023-01
+                    items:
+                      type: string
+      tags:
+        - Stats
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'User identifier.'
+        example: 18
+        required: true
+        schema:
+          type: integer
+  '/api/stats/user/{id}/monthly':
+    get:
+      summary: 'Get monthy user stats'
+      operationId: getMonthyUserStats
+      description: 'Return monthy user stats.'
+      parameters:
+        -
+          in: query
+          name: year
+          description: 'Year in format: "YYYY", Default current year'
+          example: voluptates
+          required: false
+          schema:
+            type: string
+            description: 'Year in format: "YYYY", Default current year'
+            example: voluptates
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  user:
+                    id: '1'
+                    firstname: John
+                    lastname: Doe
+                  year: '2022'
+                  stats:
+                    -
+                      2023-06:
+                        total: 86400
+                        objects:
+                          '1':
+                            id: 1
+                            name: 'John Doe'
+                            total: 86400
+                  allowed:
+                    - '2022'
+                    - '2023'
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: '1'
+                      firstname:
+                        type: string
+                        example: John
+                      lastname:
+                        type: string
+                        example: Doe
+                  year:
+                    type: string
+                    example: '2022'
+                  stats:
+                    type: array
+                    example:
+                      -
+                        2023-06:
+                          total: 86400
+                          objects:
+                            1:
+                              id: 1
+                              name: 'John Doe'
+                              total: 86400
+                    items:
+                      type: object
+                      properties:
+                        2023-06:
+                          type: object
+                          properties:
+                            total:
+                              type: integer
+                              example: 86400
+                            objects:
+                              type: object
+                              properties:
+                                1:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: integer
+                                      example: 1
+                                    name:
+                                      type: string
+                                      example: 'John Doe'
+                                    total:
+                                      type: integer
+                                      example: 86400
+                  allowed:
+                    type: array
+                    example:
+                      - '2022'
+                      - '2023'
+                    items:
+                      type: string
+      tags:
+        - Stats
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'User identifier.'
+        example: 18
+        required: true
+        schema:
+          type: integer
+  '/api/stats/project/{id}/daily':
+    get:
+      summary: 'Get daily project stats'
+      operationId: getDailyProjectStats
+      description: 'Return daily project stats.'
+      parameters:
+        -
+          in: query
+          name: month
+          description: 'Month in format: "YYYY-MM", Default current month'
+          example: repellendus
+          required: false
+          schema:
+            type: string
+            description: 'Month in format: "YYYY-MM", Default current month'
+            example: repellendus
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  project:
+                    id: '1'
+                    name: 'Example project name'
+                  month: 2022-12
+                  stats:
+                    -
+                      '2023-06-30':
+                        total: 86400
+                        objects:
+                          '1':
+                            id: 1
+                            name: 'Task name'
+                            total: 86400
+                  allowed:
+                    - 2022-12
+                    - 2023-01
+                properties:
+                  project:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: '1'
+                      name:
+                        type: string
+                        example: 'Example project name'
+                  month:
+                    type: string
+                    example: 2022-12
+                  stats:
+                    type: array
+                    example:
+                      -
+                        '2023-06-30':
+                          total: 86400
+                          objects:
+                            1:
+                              id: 1
+                              name: 'Task name'
+                              total: 86400
+                    items:
+                      type: object
+                      properties:
+                        '2023-06-30':
+                          type: object
+                          properties:
+                            total:
+                              type: integer
+                              example: 86400
+                            objects:
+                              type: object
+                              properties:
+                                1:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: integer
+                                      example: 1
+                                    name:
+                                      type: string
+                                      example: 'Task name'
+                                    total:
+                                      type: integer
+                                      example: 86400
+                  allowed:
+                    type: array
+                    example:
+                      - 2022-12
+                      - 2023-01
+                    items:
+                      type: string
+      tags:
+        - Stats
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'Project identifier.'
+        example: 3
+        required: true
+        schema:
+          type: integer
+  '/api/stats/project/{id}/monthly':
+    get:
+      summary: 'Get monthy project stats'
+      operationId: getMonthyProjectStats
+      description: 'Return project user stats.'
+      parameters:
+        -
+          in: query
+          name: year
+          description: 'Year in format: "YYYY", Default current year'
+          example: qui
+          required: false
+          schema:
+            type: string
+            description: 'Year in format: "YYYY", Default current year'
+            example: qui
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  project:
+                    id: '1'
+                    name: 'Example project name'
+                  year: '2022'
+                  stats:
+                    -
+                      2023-06:
+                        total: 86400
+                        objects:
+                          '1':
+                            id: 1
+                            name: 'Task name'
+                            total: 86400
+                  allowed:
+                    - '2022'
+                    - '2023'
+                properties:
+                  project:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: '1'
+                      name:
+                        type: string
+                        example: 'Example project name'
+                  year:
+                    type: string
+                    example: '2022'
+                  stats:
+                    type: array
+                    example:
+                      -
+                        2023-06:
+                          total: 86400
+                          objects:
+                            1:
+                              id: 1
+                              name: 'Task name'
+                              total: 86400
+                    items:
+                      type: object
+                      properties:
+                        2023-06:
+                          type: object
+                          properties:
+                            total:
+                              type: integer
+                              example: 86400
+                            objects:
+                              type: object
+                              properties:
+                                1:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: integer
+                                      example: 1
+                                    name:
+                                      type: string
+                                      example: 'Task name'
+                                    total:
+                                      type: integer
+                                      example: 86400
+                  allowed:
+                    type: array
+                    example:
+                      - '2022'
+                      - '2023'
+                    items:
+                      type: string
+      tags:
+        - Stats
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'Project identifier.'
+        example: 3
+        required: true
+        schema:
+          type: integer
+  '/api/stats/task/{id}/daily':
+    get:
+      summary: 'Get daily task stats'
+      operationId: getDailyTaskStats
+      description: 'Return daily task stats.'
+      parameters:
+        -
+          in: query
+          name: month
+          description: 'Month in format: "YYYY-MM", Default current month'
+          example: ea
+          required: false
+          schema:
+            type: string
+            description: 'Month in format: "YYYY-MM", Default current month'
+            example: ea
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  task:
+                    id: '1'
+                    name: 'Example task name'
+                  month: 2022-12
+                  stats:
+                    -
+                      '2023-06-30':
+                        total: 86400
+                        objects:
+                          '1':
+                            id: 1
+                            name: 'John Doe'
+                            total: 86400
+                  allowed:
+                    - 2022-12
+                    - 2023-01
+                properties:
+                  task:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: '1'
+                      name:
+                        type: string
+                        example: 'Example task name'
+                  month:
+                    type: string
+                    example: 2022-12
+                  stats:
+                    type: array
+                    example:
+                      -
+                        '2023-06-30':
+                          total: 86400
+                          objects:
+                            1:
+                              id: 1
+                              name: 'John Doe'
+                              total: 86400
+                    items:
+                      type: object
+                      properties:
+                        '2023-06-30':
+                          type: object
+                          properties:
+                            total:
+                              type: integer
+                              example: 86400
+                            objects:
+                              type: object
+                              properties:
+                                1:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: integer
+                                      example: 1
+                                    name:
+                                      type: string
+                                      example: 'John Doe'
+                                    total:
+                                      type: integer
+                                      example: 86400
+                  allowed:
+                    type: array
+                    example:
+                      - 2022-12
+                      - 2023-01
+                    items:
+                      type: string
+      tags:
+        - Stats
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'Task identifier.'
+        example: 9
+        required: true
+        schema:
+          type: integer
+  '/api/stats/task/{id}/monthly':
+    get:
+      summary: 'Get monthy task stats'
+      operationId: getMonthyTaskStats
+      description: 'Return task user stats.'
+      parameters:
+        -
+          in: query
+          name: year
+          description: 'Year in format: "YYYY", Default current year'
+          example: porro
+          required: false
+          schema:
+            type: string
+            description: 'Year in format: "YYYY", Default current year'
+            example: porro
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  project:
+                    id: '1'
+                    name: 'Example task name'
+                  year: '2022'
+                  stats:
+                    -
+                      2023-06:
+                        total: 86400
+                        objects:
+                          '1':
+                            id: 1
+                            name: 'John Doe'
+                            total: 86400
+                  allowed:
+                    - '2022'
+                    - '2023'
+                properties:
+                  project:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: '1'
+                      name:
+                        type: string
+                        example: 'Example task name'
+                  year:
+                    type: string
+                    example: '2022'
+                  stats:
+                    type: array
+                    example:
+                      -
+                        2023-06:
+                          total: 86400
+                          objects:
+                            1:
+                              id: 1
+                              name: 'John Doe'
+                              total: 86400
+                    items:
+                      type: object
+                      properties:
+                        2023-06:
+                          type: object
+                          properties:
+                            total:
+                              type: integer
+                              example: 86400
+                            objects:
+                              type: object
+                              properties:
+                                1:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: integer
+                                      example: 1
+                                    name:
+                                      type: string
+                                      example: 'John Doe'
+                                    total:
+                                      type: integer
+                                      example: 86400
+                  allowed:
+                    type: array
+                    example:
+                      - '2022'
+                      - '2023'
+                    items:
+                      type: string
+      tags:
+        - Stats
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'Task identifier.'
+        example: 13
+        required: true
+        schema:
+          type: integer
   /api/statuses:
     get:
       summary: 'Get task statuses list'
@@ -861,12 +1844,12 @@ paths:
           in: query
           name: page
           description: 'Number of page (pagination). Default: 1'
-          example: 3
+          example: 13
           required: false
           schema:
             type: integer
             description: 'Number of page (pagination). Default: 1'
-            example: 3
+            example: 13
         -
           in: header
           name: Content-Type
@@ -939,15 +1922,15 @@ paths:
                 name:
                   type: string
                   description: 'Status name.'
-                  example: sit
+                  example: occaecati
                 is_default:
                   type: boolean
                   description: 'Set default status.'
-                  example: true
+                  example: false
                 close_task:
                   type: boolean
                   description: 'Setting the status will close the task.'
-                  example: true
+                  example: false
               required:
                 - name
       security: []
@@ -1044,7 +2027,7 @@ paths:
                 name:
                   type: string
                   description: 'Status name.'
-                  example: ullam
+                  example: incidunt
                 is_default:
                   type: boolean
                   description: 'Set default status.'
@@ -1052,7 +2035,7 @@ paths:
                 close_task:
                   type: boolean
                   description: 'Setting the status will close the task.'
-                  example: false
+                  example: true
       security: []
     delete:
       summary: 'Delete status'
@@ -1105,7 +2088,7 @@ paths:
         in: path
         name: id
         description: 'Status identifier.'
-        example: 9
+        example: 11
         required: true
         schema:
           type: integer
@@ -1119,22 +2102,22 @@ paths:
           in: query
           name: size
           description: 'Number of rows. Default: 50'
-          example: 8
+          example: 1
           required: false
           schema:
             type: integer
             description: 'Number of rows. Default: 50'
-            example: 8
+            example: 1
         -
           in: query
           name: page
           description: 'Number of page (pagination). Default: 1'
-          example: 14
+          example: 5
           required: false
           schema:
             type: integer
             description: 'Number of page (pagination). Default: 1'
-            example: 14
+            example: 5
         -
           in: header
           name: Content-Type
@@ -1304,7 +2287,7 @@ paths:
         in: path
         name: id
         description: 'Task identifier.'
-        example: 16
+        example: 15
         required: true
         schema:
           type: integer
@@ -1318,12 +2301,12 @@ paths:
           in: query
           name: size
           description: 'Number of rows. Default: 50'
-          example: 1
+          example: 3
           required: false
           schema:
             type: integer
             description: 'Number of rows. Default: 50'
-            example: 1
+            example: 3
         -
           in: header
           name: Content-Type
@@ -1493,7 +2476,7 @@ paths:
         in: path
         name: id
         description: 'Task identifier.'
-        example: 9
+        example: 20
         required: true
         schema:
           type: integer
@@ -1501,7 +2484,7 @@ paths:
         in: path
         name: lid
         description: 'Last displayed comment ID.'
-        example: 3
+        example: 10
         required: true
         schema:
           type: integer
@@ -1545,16 +2528,16 @@ paths:
                 id:
                   type: integer
                   description: 'Task identifier.'
-                  example: 7
+                  example: 1
                 comment:
                   type: string
                   description: Comment.
-                  example: omnis
+                  example: veniam
                 attachments:
                   type: array
                   description: 'of files attach to task ([{"name": "File name", "base64": Base64 encoded file, "description": "Optional file description"}])'
                   example:
-                    - consequatur
+                    - nostrum
                   items:
                     type: string
               required:
@@ -1742,11 +2725,11 @@ paths:
                 id:
                   type: integer
                   description: 'Task identifier.'
-                  example: 4
+                  example: 11
                 comment:
                   type: string
                   description: comment.
-                  example: a
+                  example: tempore
               required:
                 - id
       security: []
@@ -1805,7 +2788,7 @@ paths:
                 id:
                   type: integer
                   description: 'Task identifier.'
-                  example: 8
+                  example: 10
               required:
                 - id
       security: []
@@ -1814,7 +2797,7 @@ paths:
         in: path
         name: id
         description: 'Task identifier.'
-        example: 16
+        example: 8
         required: true
         schema:
           type: integer
@@ -1822,7 +2805,7 @@ paths:
         in: path
         name: cid
         description: 'Comment identifier.'
-        example: 11
+        example: 10
         required: true
         schema:
           type: integer
@@ -1988,7 +2971,7 @@ paths:
         in: path
         name: aid
         description: 'Attachment identifier.'
-        example: 10
+        example: 15
         required: true
         schema:
           type: integer
@@ -2048,15 +3031,15 @@ paths:
                 name:
                   type: string
                   description: 'File name.'
-                  example: voluptas
+                  example: nobis
                 file:
                   type: string
                   description: 'Base64 encode file content".'
-                  example: omnis
+                  example: et
                 description:
                   type: string
                   description: 'Description".'
-                  example: 'Inventore reprehenderit mollitia vitae dignissimos aut.'
+                  example: 'Commodi et dolor vero occaecati iure deleniti qui sunt.'
               required:
                 - name
                 - file
@@ -2066,7 +3049,7 @@ paths:
         in: path
         name: id
         description: 'Task identifier.'
-        example: 17
+        example: 2
         required: true
         schema:
           type: integer
@@ -2074,7 +3057,7 @@ paths:
         in: path
         name: cid
         description: 'Comment identifier.'
-        example: 15
+        example: 9
         required: true
         schema:
           type: integer
@@ -2088,72 +3071,72 @@ paths:
           in: query
           name: size
           description: 'Number of rows. Default: 50'
-          example: 6
+          example: 5
           required: false
           schema:
             type: integer
             description: 'Number of rows. Default: 50'
-            example: 6
+            example: 5
         -
           in: query
           name: page
           description: 'Number of page (pagination). Default: 1'
-          example: 15
+          example: 2
           required: false
           schema:
             type: integer
             description: 'Number of page (pagination). Default: 1'
-            example: 15
+            example: 2
         -
           in: query
           name: query
           description: 'Search task by name Default: "task name"'
-          example: sed
+          example: consectetur
           required: false
           schema:
             type: string
             description: 'Search task by name Default: "task name"'
-            example: sed
+            example: consectetur
         -
           in: query
           name: users
           description: 'Search task by assigned usrs. Default: [2]'
-          example: 19
+          example: 12
           required: false
           schema:
             type: integer
             description: 'Search task by assigned usrs. Default: [2]'
-            example: 19
+            example: 12
         -
           in: query
           name: status
           description: 'Search task by task status identifier. Default: 1'
-          example: 4
+          example: 6
           required: false
           schema:
             type: integer
             description: 'Search task by task status identifier. Default: 1'
-            example: 4
+            example: 6
         -
           in: query
           name: priority
           description: 'Search task by task priority. Default: 1'
-          example: 3
+          example: 20
           required: false
           schema:
             type: integer
             description: 'Search task by task priority. Default: 1'
-            example: 3
+            example: 20
         -
           in: query
           name: state
           description: 'Search task by task state (one of: opened, closed). Default: opened'
-          example: inventore
+          example: labore
           required: false
           schema:
             type: string
             description: 'Search task by task state (one of: opened, closed). Default: opened'
-            example: inventore
+            example: labore
         -
           in: header
           name: Content-Type
@@ -2370,7 +3353,7 @@ paths:
         in: path
         name: id
         description: 'Project identifier.'
-        example: 16
+        example: 8
         required: true
         schema:
           type: integer
@@ -2414,31 +3397,31 @@ paths:
                 project_id:
                   type: integer
                   description: 'Project identifier.'
-                  example: 18
+                  example: 19
                 status_id:
                   type: integer
                   description: 'Status identifier.'
-                  example: 18
+                  example: 9
                 name:
                   type: string
                   description: 'Task name.'
-                  example: totam
+                  example: aut
                 description:
                   type: string
                   description: 'Task description.'
-                  example: 'Facere et harum nihil rerum beatae ipsum eum quod.'
+                  example: 'Consectetur aut quidem cum eos labore minima voluptatem.'
                 users:
                   type: array
                   description: 'Array of users identifier assigned to task.'
                   example:
-                    - impedit
+                    - ratione
                   items:
                     type: string
                 attachments:
                   type: array
                   description: 'Array of files attach to task ([{"name": "File name", "base64": Base64 encoded file, "description": "Optional file description"}])'
                   example:
-                    - ipsam
+                    - et
                   items:
                     type: string
               required:
@@ -2664,19 +3647,19 @@ paths:
                 name:
                   type: string
                   description: 'Task name.'
-                  example: rerum
+                  example: sit
                 status_id:
                   type: integer
                   description: 'Status identifier.'
-                  example: 16
+                  example: 13
                 description:
                   type: string
                   description: 'Task description.'
-                  example: 'Ad perferendis rerum neque assumenda ut ratione.'
+                  example: 'Inventore dolor est quo.'
                 users:
                   type: integer
                   description: 'Array of users identifier assigned to task.'
-                  example: 19
+                  example: 8
       security: []
     delete:
       summary: 'Delete task'
@@ -2729,7 +3712,7 @@ paths:
         in: path
         name: id
         description: 'Task identifier.'
-        example: 6
+        example: 3
         required: true
         schema:
           type: integer
@@ -2789,7 +3772,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'User identifier.'
-                  example: 6
+                  example: 3
               required:
                 - user_id
       security: []
@@ -2798,7 +3781,7 @@ paths:
         in: path
         name: id
         description: 'Task identifier.'
-        example: 10
+        example: 9
         required: true
         schema:
           type: integer
@@ -2858,7 +3841,7 @@ paths:
                 user_id:
                   type: integer
                   description: 'User identifier.'
-                  example: 8
+                  example: 3
               required:
                 - user_id
       security: []
@@ -2867,7 +3850,7 @@ paths:
         in: path
         name: id
         description: 'Task identifier.'
-        example: 5
+        example: 1
         required: true
         schema:
           type: integer
@@ -3017,7 +4000,7 @@ paths:
         in: path
         name: id
         description: 'Task identifier.'
-        example: 1
+        example: 7
         required: true
         schema:
           type: integer
@@ -3025,7 +4008,7 @@ paths:
         in: path
         name: aid
         description: 'Attachment identifier.'
-        example: 3
+        example: 18
         required: true
         schema:
           type: integer
@@ -3085,15 +4068,15 @@ paths:
                 name:
                   type: string
                   description: 'File name.'
-                  example: voluptas
+                  example: fugit
                 base64:
                   type: string
                   description: 'Base64 encode file content".'
-                  example: numquam
+                  example: sit
                 description:
                   type: string
                   description: 'Description".'
-                  example: 'Minima nam fugit esse accusantium voluptate molestiae.'
+                  example: 'Et doloribus temporibus ipsa.'
               required:
                 - name
                 - base64
@@ -3103,7 +4086,7 @@ paths:
         in: path
         name: id
         description: 'Task identifier.'
-        example: 17
+        example: 8
         required: true
         schema:
           type: integer
@@ -3215,7 +4198,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: 5
+            value: 18
   '/api/task/{id}/open':
     post:
       summary: 'Open task'
@@ -3261,7 +4244,7 @@ paths:
             value: ''
           present:
             summary: 'When the value is present'
-            value: 13
+            value: 12
   /api/tasks/my-work:
     get:
       summary: 'My work'
@@ -3572,19 +4555,19 @@ paths:
                 started:
                   type: integer
                   description: 'Start time.'
-                  example: 5
+                  example: 1
                 total:
                   type: integer
                   description: 'Total time in seconds.'
-                  example: 2
+                  example: 12
                 comment:
                   type: string
                   description: Comment.
-                  example: vero
+                  example: cupiditate
                 billable:
                   type: boolean
                   description: Billable.
-                  example: true
+                  example: false
               required:
                 - started
                 - total
@@ -3641,7 +4624,7 @@ paths:
         in: path
         name: id
         description: 'Task identifier.'
-        example: 7
+        example: 16
         required: true
         schema:
           type: integer
@@ -3717,7 +4700,7 @@ paths:
         in: path
         name: id
         description: 'Task identifier.'
-        example: 19
+        example: 2
         required: true
         schema:
           type: integer
@@ -3793,7 +4776,7 @@ paths:
         in: path
         name: id
         description: 'Task identifier.'
-        example: 11
+        example: 3
         required: true
         schema:
           type: integer
@@ -3853,19 +4836,19 @@ paths:
                 started:
                   type: integer
                   description: 'Start time.'
-                  example: 12
+                  example: 2
                 total:
                   type: integer
                   description: 'Total time in seconds.'
-                  example: 15
+                  example: 19
                 comment:
                   type: string
                   description: Comment.
-                  example: temporibus
+                  example: deserunt
                 billable:
                   type: boolean
                   description: Billable.
-                  example: true
+                  example: false
       security: []
     delete:
       summary: 'Delete task log time'
@@ -3958,6 +4941,8 @@ paths:
                   comment: 'Example comment'
                   billable: 0
                   _me: true
+                  can_delete: false
+                  can_edit: false
                   user: 'John Doe'
                 properties:
                   id:
@@ -3993,6 +4978,12 @@ paths:
                   _me:
                     type: boolean
                     example: true
+                  can_delete:
+                    type: boolean
+                    example: false
+                  can_edit:
+                    type: boolean
+                    example: false
                   user:
                     type: string
                     example: 'John Doe'
@@ -4020,7 +5011,7 @@ paths:
         in: path
         name: id
         description: 'Task identifier.'
-        example: 10
+        example: 5
         required: true
         schema:
           type: integer
@@ -4042,22 +5033,22 @@ paths:
           in: query
           name: size
           description: 'Number of rows. Default: 50'
-          example: 13
+          example: 16
           required: false
           schema:
             type: integer
             description: 'Number of rows. Default: 50'
-            example: 13
+            example: 16
         -
           in: query
           name: page
           description: 'Number of page (pagination). Default: 1'
-          example: 14
+          example: 10
           required: false
           schema:
             type: integer
             description: 'Number of page (pagination). Default: 1'
-            example: 14
+            example: 10
         -
           in: header
           name: Content-Type
@@ -4104,6 +5095,8 @@ paths:
                       comment: 'Example comment'
                       billable: 0
                       _me: true
+                      can_delete: false
+                      can_edit: false
                       user: 'John Doe'
                 properties:
                   total_rows:
@@ -4133,6 +5126,8 @@ paths:
                         comment: 'Example comment'
                         billable: 0
                         _me: true
+                        can_delete: false
+                        can_edit: false
                         user: 'John Doe'
                     items:
                       type: object
@@ -4170,6 +5165,12 @@ paths:
                         _me:
                           type: boolean
                           example: true
+                        can_delete:
+                          type: boolean
+                          example: false
+                        can_edit:
+                          type: boolean
+                          example: false
                         user:
                           type: string
                           example: 'John Doe'
@@ -4197,7 +5198,7 @@ paths:
         in: path
         name: id
         description: 'Task identifier.'
-        example: 1
+        example: 6
         required: true
         schema:
           type: integer
@@ -4211,22 +5212,22 @@ paths:
           in: query
           name: size
           description: 'Number of rows. Default: 50'
-          example: 19
+          example: 7
           required: false
           schema:
             type: integer
             description: 'Number of rows. Default: 50'
-            example: 19
+            example: 7
         -
           in: query
           name: page
           description: 'Number of page (pagination). Default: 1'
-          example: 18
+          example: 5
           required: false
           schema:
             type: integer
             description: 'Number of page (pagination). Default: 1'
-            example: 18
+            example: 5
         -
           in: header
           name: Content-Type
@@ -4396,27 +5397,27 @@ paths:
                 firstname:
                   type: string
                   description: 'User first name.'
-                  example: officiis
+                  example: minus
                 lastname:
                   type: string
                   description: 'User last name.'
-                  example: voluptas
+                  example: tempora
                 email:
                   type: string
                   description: 'User e-mail address.'
-                  example: hintz.ken@example.org
+                  example: brianne.baumbach@example.net
                 password:
                   type: string
                   description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
-                  example: '#)%7D,VyN(.0O&e'
+                  example: '\"CSM]:[)Be1#n.n"N'
                 phone:
                   type: string
                   description: 'User phone number.'
-                  example: enim
+                  example: omnis
                 user_permission_id:
                   type: integer
                   description: 'Permission group identifier (if not set default permission will be used).'
-                  example: 20
+                  example: 2
                 superuser:
                   type: boolean
                   description: 'If set true user have full access regardless of permissions.'
@@ -4483,11 +5484,11 @@ paths:
                 email:
                   type: string
                   description: 'User e-mail address.'
-                  example: zwyman@example.net
+                  example: lubowitz.presley@example.org
                 user_permission_id:
                   type: integer
                   description: 'Permission group identifier (if not set default permission will be used).'
-                  example: 16
+                  example: 10
               required:
                 - email
       security: []
@@ -4629,31 +5630,31 @@ paths:
                 firstname:
                   type: string
                   description: 'User first name.'
-                  example: molestiae
+                  example: iure
                 lastname:
                   type: string
                   description: 'User last name.'
-                  example: iusto
+                  example: saepe
                 email:
                   type: string
                   description: 'User e-mail address.'
-                  example: kallie.wuckert@example.net
+                  example: ruecker.asha@example.com
                 password:
                   type: string
                   description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
-                  example: '8XS!kXL[4aX$C`Tf'
+                  example: Be!+tK
                 phone:
                   type: string
                   description: 'User phone number.'
-                  example: ut
+                  example: explicabo
                 user_permission_id:
                   type: integer
                   description: 'Permission group identifier.'
-                  example: 15
+                  example: 12
                 superuser:
                   type: boolean
                   description: 'If set true user have full access regardless of permissions.'
-                  example: true
+                  example: false
       security: []
     delete:
       summary: 'Delete user account'
@@ -4706,7 +5707,7 @@ paths:
         in: path
         name: id
         description: 'User identifier.'
-        example: 9
+        example: 13
         required: true
         schema:
           type: integer
@@ -4927,23 +5928,65 @@ paths:
                 firstname:
                   type: string
                   description: 'User first name.'
-                  example: nam
+                  example: odio
                 lastname:
                   type: string
                   description: 'User last name.'
-                  example: neque
+                  example: voluptas
                 email:
                   type: string
                   description: 'User e-mail address.'
-                  example: mward@example.org
+                  example: aspinka@example.org
                 password:
                   type: string
                   description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
-                  example: JSr19SDk
+                  example: '?T6j@Bwrk*&!&'
                 phone:
                   type: string
                   description: 'User phone number.'
-                  example: at
+                  example: quis
+      security: []
+  /api/profile/avatar:
+    post:
+      summary: 'Update user profile avatar'
+      operationId: updateUserProfileAvatar
+      description: 'User profile avatar.'
+      parameters:
+        -
+          in: header
+          name: Content-Type
+          description: ''
+          example: multipart/form-data
+          schema:
+            type: string
+        -
+          in: header
+          name: Accept
+          description: ''
+          example: application/json
+          schema:
+            type: string
+        -
+          in: header
+          name: 'Authorization:'
+          description: ''
+          example: 'Bearer {TOKEN}'
+          schema:
+            type: string
+      responses: {  }
+      tags:
+        - 'User management'
+      requestBody:
+        required: false
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: 'avatar file.'
       security: []
   /api/settings:
     get:
@@ -5027,11 +6070,11 @@ paths:
                 locale:
                   type: string
                   description: 'Locale ex. pl.'
-                  example: ny_MW
+                  example: ga_IE
                 notifications:
                   type: string
                   description: 'User e-mail notifications (separated by a comma)'
-                  example: quibusdam
+                  example: non
       security: []
   /api/get-firm-id:
     get:
@@ -5302,51 +6345,51 @@ paths:
                 firstname:
                   type: string
                   description: 'Owner first name.'
-                  example: nihil
+                  example: delectus
                 lastname:
                   type: string
                   description: 'Owner last name.'
-                  example: quibusdam
+                  example: voluptatem
                 email:
                   type: string
                   description: 'Firm e-mail address.'
-                  example: graham.gladyce@example.net
+                  example: odamore@example.org
                 nip:
                   type: string
                   description: NIP.
-                  example: facere
+                  example: quis
                 name:
                   type: string
                   description: 'Firm name.'
-                  example: veritatis
+                  example: id
                 street:
                   type: string
                   description: 'Firm street.'
-                  example: necessitatibus
+                  example: molestiae
                 house_no:
                   type: string
                   description: 'Firm house no.'
-                  example: et
+                  example: quasi
                 apartment_no:
                   type: string
                   description: 'Firm apartment no.'
-                  example: non
+                  example: hic
                 city:
                   type: string
                   description: 'Firm city.'
-                  example: ducimus
+                  example: qui
                 zip:
                   type: string
                   description: 'Firm zip.'
-                  example: nobis
+                  example: debitis
                 country_id:
                   type: integer
                   description: 'Firm country identifier.'
-                  example: 12
+                  example: 14
                 phone:
                   type: string
                   description: 'Firm phone.'
-                  example: voluptatibus
+                  example: aut
       security: []
   '/api/invite/{token}':
     get:
@@ -5443,19 +6486,19 @@ paths:
                 firstname:
                   type: string
                   description: 'User first name.'
-                  example: porro
+                  example: distinctio
                 lastname:
                   type: string
                   description: 'User last name.'
-                  example: et
+                  example: soluta
                 password:
                   type: string
                   description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
-                  example: hjD^B`-9d-4NXHY(TY
+                  example: '{mY(^F*9'
                 phone:
                   type: string
                   description: 'User phone number.'
-                  example: nihil
+                  example: doloremque
               required:
                 - firstname
                 - lastname
@@ -5466,7 +6509,7 @@ paths:
         in: path
         name: token
         description: 'Invite token from invitation message.'
-        example: architecto
+        example: dolores
         required: true
         schema:
           type: string
@@ -5480,22 +6523,22 @@ paths:
           in: query
           name: size
           description: 'Number of rows. Default: 50'
-          example: 9
+          example: 5
           required: false
           schema:
             type: integer
             description: 'Number of rows. Default: 50'
-            example: 9
+            example: 5
         -
           in: query
           name: page
           description: 'Number of page (pagination). Default: 1'
-          example: 17
+          example: 9
           required: false
           schema:
             type: integer
             description: 'Number of page (pagination). Default: 1'
-            example: 17
+            example: 9
         -
           in: header
           name: Content-Type
@@ -5675,11 +6718,11 @@ paths:
                 name:
                   type: string
                   description: 'Group permission name.'
-                  example: eum
+                  example: sunt
                 permissions:
                   type: string
                   description: Permission.
-                  example: omnis
+                  example: molestias
                 is_default:
                   type: boolean
                   description: 'Set permission default.'
@@ -5812,11 +6855,11 @@ paths:
                 name:
                   type: string
                   description: 'Group permission name.'
-                  example: ratione
+                  example: aut
                 permissions:
                   type: string
                   description: Permission.
-                  example: doloribus
+                  example: ad
                 is_default:
                   type: boolean
                   description: 'Set permission default.'
@@ -5873,7 +6916,7 @@ paths:
         in: path
         name: id
         description: 'Permission group identifier.'
-        example: 15
+        example: 17
         required: true
         schema:
           type: integer
@@ -5933,11 +6976,11 @@ paths:
                 object:
                   type: string
                   description: 'Object name.'
-                  example: et
+                  example: delectus
                 action:
                   type: string
                   description: 'Action name (if not set, allow all actions).'
-                  example: ut
+                  example: consequuntur
               required:
                 - object
       security: []
@@ -5946,7 +6989,7 @@ paths:
         in: path
         name: id
         description: 'Permission group identifier.'
-        example: 20
+        example: 1
         required: true
         schema:
           type: integer
@@ -6006,11 +7049,11 @@ paths:
                 object:
                   type: string
                   description: 'Object name.'
-                  example: asperiores
+                  example: dolor
                 action:
                   type: string
                   description: 'Action name (if not set, allow all actions).'
-                  example: in
+                  example: magni
               required:
                 - object
       security: []
@@ -6019,7 +7062,7 @@ paths:
         in: path
         name: id
         description: 'Permission group identifier.'
-        example: 8
+        example: 18
         required: true
         schema:
           type: integer
@@ -6251,7 +7294,7 @@ paths:
                 source:
                   type: string
                   description: 'Register source. One of: app/www'
-                  example: neque
+                  example: sunt
               required:
                 - email
       security: []
@@ -6374,23 +7417,23 @@ paths:
                 firstname:
                   type: string
                   description: 'User first name.'
-                  example: error
+                  example: aut
                 lastname:
                   type: string
                   description: 'User last name.'
-                  example: distinctio
+                  example: id
                 password:
                   type: string
                   description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
-                  example: '@4?$oR_N|<c9IcnssPjH'
+                  example: 'n)G{-Ncmm.kq'
                 firm_identifier:
                   type: string
                   description: 'User firm name.'
-                  example: magni
+                  example: suscipit
                 phone:
                   type: string
                   description: 'User phone number.'
-                  example: iusto
+                  example: voluptas
               required:
                 - firstname
                 - lastname
@@ -6403,7 +7446,7 @@ paths:
         in: path
         name: token
         description: 'Register token.'
-        example: optio
+        example: earum
         required: true
         schema:
           type: string
@@ -6483,19 +7526,19 @@ paths:
                 email:
                   type: string
                   description: 'Account e-mail address'
-                  example: vkonopelski@example.org
+                  example: grimes.hellen@example.net
                 password:
                   type: string
                   description: 'Account password'
-                  example: w8L_$S-ew|$h`
+                  example: NYfB.J3b
                 device_name:
                   type: string
                   description: 'Device name'
-                  example: deleniti
+                  example: reprehenderit
                 firm_id:
                   type: integer
                   description: 'Firm identifier (required if e-mail address is register on two or more firms)'
-                  example: 6
+                  example: 13
               required:
                 - email
                 - password
@@ -6550,11 +7593,11 @@ paths:
                 email:
                   type: string
                   description: 'Account e-mail address'
-                  example: caleigh20@example.org
+                  example: nrunte@example.net
                 firm_id:
                   type: integer
                   description: 'Firm identifier (if e-mail address exist in more than once firms)'
-                  example: 14
+                  example: 9
               required:
                 - email
       security: []
@@ -6591,11 +7634,11 @@ paths:
                 token:
                   type: string
                   description: 'forgot password token'
-                  example: architecto
+                  example: perspiciatis
                 email:
                   type: string
                   description: 'Account e-mail address'
-                  example: jan52@example.com
+                  example: ottilie.lubowitz@example.net
               required:
                 - token
                 - email
@@ -6632,15 +7675,15 @@ paths:
                 token:
                   type: string
                   description: 'forgot password token'
-                  example: totam
+                  example: molestiae
                 email:
                   type: string
                   description: 'Account e-mail address'
-                  example: spencer93@example.net
+                  example: titus33@example.net
                 password:
                   type: string
                   description: 'User password (min 8 characters, lowercase and uppercase letters, number, special characters).'
-                  example: 'tM*Dr_GTx?ha1oC_9'
+                  example: "}=`c'>FS;d.c"
               required:
                 - token
                 - email
@@ -6656,12 +7699,12 @@ paths:
           in: query
           name: email
           description: 'Account e-mail address'
-          example: keven07@example.com
+          example: oankunding@example.net
           required: true
           schema:
             type: string
             description: 'Account e-mail address'
-            example: keven07@example.com
+            example: oankunding@example.net
         -
           in: header
           name: Content-Type
@@ -6723,6 +7766,9 @@ tags:
     description: ''
   -
     name: Projects
+    description: ''
+  -
+    name: Stats
     description: ''
   -
     name: Statuses

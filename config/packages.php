@@ -19,7 +19,7 @@
         ],
         "free" => [
             "projects" => 2,
-            "tasks" => 2,
+            "tasks" => 5,
             "space" => 10485760
         ]
     ];

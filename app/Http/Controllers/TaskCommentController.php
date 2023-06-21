@@ -361,7 +361,7 @@ class TaskCommentController extends Controller
             "file" => $request->file("file"),
             "description" => $request->input("description", "")
         ];
-        $comment->upload([$toUpload]);
+        $comment->uploadSingle($toUpload);
         return true;
     }
     

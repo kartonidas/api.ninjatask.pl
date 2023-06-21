@@ -7,6 +7,7 @@ use DateInterval;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Models\Limit;
 use App\Models\Project;
 use App\Models\Subscription;
@@ -215,10 +216,83 @@ class IndexController extends Controller
     
     /**
     * Get current stats
-    * @response 200 {"tasks": 18, "projects": 2, "space": 512012}
+    * @response 200 {"tasks": 18, "can_add_task": true, "projects": 2, "can_add_project": false, "space": 512012, "can_add_files": false}
     */
     public function getCurrentStats()
     {
-        return Limit::select("tasks", "projects", "space")->first();
+        $limit = Limit::select("tasks", "projects", "space")->first();
+        if($limit)
+        {
+            $free = config("packages.free");
+            $out = [
+                "tasks" => $limit->tasks,
+                "can_add_task" => Subscription::checkPackage("task", false),
+                "projects" => $limit->projects,
+                "can_add_project" => Subscription::checkPackage("project", false),
+                "space" => $limit->space,
+                "can_add_files" => Subscription::checkPackage("space", false),
+            ];
+        }
+        else
+        {
+            $out = [
+                "tasks" => 0,
+                "can_add_task" => true,
+                "projects" => 0,
+                "can_add_project" => true,
+                "space" => 0,
+                "can_add_files" => true,
+            ];
+        }
+        
+        return $out;
+    }
+    
+    /**
+    * Search task / projects
+    * @queryParam size integer Number of rows. Default: 50
+    * @queryParam page integer Number of page (pagination). Default: 1
+    * @queryParam q string search phrase
+    * @response 200 {"tasks": 18, "can_add_task": true, "projects": 2, "can_add_project": false, "space": 512012, "can_add_files": false}
+    */
+    public function search(Request $request)
+    {
+        $q = $request->input("q");
+        if(mb_strlen($q) >= 1)
+        {
+            $size = $request->input("size", config("api.list.size"));
+            $page = $request->input("page", 1);
+        
+            $p = Project::select("id", "name", "created_at", DB::raw("'project' AS type"))->where("name", "LIKE", "%" . $q . "%");
+            $t = Task::select("id", "name", "created_at", DB::raw("'task' AS type"))->where("name", "LIKE", "%" . $q . "%");
+            
+            $results = $t->union($p);
+            $total = $results->count();
+            
+            $results = $results->take($size)
+                ->skip(($page-1)*$size)
+                ->orderBy("name", "ASC")
+                ->get();
+            
+            $out = [
+                "total_rows" => $total,
+                "total_pages" => ceil($total / $size),
+                "current_page" => $page,
+                "has_more" => ceil($total / $size) > $page,
+                "data" => $results,
+            ];
+        }
+        else
+        {
+            $out = [
+                "total_rows" => 0,
+                "total_pages" => 0,
+                "current_page" => 1,
+                "has_more" => false,
+                "data" => [],
+            ];
+        }
+        
+        return $out;
     }
 }

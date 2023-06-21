@@ -334,4 +334,23 @@ class Helper
 
         return $objEndDate->diff($objStartDate)->format("%a");
     }
+    
+    public static function roundTime($total)
+    {
+        if($total < 60)
+            $total = 60;
+        else
+        {
+            $diff = $total % 60;
+            if($diff > 0)
+            {
+                if($diff > 30)
+                    $total = $total + (60 - $diff);
+                else
+                    $total = $total - $diff;
+            }
+        }
+        
+        return $total;
+    }
 }

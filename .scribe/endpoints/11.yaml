@@ -25,19 +25,19 @@ endpoints:
         name: size
         description: 'Number of rows. Default: 50'
         required: false
-        example: 14
+        example: 4
         type: integer
         custom: []
       page:
         name: page
         description: 'Number of page (pagination). Default: 1'
         required: false
-        example: 1
+        example: 3
         type: integer
         custom: []
     cleanQueryParameters:
-      size: 14
-      page: 1
+      size: 4
+      page: 3
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
@@ -48,6 +48,45 @@ endpoints:
         headers: []
         description: ''
         custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/notification/{id}'
+    metadata:
+      groupName: Notifications
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get notification'
+      description: 'Get notification.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      id:
+        name: id
+        description: 'notification identifier'
+        required: false
+        example: 8
+        type: integer
+        custom: []
+    cleanQueryParameters:
+      id: 8
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
     responseFields: []
     auth: []
     controller: null
@@ -78,11 +117,11 @@ endpoints:
         name: id
         description: 'notification identifier'
         required: false
-        example: 3
+        example: 17
         type: integer
         custom: []
     cleanQueryParameters:
-      id: 3
+      id: 17
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []

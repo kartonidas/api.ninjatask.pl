@@ -10,6 +10,7 @@ use App\Models\Task;
 use App\Models\TaskAssignedUser;
 use App\Models\TaskComment;
 use App\Models\TaskTime;
+use App\Models\TaskTimeDay;
 
 class TaskObserver
 {
@@ -21,6 +22,7 @@ class TaskObserver
     public function deleted(Task $task): void
     {
         LimitsCalculate::dispatch($task->uuid);
+        TaskTimeDay::where("task_id", $task->id)->delete();
     }
     
     public function updated(Task $task): void
@@ -73,6 +75,14 @@ class TaskObserver
                 $time->deleteQuietly();
         }
         
+        // Remove logged splitted times
+        $times = TaskTimeDay::where("task_id", $task->id)->get();
+        if(!$times->isEmpty())
+        {
+            foreach($times as $time)
+                $time->forceDelete();
+        }
+        
         // Remove assigned users
         $assignedUsers = TaskAssignedUser::where("task_id", $task->id)->get();
         if(!$assignedUsers->isEmpty())
@@ -87,5 +97,12 @@ class TaskObserver
             foreach($notifications as $notification)
                 $notification->delete();
         }
+    }
+    
+    function restored(Task $task): void
+    {
+        LimitsCalculate::dispatch($task->uuid);
+        
+        TaskTimeDay::where("task_id", $task->id)->restore();
     }
 }

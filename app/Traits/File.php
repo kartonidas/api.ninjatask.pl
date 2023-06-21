@@ -6,7 +6,9 @@ use Exception;
 use Throwable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\Limit;
 use App\Models\File as FileModel;
+use App\Models\Subscription;
 
 trait File
 {
@@ -51,6 +53,8 @@ trait File
                     
         if(!empty($attachment["file"]) && $attachment["file"] instanceof \Illuminate\Http\UploadedFile)
         {
+            self::checkSpaceLimit($attachment["file"]->getSize());
+            
             $relativeDirectory = FileModel::getUploadDirectory($type, false);
             $mime = $attachment["file"]->getMimeType();
             if(!empty(config("api.upload.allowed_mime_types")[$mime]))
@@ -65,6 +69,8 @@ trait File
         }
         else
         {
+            self::checkSpaceLimit((int)(strlen(base64_decode($attachment["base64"])) * 0.75));
+            
             $f = finfo_open();
             $mime = finfo_buffer($f, base64_decode($attachment["base64"]), FILEINFO_MIME_TYPE);
             if(!empty(config("api.upload.allowed_mime_types")[$mime]))
@@ -147,30 +153,25 @@ trait File
     {
         if(!empty($attachments))
         {
-            //$ids = [];
-            //foreach($attachments as $attachment)
-            //{
-            //    if(in_array($attachment->extension, ["jpg", "png", "gif"]))
-            //        $ids[] = $attachment->id;
-            //}
-            
-            //if(!empty($ids))
-            //{
-                //$base64Images = [];
-                //$files = FileModel::select("id", "base64")->whereIn("id", $ids)->get();
-                //if(!$files->isEmpty())
-                //{
-                //    foreach($files as $file)
-                //        $base64Images[$file->id] = $file->base64;
-                //}
-                
-                foreach($attachments as $k => $attachment)
-                {
-                    if(empty($allowedExtensions) || in_array($attachment->extension, $allowedExtensions))
-                        $attachments[$k]->base64 = $attachment->getBase64();
-                }
-            //}
+            foreach($attachments as $k => $attachment)
+            {
+                if(empty($allowedExtensions) || in_array($attachment->extension, $allowedExtensions))
+                    $attachments[$k]->base64 = $attachment->getBase64();
+            }
         }
         return $attachments;
+    }
+    
+    private static function checkSpaceLimit($size)
+    {
+        $subscription = Subscription::where("status", Subscription::STATUS_ACTIVE)->first();
+        if(!$subscription)
+        {
+            $current = Limit::first();
+            $limits = config("packages.free");
+            
+            if($current->space + $size > $limits["space"])
+                throw new Exception(__("Out of disk space"));
+        }
     }
 }
