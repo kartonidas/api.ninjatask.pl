@@ -91,14 +91,14 @@ class PermissionController extends Controller
         
         $request->validate([
             "name" => "required|max:100",
-            "permissions" => ["required", new Permissions],
+            "permissions" => ["nullable", new Permissions],
             "is_default" => "nullable|boolean",
         ]);
         
         $permission = new UserPermission;
         $permission->name = $request->input("name");
         $permission->is_default = $request->input("is_default", 0);
-        $permission->permissions = $request->input("permissions");
+        $permission->permissions = $request->input("permissions", "") ?? "";
         $permission->save();
         
         $permission->isDefaultFlag();
@@ -150,7 +150,7 @@ class PermissionController extends Controller
         
         $rules = [
             "name" => "required|max:100",
-            "permissions" => ["required", new Permissions],
+            "permissions" => ["nullable", new Permissions],
             "is_default" => "nullable|boolean",
         ];
         
@@ -171,7 +171,7 @@ class PermissionController extends Controller
         foreach($updateFields as $field)
         {
             if($request->has($field))
-                $permission->{$field} = $request->input($field);
+                $permission->{$field} = $request->input($field, "") ?? "";
         }
         $permission->save();
         $permission->isDefaultFlag();

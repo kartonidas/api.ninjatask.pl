@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Exceptions\ObjectNotExist;
 use App\Models\Limit;
 use App\Models\Project;
 use App\Models\Subscription;
@@ -19,6 +20,7 @@ class IndexController extends Controller
 {
     /**
     * Get dashboard stats
+    * @group dashboard
     */
     public function dashboard(Request $request)
     {
@@ -197,6 +199,8 @@ class IndexController extends Controller
     /**
     * Get active subscription
     * @response 200 {"start": 1686580275, "start_date": "2023-01-02 10:00:12", "end": 1686580275, "end_date": "2023-01-02 11:00:12"}
+    *
+    * @group Subscription
     */
     public function getActiveSubscription()
     {
@@ -217,6 +221,8 @@ class IndexController extends Controller
     /**
     * Get current stats
     * @response 200 {"tasks": 18, "can_add_task": true, "projects": 2, "can_add_project": false, "space": 512012, "can_add_files": false}
+    *
+    * @group Subscription
     */
     public function getCurrentStats()
     {
@@ -250,10 +256,13 @@ class IndexController extends Controller
     
     /**
     * Search task / projects
+    *
+    * Search in task / projects table by specified query
     * @queryParam size integer Number of rows. Default: 50
     * @queryParam page integer Number of page (pagination). Default: 1
     * @queryParam q string search phrase
-    * @response 200 {"tasks": 18, "can_add_task": true, "projects": 2, "can_add_project": false, "space": 512012, "can_add_files": false}
+    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": "1", "name": "Example name", "type": "task", "creatd_at" : "2023-01-01 10:00:00"}, {"id": "1", "name": "Example project", "type": "project", "creatd_at" : "2023-01-01 10:00:00"}]}
+    * @group Search
     */
     public function search(Request $request)
     {
@@ -294,5 +303,100 @@ class IndexController extends Controller
         }
         
         return $out;
+    }
+    
+    private static $cacheSearch = [];
+    /**
+    * Search task / projects / user
+    *
+    * Search task / projects / user in specified source table
+    * @urlParam source string search in source table (one of: tasks, users, projects)
+    * @queryParam size integer Number of rows. Default: 50
+    * @queryParam page integer Number of page (pagination). Default: 1
+    * @queryParam q string search phrase
+    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": "1", "name": "Example task", "project_id": 2, "project": "Project name"}]}
+    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": "1", "name": "Example task"}]}
+    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": "1", "firstname": "John", "lastname": "Doe"}]}
+    * @group Search
+    */
+    public function searchIn(Request $request, $source)
+    {
+        if(!in_array($source, ["tasks", "projects", "users"]))
+            throw new ObjectNotExist(__("Invalid source"));
+        
+        $q = $request->input("q");
+        if(mb_strlen($q) >= 1)
+        {
+            $size = $request->input("size", config("api.list.size"));
+            $page = $request->input("page", 1);
+            
+            switch($source)
+            {
+                case "tasks":
+                    $rows = Task::select("id", "name", "project_id")->where("name", "LIKE", "%" . $q . "%")->orderBy("name", "ASC");
+                break;
+            
+                case "projects":
+                    $rows = Project::select("id", "name")->where("name", "LIKE", "%" . $q . "%")->orderBy("name", "ASC");
+                break;
+            
+                case "users":
+                    $rows = User::byFirm()->select("id", "lastname", "firstname")->where("lastname", "LIKE", "%" . $q . "%")->orderBy("lastname", "ASC");
+                break;
+            }
+            
+            $total = $rows->count();
+            
+            $rows = $rows->take($size)
+                ->skip(($page-1)*$size)
+                ->get();
+            
+            if(!$rows->isEmpty())
+            {
+                switch($source)
+                {
+                    case "tasks":
+                        foreach($rows as $k => $row)
+                        {
+                            if(empty(static::$cacheSearch["project"][$row->project_id]))
+                            {
+                                $project = Project::find($row->project_id);
+                                static::$cacheSearch["project"][$row->project_id] = $project ? $project->name : "";
+                            }
+                            $rows[$k]->project = static::$cacheSearch["project"][$row->project_id];
+                        }
+                    break;
+                }
+            }
+            
+            $out = [
+                "total_rows" => $total,
+                "total_pages" => ceil($total / $size),
+                "current_page" => $page,
+                "has_more" => ceil($total / $size) > $page,
+                "data" => $rows,
+            ];
+        }
+        else
+        {
+            $out = [
+                "total_rows" => 0,
+                "total_pages" => 0,
+                "current_page" => 1,
+                "has_more" => false,
+                "data" => [],
+            ];
+        }
+        
+        return $out;
+    }
+    
+    /**
+    * Return package limits
+    * @group Subscription
+    */
+    public function packages()
+    {
+        return config("packages");
     }
 }

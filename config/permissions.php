@@ -7,7 +7,7 @@ return [
             "operation" => ["list", "create", "update", "delete"]
         ],
         "task" => [
-            "module" => "Task",
+            "module" => "Tasks",
             "operation" => ["list", "create", "update", "delete"]
         ],
         "user" => [
@@ -21,6 +21,10 @@ return [
         "status" => [
             "module" => "Statuses",
             "operation" => ["list", "create", "update", "delete"]
+        ],
+        "stats" => [
+            "module" => "Stats",
+            "operation" => ["list"]
         ],
     ]
 ];

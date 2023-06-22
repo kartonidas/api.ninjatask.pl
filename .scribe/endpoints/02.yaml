@@ -1,327 +1,22 @@
-name: Projects
+name: Subscription
 description: ''
 endpoints:
   -
     httpMethods:
       - GET
-    uri: api/projects
+    uri: api/subscription
     metadata:
-      groupName: Projects
+      groupName: Subscription
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get projects list'
-      description: 'Return projects list.'
+      title: 'Get active subscription'
+      description: ''
       authenticated: false
       custom: []
     headers:
       Content-Type: application/json
       Accept: application/json
-      'Authorization:': 'Bearer {TOKEN}'
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters:
-      size:
-        name: size
-        description: 'Number of rows. Default: 50'
-        required: false
-        example: 14
-        type: integer
-        custom: []
-      page:
-        name: page
-        description: 'Number of page (pagination). Default: 1'
-        required: false
-        example: 5
-        type: integer
-        custom: []
-    cleanQueryParameters:
-      size: 14
-      page: 5
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "name": "Test project", "location": "Warsaw", "description": "", "owner": "john@doe.com", "created_at": "2020-01-01 10:00:00", "tasks" : [{"total": 10, "opened": 3, "me": 1}]}]}'
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - PUT
-    uri: api/project
-    metadata:
-      groupName: Projects
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Create new project'
-      description: 'Create new project.'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-      'Authorization:': 'Bearer {TOKEN}'
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      name:
-        name: name
-        description: 'Project name.'
-        required: true
-        example: alias
-        type: string
-        custom: []
-      location:
-        name: location
-        description: 'Project location.'
-        required: false
-        example: maxime
-        type: string
-        custom: []
-      description:
-        name: description
-        description: 'Project description.'
-        required: false
-        example: 'Molestias et inventore saepe sint illum odio corrupti.'
-        type: string
-        custom: []
-      owner:
-        name: owner
-        description: 'Project owner.'
-        required: false
-        example: cupiditate
-        type: string
-        custom: []
-    cleanBodyParameters:
-      name: alias
-      location: maxime
-      description: 'Molestias et inventore saepe sint illum odio corrupti.'
-      owner: cupiditate
-    fileParameters: []
-    responses: []
-    responseFields:
-      id:
-        name: id
-        description: 'The id of the newly created project'
-        required: false
-        example: null
-        type: integer
-        custom: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/project/{id}'
-    metadata:
-      groupName: Projects
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get project details'
-      description: 'Return project details.'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-      'Authorization:': 'Bearer {TOKEN}'
-    urlParameters:
-      id:
-        name: id
-        description: 'Project identifier.'
-        required: true
-        example: 8
-        type: integer
-        custom: []
-    cleanUrlParameters:
-      id: 8
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: '{"id": 1, "name": "Test project", "location": "Warsaw", "description": "", "owner": "john@doe.com", "created_at": "2020-01-01 10:00:00", "tasks" : [{"total": 10, "opened": 3, "me": 1}]}'
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 404
-        content: '{"error":true,"message":"Project does not exist"}'
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - PUT
-    uri: 'api/project/{id}'
-    metadata:
-      groupName: Projects
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Update project'
-      description: 'Update project.'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-      'Authorization:': 'Bearer {TOKEN}'
-    urlParameters:
-      id:
-        name: id
-        description: 'Project identifier.'
-        required: true
-        example: 12
-        type: integer
-        custom: []
-    cleanUrlParameters:
-      id: 12
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      name:
-        name: name
-        description: 'Project name.'
-        required: false
-        example: eligendi
-        type: string
-        custom: []
-      location:
-        name: location
-        description: 'Project location.'
-        required: false
-        example: aut
-        type: string
-        custom: []
-      description:
-        name: description
-        description: 'Project description.'
-        required: false
-        example: 'Velit qui mollitia corrupti voluptate necessitatibus.'
-        type: string
-        custom: []
-      owner:
-        name: owner
-        description: 'Project owner.'
-        required: false
-        example: assumenda
-        type: string
-        custom: []
-    cleanBodyParameters:
-      name: eligendi
-      location: aut
-      description: 'Velit qui mollitia corrupti voluptate necessitatibus.'
-      owner: assumenda
-    fileParameters: []
-    responses: []
-    responseFields:
-      status:
-        name: status
-        description: 'Update status'
-        required: false
-        example: null
-        type: boolean
-        custom: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - DELETE
-    uri: 'api/project/{id}'
-    metadata:
-      groupName: Projects
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Delete project'
-      description: 'Delete project.'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-      'Authorization:': 'Bearer {TOKEN}'
-    urlParameters:
-      id:
-        name: id
-        description: 'Project identifier.'
-        required: true
-        example: 11
-        type: integer
-        custom: []
-    cleanUrlParameters:
-      id: 11
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 404
-        content: '{"error":true,"message":"Project does not exist"}'
-        headers: []
-        description: ''
-        custom: []
-    responseFields:
-      status:
-        name: status
-        description: 'Delete status'
-        required: false
-        example: null
-        type: boolean
-        custom: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/projectsWithTasks
-    metadata:
-      groupName: Projects
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get project with assigned tasks'
-      description: 'Get project with assigned and opened tasks.'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-      'Authorization:': 'Bearer {TOKEN}'
     urlParameters: []
     cleanUrlParameters: []
     queryParameters: []
@@ -332,13 +27,7 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{[{"id": 1, "name": "Test project", "location": "Warsaw", "description": "", "owner": "john@doe.com", "created_at": "2020-01-01 10:00:00"}]}'
-        headers: []
-        description: ''
-        custom: []
-      -
-        status: 404
-        content: '{"error":true,"message":"Project does not exist"}'
+        content: '{"start": 1686580275, "start_date": "2023-01-02 10:00:12", "end": 1686580275, "end_date": "2023-01-02 11:00:12"}'
         headers: []
         description: ''
         custom: []
@@ -351,20 +40,19 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: api/projects/simple
+    uri: api/current-stats
     metadata:
-      groupName: Projects
+      groupName: Subscription
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get all project list'
-      description: 'Get all project list (ex. for select)'
+      title: 'Get current stats'
+      description: ''
       authenticated: false
       custom: []
     headers:
       Content-Type: application/json
       Accept: application/json
-      'Authorization:': 'Bearer {TOKEN}'
     urlParameters: []
     cleanUrlParameters: []
     queryParameters: []
@@ -375,7 +63,7 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{[{"id": 1, "name": "Test project"}]}'
+        content: '{"tasks": 18, "can_add_task": true, "projects": 2, "can_add_project": false, "space": 512012, "can_add_files": false}'
         headers: []
         description: ''
         custom: []

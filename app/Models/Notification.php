@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
 use App\Mail\Subscription\Activated;
@@ -24,14 +25,14 @@ use App\Traits\DbTimestamp;
 
 class Notification extends Model
 {
-    use DbTimestamp;
+    use DbTimestamp, SoftDeletes;
     
     public function scopeApiFields(Builder $query): void
     {
-        $query->select("id", "object_id", "type", "object_name", "read", "read_time", "created_at");
+        $query->select("id", "added_user_id", "object_id", "type", "object_name", "read", "read_time", "created_at", "extra_object_id");
     }
     
-    public static function notify($user_id, $added_user_id, $object_id, $type)
+    public static function notify($user_id, $added_user_id, $object_id, $type, $extra_object_id = null)
     {
         $row = new self;
         $row->user_id = $user_id;
@@ -39,6 +40,7 @@ class Notification extends Model
         $row->object_id = $object_id;
         $row->type = $type;
         $row->object_name = $row->getObjectName();
+        $row->extra_object_id = $extra_object_id;
         $row->save();
         
         $user = User::find($row->user_id);
@@ -121,6 +123,10 @@ class Notification extends Model
         switch($this->type)
         {
             case "task:assign":
+            case "task:change_status_owner":
+            case "task:change_status_assigned":
+            case "task:new_comment_owner":
+            case "task:new_comment_assigned":
                 $task = Task::withoutGlobalScopes()->find($this->object_id);
                 if($task)
                     return $task->name;

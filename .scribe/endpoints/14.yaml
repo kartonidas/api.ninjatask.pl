@@ -1,0 +1,414 @@
+name: Stats
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: 'api/stats/user/{id}/daily'
+    metadata:
+      groupName: Stats
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get daily user stats'
+      description: 'Return daily user stats.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters:
+      id:
+        name: id
+        description: 'User identifier.'
+        required: true
+        example: 13
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 13
+    queryParameters:
+      month:
+        name: month
+        description: 'Month in format: "YYYY-MM", Default current month'
+        required: false
+        example: sunt
+        type: string
+        custom: []
+    cleanQueryParameters:
+      month: sunt
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"user": {"id": "1", "firstname": "John", "lastname": "Doe"}, "month": "2022-12", "stats": [{"2023-06-30":{"total":86400,"objects":{"1":{"id":1,"name":"John Doe","total":86400}}}}], "total": 100, "allowed_months": ["2022-12", "2023-01"], "allowed_years" : ["2022", "2023"]}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/stats/user/{id}/monthly'
+    metadata:
+      groupName: Stats
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get monthy user stats'
+      description: 'Return monthy user stats.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters:
+      id:
+        name: id
+        description: 'User identifier.'
+        required: true
+        example: 3
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 3
+    queryParameters:
+      year:
+        name: year
+        description: 'Year in format: "YYYY", Default current year'
+        required: false
+        example: enim
+        type: string
+        custom: []
+    cleanQueryParameters:
+      year: enim
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"user": {"id": "1", "firstname": "John", "lastname": "Doe"}, "year": "2022", "stats": [{"2023-06":{"total":86400,"objects":{"1":{"id":1,"name":"John Doe","total":86400}}}}], "total": 100, "allowed_months": ["2022-12", "2023-01"], "allowed_years" : ["2022", "2023"]}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/stats/project/{id}/daily'
+    metadata:
+      groupName: Stats
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get daily project stats'
+      description: 'Return daily project stats.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters:
+      id:
+        name: id
+        description: 'Project identifier.'
+        required: true
+        example: 16
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 16
+    queryParameters:
+      month:
+        name: month
+        description: 'Month in format: "YYYY-MM", Default current month'
+        required: false
+        example: quis
+        type: string
+        custom: []
+    cleanQueryParameters:
+      month: quis
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"project": {"id": "1", "name": "Example project name"}, "month": "2022-12", "stats": [{"2023-06-30":{"total":86400,"objects":{"1":{"id":1,"name":"Task name","total":86400}}}}], "total": 100, "allowed_months": ["2022-12", "2023-01"], "allowed_years" : ["2022", "2023"]}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/stats/project/{id}/monthly'
+    metadata:
+      groupName: Stats
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get monthy project stats'
+      description: 'Return project user stats.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters:
+      id:
+        name: id
+        description: 'Project identifier.'
+        required: true
+        example: 6
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 6
+    queryParameters:
+      year:
+        name: year
+        description: 'Year in format: "YYYY", Default current year'
+        required: false
+        example: facere
+        type: string
+        custom: []
+    cleanQueryParameters:
+      year: facere
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"project": {"id": "1", "name": "Example project name"}, "year": "2022", "stats": [{"2023-06":{"total":86400,"objects":{"1":{"id":1,"name":"Task name","total":86400}}}}], "total": 100, "allowed_months": ["2022-12", "2023-01"], "allowed_years" : ["2022", "2023"]}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/stats/task/{id}/daily'
+    metadata:
+      groupName: Stats
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get daily task stats'
+      description: 'Return daily task stats.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters:
+      id:
+        name: id
+        description: 'Task identifier.'
+        required: true
+        example: 17
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 17
+    queryParameters:
+      month:
+        name: month
+        description: 'Month in format: "YYYY-MM", Default current month'
+        required: false
+        example: est
+        type: string
+        custom: []
+    cleanQueryParameters:
+      month: est
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"task": {"id": "1", "name": "Example task name"}, "month": "2022-12", "stats": [{"2023-06-30":{"total":86400,"objects":{"1":{"id":1,"name":"John Doe","total":86400}}}}], "total": 100, "allowed_months": ["2022-12", "2023-01"], "allowed_years" : ["2022", "2023"]}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/stats/task/{id}/monthly'
+    metadata:
+      groupName: Stats
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get monthy task stats'
+      description: 'Return task user stats.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters:
+      id:
+        name: id
+        description: 'Task identifier.'
+        required: true
+        example: 8
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 8
+    queryParameters:
+      year:
+        name: year
+        description: 'Year in format: "YYYY", Default current year'
+        required: false
+        example: reiciendis
+        type: string
+        custom: []
+    cleanQueryParameters:
+      year: reiciendis
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"project": {"id": "1", "name": "Example task name"}, "year": "2022", "stats": [{"2023-06":{"total":86400,"objects":{"1":{"id":1,"name":"John Doe","total":86400}}}}], "total": 100,"allowed_months": ["2022-12", "2023-01"], "allowed_years" : ["2022", "2023"]}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/stats/total
+    metadata:
+      groupName: Stats
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get total task stats'
+      description: 'Return total task stats.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      size:
+        name: size
+        description: 'Number of rows. Default: 50'
+        required: false
+        example: 2
+        type: integer
+        custom: []
+      page:
+        name: page
+        description: 'Number of page (pagination). Default: 1'
+        required: false
+        example: 6
+        type: integer
+        custom: []
+      user_id:
+        name: user_id
+        description: 'User identifier'
+        required: false
+        example: 13
+        type: integer
+        custom: []
+      task_id:
+        name: task_id
+        description: 'Task identifier'
+        required: false
+        example: 13
+        type: integer
+        custom: []
+      project_id:
+        name: project_id
+        description: 'Project identifier'
+        required: false
+        example: 18
+        type: integer
+        custom: []
+      date_from:
+        name: date_from
+        description: 'Date from'
+        required: false
+        example: nesciunt
+        type: string
+        custom: []
+      date_to:
+        name: date_to
+        description: 'Date to'
+        required: false
+        example: magnam
+        type: string
+        custom: []
+    cleanQueryParameters:
+      size: 2
+      page: 6
+      user_id: 13
+      task_id: 13
+      project_id: 18
+      date_from: nesciunt
+      date_to: magnam
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []

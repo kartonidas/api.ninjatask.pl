@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\ProjectDeletedTask;
+use App\Models\SoftDeletedObject;
 use App\Models\Task;
 use App\Traits\DbTimestamp;
 
@@ -18,16 +18,18 @@ class Project extends Model
     
     public function delete()
     {
-        $tasks = Task::all();
+        $tasks = Task::where("project_id", $this->id)->get();
         if(!$tasks->isEmpty())
         {
             foreach($tasks as $task)
             {
                 $task->delete();
-                $pdt = new ProjectDeletedTask;
-                $pdt->project_id = $this->id;
-                $pdt->task_id = $task->id;
-                $pdt->save();
+                $sdo = new SoftDeletedObject;
+                $sdo->source = "project";
+                $sdo->source_id = $this->id;
+                $sdo->object = "task";
+                $sdo->object_id = $task->id;
+                $sdo->save();
             }
         }
         return parent::delete();

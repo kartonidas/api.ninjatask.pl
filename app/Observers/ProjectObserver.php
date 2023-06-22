@@ -5,7 +5,7 @@ namespace App\Observers;
 use Illuminate\Support\Facades\Auth;
 use App\Jobs\LimitsCalculate;
 use App\Models\Project;
-use App\Models\ProjectDeletedTask;
+use App\Models\SoftDeletedObject;
 use App\Models\Task;
 
 class ProjectObserver
@@ -24,16 +24,22 @@ class ProjectObserver
     {
         LimitsCalculate::dispatch($project->uuid);
         
-        $taskToRestored = ProjectDeletedTask::where("project_id", $project->id)->get();
+        $taskToRestored = SoftDeletedObject
+            ::where("source", "project")
+            ->where("source_id", $project->id)
+            ->where("object", "task")
+            ->get();
+            
         if(!$taskToRestored->isEmpty())
         {
             foreach($taskToRestored as $taskToRestore)
             {
-                $task = Task::withoutGlobalScopes()->onlyTrashed()->where("id", $taskToRestore->task_id)->first();
+                $task = Task::withoutGlobalScopes()->onlyTrashed()->where("id", $taskToRestore->object_id)->first();
                 if($task)
                     $task->restore();
+                    
+                $taskToRestore->delete();
             }
-            ProjectDeletedTask::where("project_id", $project->id)->delete();
         }
     }
 }

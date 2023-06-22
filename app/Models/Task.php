@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Notification;
 use App\Models\Status;
 use App\Models\TaskAssignedUser;
 use App\Models\TaskTime;
@@ -17,6 +18,25 @@ class Task extends Model
     use DbTimestamp, File, SoftDeletes;
     use \App\Traits\UuidTrait {
         boot as traitBoot;
+    }
+    
+    public function delete()
+    {
+        $notifications = Notification::where("object_id", $this->id)->where("type", "LIKE", "task:%")->get();
+        if(!$notifications->isEmpty())
+        {
+            foreach($notifications as $notification)
+            {
+                $notification->delete();
+                $sdo = new SoftDeletedObject;
+                $sdo->source = "task";
+                $sdo->source_id = $this->id;
+                $sdo->object = "notification";
+                $sdo->object_id = $notification->id;
+                $sdo->save();
+            }
+        }
+        return parent::delete();
     }
     
     public function scopeApiFields(Builder $query): void

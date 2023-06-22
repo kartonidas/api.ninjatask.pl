@@ -5,6 +5,7 @@ namespace App\Observers;
 use Illuminate\Support\Facades\Auth;
 use App\Jobs\LimitsCalculate;
 use App\Models\Notification;
+use App\Models\SoftDeletedObject;
 use App\Models\Status;
 use App\Models\Task;
 use App\Models\TaskAssignedUser;
@@ -40,12 +41,19 @@ class TaskObserver
         
         if($task->isDirty("status_id"))
         {
+            $notifyTaskAuthor = null;
             if($task->created_user_id != Auth::user()->id)
+            {
                 Notification::notify($task->created_user_id, Auth::user()->id, $task->id, "task:change_status_owner");
+                $notifyTaskAuthor = $task->created_user_id;
+            }
             
             $userIds = $task->getAssignedUserIds();
             foreach($userIds as $id)
             {
+                if($notifyTaskAuthor && $notifyTaskAuthor == $id)
+                    continue;
+                
                 if(Auth::user()->id != $id)
                     Notification::notify($id, Auth::user()->id, $task->id, "task:change_status_assigned");
             }
@@ -102,6 +110,24 @@ class TaskObserver
     function restored(Task $task): void
     {
         LimitsCalculate::dispatch($task->uuid);
+        
+        $notificationToRestored = SoftDeletedObject
+            ::where("source", "task")
+            ->where("source_id", $task->id)
+            ->where("object", "notification")
+            ->get();
+            
+        if(!$notificationToRestored->isEmpty())
+        {
+            foreach($notificationToRestored as $notificationToRestore)
+            {
+                $notification = Notification::withoutGlobalScopes()->onlyTrashed()->where("id", $notificationToRestore->object_id)->first();
+                if($notification)
+                    $notification->restore();
+                    
+                $notificationToRestore->delete();
+            }
+        }
         
         TaskTimeDay::where("task_id", $task->id)->restore();
     }

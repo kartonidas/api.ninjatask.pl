@@ -5,6 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-class ProjectDeletedTask extends Model
+class SoftDeletedObject extends Model
 {
 }

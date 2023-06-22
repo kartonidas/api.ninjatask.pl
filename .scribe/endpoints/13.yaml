@@ -1,62 +1,17 @@
-name: Orders
+name: Notifications
 description: ''
 endpoints:
   -
     httpMethods:
-      - POST
-    uri: api/order/create
-    metadata:
-      groupName: Orders
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Create order'
-      description: 'Create order and return redirect to payment URL.'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-      'Authorization:': 'Bearer {TOKEN}'
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters:
-      package:
-        name: package
-        description: 'Package name (one of: p1)'
-        required: false
-        example: omnis
-        type: string
-        custom: []
-    cleanQueryParameters:
-      package: omnis
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 200
-        content: '{"url": "https://..."}'
-        headers: []
-        description: ''
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
       - GET
-    uri: api/invoices
+    uri: api/notifications
     metadata:
-      groupName: Orders
+      groupName: Notifications
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get invoices list'
-      description: 'Return invoices list.'
+      title: 'Get notifications list'
+      description: 'Return notifications list.'
       authenticated: false
       custom: []
     headers:
@@ -70,26 +25,26 @@ endpoints:
         name: size
         description: 'Number of rows. Default: 50'
         required: false
-        example: 9
+        example: 16
         type: integer
         custom: []
       page:
         name: page
         description: 'Number of page (pagination). Default: 1'
         required: false
-        example: 5
+        example: 14
         type: integer
         custom: []
     cleanQueryParameters:
-      size: 9
-      page: 5
+      size: 16
+      page: 14
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
     responses:
       -
         status: 200
-        content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"order_id": 1, "full_number", "date": "2022-12-11", "nip": "0123456789", "name": "John Doe", "street": "Street name", "house_no": 12, "apartment_no": "1A", "zip": "00-123", "city": "London", "amount": 100, "gross": 123, "items": [], "generated": 1, "created_at": "2023-01-01 10:00:00"}]}'
+        content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "object_id": 1, "object_name": "Task #1", "type": "task:assign", "read": 0, "read_time": null, "created_at": "2023-01-01 00:00:00", "added_user_id": 1, "added_user": "John Doe", "extra_object_id": 1}]}'
         headers: []
         description: ''
         custom: []
@@ -102,14 +57,14 @@ endpoints:
   -
     httpMethods:
       - GET
-    uri: 'api/invoice/{id}'
+    uri: 'api/notification/{id}'
     metadata:
-      groupName: Orders
+      groupName: Notifications
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get invoice PDF'
-      description: 'Return invoice pdf.'
+      title: 'Get notification'
+      description: 'Get notification.'
       authenticated: false
       custom: []
     headers:
@@ -118,8 +73,61 @@ endpoints:
       'Authorization:': 'Bearer {TOKEN}'
     urlParameters: []
     cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
+    queryParameters:
+      id:
+        name: id
+        description: 'notification identifier'
+        required: false
+        example: 5
+        type: integer
+        custom: []
+    cleanQueryParameters:
+      id: 5
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"id": 1, "object_id": 1, "object_name": "Task #1", "type": "task:assign", "read": 0, "read_time": null, "created_at": "2023-01-01 00:00:00", "added_user_id": 1, "added_user": "John Doe", "extra_object_id": 1}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+    uri: 'api/notification/read/{id}'
+    metadata:
+      groupName: Notifications
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Set notification as read'
+      description: 'Set notification as read.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      id:
+        name: id
+        description: 'notification identifier'
+        required: false
+        example: 4
+        type: integer
+        custom: []
+    cleanQueryParameters:
+      id: 4
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []

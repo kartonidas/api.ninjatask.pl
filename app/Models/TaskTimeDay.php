@@ -54,6 +54,7 @@ class TaskTimeDay extends Model
     private static function generateStats($rows, $period, $date, $objectType = "task")
     {
         $out = [];
+        $totalLoggedTime = 0;
         switch($period)
         {
             case "daily":
@@ -62,6 +63,8 @@ class TaskTimeDay extends Model
                 for($i = 1; $i <= $firstMonthDay->format("t"); $i++)
                 {
                     $out[$date . "-" . str_pad($i, 2, "0", STR_PAD_LEFT)] = [
+                        "date" => $date . "-" . str_pad($i, 2, "0", STR_PAD_LEFT),
+                        "shortdate" => str_pad($i, 2, "0", STR_PAD_LEFT),
                         "total" => 0,
                         "objects" => [],
                     ];
@@ -74,6 +77,8 @@ class TaskTimeDay extends Model
                         if(!isset($out[$row->date]))
                         {
                             $out[$row->date] = [
+                                "date" => $row->date,
+                                "shortdate" => substr($row->date, 8),
                                 "total" => 0,
                                 "objects" => [],
                             ];
@@ -111,6 +116,7 @@ class TaskTimeDay extends Model
                             ];
                         }
                         $out[$row->date]["objects"][$objectId]["total"] += $row->total;
+                        $totalLoggedTime += $row->total;
                     }
                 }
             break;
@@ -119,6 +125,8 @@ class TaskTimeDay extends Model
                 for($i = 1; $i <= 12; $i++)
                 {
                     $out[$date . "-" . str_pad($i, 2, "0", STR_PAD_LEFT)] = [
+                        "date" => $date . "-" . str_pad($i, 2, "0", STR_PAD_LEFT),
+                        "shortdate" => str_pad($i, 2, "0", STR_PAD_LEFT),
                         "total" => 0,
                         "objects" => [],
                     ];
@@ -132,6 +140,8 @@ class TaskTimeDay extends Model
                         if(!isset($out[$dateKey]))
                         {
                             $out[$dateKey] = [
+                                "date" => $dateKey,
+                                "shortdate" => substr($row->date, 0, 4),
                                 "total" => 0,
                                 "objects" => [],
                             ];
@@ -171,18 +181,36 @@ class TaskTimeDay extends Model
                             ];
                         }
                         $out[$dateKey]["objects"][$objectId]["total"] += $row->total;
+                        $totalLoggedTime += $row->total;
                     }
                 }
             break;
         }
-        return $out;
+        return [
+            "stats" => $out,
+            "total" => $totalLoggedTime
+        ];
     }
     
-    public static function getAllowedMonths()
+    public static function getAllowedMonths($type, $id)
     {
         $out = [];
-        $minDate = self::where("uuid", Auth::user()->getUuid())->min("date");
-        $maxDate = self::where("uuid", Auth::user()->getUuid())->max("date");
+        $row = self::where("uuid", Auth::user()->getUuid());
+        switch($type)
+        {
+            case "user":
+                $row->where("user_id", $id);
+            break;
+            case "project":
+                $row->where("project_id", $id);
+            break;
+            case "task":
+                $row->where("task_id", $id);
+            break;
+        }
+        
+        $minDate = $row->min("date");
+        $maxDate = $row->max("date");
         
         if(!$minDate)
             $minDate = date("Y-m-d");
@@ -206,11 +234,25 @@ class TaskTimeDay extends Model
         
     }
     
-    public static function getAllowedYears()
+    public static function getAllowedYears($type, $id)
     {
         $out = [];
-        $minDate = self::where("uuid", Auth::user()->getUuid())->min("date");
-        $maxDate = self::where("uuid", Auth::user()->getUuid())->max("date");
+        $row = self::where("uuid", Auth::user()->getUuid());
+        switch($type)
+        {
+            case "user":
+                $row->where("user_id", $id);
+            break;
+            case "project":
+                $row->where("project_id", $id);
+            break;
+            case "task":
+                $row->where("task_id", $id);
+            break;
+        }
+        
+        $minDate = $row->min("date");
+        $maxDate = $row->max("date");
         
         if(!$minDate)
             $minDate = date("Y-m-d");

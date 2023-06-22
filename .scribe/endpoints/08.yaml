@@ -1,50 +1,42 @@
-name: Statuses
+name: 'Task time'
 description: ''
 endpoints:
   -
     httpMethods:
-      - GET
-    uri: api/statuses
+      - POST
+    uri: 'api/task/{id}/time/start'
     metadata:
-      groupName: Statuses
+      groupName: 'Task time'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Get task statuses list'
-      description: 'Return task statuses list.'
+      title: 'Start task timer'
+      description: 'Start task timer (log time).'
       authenticated: false
       custom: []
     headers:
       Content-Type: application/json
       Accept: application/json
       'Authorization:': 'Bearer {TOKEN}'
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters:
-      size:
-        name: size
-        description: 'Number of rows. Default: 50'
-        required: false
-        example: 9
+    urlParameters:
+      id:
+        name: id
+        description: 'Task identifier.'
+        required: true
+        example: 18
         type: integer
         custom: []
-      page:
-        name: page
-        description: 'Number of page (pagination). Default: 1'
-        required: false
-        example: 13
-        type: integer
-        custom: []
-    cleanQueryParameters:
-      size: 9
-      page: 13
+    cleanUrlParameters:
+      id: 18
+    queryParameters: []
+    cleanQueryParameters: []
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
     responses:
       -
-        status: 200
-        content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "name": "Test project", "is_default": 1, "close_task": 0, "can_delete": 1}]}]}'
+        status: 404
+        content: '{"error":true,"message":"Task does not exist"}'
         headers: []
         description: ''
         custom: []
@@ -56,77 +48,15 @@ endpoints:
     custom: []
   -
     httpMethods:
-      - PUT
-    uri: api/status
+      - POST
+    uri: 'api/task/{id}/time/stop'
     metadata:
-      groupName: Statuses
+      groupName: 'Task time'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Create new status'
-      description: 'Create new status.'
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-      'Authorization:': 'Bearer {TOKEN}'
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      name:
-        name: name
-        description: 'Status name.'
-        required: true
-        example: occaecati
-        type: string
-        custom: []
-      is_default:
-        name: is_default
-        description: 'Set default status.'
-        required: false
-        example: false
-        type: boolean
-        custom: []
-      close_task:
-        name: close_task
-        description: 'Setting the status will close the task.'
-        required: false
-        example: false
-        type: boolean
-        custom: []
-    cleanBodyParameters:
-      name: occaecati
-      is_default: false
-      close_task: false
-    fileParameters: []
-    responses: []
-    responseFields:
-      id:
-        name: id
-        description: 'The id of the newly created status'
-        required: false
-        example: null
-        type: integer
-        custom: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/status/{id}'
-    metadata:
-      groupName: Statuses
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Get task status details'
-      description: 'Return task status details.'
+      title: 'Stop task timer'
+      description: 'Stop task timer (log time).'
       authenticated: false
       custom: []
     headers:
@@ -136,7 +66,58 @@ endpoints:
     urlParameters:
       id:
         name: id
-        description: 'Status identifier.'
+        description: 'Task identifier.'
+        required: true
+        example: 12
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 12
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"state": "active", "total": 250, "total_logged": 1000}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: '{"error":true,"message":"Task does not exist"}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: 'api/task/{id}/time/pause'
+    metadata:
+      groupName: 'Task time'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Pause task timer'
+      description: 'Pause task timer (log time).'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters:
+      id:
+        name: id
+        description: 'Task identifier.'
         required: true
         example: 11
         type: integer
@@ -151,13 +132,13 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"id": 1, "name": "Test project", "is_default": 1, "close_task": 0, "can_delete": 1}]}'
+        content: '{"state": "active", "total": 250, "total_logged": 1000}'
         headers: []
         description: ''
         custom: []
       -
         status: 404
-        content: '{"error":true,"message":"Status does not exist"}'
+        content: '{"error":true,"message":"Task does not exist"}'
         headers: []
         description: ''
         custom: []
@@ -170,14 +151,14 @@ endpoints:
   -
     httpMethods:
       - PUT
-    uri: 'api/status/{id}'
+    uri: 'api/task/{id}/time'
     metadata:
-      groupName: Statuses
+      groupName: 'Task time'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Update task status'
-      description: 'Update task status.'
+      title: 'Log task spend time'
+      description: 'Log task spend time.'
       authenticated: false
       custom: []
     headers:
@@ -187,47 +168,153 @@ endpoints:
     urlParameters:
       id:
         name: id
-        description: 'Status identifier.'
+        description: 'Task identifier.'
+        required: true
+        example: 17
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 17
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      started:
+        name: started
+        description: 'Start time.'
         required: true
         example: 12
         type: integer
         custom: []
-    cleanUrlParameters:
-      id: 12
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      name:
-        name: name
-        description: 'Status name.'
+      total:
+        name: total
+        description: 'Total time in seconds.'
+        required: true
+        example: 5
+        type: integer
+        custom: []
+      comment:
+        name: comment
+        description: Comment.
         required: false
-        example: incidunt
+        example: qui
         type: string
         custom: []
-      is_default:
-        name: is_default
-        description: 'Set default status.'
-        required: false
-        example: true
-        type: boolean
-        custom: []
-      close_task:
-        name: close_task
-        description: 'Setting the status will close the task.'
+      billable:
+        name: billable
+        description: Billable.
         required: false
         example: true
         type: boolean
         custom: []
     cleanBodyParameters:
-      name: incidunt
-      is_default: true
-      close_task: true
+      started: 12
+      total: 5
+      comment: qui
+      billable: true
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 404
+        content: '{"error":true,"message":"Task does not exist"}'
+        headers: []
+        description: ''
+        custom: []
     responseFields:
       status:
         name: status
-        description: 'Update status'
+        description: Status
+        required: false
+        example: null
+        type: boolean
+        custom: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+    uri: 'api/task/{id}/time/{tid}'
+    metadata:
+      groupName: 'Task time'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update log task spend time'
+      description: 'Update log task spend time.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters:
+      id:
+        name: id
+        description: 'Task identifier.'
+        required: true
+        example: 3
+        type: integer
+        custom: []
+      tid:
+        name: tid
+        description: 'Task time identifier.'
+        required: true
+        example: 10
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 3
+      tid: 10
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      started:
+        name: started
+        description: 'Start time.'
+        required: false
+        example: 6
+        type: integer
+        custom: []
+      total:
+        name: total
+        description: 'Total time in seconds.'
+        required: false
+        example: 11
+        type: integer
+        custom: []
+      comment:
+        name: comment
+        description: Comment.
+        required: false
+        example: non
+        type: string
+        custom: []
+      billable:
+        name: billable
+        description: Billable.
+        required: false
+        example: false
+        type: boolean
+        custom: []
+    cleanBodyParameters:
+      started: 6
+      total: 11
+      comment: non
+      billable: false
+    fileParameters: []
+    responses:
+      -
+        status: 404
+        content: '{"error":true,"message":"Task does not exist"}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields:
+      status:
+        name: status
+        description: Status
         required: false
         example: null
         type: boolean
@@ -240,14 +327,14 @@ endpoints:
   -
     httpMethods:
       - DELETE
-    uri: 'api/status/{id}'
+    uri: 'api/task/{id}/time/{tid}'
     metadata:
-      groupName: Statuses
+      groupName: 'Task time'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Delete status'
-      description: 'Delete status.'
+      title: 'Delete task log time'
+      description: 'Delete task log time.'
       authenticated: false
       custom: []
     headers:
@@ -257,13 +344,21 @@ endpoints:
     urlParameters:
       id:
         name: id
-        description: 'Status identifier.'
+        description: 'Task identifier.'
         required: true
         example: 2
         type: integer
         custom: []
+      tid:
+        name: tid
+        description: 'Task time identifier.'
+        required: true
+        example: 10
+        type: integer
+        custom: []
     cleanUrlParameters:
       id: 2
+      tid: 10
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -272,7 +367,7 @@ endpoints:
     responses:
       -
         status: 404
-        content: '{"error":true,"message":"Status does not exist"}'
+        content: '{"error":true,"message":"Task does not exist"}'
         headers: []
         description: ''
         custom: []
@@ -284,6 +379,132 @@ endpoints:
         example: null
         type: boolean
         custom: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/task/{id}/times'
+    metadata:
+      groupName: 'Task time'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get task spend time rows'
+      description: 'Get task spend time rows.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters:
+      id:
+        name: id
+        description: 'Task identifier.'
+        required: true
+        example: 12
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 12
+    queryParameters:
+      size:
+        name: size
+        description: 'Number of rows. Default: 50'
+        required: false
+        example: 15
+        type: integer
+        custom: []
+      page:
+        name: page
+        description: 'Number of page (pagination). Default: 1'
+        required: false
+        example: 6
+        type: integer
+        custom: []
+    cleanQueryParameters:
+      size: 15
+      page: 6
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": 1, "status": "active", "task_id": "1", "user_id": 1, "started": "1680843163", "finished": 1680843163, "timer_started": 0, "total": 600, "comment": "Example comment", "billable": 0, "_me": true, "can_delete" : false, "can_edit": false, "user": "John Doe"}]}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: '{"error":true,"message":"Task does not exist"}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/task/{id}/time/{tid}'
+    metadata:
+      groupName: 'Task time'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get task spend time row'
+      description: 'Get task spend time row.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+      'Authorization:': 'Bearer {TOKEN}'
+    urlParameters:
+      id:
+        name: id
+        description: 'Task identifier.'
+        required: true
+        example: 6
+        type: integer
+        custom: []
+      tid:
+        name: tid
+        description: 'Task time identifier.'
+        required: true
+        example: 19
+        type: integer
+        custom: []
+    cleanUrlParameters:
+      id: 6
+      tid: 19
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"id": 1, "status": "active", "task_id": "1", "user_id": 1, "started": "1680843163", "finished": 1680843163, "timer_started": 0, "total": 600, "comment": "Example comment", "billable": 0, "_me": true, "can_delete": false, "can_edit": false, "user": "John Doe"}'
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: '{"error":true,"message":"Task does not exist"}'
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
     auth: []
     controller: null
     method: null

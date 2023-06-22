@@ -36,6 +36,7 @@ Route::middleware(['auth:sanctum', 'locale'])->group(function () use($router) {
     $router->get('/subscription', [IndexController::class, "getActiveSubscription"]);
     $router->get('/current-stats', [IndexController::class, "getCurrentStats"]);
     $router->get('/search', [IndexController::class, "search"]);
+    $router->get('/search/{source}', [IndexController::class, "searchIn"]);
     
     // PROJEKTY
     $router->get('/projects', [ProjectController::class, "list"]);
@@ -140,6 +141,7 @@ Route::middleware(['auth:sanctum', 'locale'])->group(function () use($router) {
     $router->get('/stats/project/{id}/monthly', [StatsController::class, "projectMonthly"])->where("id", "[0-9]+");
     $router->get('/stats/task/{id}/daily', [StatsController::class, "taskDaily"])->where("id", "[0-9]+");
     $router->get('/stats/task/{id}/monthly', [StatsController::class, "taskMonthly"])->where("id", "[0-9]+");
+    $router->get('/stats/total', [StatsController::class, "total"]);
 });
 
 Route::middleware(['locale'])->group(function () use($router) {
@@ -158,5 +160,8 @@ Route::middleware(['locale'])->group(function () use($router) {
     $router->get("/reset-password", [UserController::class, "resetPasswordGet"]);
     $router->post("/reset-password", [UserController::class, "resetPassword"]);
     $router->get("/get-email-firm-ids", [UserController::class, "getUserFirmIds"]);
+    
+    // PAKIETY I CENY
+    $router->get('/packages', [IndexController::class, "packages"]);
 });
 
