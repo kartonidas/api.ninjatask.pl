@@ -146,7 +146,7 @@
                     @endif
                 </td>
                 <td style="text-align:center">{{ \App\Libraries\Helper::amount($item["amount"]) }} {{ $data->currency }}</td>
-                <td style="text-align:center">{{ \App\Libraries\Helper::amount($item["qt"]*$item["amount"]) }}</td>
+                <td style="text-align:center">{{ \App\Libraries\Helper::amount($item["qt"]*$item["amount"]) }} {{ $data->currency }}</td>
             </tr>
         @endforeach
 

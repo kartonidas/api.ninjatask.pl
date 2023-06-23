@@ -103,6 +103,7 @@ class Invoice extends Model
         $inv->lang = $foreign ? "en" : "pl";
         $inv->reverse = $order->reverse;
         $inv->firm_invoicing_data_id = $order->firm_invoicing_data_id;
+        $inv->currency = "PLN";
         $inv->saveQuietly();
 
         $inv->generateInvoice(true);
