@@ -13,7 +13,7 @@ class Firm extends Model
     
     public function scopeApiFields(Builder $query): void
     {
-        $query->select("identifier", "firstname", "lastname", "email", "nip", "name", "street", "house_no", "apartment_no", "city", "zip", "country_id", "phone");
+        $query->select("identifier", "firstname", "lastname", "email", "nip", "name", "street", "house_no", "apartment_no", "city", "zip", "country", "phone");
     }
     
     public function getOwner()

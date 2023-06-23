@@ -17,7 +17,9 @@ use App\Exceptions\AccessDenied;
 use App\Exceptions\Exception;
 use App\Exceptions\ObjectNotExist;
 use App\Exceptions\UserExist;
+use App\Models\Country;
 use App\Models\Firm;
+use App\Models\FirmInvoicingData;
 use App\Models\File;
 use App\Models\PasswordResetToken;
 use App\Models\Task;
@@ -891,7 +893,7 @@ class UserController extends Controller
     *
     * Get firm data
     * @header Authorization: Bearer {TOKEN}
-    * @response 200 {"identifier": "Firm ID", "firstname": "John", "lastname": "Doe", "email": "example@com.pl", "nip": "0123456789", "name": "Firm name", "street": "Street name", "house_no": "12", "apartment_no": "1A", "city": "London", "zip": "91-000", "country_id": 123, "phone": "888777666"}
+    * @response 200 {"identifier": "Firm ID", "firstname": "John", "lastname": "Doe", "email": "example@com.pl", "nip": "0123456789", "name": "Firm name", "street": "Street name", "house_no": "12", "apartment_no": "1A", "city": "London", "zip": "91-000", "country": "PL", "phone": "888777666"}
     * @group User management
     */
     public function getFirmData()
@@ -913,7 +915,7 @@ class UserController extends Controller
     * @bodyParam apartment_no string Firm apartment no.
     * @bodyParam city string Firm city.
     * @bodyParam zip string Firm zip.
-    * @bodyParam country_id integer Firm country identifier.
+    * @bodyParam country string Firm country code.
     * @bodyParam phone string Firm phone.
     * @header Authorization: Bearer {TOKEN}
     * @group User management
@@ -929,19 +931,19 @@ class UserController extends Controller
             "firstname" => "required|max:100",
             "lastname" => "required|max:100",
             "email" => "required|email",
-            "nip" => ["nullable", new \App\Rules\Nip],
+            "nip" => "nullable",
             "name" => "nullable|max:200",
             "street" => "required|max:80",
             "house_no" => "required|max:20",
             "apartment_no" => "nullable|max:20",
             "city" => "required|max:120",
             "zip" => "required|max:10",
-            "country_id" => "nullable|integer",
+            "country" => ["nullable", Rule::in(Country::getAllowedCodes())],
             "phone" => "nullable|max:50",
         ];
         
         $validate = [];
-        $updateFields = ["firstname", "lastname", "email", "nip", "name", "street", "house_no", "apartment_no", "city", "zip", "country_id", "phone"];
+        $updateFields = ["firstname", "lastname", "email", "nip", "name", "street", "house_no", "apartment_no", "city", "zip", "country", "phone"];
         foreach($updateFields as $field)
         {
             if($request->has($field))
@@ -961,6 +963,105 @@ class UserController extends Controller
         }
         $firm->save();
             
+        return true;
+    }
+    
+    /**
+    * Get invoice data
+    *
+    * Get invoice data
+    * @header Authorization: Bearer {TOKEN}
+    * @response 200 {"type": "invoice", "name": "Firm name", "firstname": "John", "lastname": "Doe", "nip": "0123456789", "name": "Firm name", "street": "Street name", "house_no": "12", "apartment_no": "1A", "city": "London", "zip": "91-000"}
+    * @group User management
+    */
+    public function getInvoiceData()
+    {
+        return FirmInvoicingData::first();
+    }
+    
+    /**
+    * Update invoice data
+    *
+    * Update invoice data
+    * @bodyParam type string Type (one of: invoice, receipe).
+    * @bodyParam firstname string Owner first name.
+    * @bodyParam lastname string Owner last name.
+    * @bodyParam nip string NIP.
+    * @bodyParam name string Firm name.
+    * @bodyParam street string Firm street.
+    * @bodyParam house_no string Firm house no.
+    * @bodyParam apartment_no string Firm apartment no.
+    * @bodyParam city string Firm city.
+    * @bodyParam zip string Firm zip.
+    * @bodyParam country string Country code.
+    * @header Authorization: Bearer {TOKEN}
+    * @group User management
+    */
+    public function invoiceDataUpdate(Request $request)
+    {
+        if(!Auth::user()->owner)
+            throw new AccessDenied(__("Access denied"));
+        
+        $firm = Auth::user()->getFirm();
+        $rules = [
+            "type" => "required|in:invoice,receipt",
+            "street" => "required|max:80",
+            "house_no" => "required|max:20",
+            "apartment_no" => "nullable|max:20",
+            "city" => "required|max:120",
+            "zip" => "required|max:10",
+            "country" => ["required", Rule::in(Country::getAllowedCodes())],
+        ];
+        if($request->input("type", "invoice") == "invoice")
+        {
+            if(strtolower($request->input("country")) == "pl")
+                $rules["nip"] = ["required", new \App\Rules\Nip];
+            else
+                $rules["nip"] = "required";
+                
+            $rules["name"] = "required|max:200";
+        }
+        else
+        {
+            $rules["firstname"] = "required|max:100";
+            $rules["lastname"] = "required|max:100";
+        }
+        
+        $validate = [];
+        $updateFields = ["type", "firstname", "lastname", "nip", "name", "type", "street", "house_no", "apartment_no", "city", "zip", "country"];
+        foreach($updateFields as $field)
+        {
+            if($request->has($field))
+            {
+                if(!empty($rules[$field]))
+                    $validate[$field] = $rules[$field];
+            }
+        }
+        
+        if(!empty($validate))
+            $request->validate($validate);
+            
+        $invoicingData = FirmInvoicingData::first();
+        if(!$invoicingData)
+            $invoicingData = new FirmInvoicingData;
+        
+        foreach($updateFields as $field)
+        {
+            if($request->has($field))
+                $invoicingData->{$field} = $request->input($field);
+        }
+        
+        if($invoicingData->isDirty())
+        {
+            if($invoicingData->id > 0)
+            {
+                $invoicingData->replicate()->save();
+                $invoicingData->delete();
+            }
+            else
+                $invoicingData->save();
+        }
+        
         return true;
     }
     

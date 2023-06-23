@@ -6,7 +6,9 @@ use PDF;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Firm;
+use App\Models\FirmInvoicingData;
 use App\Models\InvoiceData;
+use App\Models\Order;
 use App\Traits\DbTimestamp;
 
 class Invoice extends Model
@@ -36,9 +38,33 @@ class Invoice extends Model
          return storage_path() . "/invoice/";
     }
 
-    public static function createInvoice($order_id, $date, $uuid, $items)
+    public static function createInvoice(Order $order)
     {
-        $date = strtotime($date);
+        $items = [
+            [
+                "name" => $order->name,
+                "amount" => $order->amount,
+                "vat" => $order->vat,
+                "gross" => $order->gross,
+                "qt" => 1,
+            ]
+        ];
+            
+        $accountFirmData = Firm::where("uuid", $order->uuid)->withoutGlobalScopes()->first();
+        if(!$accountFirmData)
+            throw new \Exception("Wystąpił nieokreślony błąd!");
+        
+        $invoicingData = FirmInvoicingData::where("uuid", $order->uuid)
+            ->where("id", $order->firm_invoicing_data_id)
+            ->withoutGlobalScopes()
+            ->withTrashed()
+            ->first();
+            
+        if(!$invoicingData)
+            throw new \Exception("Wystąpił nieokreślony błąd!");
+        
+        $date = strtotime($order->paid);
+        $foreign = strtolower($invoicingData->country) != "pl";
 
         $totalAmount = $totalGross = 0;
         foreach($items as $item)
@@ -46,28 +72,37 @@ class Invoice extends Model
             $totalAmount += $item["amount"];
             $totalGross += $item["gross"];
         }
-
-        $accountFirmData = Firm::where("uuid", $uuid)->withoutGlobalScopes()->first();
-        if(!$accountFirmData)
-            throw new \Exception("Wystąpił nieokreślony błąd!");
         
         $inv = new Invoice;
         $inv->withoutGlobalScopes();
-        $inv->uuid = $uuid;
+        $inv->uuid = $order->uuid;
         $inv->invoice_data_id = self::getActiveInvoiceDataId();
-        $inv->order_id = $order_id;
+        $inv->order_id = $order->id;
+        $inv->type = $invoicingData->type;
         $inv->setInvoiceNumber($date);
         $inv->date = date("Y-m-d", $date);
-        $inv->nip = $accountFirmData->nip;
-        $inv->name = $accountFirmData->name;
-        $inv->street = $accountFirmData->street;
-        $inv->house_no = $accountFirmData->house_no;
-        $inv->apartment_no = $accountFirmData->apartment_no;
-        $inv->zip = $accountFirmData->zip;
-        $inv->city = $accountFirmData->city;
+        if($invoicingData->type == "invoice")
+        {
+            $inv->nip = $invoicingData->nip;
+            $inv->name = $invoicingData->name;
+        }
+        else
+        {
+            $inv->firstname = $invoicingData->firstname;
+            $inv->lastname = $invoicingData->lastname;
+        }
+        $inv->street = $invoicingData->street;
+        $inv->house_no = $invoicingData->house_no;
+        $inv->apartment_no = $invoicingData->apartment_no;
+        $inv->zip = $invoicingData->zip;
+        $inv->city = $invoicingData->city;
+        $inv->country = $invoicingData->country;
         $inv->amount = $totalAmount;
         $inv->gross = $totalGross;
         $inv->items = serialize($items);
+        $inv->lang = $foreign ? "en" : "pl";
+        $inv->reverse = $order->reverse;
+        $inv->firm_invoicing_data_id = $order->firm_invoicing_data_id;
         $inv->saveQuietly();
 
         $inv->generateInvoice(true);
@@ -84,20 +119,24 @@ class Invoice extends Model
         $month = date("n", $date);
         $year = date("Y", $date);
 
-        $number = self::withoutGlobalScopes()->where("month", $month)->where("year", $year)->max("number");
+        $number = self::withoutGlobalScopes()->where("month", $month)->where("year", $year)->where("type", $this->type)->max("number");
 
         $this->number =  $number + 1;
         $this->month =  $month;
         $this->year =  $year;
-        $this->full_number = sprintf("%s/%s/%s", $this->number, $this->month, $this->year);
+        
+        if($this->type == "invoice")
+            $this->full_number = sprintf("NTF/%s/%s/%s", $this->number, $this->month, $this->year);
+        else
+            $this->full_number = sprintf("NTR/%s/%s/%s", $this->number, $this->month, $this->year);
     }
 
     public function generateInvoice($save = false, $force = false)
     {
         if(!$this->generated || $force) {
-            $html = view("pdf.invoice", ["data" => $this]);
+            $tpl = $this->lang != "pl" ? "pdf.invoice_en" : "pdf.invoice";
 
-            $mpdf = PDF::loadView("pdf.invoice", ["data" => $this]);
+            $mpdf = PDF::loadView($tpl, ["data" => $this]);
             $mpdf->getMpdf()->SetTitle("Faktura: " . $this->number);
             $mpdf->getMpdf()->margin_header = 0;
 
@@ -144,5 +183,19 @@ class Invoice extends Model
 
         }
         return $out;
+    }
+    
+    public static function getItemName($item, $language = "pl")
+    {
+        switch($item)
+        {
+            case "premium:1":
+                return $language == "pl" ? "Pakiet premium (1 miesiąc)" : "Premium package (1 month)";
+            break;
+            case "premium:12":
+                return $language == "pl" ? "Pakiet premium (12 miesięcy)" : "Premium package (12 months)";
+            break;
+        }
+        return $item;
     }
 }

@@ -35,7 +35,8 @@ class Order extends Model
                         "gross" => $this->gross,
                         "qt" => 1,
                     ];
-                    $invoiceId = Invoice::createInvoice($this->id, $this->paid, $this->uuid, $items);
+                    //$invoiceId = Invoice::createInvoice($this->id, $this->firm_invoicing_data_id, $this->paid, $this->uuid, $items);
+                    $invoiceId = Invoice::createInvoice($this);
                     $this->invoice_id = $invoiceId;
                     $this->save();
                 break;

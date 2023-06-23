@@ -71,9 +71,9 @@
         <td rowspan="2">&nbsp;</td>
         <td style="font-size:17px; font-weight: bold" rowspan="2">
             @if($data->type == "invoice")
-                Faktura
+                Invoice
             @else
-                Rachunek
+                Bill
             @endif
             <br />
             {{ $data->full_number }}
@@ -83,7 +83,7 @@
                 <span style="font-size:14px"><strong>{{ $data->date }}</strong></span>
                 <br />
                 <span style="font-size: 10px">
-                    Data sprzedaży
+                    Sale date
                 </span>
             </div>
         </td>
@@ -93,7 +93,7 @@
             <span style="font-size:14px"><strong>{{ $data->date }}</strong></span>
             <br />
             <span style="font-size: 10px">
-                Data wystawienia
+                Date of issue
             </span>
         </td>
     </tr>
@@ -102,18 +102,18 @@
 <table id="header-table">
     <tr>
         <td style="text-align: left; vertical-align:top">
-            <div>Sprzedawca: <strong>{{ $invoiceData->name }}</strong></div>
-            Adres: <strong>{{ $invoiceData->address }} {{ $invoiceData->street_no }} @if($invoiceData->apartment_no)/ {{ $invoiceData->apartment_no }}@endif, {{ $invoiceData->post_code }} {{ $invoiceData->city }}</strong><br />
-            NIP: <strong>{{ $invoiceData->nip }}</strong>
+            <div>Seller: <strong>{{ $invoiceData->name }}</strong></div>
+            Address: <strong>{{ $invoiceData->address }} {{ $invoiceData->street_no }} @if($invoiceData->apartment_no)/ {{ $invoiceData->apartment_no }}@endif, {{ $invoiceData->post_code }} {{ $invoiceData->city }}</strong><br />
+            Tax ID: <strong>{{ $invoiceData->nip }}</strong>
         </td>
         <td style="text-align: left; vertical-align:top">
             @if($data->type == "invoice")
-                <div>Odbiorca: <strong>{{ $data->name }}</strong></div>
-                Adres: <strong>{{ $data->street }} {{ $data->house_no }} @if($data->apartment_no)/ {{ $data->apartment_no }}@endif, {{ $data->post_code }} {{ $data->city }}</strong><br />
-                NIP: <strong>{{ $data->nip }}</strong>
+                <div>Recipient: <strong>{{ $data->name }}</strong></div>
+                Address: <strong>{{ $data->street }} {{ $data->house_no }} @if($data->apartment_no)/ {{ $data->apartment_no }}@endif, {{ $data->post_code }} {{ $data->city }}</strong><br />
+                Tax ID: <strong>{{ $data->nip }}</strong>
             @else
-                <div>Odbiorca: <strong>{{ $data->firstname }} {{ $data->lastname }}</strong></div>
-                Adres: <strong>{{ $data->street }} {{ $data->house_no }} @if($data->apartment_no)/ {{ $data->apartment_no }}@endif, {{ $data->post_code }} {{ $data->city }}</strong><br />
+                <div>Recipient: <strong>{{ $data->firstname }} {{ $data->lastname }}</strong></div>
+                Address: <strong>{{ $data->street }} {{ $data->house_no }} @if($data->apartment_no)/ {{ $data->apartment_no }}@endif, {{ $data->post_code }} {{ $data->city }}</strong><br />
             @endif
         </td>
     </tr>
@@ -122,22 +122,22 @@
 <table id="item-table">
     <thead>
         <tr>
-            <th style="width:30px; text-align:center;">Lp.</th>
-            <th>Nazwa</th>
-            <th style="width:100px; text-align:center;">Ilość</th>
-            <th style="width:100px; text-align:center;">JM</th>
+            <th style="width:30px; text-align:center;">No.</th>
+            <th>Name</th>
+            <th style="width:100px; text-align:center;">Quantity</th>
+            <th style="width:100px; text-align:center;">Unit</th>
             <th style="width:100px; text-align:center;">VAT</th>
-            <th style="width:100px; text-align:center;">Cena netto</th>
-            <th style="width:100px; text-align:center;">Wartość netto</th>
+            <th style="width:100px; text-align:center;">Net price</th>
+            <th style="width:100px; text-align:center;">Net value</th>
         </tr>
     </thead>
     <tbody>
         @foreach($data->getItems() as $k => $item)
             <tr>
                 <td style="text-align:center">{{ $k+1 }}</td>
-                <td>{{ \App\Models\Invoice::getItemName($item["name"], "pl") }}</td>
+                <td>{{ \App\Models\Invoice::getItemName($item["name"], "en") }}</td>
                 <td style="text-align:center">{{ $item["qt"] }}</td>
-                <td style="text-align:center">sztuka</td>
+                <td style="text-align:center">piece</td>
                 <td style="text-align:center">
                     @if($data->reverse)
                         np.
@@ -153,9 +153,9 @@
         <tr>
             <td colspan="3" class="no-border"></td>
             <td style="text-align:center; font-weight: bold">VAT</td>
-            <td style="text-align:center; font-weight: bold">Wartość netto</td>
-            <td style="text-align:center; font-weight: bold">Wartość VAT</td>
-            <td style="text-align:center; font-weight: bold">Wartość brutto</td>
+            <td style="text-align:center; font-weight: bold">Net value</td>
+            <td style="text-align:center; font-weight: bold">VAT value</td>
+            <td style="text-align:center; font-weight: bold">Gross value</td>
         </tr>
         <?php
             $sumNetto = 0;
@@ -185,7 +185,7 @@
     </tbody>
     <tfoot>
         <tr>
-            <td colspan="3" class="no-border" style="text-align:right; font-weight: bold">Razem</td>
+            <td colspan="3" class="no-border" style="text-align:right; font-weight: bold">Total</td>
             <td style="text-align:right"></td>
             <td style="text-align:center; font-weight: bold">{{ \App\Libraries\Helper::amount($sumNetto) }} {{ $data->currency }}</td>
             <td style="text-align:center; font-weight: bold">{{ \App\Libraries\Helper::amount($sumVat) }} {{ $data->currency }}</td>
@@ -198,23 +198,19 @@
 
 <table id="summary-table">
     <tr>
-        <td class="label">Razem do zapłaty:</td>
+        <td class="label">Total to pay:</td>
         <td class="value">{{ \App\Libraries\Helper::amount($data->gross) }} {{ $data->currency }}</td>
     </tr>
     <tr>
-        <td class="label">Słownie:</td>
-        <td class="value">{{ \App\Libraries\Helper::slownie($data->gross) }}</td>
+        <td class="label">Method of payment:</td>
+        <td class="value">Online transfer</td>
     </tr>
     <tr>
-        <td class="label">Sposób zapłaty:</td>
-        <td class="value">Przelew on-line</td>
-    </tr>
-    <tr>
-        <td class="label">Wpłacono:</td>
+        <td class="label">Paid:</td>
         <td class="value">{{ \App\Libraries\Helper::amount($data->gross) }} {{ $data->currency }}</td>
     </tr>
     <tr>
-        <td class="label">Pozostało do zapłaty:</td>
+        <td class="label">Left to pay:</td>
         <td class="value">{{ \App\Libraries\Helper::amount(0) }} {{ $data->currency }}</td>
     </tr>
 </table>
@@ -222,12 +218,12 @@
 <div style="margin-top:80px">
     <div style="float:left; width:40%">
         <div style="font-size:11px; text-align:center;">{{ $invoiceData->invoice_person }}</div>
-        <div style="font-size:11px; text-align:center; border-top: 1px solid black;">Osoba upoważniona do wystawienia faktury</div>
+        <div style="font-size:11px; text-align:center; border-top: 1px solid black;">The person authorized to issue an invoice</div>
     </div>
 
     <div style="float:right; width:40%">
         <div style="font-size:11px; text-align:center;">&nbsp;</div>
-        <div style="font-size:11px; text-align:center; border-top: 1px solid black;">Osoba upoważniona do odbioru faktury</div>
+        <div style="font-size:11px; text-align:center; border-top: 1px solid black;">Person authorized to collect the invoice</div>
     </div>
     <div style="clear:both"></div>
 </div>

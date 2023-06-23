@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Exceptions\ObjectNotExist;
+use App\Models\Country;
+use App\Models\FirmInvoicingData;
 use App\Models\Limit;
 use App\Models\Project;
 use App\Models\Subscription;
@@ -397,6 +399,38 @@ class IndexController extends Controller
     */
     public function packages()
     {
+        if(Auth::check())
+        {
+            $invoicingData = FirmInvoicingData::first();
+            $foreign = strtolower($invoicingData->country) != "pl";
+            $reverseCharge = $foreign && $invoicingData->type == "invoice";
+                
+            if($reverseCharge)
+            {
+                $packages = config("packages");
+                foreach($packages["allowed"] as $k => $p)
+                    $packages["allowed"][$k]["price"] = $p["price"] * ((100 + $p["vat"]) / 100);
+                
+                $packages["reverse"] = true;
+                return $packages;
+            }
+        }
         return config("packages");
+    }
+    
+    /**
+    * Return countries list
+    * @queryParam lang string Language Default: pl
+    * @group Others
+    */
+    public function countries(Request $request)
+    {
+        $lang = $request->input("lang", "pl");
+        
+        return Country::select("code", ($lang == "pl" ? "name" : "name_en AS name"), "eu")
+            ->orderBy("sort", "DESC")
+            ->orderBy("eu", "DESC")
+            ->orderBy(($lang == "pl" ? "name" : "name_en"), "DESC")
+            ->get();
     }
 }

@@ -29,6 +29,9 @@ use App\Http\Controllers\UserController;
 */
 
 Route::middleware(['auth:sanctum', 'locale'])->group(function () use($router) {
+    // PAKIETY I CENY
+    $router->get('/packages', [IndexController::class, "packages"]);
+    
     $router->get("/is-login", [UserController::class, "isLogin"]);
     $router->get('/logout', [UserController::class, "logout"]);
     
@@ -126,9 +129,12 @@ Route::middleware(['auth:sanctum', 'locale'])->group(function () use($router) {
     
     $router->get('/invoices', [OrderController::class, "invoices"]);
     $router->get('/invoice/{id}', [OrderController::class, "invoice"])->where("id", "[0-9]+");
+    $router->get('/validate-invoicing-data', [OrderController::class, "validateInvoicingData"]);
     
     $router->get('/firm-data', [UserController::class, "getFirmData"]);
     $router->post('/firm-data', [UserController::class, "firmDataUpdate"]);
+    $router->get('/invoice-data', [UserController::class, "getInvoiceData"]);
+    $router->post('/invoice-data', [UserController::class, "invoiceDataUpdate"]);
     
     $router->get('/notifications', [NotificationController::class, "list"]);
     $router->get('/notification/{id}', [NotificationController::class, "get"])->where("id", "[0-9]+");
@@ -161,7 +167,6 @@ Route::middleware(['locale'])->group(function () use($router) {
     $router->post("/reset-password", [UserController::class, "resetPassword"]);
     $router->get("/get-email-firm-ids", [UserController::class, "getUserFirmIds"]);
     
-    // PAKIETY I CENY
-    $router->get('/packages', [IndexController::class, "packages"]);
+    $router->get('/countries', [IndexController::class, "countries"]);
 });
 

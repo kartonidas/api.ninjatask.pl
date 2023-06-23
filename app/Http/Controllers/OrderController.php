@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rule;
+use App\Exceptions\Exception;
 use App\Exceptions\ObjectNotExist;
+use App\Models\FirmInvoicingData;
 use App\Models\Invoice;
 use App\Models\Order;
 use App\Models\Payment;
@@ -26,6 +28,19 @@ class OrderController extends Controller
     */
     public function create(Request $request)
     {
+        $validInvoicing = FirmInvoicingData::validateInvoicingData();
+        if(!$validInvoicing)
+            throw new Exception(__("Invalid invoicing data"));
+        
+        $invoicingData = FirmInvoicingData
+            ::where("uuid", Auth::user()->getUuid())
+            ->whereNull("deleted_at")
+            ->withoutGlobalScopes()
+            ->first();
+            
+        $foreign = strtolower($invoicingData->country) != "pl";
+        $reverseCharge = $foreign && $invoicingData->type == "invoice";
+        
         $request->validate([
             "package" => ["required", Rule::in(array_keys(config("packages.allowed")))],
         ]);
@@ -33,18 +48,20 @@ class OrderController extends Controller
         $packages = config("packages.allowed");
         $package = $packages[$request->input("package")];
         
-        $url = DB::transaction(function () use($package) {
+        $url = DB::transaction(function () use($package, $invoicingData, $reverseCharge) {
             $order = new Order;
             $order->uuid = Auth::user()->getUuid();
             $order->type = $package["type"];
-            $order->unit_price = $package["price"];
+            $order->unit_price = !$reverseCharge ? $package["price"] : $package["price"] * ((100 + $package["vat"]) / 100);
             $order->unit_price_gross = $package["price"] * ((100 + $package["vat"]) / 100);
             $order->quantity = 1;
             $order->amount = $order->unit_price * $order->quantity;
-            $order->vat = $package["vat"];
+            $order->vat = !$reverseCharge ? $package["vat"] : 0;
             $order->gross = $order->unit_price_gross * $order->quantity;
             $order->name = $package["name"];
             $order->months = $package["months"];
+            $order->firm_invoicing_data_id = $invoicingData->id;
+            $order->reverse = $reverseCharge ? 1 : 0;
             $order->save();
             
             return Payment::generatePaymentRedirectLink($order);
@@ -83,6 +100,7 @@ class OrderController extends Controller
             ->where("generated", 1)
             ->take($size)
             ->skip(($page-1)*$size)
+            ->orderBy("id", "DESC")
             ->get();
             
         $total = Invoice::where("generated", 1)->count();
@@ -124,5 +142,17 @@ class OrderController extends Controller
             "invoice" => base64_encode(file_get_contents($file)),
             "name" => $invoice->file,
         ];
+    }
+    
+    /**
+    * Validate invoicing data
+    *
+    * Validate invoicing data.
+    * @header Authorization: Bearer {TOKEN}
+    * @group Orders
+    */
+    public function validateInvoicingData(Request $request)
+    {
+        return ["valid" => FirmInvoicingData::validateInvoicingData()];
     }
 }
