@@ -39,7 +39,7 @@ class UserController extends Controller
     * @bodyParam password string required Account password
     * @bodyParam device_name string required Device name
     * @bodyParam firm_id integer Firm identifier (required if e-mail address is register on two or more firms)
-    * @response 200 [{"token": "xxxxxxxx", "firstname": "John", "lastname": "Doe", "locale": "pl", "owner": 0}]
+    * @response 200 [{"token": "xxxxxxxx", "firstname": "John", "lastname": "Doe", "locale": "pl", "owner": 0, "avatar": "b64 avatar image", "permission":{"project":["list","create","update","delete"],"task":["list","create","update","delete"],"user":["list","create","update","delete"],"permission":["list","create","update","delete"]}}]
     * @response 422 {"error":true,"message":"The provided credentials are incorrect.","errors":{"email":["The provided credentials are incorrect."]}}
     * @group User registation
     */
@@ -79,6 +79,7 @@ class UserController extends Controller
             "locale" => $settings->locale,
             "owner" => $user->owner,
             "avatar" => $user->getUserAvatar($user->getUuid()),
+            "permission" => UserPermission::permissionArrayToString($user->getAllUserPermissions($user->getUuid(), true)),
         ];
         
         return response()->json($out);
@@ -879,13 +880,20 @@ class UserController extends Controller
     * Get logged user permissions
     *
     * Get logged user permissions
+    * @queryParam text boolean return text permission
     * @header Authorization: Bearer {TOKEN}
     * @response 200 {"permission":{"project":["list","create","update","delete"],"task":["list","create","update","delete"],"user":["list","create","update","delete"],"permission":["list","create","update","delete"]}}
     * @group User management
     */
-    public function getPermissions()
+    public function getPermissions(Request $request)
     {
-        return Auth::user()->getAllUserPermissions();
+        $app = $request->input("text", false);
+        
+        $permissions = Auth::user()->getAllUserPermissions(null, $app);
+        if($app)
+            return ["permissions" => UserPermission::permissionArrayToString($permissions)];
+        
+        return $permissions;
     }
     
     /**

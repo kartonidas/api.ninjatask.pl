@@ -15,7 +15,9 @@ use App\Models\Limit;
 use App\Models\Project;
 use App\Models\Subscription;
 use App\Models\Task;
+use App\Models\TaskAssignedUser;
 use App\Models\TaskComment;
+use App\Models\TaskTime;
 use App\Models\User;
 
 class IndexController extends Controller
@@ -42,6 +44,8 @@ class IndexController extends Controller
             "tasks_summary" => self::getTaskSummaryStats(14),
             "latest_tasks" => self::getLatestTasks(8),
             "latest_comments" => self::getLatestComments(10),
+            "my_work" => self::getMyWork(10),
+            "active_timer" => self::getActiveTimer()
         ];
         
         return $out;
@@ -130,7 +134,67 @@ class IndexController extends Controller
             }
         }
         
-        return $out;
+        return $out ? $out : null;
+    }
+    
+    private static function getMyWork($limit = 10)
+    {
+        $taskIds = [-1];
+        $assignedTasks = TaskAssignedUser::select("task_id")->where("user_id", Auth::user()->id)->get();
+        if(!$assignedTasks->isEmpty())
+        {
+            foreach($assignedTasks as $row)
+                $taskIds[] = $row->task_id;
+        }
+
+        $tasks = Task
+            ::apiFields()
+            ->whereIn("id", $taskIds)
+            ->where("completed", 0);
+            
+        $total = $tasks->count();
+        
+        $tasks = $tasks->take($limit)
+            ->orderBy("priority", "DESC")
+            ->orderBy("updated_at", "desc")
+            ->get();
+        
+        foreach($tasks as $k => $task)
+            $tasks[$k]->status = $task->getStatusName();
+        
+        return $tasks;
+    }
+    
+    private static function getActiveTimer()
+    {
+        $timer = TaskTime::where("user_id", Auth::user()->id)->whereIn("status", [TaskTime::ACTIVE, TaskTime::PAUSED])->orderBy("created_at", "DESC")->get();
+        
+        $out = [];
+        if(!$timer->isEmpty())
+        {
+            $data = [];
+            foreach($timer as $time)
+            {
+                $task = Task::find($time->task_id);
+                if(!$task)
+                    continue;
+                
+                $total = $time->total;
+                if($time->status == TaskTime::ACTIVE)
+                    $total = $time->total + (time() - $time->timer_started);
+                
+                $data[] = [
+                    "id" => $time->id,
+                    "task_id" => $time->task_id,
+                    "status" => $time->status,
+                    "total" => $total,
+                    "task" => $task->name,
+                ];
+            }
+            $out["total"] = count($data);
+            $out["data"] = $data;
+        }
+        return $out ? $out : null;
     }
     
     private static function getTaskStats($completed = false, $days = 14)
@@ -402,17 +466,20 @@ class IndexController extends Controller
         if(Auth::check())
         {
             $invoicingData = FirmInvoicingData::first();
-            $foreign = strtolower($invoicingData->country) != "pl";
-            $reverseCharge = $foreign && $invoicingData->type == "invoice";
-                
-            if($reverseCharge)
+            if($invoicingData)
             {
-                $packages = config("packages");
-                foreach($packages["allowed"] as $k => $p)
-                    $packages["allowed"][$k]["price"] = $p["price"] * ((100 + $p["vat"]) / 100);
-                
-                $packages["reverse"] = true;
-                return $packages;
+                $foreign = strtolower($invoicingData->country) != "pl";
+                $reverseCharge = $foreign && $invoicingData->type == "invoice";
+                    
+                if($reverseCharge)
+                {
+                    $packages = config("packages");
+                    foreach($packages["allowed"] as $k => $p)
+                        $packages["allowed"][$k]["price"] = $p["price"] * ((100 + $p["vat"]) / 100);
+                    
+                    $packages["reverse"] = true;
+                    return $packages;
+                }
             }
         }
         return config("packages");

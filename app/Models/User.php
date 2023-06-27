@@ -265,19 +265,33 @@ class User extends Authenticatable
         $this->ensureAccountSettings();
     }
     
-    public function getAllUserPermissions()
+    public function getAllUserPermissions($uuid = null, $appReady = false)
     {
         $out = [];
         if($this->owner || $this->superuser)
         {
             foreach(config("permissions.permission") as $module => $permission)
                 $out[$module] = $permission["operation"];
+                
+            if($this->owner)
+                $out["invite"] = ["create"];
         }
         else
         {
-            $permission = UserPermission::find($this->user_permission_id);
+            if($uuid)
+                $permission = UserPermission::where("uuid", $uuid)->withoutGlobalScopes()->find($this->user_permission_id);
+            else
+                $permission = UserPermission::find($this->user_permission_id);
             if($permission)
                 $out = $permission->getPermission();
+        }
+        
+        if($appReady)
+        {
+            $outApp = [];
+            foreach($out as $module => $permissions)
+                $outApp[$module] = $permissions;
+            return $outApp;
         }
         
         return ["permission" => $out];

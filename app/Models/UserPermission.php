@@ -62,7 +62,7 @@ class UserPermission extends Model
         return $out;
     }
     
-    private static function permissionArrayToString($permissions)
+    public static function permissionArrayToString($permissions)
     {
         $permissionParts = [];
         foreach($permissions as $object => $actions)

@@ -111,6 +111,7 @@ abstract class TestCase extends BaseTestCase
                             $task = new Task;
                             $task->uuid = $ownerUser->getUuid();
                             $task->project_id = $project->id;
+                            $task->status_id = 0;
                             $task->name = $data["name"];
                             $task->created_user_id = 0;
                             $task->saveQuietly();
