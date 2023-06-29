@@ -469,7 +469,7 @@ class IndexController extends Controller
             if($invoicingData)
             {
                 $foreign = strtolower($invoicingData->country) != "pl";
-                $reverseCharge = $foreign && $invoicingData->type == "invoice";
+                $reverseCharge = $foreign && $invoicingData->type == "firm";
                     
                 if($reverseCharge)
                 {

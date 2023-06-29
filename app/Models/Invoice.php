@@ -81,7 +81,7 @@ class Invoice extends Model
         $inv->type = $invoicingData->type;
         $inv->setInvoiceNumber($date);
         $inv->date = date("Y-m-d", $date);
-        if($invoicingData->type == "invoice")
+        if($invoicingData->type == "firm")
         {
             $inv->nip = $invoicingData->nip;
             $inv->name = $invoicingData->name;
@@ -126,7 +126,7 @@ class Invoice extends Model
         $this->month =  $month;
         $this->year =  $year;
         
-        if($this->type == "invoice")
+        if($this->type == "firm")
             $this->full_number = sprintf("NTF/%s/%s/%s", $this->number, $this->month, $this->year);
         else
             $this->full_number = sprintf("NTR/%s/%s/%s", $this->number, $this->month, $this->year);

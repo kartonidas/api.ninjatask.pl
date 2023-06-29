@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Str;
+use Kreait\Laravel\Firebase\Facades\Firebase;
+use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Messaging\Notification as FirebaseNotification;
+use Kreait\Firebase\Messaging\AndroidConfig;
 use App\Mail\Subscription\Activated;
 use App\Mail\Subscription\Expiration;
 use App\Mail\Subscription\Expired;
@@ -44,6 +49,7 @@ class Notification extends Model
         $row->save();
         
         $user = User::find($row->user_id);
+        $addedUser = User::find($row->added_user_id);
         if($user)
         {
             $settings = $user->getAccountSettings();
@@ -53,10 +59,10 @@ class Notification extends Model
                 case "task:assign":
                 case "task:change_status_owner":
                 case "task:change_status_assigned":
-                    if(in_array($type, $settings->notifications))
+                    $task = Task::find($row->object_id);
+                    if($task)
                     {
-                        $task = Task::find($row->object_id);
-                        if($task)
+                        if(in_array($type, $settings->notifications))
                         {
                             $url = env("FRONTEND_URL") . "task/" . $row->object_id;
                             if($type == "task:assign")
@@ -66,18 +72,21 @@ class Notification extends Model
                             if($type == "task:change_status_assigned")
                                 Mail::to($user->email)->locale($locale)->queue(new ChangeStatusAssigned($url, $task));
                         }
+                        
+                        if(in_array($type, $settings->mobile_notifications))
+                            self::mobileTaskNotify($user_id, $addedUser, $task, $type, $locale);
                     }
                 break;
             
                 case "task:new_comment_owner":
                 case "task:new_comment_assigned":
-                    if(in_array($type, $settings->notifications))
+                    $comment = TaskComment::find($row->extra_object_id);
+                    if($comment)
                     {
-                        $comment = TaskComment::find($row->object_id);
-                        if($comment)
+                        $task = Task::find($comment->task_id);
+                        if($task)
                         {
-                            $task = Task::find($comment->task_id);
-                            if($task)
+                            if(in_array($type, $settings->notifications))
                             {
                                 $url = env("FRONTEND_URL") . "task/" . $task->id;
                                 if($type == "task:new_comment_owner")
@@ -85,6 +94,9 @@ class Notification extends Model
                                 if($type == "task:new_comment_assigned")
                                     Mail::to($user->email)->locale($locale)->queue(new NewCommentAssigned($url, $comment, $task));
                             }
+                            
+                            if(in_array($type, $settings->mobile_notifications))
+                                self::mobileTaskNotify($user_id, $addedUser, $task, $type, $locale, $comment);
                         }
                     }
                 break;
@@ -152,5 +164,43 @@ class Notification extends Model
                 return View::make($view, ["row" => $object])->render();
         }
         return null;
+    }
+    
+    private static function mobileTaskNotify(int $user_id, User $addedUser, Task $task, string $type, $locale, TaskComment $comment = null)
+    {
+        $origLocale = app()->getLocale();
+        app()->setLocale($locale);
+        
+        $content = null;
+        switch($type)
+        {
+            case "task:assign":
+                $content = __("New task assigned to your account");
+            break;
+            case "task:new_comment_assigned":
+                if($addedUser)
+                    $content = $addedUser->firstname . " " . __("added a new comment: ");
+                else
+                    $content = __("User added comment: ");
+                
+                $content .= Str::limit(strip_tags($comment->comment), 150);
+            break;
+        }
+        if(!$content)
+            return;
+        
+        $messaging = Firebase::messaging();
+        $message = CloudMessage::withTarget("topic", "task." . $user_id)
+            ->withNotification(FirebaseNotification::create($task->name, $content))
+            ->withData([
+                "_id" => $task->id,
+                "_name" => $task->name,
+                "_type" => "task:attach",
+                "_module" => "task"
+            ])
+            ->withAndroidConfig(["ttl" => "120s"]);
+        $messaging->send($message);
+        
+        app()->setLocale($origLocale);
     }
 }

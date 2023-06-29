@@ -306,6 +306,7 @@ class User extends Authenticatable
             $row->user_id = $this->id;
             $row->locale = $this->default_locale;
             $row->notifications = implode(",", config("api.notifications_default"));
+            $row->mobile_notifications = implode(",", config("api.mobile_notifications_default"));
             $row->save();
         }
         
@@ -323,6 +324,7 @@ class User extends Authenticatable
         }
             
         $settings->notifications = explode(",", $settings->notifications);
+        $settings->mobile_notifications = explode(",", $settings->mobile_notifications);
             
         return $settings;
     }

@@ -25,12 +25,12 @@ class FirmInvoicingData extends Model
         $required = [
             "street", "house_no", "city", "zip", "country"
         ];
-        if($row->type == "invoice")
+        if($row->type == "firm")
         {
             $required[] = "nip";
             $required[] = "name";
         }
-        elseif($row->type == "receipt")
+        elseif($row->type == "person")
         {
             $required[] = "firstname";
             $required[] = "lastname";

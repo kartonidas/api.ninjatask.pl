@@ -39,7 +39,7 @@ class OrderController extends Controller
             ->first();
             
         $foreign = strtolower($invoicingData->country) != "pl";
-        $reverseCharge = $foreign && $invoicingData->type == "invoice";
+        $reverseCharge = $foreign && $invoicingData->type == "firm";
         
         $request->validate([
             "package" => ["required", Rule::in(array_keys(config("packages.allowed")))],

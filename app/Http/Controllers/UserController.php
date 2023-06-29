@@ -28,6 +28,7 @@ use App\Models\User;
 use App\Models\UserInvitation;
 use App\Models\UserPermission;
 use App\Rules\Notifications as NotificationsRule;
+use App\Rules\MobileNotifications as MobileNotificationsRule;
 
 class UserController extends Controller
 {
@@ -38,8 +39,9 @@ class UserController extends Controller
     * @bodyParam email string required Account e-mail address
     * @bodyParam password string required Account password
     * @bodyParam device_name string required Device name
+    * @bodyParam mobile integer From mobile app default: 0
     * @bodyParam firm_id integer Firm identifier (required if e-mail address is register on two or more firms)
-    * @response 200 [{"token": "xxxxxxxx", "firstname": "John", "lastname": "Doe", "locale": "pl", "owner": 0, "avatar": "b64 avatar image", "permission":{"project":["list","create","update","delete"],"task":["list","create","update","delete"],"user":["list","create","update","delete"],"permission":["list","create","update","delete"]}}]
+    * @response 200 [{"id": 1, "token": "xxxxxxxx", "firstname": "John", "lastname": "Doe", "locale": "pl", "owner": 0, "avatar": "b64 avatar image", "permission":{"project":["list","create","update","delete"],"task":["list","create","update","delete"],"user":["list","create","update","delete"],"permission":["list","create","update","delete"]}}]
     * @response 422 {"error":true,"message":"The provided credentials are incorrect.","errors":{"email":["The provided credentials are incorrect."]}}
     * @group User registation
     */
@@ -72,8 +74,18 @@ class UserController extends Controller
         
         $settings = $user->getAccountSettings();
         
+        $token = $user->createToken($request->device_name);
+        
+        if($request->input("mobile", false))
+        {
+            $newUserToken = $user->tokens()->where("id", $token->accessToken->id)->first();
+            $newUserToken->mobile_app = 1;
+            $newUserToken->save();
+        }
+        
         $out = [
-            "token" => $user->createToken($request->device_name)->plainTextToken,
+            "id" => $user->id,
+            "token" => $token->plainTextToken,
             "firstname" => $user->firstname,
             "lastname" => $user->lastname,
             "locale" => $settings->locale,
@@ -769,6 +781,7 @@ class UserController extends Controller
     * User settings.
     * @bodyParam locale string Locale ex. pl.
     * @bodyParam notifications string User e-mail notifications (separated by a comma)
+    * @bodyParam mobile_notifications string Mobile notifications (separated by a comma)
     * @responseField status boolean Update status
 
     * @header Authorization: Bearer {TOKEN}
@@ -783,10 +796,11 @@ class UserController extends Controller
         $rules = [
             "locale" => ["required", Rule::in(config("api.allowed_languages"))],
             "notifications" => ["nullable", new NotificationsRule],
+            "mobile_notifications" => ["nullable", new MobileNotificationsRule],
         ];
         
         $validate = [];
-        $updateFields = ["locale", "notifications"];
+        $updateFields = ["locale", "notifications", "mobile_notifications"];
         foreach($updateFields as $field)
         {
             if($request->has($field))
@@ -979,7 +993,7 @@ class UserController extends Controller
     *
     * Get invoice data
     * @header Authorization: Bearer {TOKEN}
-    * @response 200 {"type": "invoice", "name": "Firm name", "firstname": "John", "lastname": "Doe", "nip": "0123456789", "name": "Firm name", "street": "Street name", "house_no": "12", "apartment_no": "1A", "city": "London", "zip": "91-000"}
+    * @response 200 {"type": "firm", "name": "Firm name", "firstname": "John", "lastname": "Doe", "nip": "0123456789", "name": "Firm name", "street": "Street name", "house_no": "12", "apartment_no": "1A", "city": "London", "zip": "91-000"}
     * @group User management
     */
     public function getInvoiceData()
@@ -991,7 +1005,7 @@ class UserController extends Controller
     * Update invoice data
     *
     * Update invoice data
-    * @bodyParam type string Type (one of: invoice, receipe).
+    * @bodyParam type string Type (one of: firm, person).
     * @bodyParam firstname string Owner first name.
     * @bodyParam lastname string Owner last name.
     * @bodyParam nip string NIP.
@@ -1012,7 +1026,7 @@ class UserController extends Controller
         
         $firm = Auth::user()->getFirm();
         $rules = [
-            "type" => "required|in:invoice,receipt",
+            "type" => "required|in:firm,person",
             "street" => "required|max:80",
             "house_no" => "required|max:20",
             "apartment_no" => "nullable|max:20",
@@ -1020,7 +1034,7 @@ class UserController extends Controller
             "zip" => "required|max:10",
             "country" => ["required", Rule::in(Country::getAllowedCodes())],
         ];
-        if($request->input("type", "invoice") == "invoice")
+        if($request->input("type", "firm") == "firm")
         {
             if(strtolower($request->input("country")) == "pl")
                 $rules["nip"] = ["required", new \App\Rules\Nip];

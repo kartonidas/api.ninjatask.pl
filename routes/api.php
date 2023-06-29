@@ -28,7 +28,7 @@ use App\Http\Controllers\UserController;
 |
 */
 
-Route::middleware(['auth:sanctum', 'locale'])->group(function () use($router) {
+Route::prefix('v1')->middleware(['auth:sanctum', 'locale'])->group(function () use($router) {
     // PAKIETY I CENY
     $router->get('/packages', [IndexController::class, "packages"]);
     
@@ -150,7 +150,7 @@ Route::middleware(['auth:sanctum', 'locale'])->group(function () use($router) {
     $router->get('/stats/total', [StatsController::class, "total"]);
 });
 
-Route::middleware(['locale'])->group(function () use($router) {
+Route::prefix('v1')->middleware(['locale'])->group(function () use($router) {
     // REJESTRACJA
     $router->post("/register", [RegisterController::class, "register"]);
     $router->get("/register/confirm/{token}", [RegisterController::class, "get"]);

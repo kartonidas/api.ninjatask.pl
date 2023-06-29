@@ -48,4 +48,12 @@ return [
         "task:change_status_assigned",
         "task:new_comment_assigned",
     ],
+    "mobile_notifications" => [
+        "task:assign",
+        "task:new_comment_assigned",
+    ],
+    "mobile_notifications_default" => [
+        "task:assign",
+        "task:new_comment_assigned",
+    ],
 ];
