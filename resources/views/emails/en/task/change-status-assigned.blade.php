@@ -6,25 +6,17 @@
 
 @section("content")
     <p>
-        The status of the task you are assigned to has been changed.
+        Changing the task status: 
+        <a href="{{ $url }}" style="color: #506fd9; text-decoration: none;">
+            <b>{{ $task->name }}</b>
+        </a>
+        [<b>{{ $task->getStatusName($task->uuid) }}</b>]
     </p>
-    
-    <p>
-        <b>Task name:</b>
-        <br/>
-        {{ $task->name }}
-    </p>
-    <p>
-        <b>New status:</b>
-        <br/>
-        {{ $task->getStatusName($task->uuid) }}
-    </p>
-    <p>
-        To go to the details of the task, click on the link below:
-        <div style="text-align: left; margin-top: 10px; margin-bottom: 10px">
-            <a href="{{ $url }}" style="display:inline-block; background-color: #506fd9; color: white; padding: 10px; text-decoration: none; border-radius: 5px;">
-                Go to task
-            </a>
-        </div>
-    </p>
+    @if(!empty($task->description))
+        <p style="font-size: 13px">
+            <i>
+                {{ strip_tags($task->description) }}
+            </i>
+        </p>
+    @endif
 @endsection

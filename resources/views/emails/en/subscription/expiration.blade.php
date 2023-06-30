@@ -6,10 +6,10 @@
 
 @section("content")
     <p>
-        We would like to remind you that your premium package its expiration. In {{ $days }} days, your premium package term will come to an end.
+       Your premium package will expire soon. Your package will expire in {{ $days }} days.
     </p>
     <p>
-        We want to emphasize that your premium package provides you with access to the full range of features and benefits offered by our service. Therefore, we encourage you to renew your subscription to ensure uninterrupted access to these services.
+        We would like to remind you that the premium package allows you to use the full functionalities of our website. Therefore, we encourage you to extend your package so as not to interrupt your access to these services.
     </p>
     <p>
         To renew your premium package, click the link below.
@@ -18,12 +18,6 @@
                 Renew premium package
             </a>
         </div>
-    </p>
-    <p>
-        We value your trust and are grateful for your continued use of our services. If you have any suggestions or feedback that can help us further enhance our offerings, please feel free to share them with us.
-    </p>
-    <p>
-        Thank you for your support, and we hope to continue providing you with valuable services for years to come.
     </p>
     <p>
         Best regards,

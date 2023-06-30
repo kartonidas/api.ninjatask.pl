@@ -6,25 +6,15 @@
 
 @section("content")
     <p>
-        W zadaniu które utworzyłeś został dodany komentarz.
+        Nowy komentarz w zadaniu: 
+        <a href="{{ $url }}" style="color: #506fd9; text-decoration: none;">
+            <b>{{ $task->name }}</b>
+        </a>
+        [<b>{{ $task->getStatusName($task->uuid) }}</b>]
     </p>
-    
-    <p>
-        <b>Nazwa zadania:</b>
-        <br/>
-        {{ $task->name }}
-    </p>
-    <p>
-        <b>Komentarz:</b>
-        <br/>
-        {{ strip_tags($comment->comment) }}
-    </p>
-    <p>
-        Aby przejść do szczegółów zadania kliknij w poniższy link:
-        <div style="text-align: left; margin-top: 10px; margin-bottom: 10px">
-            <a href="{{ $url }}" style="display:inline-block; background-color: #506fd9; color: white; padding: 10px; text-decoration: none; border-radius: 5px;">
-                Zobacz zadanie
-            </a>
-        </div>
+    <p style="font-size: 13px">
+        <i>
+            {{ strip_tags($comment->comment) }}
+        </i>
     </p>
 @endsection

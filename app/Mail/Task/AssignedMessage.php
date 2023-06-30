@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
 
@@ -22,9 +23,16 @@ class AssignedMessage extends Mailable
     {
     }
     
-    public function getTitle()
+    public function getTitle($mailSubject = true)
     {
-        return __('New task assigned to your account');
+        if($mailSubject)
+        {
+            $project = Project::withoutGlobalScopes()->find($this->task->project_id);
+            if($project)
+                return "[" . $project->name . "] " . $this->task->name .  " (" . __('New task') . ")";
+        }
+        
+        return __('New task');
     }
 
     /**
@@ -49,7 +57,7 @@ class AssignedMessage extends Mailable
         return new Content(
             view: $view,
             with: [
-                "title" => $this->getTitle(),
+                "title" => $this->getTitle(false),
                 "task" => $this->task,
             ]
         );

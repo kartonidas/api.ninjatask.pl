@@ -10,7 +10,7 @@
     </p>
         
     <p>
-        Aby aktywować swoje konto, proszę kliknąć w poniższy link:
+        Aby aktywować konto kliknij w poniższy link:
         <div style="text-align: left; margin-top: 10px; margin-bottom: 10px">
             <a href="{{ $url }}" style="display:inline-block; background-color: #506fd9; color: white; padding: 10px; text-decoration: none; border-radius: 5px;">
                 Aktywuj konto
@@ -18,11 +18,11 @@
         </div>
     </p>
     <p>
-        Link przeniesie Cię do formularza, gdzie będziesz mógł/mogła uzupełnić swoje dane, takie jak imię, nazwisko, hasło itp. Upewnij się, że podajesz prawidłowe informacje, abyśmy mogli utworzyć i skonfigurować Twoje konto zgodnie z naszymi standardami.
+        Link przeniesie Cię do formularza, gdzie będziesz mógł uzupełnić podstawowe dane.
     </p>
         
     <p>
-        Jeśli masz jakiekolwiek pytania lub potrzebujesz pomocy w procesie aktywacji konta, proszę o kontakt. Jesteśmy tutaj, aby Ci pomóc i upewnić się, że jesteś gotowy/gotowa rozpocząć korzystanie z naszej aplikacji.
+        Jeśli masz jakiekolwiek pytania lub potrzebujesz pomocy w procesie aktywacji konta, proszę o kontakt.
     </p>
         
     <p>

@@ -8,7 +8,7 @@
     @if($source == "app")
         <div margin-bottom: 10px;>
             <p>
-                Thank you for registering on our platform! We are delighted that you have joined our community. 
+                Thank you for registering with ninjaTask! We are happy that you have joined our application. 
                 To complete the registration process, confirm your account by entering the code below in the app:
             </p>
             <p style="font-size:20px;">
@@ -27,7 +27,7 @@
         <div margin-bottom: 10px;>
             <p>
                 Thank you for registering on our platform! We are delighted that you have joined our community.
-                To complete the registration process, kindly confirm your account by clicking on the link provided below and filling in any missing information.
+                To complete the registration process, please confirm your account by clicking the link below and fill in the missing data.
             </p>
         </div>
             
@@ -39,13 +39,10 @@
     @endif
     
     <p>
-        Please note that the information you provide is essential for the proper functioning of our platform and to deliver personalized and valuable content to you. We assure you that your information will be stored in accordance with our privacy policy and will not be shared with any third parties without your consent.
+        We remind you that the data you provide is necessary for the proper functioning of the application. We assure you that your data will be stored in accordance with our privacy policy and will not be shared with any third parties without your consent.
     </p>
     <p>
-        If you have any questions or need assistance in completing your details, please don't hesitate to contact our customer support team. We are here to help and provide any necessary information.
-    </p>
-    <p>
-        Once again, thank you for your trust and for joining our community. We look forward to embarking on this journey together and assure you that we will continuously work towards delivering the best services and experiences to you.
+        If you have any questions or need assistance in completing your details, please don't hesitate to contact our customer support team. 
     </p>
     <p>
         Best regards,

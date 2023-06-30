@@ -6,25 +6,15 @@
 
 @section("content")
     <p>
-       A comment has been added to the task you created.
+        New comment in the task: 
+        <a href="{{ $url }}" style="color: #506fd9; text-decoration: none;">
+            <b>{{ $task->name }}</b>
+        </a>
+        [<b>{{ $task->getStatusName($task->uuid) }}</b>]
     </p>
-    
-    <p>
-        <b>Task name:</b>
-        <br/>
-        {{ $task->name }}
-    </p>
-    <p>
-        <b>Comment:</b>
-        <br/>
-        {{ strip_tags($comment->comment) }}
-    </p>
-    <p>
-        To go to the details of the task, click on the link below:
-        <div style="text-align: left; margin-top: 10px; margin-bottom: 10px">
-            <a href="{{ $url }}" style="display:inline-block; background-color: #506fd9; color: white; padding: 10px; text-decoration: none; border-radius: 5px;">
-                Go to task
-            </a>
-        </div>
+    <p style="font-size: 13px">
+        <i>
+            {{ strip_tags($comment->comment) }}
+        </i>
     </p>
 @endsection

@@ -6,10 +6,10 @@
 
 @section("content")
     <p>
-        Chcielibyśmy przypomnieć Ci, że Twój pakiet premium zbliża się do końca. Za {{ $days }} dni termin ważności Twojego pakietu wygaśnie.
+        Twój pakiet premium wkrótce wygaśnie. Za {{ $days }} dni termin ważności Twojego pakietu wygaśnie.
     </p>
     <p>
-        Przypominamy, że pakiet premium umożliwia Ci korzystanie z pełnych funkcjonalności naszego serwisu i cieszenie się jego korzyściami. W związku z tym, zachęcamy Cię do przedłużenia pakietu, aby nie przerwać Ci dostępu do tych usług.
+        Przypominamy, że pakiet premium umożliwia Ci korzystanie z pełnych funkcjonalności naszego serwisu. W związku z tym, zachęcamy Cię do przedłużenia pakietu, aby nie przerwać dostępu do tych usług.
     </p>
     <p>
         Aby przedłużyć pakiet, kliknij poniższy link.
@@ -18,12 +18,6 @@
                 Przedłuż pakiet
             </a>
         </div>
-    </p>
-    <p>
-        Pragniemy podkreślić, że cenimy Twoje zaufanie i jesteśmy wdzięczni za Twoje dotychczasowe korzystanie z naszych usług. Jeśli masz jakiekolwiek sugestie lub opinie, które mogą pomóc nam w dalszym udoskonalaniu naszej oferty, prosimy o podzielenie się nimi.
-    </p>
-    <p>
-        Dziękujemy za Twoje wsparcie i mamy nadzieję, że będziemy mogli kontynuować dostarczanie Ci wartościowych usług przez dalsze lata.
     </p>
     <p>
         Z wyrazami szacunku,

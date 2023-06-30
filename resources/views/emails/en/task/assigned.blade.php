@@ -6,27 +6,17 @@
 
 @section("content")
     <p>
-        A new task has been assigned to your account.
-    </p>
-    
-    <p>
-        <b>Task name:</b>
+        A new task has been added to your account:
         <br/>
-        {{ $task->name }}
+        <a href="{{ $url }}" style="color: #506fd9; text-decoration: none;">
+            <b>{{ $task->name }}</b>
+        </a>
     </p>
     @if(!empty($task->description))
-        <p>
-            <b>Task description:</b>
-            <br/>
-            {{ strip_tags($task->description) }}
+        <p style="font-size: 13px">
+            <i>
+                {{ strip_tags($task->description) }}
+            </i>
         </p>
     @endif
-    <p>
-        To go to the details of the task, click on the link below:
-        <div style="text-align: left; margin-top: 10px; margin-bottom: 10px">
-            <a href="{{ $url }}" style="display:inline-block; background-color: #506fd9; color: white; padding: 10px; text-decoration: none; border-radius: 5px;">
-                Go to task
-            </a>
-        </div>
-    </p>
 @endsection

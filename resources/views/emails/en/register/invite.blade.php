@@ -18,11 +18,11 @@
         </div>
     </p>
     <p>
-        The link will direct you to a form where you can fill in your information, such as your full name, email address, and other required details. Please ensure that you provide accurate information so that we can create and configure your account according to our standards.
+        The link will direct you to a form where you can fill in your data.
     </p>
         
     <p>
-        If you have any questions or need assistance during the account activation process, please don't hesitate to reach out to us. We are here to help you and ensure that you are ready to start using our application.
+        If you have any questions or need assistance during the account activation process, please don't hesitate to reach out to us.
     </p>
         
     <p>

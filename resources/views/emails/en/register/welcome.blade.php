@@ -6,7 +6,7 @@
 
 @section("content")
     <p>
-        Thank you for completing your registration in our app! We are thrilled to have you as part of our community. You can now log in and start enjoying the full capabilities of our application.
+        Thank you for completing your registration in our app! For now on, you can log in and use the full capabilities of the application.
     </p>
         
     <p>
@@ -19,10 +19,10 @@
     </p>
     
     <p>
-        If you have any questions, encounter any difficulties logging in, or need assistance in using our app, our customer support team is ready to help. Feel free to reach out to us with any inquiries.
+        If you have any questions, encounter any difficulties logging in, or need assistance in using our app, our customer support team is ready to help. 
     </p>
     <p>
-        We appreciate your choice in using our app and the trust you have placed in us. We hope that the app meets your expectations and provides you with exceptional experiences. We look forward to a long-lasting collaboration and are committed to delivering the best services possible.
+        Thank you for choosing our application and the trust you have placed in us. We hope that the application will meet your expectations.
     </p>
         
     <p>

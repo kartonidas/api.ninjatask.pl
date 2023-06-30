@@ -6,10 +6,10 @@
 
 @section("content")
     <p>
-        We would like to inform you that your premium package has been expired. We want to express our gratitude for using our services and for the trust you have placed in us.
+        Your premium package has expired. We would like to thank you for using our application and for trusting us.
     </p>
     <p>
-        As a result of the package expired, access to premium features and content has been discontinued. We hope that you were satisfied with our service and that we met your expectations during the package period.
+        Due to the expiration of the package, access to premium features has ended.
     </p>
     <p>
         You can buy premium package at any time. To do this, click on the link below:
@@ -18,9 +18,6 @@
                 Purchase premium package
             </a>
         </div>
-    </p>
-    <p>
-        We value your trust and are grateful for your continued use of our services. If you have any suggestions or feedback that can help us further enhance our offerings, please feel free to share them with us.
     </p>
     <p>
         Best regards,

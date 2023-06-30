@@ -6,7 +6,7 @@
 
 @section("content")
     <p>
-        Serdecznie dziękujemy za dokończenie rejestracji w naszej aplikacji! Jesteśmy bardzo zadowoleni, że jesteś częścią naszej społeczności. Teraz możesz zalogować się i rozpocząć korzystanie z pełnych możliwości naszej aplikacji.
+        Dziękujemy za dokończenie rejestracji w naszej aplikacji! Od teraz możesz się logować i korzystać z pełnych możliwości aplikacji.
     </p>
         
     <p>
@@ -19,10 +19,10 @@
     </p>
     
     <p>
-        Jeśli masz jakiekolwiek pytania, napotkasz trudności lub potrzebujesz pomocy w korzystaniu z naszej aplikacji, nasz zespół wsparcia klienta jest dostępny, aby Ci pomóc. Nie wahaj się skontaktować z nami w razie jakichkolwiek wątpliwości.
+        Jeśli masz jakiekolwiek pytania, napotkasz trudności lub potrzebujesz pomocy w korzystaniu z naszej aplikacji, nasz zespół wsparcia klienta jest dostępny, aby Ci pomóc.
     </p>
     <p>
-        Dziękujemy Ci za wybór naszej aplikacji i zaufanie, jakim nas obdarzyłeś/obdarzyłaś. Mamy nadzieję, że aplikacja spełni Twoje oczekiwania i przyczyni się do ułatwienia Twojego życia. Cieszymy się na długotrwałą współpracę i jesteśmy gotowi dostarczyć Ci najlepsze możliwe doświadczenia.
+        Dziękujemy Ci za wybór naszej aplikacji i zaufanie, jakim nas obdarzyłeś. Mamy nadzieję, że aplikacja spełni Twoje oczekiwania.
     </p>
         
     <p>

@@ -8,7 +8,7 @@
     @if($source == "app")
         <div margin-bottom: 10px;>
             <p>
-                Dziękujemy za rejestrację na naszej platformie! Jesteśmy bardzo zadowoleni, że dołączyłeś/dołączyłaś do naszej aplikacji.
+                Dziękujemy za rejestrację w serwisie ninjaTask! Jesteśmy szczęśliwi, że dołączyłeś do naszej aplikacji.
                 Aby dokończyć proces rejestracji, prosimy o potwierdzenie swojego konta poprzez podanie poniższego kodu w aplikacji:
             </p>
             <p style="font-size:20px;">
@@ -26,7 +26,7 @@
     @else
         <div margin-bottom: 10px;>
             <p>
-                Dziękujemy za rejestrację na naszej platformie! Jesteśmy bardzo zadowoleni, że dołączyłeś/dołączyłaś do naszej aplikacji.
+                Dziękujemy za rejestrację w serwisie ninjaTask! Jesteśmy szczęśliwi, że dołączyłeś do naszej aplikacji.
                 Aby dokończyć proces rejestracji, prosimy o potwierdzenie swojego konta poprzez kliknięcie w poniższy link oraz uzupełnienie brakujących danych.
             </p>
         </div>
@@ -39,13 +39,10 @@
     @endif
     
     <p>
-        Przypominamy, że dane, które podasz, są niezbędne dla prawidłowego funkcjonowania naszej platformy oraz dostarczenia Ci spersonalizowanej i wartościowej treści. Zapewniamy Ci, że Twoje informacje będą przechowywane zgodnie z naszą polityką prywatności i nie będą udostępniane osobom trzecim bez Twojej zgody.
+        Przypominamy, że dane, które podasz, są niezbędne do prawidłowego funkcjonowania aplikacji. Zapewniamy Ci, że Twoje dane będą przechowywane zgodnie z naszą polityką prywatności i nie będą udostępniane osobom trzecim bez Twojej zgody.
     </p>
     <p>
-        Jeśli masz jakiekolwiek pytania lub potrzebujesz pomocy w uzupełnieniu danych, nie wahaj się skontaktować z naszym zespołem obsługi klienta. Chętnie Ci pomożemy i udzielimy wszelkich niezbędnych informacji.
-    </p>
-    <p>
-        Jeszcze raz dziękujemy za zaufanie i dołączenie do naszej społeczności. Cieszymy się na wspólną podróż i zapewniamy, że będziemy stale pracować nad dostarczaniem Ci najlepszych usług i doświadczeń.
+        Jeśli masz jakiekolwiek pytania lub potrzebujesz pomocy w uzupełnieniu danych, nie wahaj się skontaktować z naszym zespołem obsługi klienta.
     </p>
     <p>
         Z wyrazami szacunku,

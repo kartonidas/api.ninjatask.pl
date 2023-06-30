@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
 
@@ -22,9 +23,16 @@ class ChangeStatusOwner extends Mailable
     {
     }
     
-    public function getTitle()
+    public function getTitle($mailSubject = true)
     {
-        return __('Changing the status in a task you created');
+        if($mailSubject)
+        {
+            $project = Project::withoutGlobalScopes()->find($this->task->project_id);
+            if($project)
+                return "[" . $project->name . "] " . $this->task->name .  " (" . __('Change status') . ")";
+        }
+        
+        return __('Change status');
     }
 
     /**
@@ -49,7 +57,7 @@ class ChangeStatusOwner extends Mailable
         return new Content(
             view: $view,
             with: [
-                "title" => $this->getTitle(),
+                "title" => $this->getTitle(false),
                 "task" => $this->task,
             ]
         );

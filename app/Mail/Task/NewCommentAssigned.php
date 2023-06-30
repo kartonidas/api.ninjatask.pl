@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use App\Models\Project;
 use App\Models\Task;
 use App\Models\TaskComment;
 use App\Models\User;
@@ -23,9 +24,16 @@ class NewCommentAssigned extends Mailable
     {
     }
     
-    public function getTitle()
+    public function getTitle($mailSubject = true)
     {
-        return __('A new comment in the task you are assigned to');
+        if($mailSubject)
+        {
+            $project = Project::withoutGlobalScopes()->find($this->task->project_id);
+            if($project)
+                return "[" . $project->name . "] " . $this->task->name .  " (" . __('New comment') . ")";
+        }
+        
+        return __('New comment');
     }
 
     /**
@@ -50,7 +58,7 @@ class NewCommentAssigned extends Mailable
         return new Content(
             view: $view,
             with: [
-                "title" => $this->getTitle(),
+                "title" => $this->getTitle(false),
                 "task" => $this->task,
                 "comment" => $this->comment,
             ]
