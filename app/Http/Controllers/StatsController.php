@@ -252,7 +252,7 @@ class StatsController extends Controller
         $dateFrom = $request->input("date_from", null);
         $dateTo = $request->input("date_to", null);
         
-        $loggedTimes = TaskTimeDay::whereRaw("1=1");
+        $loggedTimes = TaskTimeDay::where("uuid", Auth::user()->getUuid())->whereRaw("1=1");
         
         $searchByLabels = [
             "user" => "",
