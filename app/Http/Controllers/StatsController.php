@@ -31,7 +31,8 @@ class StatsController extends Controller
         if(!$user)
             throw new ObjectNotExist(__("User does not exist"));
             
-        $month = $this->getMonth($request);
+        $allowedMonths = TaskTimeDay::getAllowedMonths("user", $id);
+        $month = $this->getMonth($request, $allowedMonths);
         $stats = TaskTimeDay::getUserStats($id, "daily", $month);
         return [
             "user" => [
@@ -42,7 +43,7 @@ class StatsController extends Controller
             "month" => $month,
             "stats" => $stats["stats"],
             "total" => $stats["total"],
-            "allowed_months" => TaskTimeDay::getAllowedMonths("user", $id),
+            "allowed_months" => $allowedMonths,
             "allowed_years" => TaskTimeDay::getAllowedYears("user", $id),
         ];
     }
@@ -65,7 +66,8 @@ class StatsController extends Controller
         if(!$user)
             throw new ObjectNotExist(__("User does not exist"));
         
-        $year = $this->getYear($request);
+        $allowedYears = TaskTimeDay::getAllowedYears("user", $id);
+        $year = $this->getYear($request, $allowedYears);
         $stats = TaskTimeDay::getUserStats($id, "monthly", $year);
         return [
             "user" => [
@@ -77,7 +79,7 @@ class StatsController extends Controller
             "stats" => $stats["stats"],
             "total" => $stats["total"],
             "allowed_months" => TaskTimeDay::getAllowedMonths("user", $id),
-            "allowed_years" => TaskTimeDay::getAllowedYears("user", $id),
+            "allowed_years" => $allowedYears,
         ];
     }
     
@@ -99,7 +101,8 @@ class StatsController extends Controller
         if(!$project)
             throw new ObjectNotExist(__("Project does not exist"));
                 
-        $month = $this->getMonth($request);
+        $allowedMonths = TaskTimeDay::getAllowedMonths("project", $id);
+        $month = $this->getMonth($request, $allowedMonths);
         $stats = TaskTimeDay::getProjectStats($id, "daily", $month);
         return [
             "project" => [
@@ -109,7 +112,7 @@ class StatsController extends Controller
             "month" => $month,
             "stats" => $stats["stats"],
             "total" => $stats["total"],
-            "allowed_months" => TaskTimeDay::getAllowedMonths("project", $id),
+            "allowed_months" => $allowedMonths,
             "allowed_years" => TaskTimeDay::getAllowedYears("project", $id),
         ];
     }
@@ -132,7 +135,8 @@ class StatsController extends Controller
         if(!$project)
             throw new ObjectNotExist(__("Project does not exist"));
         
-        $year = $this->getYear($request);
+        $allowedYears = TaskTimeDay::getAllowedYears("project", $id);
+        $year = $this->getYear($request, $allowedYears);
         $stats = TaskTimeDay::getProjectStats($id, "monthly", $year);
         return [
             "project" => [
@@ -143,7 +147,7 @@ class StatsController extends Controller
             "stats" => $stats["stats"],
             "total" => $stats["total"],
             "allowed_months" => TaskTimeDay::getAllowedMonths("project", $id),
-            "allowed_years" => TaskTimeDay::getAllowedYears("project", $id),
+            "allowed_years" => $allowedYears,
         ];
     }
     
@@ -165,7 +169,8 @@ class StatsController extends Controller
         if(!$task)
             throw new ObjectNotExist(__("Task does not exist"));
 
-        $month = $this->getMonth($request);
+        $allowedMonths = TaskTimeDay::getAllowedMonths("task", $id);
+        $month = $this->getMonth($request, $allowedMonths);
         $stats = TaskTimeDay::getTaskStats($id, "daily", $month);
         return [
             "task" => [
@@ -175,7 +180,7 @@ class StatsController extends Controller
             "month" => $month,
             "stats" => $stats["stats"],
             "total" => $stats["total"],
-            "allowed_months" => TaskTimeDay::getAllowedMonths("task", $id),
+            "allowed_months" => $allowedMonths,
             "allowed_years" => TaskTimeDay::getAllowedYears("task", $id),
         ];
     }
@@ -198,7 +203,8 @@ class StatsController extends Controller
         if(!$task)
             throw new ObjectNotExist(__("Task does not exist"));
         
-        $year = $this->getYear($request);
+        $allowedYears = TaskTimeDay::getAllowedYears("task", $id);
+        $year = $this->getYear($request, $allowedYears);
         $stats = TaskTimeDay::getTaskStats($id, "monthly", $year);
         return [
             "task" => [
@@ -209,7 +215,7 @@ class StatsController extends Controller
             "stats" => $stats["stats"],
             "total" => $stats["total"],
             "allowed_months" => TaskTimeDay::getAllowedMonths("task", $id),
-            "allowed_years" => TaskTimeDay::getAllowedYears("task", $id),
+            "allowed_years" => $allowedYears,
         ];
     }
     
@@ -336,19 +342,27 @@ class StatsController extends Controller
         return $out;
     }
     
-    private function getMonth(Request $request)
+    private function getMonth(Request $request, $allowed = [])
     {
         $request->validate([
             "month" => "nullable|date_format:Y-m"
         ]);
-        return $request->input("month", date("Y-m"));
+        $month = $request->input("month", date("Y-m"));
+        
+        if(!empty($allowed) && !in_array($month, $allowed))
+            $month = end($allowed);
+        return $month;
     }
     
-    private function getYear(Request $request)
+    private function getYear(Request $request, $allowed = [])
     {
         $request->validate([
             "year" => "nullable|date_format:Y"
         ]);
-        return $request->input("year", date("Y"));
+        $year = $request->input("year", date("Y"));
+        
+        if(!empty($allowed) && !in_array($year, $allowed))
+            $year = end($allowed);
+        return $year;
     }
 }
