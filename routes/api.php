@@ -168,5 +168,6 @@ Route::prefix('v1')->middleware(['locale'])->group(function () use($router) {
     $router->get("/get-email-firm-ids", [UserController::class, "getUserFirmIds"]);
     
     $router->get('/countries', [IndexController::class, "countries"]);
+    $router->get('/packages-site', [IndexController::class, "packages"]);
 });
 
