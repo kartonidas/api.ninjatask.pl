@@ -22,6 +22,8 @@ use App\Models\Firm;
 use App\Models\FirmInvoicingData;
 use App\Models\File;
 use App\Models\PasswordResetToken;
+use App\Models\PersonalAccessToken;
+use App\Models\SoftDeletedObject;
 use App\Models\Task;
 use App\Models\TaskTime;
 use App\Models\User;
@@ -1121,6 +1123,7 @@ class UserController extends Controller
     */
     public function removeAccount()
     {
-        
+        Auth::user()->removeAccount();
+        return true;
     }
 }

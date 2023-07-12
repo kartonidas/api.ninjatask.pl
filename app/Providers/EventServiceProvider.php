@@ -20,6 +20,8 @@ use App\Models\Project;
 use App\Observers\ProjectObserver;
 use App\Models\File;
 use App\Observers\FileObserver;
+use App\Models\Firm;
+use App\Observers\FirmObserver;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -46,6 +48,7 @@ class EventServiceProvider extends ServiceProvider
         TaskComment::observe(TaskCommentObserver::class);
         Project::observe(ProjectObserver::class);
         File::observe(FileObserver::class);
+        Firm::observe(FirmObserver::class);
     }
 
     /**

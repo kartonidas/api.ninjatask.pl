@@ -75,9 +75,11 @@ class User extends Authenticatable
         return true;
     }
     
-    public function delete()
+    public function delete($force = false)
     {
-        $this->canDelete(true);
+        if(!$force)
+            $this->canDelete(true);
+            
         return parent::delete();
     }
     
@@ -349,5 +351,44 @@ class User extends Authenticatable
         }
 
         return false;
+    }
+    
+    /*
+     * 1. usunięcie tokenów z tabeli personal_access_tokens
+     * 2. jeśli właściciel usunięcie wszystkich powiązanych kont + tokenów z personal_access_tokens
+     * 3. jeśli konto (owner=1) zostanie usunięte jako oznaczone, po roku czasu można skasować wszystkie powiązane dane
+     */
+    public function removeAccount()
+    {
+        if($this->owner)
+        {
+            $firm = $this->getFirm();
+            if($firm)
+            {
+                $users = User::where("firm_id", $firm->id)->get();
+                if(!$users->isEmpty())
+                {
+                    foreach($users as $user)
+                    {
+                        $user->delete(true);
+                        
+                        $sdo = new SoftDeletedObject;
+                        $sdo->source = "firm";
+                        $sdo->source_id = $firm->id;
+                        $sdo->object = "user";
+                        $sdo->object_id = $user->id;
+                        $sdo->save();
+                        
+                        PersonalAccessToken::where("tokenable_id", $user->id)->delete();
+                    }
+                }
+                $firm->delete();
+            }
+        }
+        else
+        {
+            $this->delete();
+            PersonalAccessToken::where("tokenable_id", $this->id)->delete();
+        }
     }
 }
