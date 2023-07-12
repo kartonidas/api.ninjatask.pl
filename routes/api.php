@@ -150,7 +150,7 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'locale'])->group(function () u
     $router->get('/stats/total', [StatsController::class, "total"]);
     
     // USUNIĘCIE KONTA
-    $router->post('removeAccount', [UserController::class, "removeAccount"])
+    $router->post('removeAccount', [UserController::class, "removeAccount"]);
 });
 
 Route::prefix('v1')->middleware(['locale'])->group(function () use($router) {
