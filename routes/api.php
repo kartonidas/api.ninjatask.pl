@@ -148,6 +148,9 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'locale'])->group(function () u
     $router->get('/stats/task/{id}/daily', [StatsController::class, "taskDaily"])->where("id", "[0-9]+");
     $router->get('/stats/task/{id}/monthly', [StatsController::class, "taskMonthly"])->where("id", "[0-9]+");
     $router->get('/stats/total', [StatsController::class, "total"]);
+    
+    // USUNIĘCIE KONTA
+    $router->post('removeAccount', [UserController::class, "removeAccount"])
 });
 
 Route::prefix('v1')->middleware(['locale'])->group(function () use($router) {

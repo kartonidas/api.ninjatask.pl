@@ -1109,4 +1109,18 @@ class UserController extends Controller
         ];
         return $out;
     }
+    
+    /**
+    * Remove logged user account
+    *
+    * Remove logged user account
+    * @response 200 
+    * @response 422 
+    *
+    * @group User registation
+    */
+    public function removeAccount()
+    {
+        
+    }
 }
