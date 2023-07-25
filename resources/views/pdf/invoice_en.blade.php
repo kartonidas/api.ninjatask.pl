@@ -70,7 +70,7 @@
     <tr>
         <td rowspan="2">&nbsp;</td>
         <td style="font-size:17px; font-weight: bold" rowspan="2">
-            @if($data->type == "invoice")
+            @if($data->type == "firm")
                 Invoice
             @else
                 Bill
@@ -107,7 +107,7 @@
             Tax ID: <strong>{{ $invoiceData->nip }}</strong>
         </td>
         <td style="text-align: left; vertical-align:top">
-            @if($data->type == "invoice")
+            @if($data->type == "firm")
                 <div>Recipient: <strong>{{ $data->name }}</strong></div>
                 Address: <strong>{{ $data->street }} {{ $data->house_no }} @if($data->apartment_no)/ {{ $data->apartment_no }}@endif, {{ $data->post_code }} {{ $data->city }}</strong><br />
                 Tax ID: <strong>{{ $data->nip }}</strong>
