@@ -36,7 +36,7 @@ class TaskController extends Controller
     * @queryParam status integer Search task by task status identifier. Default: 1
     * @queryParam priority integer Search task by task priority. Default: 1
     * @queryParam state string Search task by task state (one of: opened, closed). Default: opened
-    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": "1", "name": "Example task", "description": "Example description", "project_id": 1, "priority" : 2, "status_id": 2, "status": "To do", "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "timer": {"state": "active", "total": 250, "total_logged": 1000}, "completed": 1, "status": "Done"}], "project_name": "Project name"}
+    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": "1", "name": "Example task", "description": "Example description", "project_id": 1, "priority" : 2, "status_id": 2, "status": "To do", "start_date" : "Y-m-d", "due_date" : "Y-m-d", "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "timer": {"state": "active", "total": 250, "total_logged": 1000}, "completed": 1, "status": "Done"}], "project_name": "Project name"}
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
     */
@@ -133,7 +133,7 @@ class TaskController extends Controller
     *
     * Return task details.
     * @urlParam id integer required Task identifier.
-    * @response 200 {"id": 1, "name": "Example task", "description": "Example description", "project_id": 1, "priority" : 2, "status_id": 2, "status": "To do", "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "timer": {"state": "active", "total": 250, "total_logged": 1000}, "completed": 1, "status": "Done", "project_name": "Project name"}
+    * @response 200 {"id": 1, "name": "Example task", "description": "Example description", "project_id": 1, "priority" : 2, "status_id": 2, "status": "To do", "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "timer": {"state": "active", "total": 250, "total_logged": 1000}, "completed": 1, "status": "Done", "project_name": "Project name", "start_date" : "Y-m-d", "due_date" : "Y-m-d"}
     * @response 404 {"error":true,"message":"Task does not exist"}
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
@@ -168,6 +168,9 @@ class TaskController extends Controller
     * @bodyParam description string Task description.
     * @bodyParam users array Array of users identifier assigned to task.
     * @bodyParam attachments array Array of files attach to task ([{"name": "File name", "base64": Base64 encoded file, "description": "Optional file description"}])
+    * @bodyParam priority integer Task priority (one of: 1, 2, 3).
+    * @bodyParam start_date date Task start date (format: Y-m-d)
+    * @bodyParam due_date date Task due date (format: Y-m-d)
     * @responseField id integer The id of the newly created task
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
@@ -187,6 +190,8 @@ class TaskController extends Controller
             "attachments" => ["nullable", "array", new Attachment],
             "priority" => ["nullable", Rule::in(array_keys(config("api.tasks.priority")))],
             "status_id" => ["nullable", "numeric", Rule::in($this->getAllowedStatuses())],
+            "start_date" => ["nullable", "date_format:Y-m-d"],
+            "due_date" => ["nullable", "date_format:Y-m-d"],
         ]);
         
         $project = Project::find($request->input("project_id"));
@@ -200,6 +205,8 @@ class TaskController extends Controller
         $task->created_user_id = Auth::user()->id;
         $task->priority = intval($request->input("priority", 2));
         $task->status_id = intval($request->input("status_id"));
+        $task->start_date = $request->input("start_date");
+        $task->due_date = $request->input("due_date");
         $task->save();
         
         if(!empty($request->input("attachments", [])))
@@ -220,6 +227,9 @@ class TaskController extends Controller
     * @bodyParam status_id integer Status identifier.
     * @bodyParam description string Task description.
     * @bodyParam users integer Array of users identifier assigned to task.
+    * @bodyParam priority integer Task priority (one of: 1, 2, 3).
+    * @bodyParam start_date date Task start date (format: Y-m-d)
+    * @bodyParam due_date date Task due date (format: Y-m-d)
     * @responseField status boolean Update status
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
@@ -243,13 +253,15 @@ class TaskController extends Controller
         $rules = [
             "name" => "required|max:250",
             "description" => "nullable|max:5000",
-            "users" => ["nullable", "array", Rule::in($this->getAllowedUserIds())],
+            "users" => ["nullable", "array", Rule::in($this->getAllowedUserIds($id))],
             "priority" => ["nullable", Rule::in(array_keys(config("api.tasks.priority")))],
             "status_id" => ["nullable", "numeric", Rule::in($this->getAllowedStatuses())],
+            "start_date" => ["nullable", "date_format:Y-m-d"],
+            "due_date" => ["nullable", "date_format:Y-m-d"],
         ];
         
         $validate = [];
-        $updateFields = ["name", "description", "priority", "status_id"];
+        $updateFields = ["name", "description", "priority", "status_id", "start_date", "due_date"];
         foreach($updateFields as $field)
         {
             if($request->has($field))
@@ -482,6 +494,8 @@ class TaskController extends Controller
     {
         User::checkAccess("task:list");
         
+        return $this->getAllowedUsersList($taskId, false);
+        
         $currentAssignedUsers = [];
         if($taskId)
         {
@@ -650,13 +664,43 @@ class TaskController extends Controller
         return $task->total;
     }
     
-    private function getAllowedUserIds()
+    private function getAllowedUserIds($taskId = null)
     {
-        $userIds = [];
-        $users = User::byFirm()->get();
+        $users = self::getAllowedUsersList($taskId);
         foreach($users as $user)
-            $userIds[] = $user->id;
+            $userIds[] = $user["id"];
         return $userIds;
+    }
+    
+    private function getAllowedUsersList($taskId = null, $skipDeleted = true)
+    {
+        $currentAssignedUsers = [];
+        if($taskId)
+        {
+            $task = Task::find($taskId);
+            if($task)
+                $currentAssignedUsers = $task->getAssignedUserIds();
+        }
+        
+        $out = [];
+        $users = User::withTrashed()->byFirm()->where("activated", 1)->orderBy("lastname", "ASC")->orderBy("firstname", "ASC")->get();
+        foreach($users as $user)
+        {
+            if($skipDeleted && !in_array($user->id, $currentAssignedUsers) && $user->trashed())
+                continue;
+            
+            $out[] = [
+                "id" => $user->id,
+                "firstname" => $user->firstname,
+                "lastname" => $user->lastname,
+                "email" => $user->email,
+                "_me" => $user->id == Auth::user()->id,
+                "_allowed" => !$user->trashed(),
+                "_check" => in_array($user->id, $currentAssignedUsers),
+            ];
+        }
+        
+        return $out;
     }
     
     private function getAllowedStatuses()
