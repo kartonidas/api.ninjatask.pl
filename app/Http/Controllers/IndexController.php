@@ -475,14 +475,22 @@ class IndexController extends Controller
                 {
                     $packages = config("packages");
                     foreach($packages["allowed"] as $k => $p)
+                    {
                         $packages["allowed"][$k]["price"] = $p["price"] * ((100 + $p["vat"]) / 100);
+                        $packages["allowed"][$k]["price_gross"] = $p["price"] * ((100 + $p["vat"]) / 100);
+                    }
                     
                     $packages["reverse"] = true;
                     return $packages;
                 }
             }
         }
-        return config("packages");
+        
+        $packages = config("packages");
+        foreach($packages["allowed"] as $k => $p)
+            $packages["allowed"][$k]["price_gross"] = $p["price"] * ((100 + $p["vat"]) / 100);
+        
+        return $packages;
     }
     
     /**

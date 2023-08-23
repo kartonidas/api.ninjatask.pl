@@ -52,8 +52,8 @@ class OrderController extends Controller
             $order = new Order;
             $order->uuid = Auth::user()->getUuid();
             $order->type = $package["type"];
-            $order->unit_price = !$reverseCharge ? $package["price"] : $package["price"] * ((100 + $package["vat"]) / 100);
-            $order->unit_price_gross = $package["price"] * ((100 + $package["vat"]) / 100);
+            $order->unit_price = !$reverseCharge ? $package["price"] : round($package["price"] * ((100 + $package["vat"]) / 100), 2);
+            $order->unit_price_gross = round($package["price"] * ((100 + $package["vat"]) / 100), 2);
             $order->quantity = 1;
             $order->amount = $order->unit_price * $order->quantity;
             $order->vat = !$reverseCharge ? $package["vat"] : 0;
