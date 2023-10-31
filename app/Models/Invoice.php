@@ -191,10 +191,10 @@ class Invoice extends Model
         switch($item)
         {
             case "premium:1":
-                return $language == "pl" ? "Pakiet premium (1 miesiąc)" : "Premium package (1 month)";
+                return $language == "pl" ? "Dostęp do pełnej wersji serwisu ninjatask.pl (1 miesiąc)" : "Access to the full version of the ninjatask.pl website (1 month)";
             break;
             case "premium:12":
-                return $language == "pl" ? "Pakiet premium (12 miesięcy)" : "Premium package (12 months)";
+                return $language == "pl" ? "Dostęp do pełnej wersji serwisu ninjatask.pl (12 miesięcy)" : "Access to the full version of the ninjatask.pl website (12 months)";
             break;
         }
         return $item;
