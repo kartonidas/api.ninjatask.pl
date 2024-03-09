@@ -26,5 +26,13 @@ return [
             "module" => "Stats",
             "operation" => ["list"]
         ],
+        "customer_invoices" => [
+            "module" => "Customer invoices",
+            "operation" => ["list", "create", "update", "delete"]
+        ],
+        "config" => [
+            "module" => "Configurations",
+            "operation" => ["update"]
+        ],
     ]
 ];

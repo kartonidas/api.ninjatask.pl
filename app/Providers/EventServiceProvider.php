@@ -22,6 +22,8 @@ use App\Models\File;
 use App\Observers\FileObserver;
 use App\Models\Firm;
 use App\Observers\FirmObserver;
+use App\Models\CustomerInvoice;
+use App\Observers\CustomerInvoiceObserver;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -49,6 +51,7 @@ class EventServiceProvider extends ServiceProvider
         Project::observe(ProjectObserver::class);
         File::observe(FileObserver::class);
         Firm::observe(FirmObserver::class);
+        CustomerInvoice::observe(CustomerInvoiceObserver::class);
     }
 
     /**

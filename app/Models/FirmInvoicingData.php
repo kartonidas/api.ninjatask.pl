@@ -14,7 +14,12 @@ class FirmInvoicingData extends Model
         boot as traitBoot;
     }
     
+    const OBJECT_INVOICE = "invoice";
+    const OBJECT_CUSTOMER_INVOICE = "customer_invoice";
+    
     protected $table = "firm_invoicing_data";
+    
+    protected $hidden = ["uuid"];
     
     public static function validateInvoicingData()
     {
@@ -48,5 +53,15 @@ class FirmInvoicingData extends Model
             return false;
         
         return true;
+    }
+    
+    public function scopeInvoice(Builder $query): void
+    {
+        $query->where("object", self::OBJECT_INVOICE);
+    }
+    
+    public function scopeCustomerInvoice(Builder $query): void
+    {
+        $query->where("object", self::OBJECT_CUSTOMER_INVOICE);
     }
 }

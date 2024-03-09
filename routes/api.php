@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\CustomerInvoicesController;
+use App\Http\Controllers\DictionaryController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
@@ -10,6 +12,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\SaleRegisterController;
 use App\Http\Controllers\StatsController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TaskController;
@@ -149,6 +152,36 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'locale'])->group(function () u
     $router->get('/stats/task/{id}/monthly', [StatsController::class, "taskMonthly"])->where("id", "[0-9]+");
     $router->get('/stats/total', [StatsController::class, "total"]);
     
+    // SŁOWNIKI
+    $router->get('/dictionary/types', [DictionaryController::class, "types"]);
+    $router->get('/dictionaries', [DictionaryController::class, "list"]);
+    $router->get('/dictionaries/{type}', [DictionaryController::class, "listByType"]);
+    $router->put('/dictionary', [DictionaryController::class, "create"]);
+    $router->get('/dictionary/{id}', [DictionaryController::class, "get"])->where("id", "[0-9]+");
+    $router->put('/dictionary/{id}', [DictionaryController::class, "update"])->where("id", "[0-9]+");
+    $router->delete('/dictionary/{id}', [DictionaryController::class, "delete"])->where("id", "[0-9]+");
+    
+    // REJESTR SPRZEDAŻY
+    $router->get('/sale-register', [SaleRegisterController::class, "list"]);
+    $router->put('/sale-register', [SaleRegisterController::class, "create"]);
+    $router->get('/sale-register/{id}', [SaleRegisterController::class, "get"])->where("id", "[0-9]+");
+    $router->put('/sale-register/{id}', [SaleRegisterController::class, "update"])->where("id", "[0-9]+");
+    $router->delete('/sale-register/{id}', [SaleRegisterController::class, "delete"])->where("id", "[0-9]+");
+    
+    // FAKTURY
+    $router->get('/customer-invoices', [CustomerInvoicesController::class, "list"]);
+    $router->put('/customer-invoice', [CustomerInvoicesController::class, "create"]);
+    $router->get('/customer-invoice/{id}', [CustomerInvoicesController::class, "get"])->where("id", "[0-9]+");
+    $router->put('/customer-invoice/{id}', [CustomerInvoicesController::class, "update"])->where("id", "[0-9]+");
+    $router->delete('/customer-invoice/{id}', [CustomerInvoicesController::class, "delete"])->where("id", "[0-9]+");
+    $router->put('/customer-invoice/from-proforma/{pid}', [CustomerInvoicesController::class, "fromProforma"])->where("pid", "[0-9]+");
+    $router->put('/customer-invoice/correction/{invoiceId}', [CustomerInvoicesController::class, "correctionCreate"])->where("invoiceId", "[0-9]+");
+    $router->put('/customer-invoice/correction/update/{id}', [CustomerInvoicesController::class, "correctionUpdate"])->where("id", "[0-9]+");
+    $router->get('/customer-invoice/{id}/pdf', [CustomerInvoicesController::class, "getPdf"])->where("id", "[0-9]+");
+    $router->get('/customer-invoice/invoice-data', [CustomerInvoicesController::class, "customerInvoiceData"]);
+    $router->put('/customer-invoice/invoice-data', [CustomerInvoicesController::class, "customerInvoiceDataUpdate"]);
+    $router->get('/customer-invoice/number/{srid}', [CustomerInvoicesController::class, "getInvoiceNextNumber"])->where("srid", "[0-9]+");
+
     // USUNIĘCIE KONTA
     $router->delete('removeAccount', [UserController::class, "removeAccount"]);
 });
