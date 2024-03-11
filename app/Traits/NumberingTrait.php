@@ -18,10 +18,6 @@ trait NumberingTrait
         $type = "";
         switch(get_class($this))
         {
-            case \App\Models\Rental::class:
-                $type = "rental";
-            break;
-        
             case \App\Models\CustomerInvoice::class:
                 $type = "customer_invoice";
             break;

@@ -9,7 +9,6 @@ use App\Models\Country;
 use App\Models\Customer;
 use App\Models\CustomerInvoice;
 use App\Models\Dictionary;
-use App\Models\SaleRegister;
 use App\Models\User;
 
 class StoreCustomerInvoicesRequest extends FormRequest
@@ -26,12 +25,7 @@ class StoreCustomerInvoicesRequest extends FormRequest
         $userIds = User::pluck("id")->all();
         $paymentTypeIds = Dictionary::where("type", "payment_types")->pluck("id")->all();
         
-        $rules["type"] = ["required", Rule::in(array_keys(SaleRegister::getAllowedTypes(true)))];
-        if(!empty($this->type) && in_array($this->type, array_keys(SaleRegister::getAllowedTypes(true))))
-        {
-            $saleRegisteires = SaleRegister::where("type", $this->type)->pluck("id")->all();
-            $rules["sale_register_id"] = ["required", Rule::in($saleRegisteires)];
-        }
+        $rules["type"] = ["required", Rule::in(array_keys(config("invoice.sale_document_types")))];
         $rules["created_user_id"] = ["required", Rule::in($userIds)];
         
         $rules["customer_id"] = ["sometimes", Rule::in($customerIds)];

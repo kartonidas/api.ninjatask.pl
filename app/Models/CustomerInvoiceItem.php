@@ -71,35 +71,4 @@ class CustomerInvoiceItem extends Model
         if(CustomerInvoice::checkOperation($invoice, "item:delete"))
             self::where("customer_invoice_id", $invoice->id)->whereNotIn("id", $usedIds)->delete();
     }
-
-    public static function calculateItemsAmount($items = [])
-    {
-        $out = [
-            "net" => 0,
-            "gross" => 0,
-            "net_discount" => 0,
-            "gross_discount" => 0,
-        ];
-
-        $usedIds = [-1];
-        foreach($items as $item)
-        {
-            $item["quantity"] = round(str_replace(",", ".", $item["quantity"]), 2);
-            $item["net_amount"] = round(str_replace(",", ".", $item["net_amount"]), 2);
-            $item["discount"] = round(str_replace(",", ".", $item["discount"]), 2);
-
-            if(!empty($item["discount"]) && floatval($item["discount"]) > 0)
-            {
-                $discount = round($item["net_amount"] * floatval($item["discount"]) / 100, 2);
-                $item["net_amount"] =  round($item["net_amount"] - $discount, 2);
-
-                $out["net_discount"] += round($discount * $item["quantity"], 2);
-                $out["gross_discount"] += round(Helper::calculateGrossAmount($discount, $item["vat_rate_id"]) * $item["quantity"], 2);
-            }
-
-            $out["net"] += round($item["net_amount"] * $item["quantity"]);
-            $out["gross"] += round(Helper::calculateGrossAmount($item["net_amount"], $item["vat_rate_id"]) * $item["quantity"], 2);
-        }
-        return $out;
-    }
 }

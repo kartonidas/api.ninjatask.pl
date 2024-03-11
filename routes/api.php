@@ -175,12 +175,11 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'locale'])->group(function () u
     $router->put('/customer-invoice/{id}', [CustomerInvoicesController::class, "update"])->where("id", "[0-9]+");
     $router->delete('/customer-invoice/{id}', [CustomerInvoicesController::class, "delete"])->where("id", "[0-9]+");
     $router->put('/customer-invoice/from-proforma/{pid}', [CustomerInvoicesController::class, "fromProforma"])->where("pid", "[0-9]+");
-    $router->put('/customer-invoice/correction/{invoiceId}', [CustomerInvoicesController::class, "correctionCreate"])->where("invoiceId", "[0-9]+");
-    $router->put('/customer-invoice/correction/update/{id}', [CustomerInvoicesController::class, "correctionUpdate"])->where("id", "[0-9]+");
     $router->get('/customer-invoice/{id}/pdf', [CustomerInvoicesController::class, "getPdf"])->where("id", "[0-9]+");
-    $router->get('/customer-invoice/invoice-data', [CustomerInvoicesController::class, "customerInvoiceData"]);
-    $router->put('/customer-invoice/invoice-data', [CustomerInvoicesController::class, "customerInvoiceDataUpdate"]);
     $router->get('/customer-invoice/number/{srid}', [CustomerInvoicesController::class, "getInvoiceNextNumber"])->where("srid", "[0-9]+");
+    
+    $router->get('/customer-invoice/settings', [CustomerInvoicesController::class, "settings"]);
+    $router->put('/customer-invoice/settings', [CustomerInvoicesController::class, "settingsUpdate"]);
 
     // USUNIĘCIE KONTA
     $router->delete('removeAccount', [UserController::class, "removeAccount"]);

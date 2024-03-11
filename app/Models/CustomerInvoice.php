@@ -46,11 +46,22 @@ class CustomerInvoice extends Model
 
     public function getMaskNumber()
     {
-        $config = SaleRegister::find($this->sale_register_id);
+        $config = Config::getConfig("invoice");
+        
+        if($this->type == "proforma")
+        {
+            $mask = $config["proforma_mask_number"] ?? config("invoice.default_mask.proforma");
+            $continuation = $config["proforma_number_continuation"] ?? config("invoice.default_continuation.proforma");
+        }
+        else
+        {
+            $mask = $config["invoice_mask_number"] ?? config("invoice.default_mask.invoice");
+            $continuation = $config["invoice_number_continuation"] ?? config("invoice.default_continuation.invoice");
+        }
         
         $out = [];
-        $out["mask"] = $config->mask;
-        $out["continuation"] = $config->continuation;
+        $out["mask"] = $mask;
+        $out["continuation"] = $continuation;
         return $out;
     }
 

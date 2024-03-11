@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use Throwable;
 use App\Exceptions\ObjectNotExist;
 use App\Exceptions\InvalidStatus;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -59,8 +61,6 @@ class CustomerInvoicesController extends Controller
                 $userInvoices->where("document_date", ">=", $validated["search"]["date_from"]);
             if(!empty($validated["search"]["date_to"]))
                 $userInvoices->where("document_date", "<=", $validated["search"]["date_to"]);
-            if(!empty($validated["search"]["sale_register_id"]))
-                $userInvoices->where("sale_register_id", $validated["search"]["sale_register_id"]);
             if(!empty($validated["search"]["created_user_id"]))
                 $userInvoices->where("created_user_id", $validated["search"]["created_user_id"]);
         }
@@ -80,7 +80,6 @@ class CustomerInvoicesController extends Controller
             $userInvoices[$k]->sale_register = $userInvoice->saleRegister()->first();
             $userInvoices[$k]->make_from_proforma = $userInvoice->canMakeFromProforma();
             $userInvoices[$k]->proforma_number = $userInvoice->getProformaNumber();
-            
         }
         
         $out = [
@@ -102,7 +101,6 @@ class CustomerInvoicesController extends Controller
             $row = new CustomerInvoice;
             $row->firm_invoicing_data_id = CustomerInvoice::getCurrentFirmInvoicingDataId();
             $row->type = $validated["type"];
-            $row->sale_register_id = $validated["sale_register_id"];
             $row->created_user_id = $validated["created_user_id"];
             $row->customer_id = $validated["customer_id"] ?? null;
             $row->customer_type = $validated["customer_type"];
@@ -347,44 +345,96 @@ class CustomerInvoicesController extends Controller
         CustomerInvoicePrinter::generatePDF($row);
     }
     
-    public function customerInvoiceData(Request $request)
+    public function settings(Request $request)
     {
         User::checkAccess("config:update");
         
         $config = Config::getConfig("invoice");
-        
         $useInvoiceFirmData = !isset($config["use_invoice_firm_data"]) || !empty($config["use_invoice_firm_data"]);
         if($useInvoiceFirmData)
             $invoiceData = FirmInvoicingData::invoice()->first();
         else
             $invoiceData = FirmInvoicingData::customerInvoice()->first();
-            
-        return [
-            "data" => $invoiceData,
-            "use_invoice_firm_data" => $useInvoiceFirmData
+        
+        $settings = [
+            "type" => $invoiceData->type ?? "person",
+            "nip" => $invoiceData->nip ?? "",
+            "name" => $invoiceData->name ?? "",
+            "firstname" => $invoiceData->firstname ?? "",
+            "lastname" => $invoiceData->lastname ?? "",
+            "street" => $invoiceData->street ?? "",
+            "house_no" => $invoiceData->house_no ?? "",
+            "apartment_no" => $invoiceData->apartment_no ?? "",
+            "city" => $invoiceData->city ?? "",
+            "zip" => $invoiceData->zip ?? "",
+            "country" => $invoiceData->country ?? "PL",
+            "use_invoice_firm_data" => $useInvoiceFirmData,
+            "invoicing_type" => !empty($config["invoicing_type"]) ? $config["invoicing_type"] : "app",
+            "invoice_mask_number" => !empty($config["invoice_mask_number"]) ? $config["invoice_mask_number"] : config("invoice.default_mask.invoice"),
+            "proforma_mask_number" => !empty($config["proforma_mask_number"]) ? $config["proforma_mask_number"] : config("invoice.default_mask.proforma"),
+            "invoice_number_continuation" => !empty($config["invoice_number_continuation"]) ? $config["invoice_number_continuation"] : config("invoice.default_continuation.invoice"),
+            "proforma_number_continuation" => !empty($config["proforma_number_continuation"]) ? $config["proforma_number_continuation"] : config("invoice.default_continuation.proforma"),
         ];
+        
+        if(!empty($config["invoicing_type"]) && $config["invoicing_type"] == "infakt")
+        {
+            try
+            {
+                $settings["infakt_api_key"] = Crypt::decryptString($config["infakt_api_key"]) ?? "";
+            }
+            catch(Throwable $e) {}
+        }
+        
+        if(!empty($config["invoicing_type"]) && $config["invoicing_type"] == "fakturownia")
+        {
+            try
+            {
+                $settings["fakturownia_token"] = Crypt::decryptString($config["fakturownia_token"]) ?? "";
+            }
+            catch(Throwable $e) {}
+            $settings["fakturownia_department_id"] = $config["fakturownia_department_id"] ?? "";
+            $settings["fakturownia_domain"] = $config["fakturownia_domain"] ?? "";
+        }
+        
+        return $settings;
     }
     
-    public function customerInvoiceDataUpdate(UpdateCustomerInvoiceDataRequest $request)
+    public function settingsUpdate(UpdateCustomerInvoiceDataRequest $request)
     {
-        User::checkAccess("customer_invoices:update");
-        
-        $invoicingData = FirmInvoicingData::customerInvoice()->first();
-        if(!$invoicingData)
-        {
-            $invoicingData = new FirmInvoicingData;
-            $invoicingData->object = FirmInvoicingData::OBJECT_CUSTOMER_INVOICE;
-        }
+        User::checkAccess("config:update");
         
         $validated = $request->validated();
         
-        Config::saveConfig("invoice", "use_invoice_firm_data", !empty($validated["use_invoice_firm_data"]));
-        
-        if(empty($validated["use_invoice_firm_data"]))
+        Config::saveConfig("invoice", "invoicing_type", $validated["invoicing_type"]);
+        if($validated["invoicing_type"] == "app")
         {
+            Config::saveConfig("invoice", "use_invoice_firm_data", !empty($validated["use_invoice_firm_data"]));
+            Config::saveConfig("invoice", "invoice_mask_number", $validated["invoice_mask_number"]);
+            Config::saveConfig("invoice", "proforma_mask_number", $validated["proforma_mask_number"]);
+        }
+        elseif($validated["invoicing_type"] == "infakt")
+        {
+            Config::saveConfig("invoice", "infakt_api_key", Crypt::encryptString($validated["infakt_api_key"]));
+        }
+        elseif($validated["invoicing_type"] == "fakturownia")
+        {
+            Config::saveConfig("invoice", "fakturownia_token", Crypt::encryptString($validated["fakturownia_token"]));
+            Config::saveConfig("invoice", "fakturownia_department_id", $validated["fakturownia_department_id"]);
+            Config::saveConfig("invoice", "fakturownia_domain", $validated["fakturownia_domain"]);
+        }
+        
+        if($validated["invoicing_type"] == "app" && empty($validated["use_invoice_firm_data"]))
+        {
+            $invoicingData = FirmInvoicingData::customerInvoice()->first();
+            if(!$invoicingData)
+            {
+                $invoicingData = new FirmInvoicingData;
+                $invoicingData->object = FirmInvoicingData::OBJECT_CUSTOMER_INVOICE;
+            }
+            
             foreach($validated as $field => $value)
             {
-                if($field == "use_invoice_firm_data")
+                if(!Schema::hasColumn($invoicingData->getTable(), $field))
                     continue;
                 
                 $invoicingData->{$field} = $value;

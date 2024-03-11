@@ -62,27 +62,22 @@ class Helper
         }
     }
 
-    public static function calculateGrossAmount($net_amount, $vat_rate_id)
+    public static function calculateGrossAmount($netAmount, $vatValue)
     {
-        $net_amount = str_replace(",", ".", $net_amount);
-        if(!is_numeric($net_amount) || $net_amount < 0)
-            $net_amount = 0;
+        $netAmount = str_replace(",", ".", $netAmount);
+        if(!is_numeric($netAmount) || $netAmount < 0)
+            $netAmount = 0;
 
-        $gross_amount = $net_amount;
+        $grossAmount = $netAmount;
 
         $vatRate = 0;
-        $vatRateRow = Dictionary::find($vat_rate_id);
-        if($vatRateRow)
-        {
-            $vatRate = str_replace(",", "", $vatRateRow->value);
-            if(!is_numeric($vatRate) || $vatRate < 0)
-                $vatRate = 0;
-        }
+        if(is_numeric($vatValue) && $vatValue > 0)
+            $vatRate = floatval($vatValue);
 
         if($vatRate)
-            $gross_amount = $net_amount * ((100 + $vatRate) / 100);
+            $grossAmount = $netAmount * ((100 + $vatRate) / 100);
 
-        return $gross_amount;
+        return $grossAmount;
     }
 
     // Tworzy wielopoziomową tablicę na podstawie kluczy rozdzielonych kropką

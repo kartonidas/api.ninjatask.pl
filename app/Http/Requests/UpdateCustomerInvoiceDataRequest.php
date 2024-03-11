@@ -16,32 +16,55 @@ class UpdateCustomerInvoiceDataRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            "use_invoice_firm_data" => "sometimes|boolean"
+            "use_invoice_firm_data" => "sometimes|boolean",
+            "invoicing_type" => ["required", Rule::in("app" ,"infakt", "fakturownia")],
         ];
-        if(empty($this->use_invoice_firm_data))
+        
+        $invoicingType = "app";
+        if(!empty($this->invoicing_type) && in_array($this->invoicing_type, ["infakt", "fakturownia"]))
+            $invoicingType = $this->invoicing_type;
+        
+        switch($invoicingType)
         {
-            $rules ["type"] = "required|in:firm,person";
-            $rules ["street"] = "required|max:80";
-            $rules ["house_no"] = "required|max:20";
-            $rules ["apartment_no"] = "nullable|max:20";
-            $rules ["city"] = "required|max:120";
-            $rules ["zip"] = "required|max:10";
-            $rules ["country"] = ["required", Rule::in(Country::getAllowedCodes())];
-            
-            if(empty($this->type) || $this->type == "firm")
-            {
-                if(empty($this->country) || strtolower($this->country) == "pl")
-                    $rules["nip"] = ["required", new \App\Rules\Nip];
-                else
-                    $rules["nip"] = "required";
+            case "app":
+                if(empty($this->use_invoice_firm_data))
+                {
+                    $rules ["invoice_mask_number"] = "required|max:100";
+                    $rules ["proforma_mask_number"] = "required|max:100";
+                    $rules ["type"] = "required|in:firm,person";
+                    $rules ["street"] = "required|max:80";
+                    $rules ["house_no"] = "required|max:20";
+                    $rules ["apartment_no"] = "nullable|max:20";
+                    $rules ["city"] = "required|max:120";
+                    $rules ["zip"] = "required|max:10";
+                    $rules ["country"] = ["required", Rule::in(Country::getAllowedCodes())];
                     
-                $rules["name"] = "required|max:200";
-            }
-            else
-            {
-                $rules["firstname"] = "required|max:100";
-                $rules["lastname"] = "required|max:100";
-            }
+                    if(empty($this->type) || $this->type == "firm")
+                    {
+                        if(empty($this->country) || strtolower($this->country) == "pl")
+                            $rules["nip"] = ["required", new \App\Rules\Nip];
+                        else
+                            $rules["nip"] = "required";
+                            
+                        $rules["name"] = "required|max:200";
+                    }
+                    else
+                    {
+                        $rules["firstname"] = "required|max:100";
+                        $rules["lastname"] = "required|max:100";
+                    }
+                }
+            break;
+        
+            case "infakt":
+                $rules["infakt_api_key"] = "required|max:1000";
+            break;
+        
+            case "fakturownia":
+                $rules["fakturownia_token"] = "required|max:1000";
+                $rules["fakturownia_department_id"] = "required|max:1000";
+                $rules["fakturownia_domain"] = "required|max:1000";
+            break;
         }
         
         return $rules;
