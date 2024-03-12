@@ -16,7 +16,6 @@ use App\Models\CustomerInvoiceItem;
 use App\Models\FirmInvoicingData;
 use App\Models\Numbering;
 use App\Traits\NumberingTrait;
-use App\Models\SaleRegister;
 
 class CustomerInvoice extends Model
 {
@@ -27,7 +26,18 @@ class CustomerInvoice extends Model
     
     public const TYPE_FIRM = "firm";
     public const TYPE_PERSON = "person";
+    
+    public const DOCUMENT_TYPE_INVOICE = "invoice";
+    public const DOCUMENT_TYPE_PROFORMA = "proforma";
 
+    public static function getAllowedDocumentTypes()
+    {
+        return [
+			self::DOCUMENT_TYPE_INVOICE => __("VAT invoice"),
+			self::DOCUMENT_TYPE_PROFORMA => __("Proforma"),
+		];
+    }
+    
     protected $casts = [
         "net_amount" => "float",
         "gross_amount" => "float",
@@ -46,9 +56,14 @@ class CustomerInvoice extends Model
 
     public function getMaskNumber()
     {
+        return self::getMaskNumberStatic($this->type);
+    }
+    
+    public static function getMaskNumberStatic($type)
+    {
         $config = Config::getConfig("invoice");
         
-        if($this->type == "proforma")
+        if($type == "proforma")
         {
             $mask = $config["proforma_mask_number"] ?? config("invoice.default_mask.proforma");
             $continuation = $config["proforma_number_continuation"] ?? config("invoice.default_continuation.proforma");
@@ -246,72 +261,19 @@ class CustomerInvoice extends Model
         }
     }
 
-    public function getCorrectedInvoice()
-    {
-        $row = [];
-        if($this->type == "correction")
-        {
-            $invoice = self::where("type", "invoice")->where("correction_id", $this->id)->first();
-            if($invoice)
-            {
-                $row = $invoice->toArray();
-
-                unset($row["id"]);
-                unset($row["created_at"]);
-                unset($row["updated_at"]);
-                unset($row["proforma_id"]);
-                unset($row["correction_id"]);
-
-                $row["type"] = $this->type;
-                $row["number"] = $this->number;
-                $row["full_number"] = $this->full_number;
-                $row["sale_register_id"] = $this->sale_register_id;
-                $row["created_user_id"] = $this->created_user_id;
-                $row["comment"] = $this->comment;
-                $row["document_date"] = $this->document_date;
-                $row["sell_date"] = $this->sell_date;
-                $row["payment_date"] = $this->payment_date;
-                $row["account_number"] = $this->account_number;
-
-                $row["net_amount"] = $this->net_amount;
-                $row["gross_amount"] = $this->gross_amount;
-                $row["net_amount_discount"] = $this->net_amount_discount;
-                $row["gross_amount_discount"] = $this->gross_amount_discount;
-                $row["balance"] = $this->balance;
-                $row["total_payments"] = $this->total_payments;
-                $row["balance_correction"] = $this->balance_correction;
-            }
-        }
-        return $row;
-    }
-
-    public function getCorrectionSource()
-    {
-        if($this->type == SaleRegister::TYPE_CORRECTION)
-        {
-            $invoice = self::where("type", "invoice")->where("correction_id", $this->id)->first();
-            if($invoice)
-                return $invoice;
-        }
-        throw new ObjectNotExist(__("Invoice does not exists"));
-    }
-
-    public static function getInvoiceNextNumber($saleRegisterId)
+    public static function getInvoiceNextNumber($type)
     {
         $currentYear = date("Y");
         $currentMonth = date("m");
 
-        $config = SaleRegister::find($saleRegisterId);
-        if(!$config)
-            throw new ObjectNotExist(__("Sale register does not exist"));
+        $allowedTypes = CustomerInvoice::getAllowedDocumentTypes();
+        if(!isset($allowedTypes[$type]))
+            throw new ObjectNotExist(__("Invalid document type"));
 
-        $maskConfig = [
-            "mask" => $config->mask,
-            "continuation" => $config->continuation,
-        ];
+        $maskConfig = self::getMaskNumberStatic($type);
         $fullNumber = $maskConfig["mask"];
 
-        $lastNumberQuery = Numbering::where("sale_register_id", $saleRegisterId);
+        $lastNumberQuery = Numbering::where("document_type", $type);
         switch($maskConfig["continuation"])
         {
             case "month":
@@ -336,7 +298,7 @@ class CustomerInvoice extends Model
 
     public function isLastNumber()
     {
-        $lastId = Numbering::where("type", "invoice")->where("invoice_sale_register_id", $this->sale_register_id)->max("id");
+        $lastId = Numbering::where("type", "invoice")->where("document_type", $this->type)->max("id");
         $numberingRow = Numbering::select("id")->where("type", "invoice")->where("object_id", $this->id)->first();
 
         if($numberingRow->id != $lastId)
@@ -418,11 +380,6 @@ class CustomerInvoice extends Model
             return $this->customer();
         
         return $this->belongsTo(Customer::class, "payer_id");
-    }
-    
-    public function saleRegister(): BelongsTo
-    {
-        return $this->belongsTo(SaleRegister::class);
     }
     
     public function getFirmInvoicingData()

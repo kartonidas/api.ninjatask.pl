@@ -45,7 +45,7 @@ trait NumberingTrait
 
             $lastNumberQuery = Numbering::withoutGlobalScopes()->where("uuid", $this->uuid)->where("type", $type);
             if($type == "customer_invoice")
-                $lastNumberQuery->where("sale_register_id", $this->sale_register_id);
+                $lastNumberQuery->where("document_type", $this->type);
 
             switch($maskConfig["continuation"])
             {
@@ -76,7 +76,7 @@ trait NumberingTrait
             $numb->number = $number;
             $numb->full_number = $fullNumber;
             $numb->date = $currentYear . "-" . $currentMonth;
-            $numb->sale_register_id = $type == "customer_invoice" ? $this->sale_register_id : null;
+            $numb->document_type = $type == "customer_invoice" ? $this->type : null;
             $numb->object_id = $this->id;
             $numb->save();
         });

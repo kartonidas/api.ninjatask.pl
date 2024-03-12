@@ -17,7 +17,6 @@ class UpdateCustomerInvoicesRequest extends StoreCustomerInvoicesRequest
         $rules["items.*.id"] = "sometimes|integer";
         
         unset($rules["type"]);
-        unset($rules["sale_register_id"]);
         return $rules;
     }
 }

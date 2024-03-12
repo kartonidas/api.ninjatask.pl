@@ -10,7 +10,6 @@ use App\Models\Config;
 use App\Models\CustomerInvoice;
 use App\Models\Dictionary;
 use App\Models\Firm;
-use App\Models\SaleRegister;
 
 class CustomerInvoicePrinter
 {
@@ -18,7 +17,6 @@ class CustomerInvoicePrinter
     {
         $invoice->recipient = $invoice->recipient()->first();
         $invoice->payer = $invoice->payer()->first();
-        $invoice->sale_register = $invoice->saleRegister()->first();
         
         $paymentTypesArr = [];
         $paymentTypes = Dictionary::where("type", "payment_types")->get();
@@ -43,7 +41,7 @@ class CustomerInvoicePrinter
             $data["items_after_correction"] = $correctedInvoice->items()->get();
         }
         
-        $title = Helper::__no_pl(SaleRegister::getAllowedTypes()[$invoice->type]);
+        $title = Helper::__no_pl(CustomerInvoice::getAllowedDocumentTypes()[$invoice->type]);
         $title .= ": " . $invoice->full_number;
 
         $pdf = PDF::loadView("pdf.customer-invoices.invoice", $data);

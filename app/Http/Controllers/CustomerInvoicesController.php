@@ -26,7 +26,6 @@ use App\Models\Customer;
 use App\Models\CustomerInvoice;
 use App\Models\CustomerInvoiceItem;
 use App\Models\FirmInvoicingData;
-use App\Models\SaleRegister;
 use App\Models\User;
 use App\Traits\Sortable;
 
@@ -77,7 +76,6 @@ class CustomerInvoicesController extends Controller
         {
             $userInvoices[$k]->can_delete = $userInvoice->canDelete();
             $userInvoices[$k]->can_update = CustomerInvoice::checkOperation($userInvoice, "update");
-            $userInvoices[$k]->sale_register = $userInvoice->saleRegister()->first();
             $userInvoices[$k]->make_from_proforma = $userInvoice->canMakeFromProforma();
             $userInvoices[$k]->proforma_number = $userInvoice->getProformaNumber();
         }
@@ -152,7 +150,7 @@ class CustomerInvoicesController extends Controller
         User::checkAccess("customer_invoices:update");
 
         $row = CustomerInvoice::find($id);
-        if(!$row || $row->type == SaleRegister::TYPE_CORRECTION)
+        if(!$row)
             throw new ObjectNotExist(__("Invoice does not exist"));
 
         if(!CustomerInvoice::checkOperation($row, "update"))
@@ -196,7 +194,7 @@ class CustomerInvoicesController extends Controller
         User::checkAccess("customer_invoices:create");
         
         $proforma = CustomerInvoice::find($proformaId);
-        if(!$proforma || $proforma->type != SaleRegister::TYPE_PROFORMA)
+        if(!$proforma || $proforma->type != CustomerInvoice::DOCUMENT_TYPE_PROFORMA)
             throw new ObjectNotExist(__("Proforma does not exist"));
         
         if(!$proforma->canMakeFromProforma())
@@ -206,10 +204,9 @@ class CustomerInvoicesController extends Controller
         
         $row = DB::transaction(function () use($validated, $proforma) {
             $row = new CustomerInvoice;
-            $row->type = SaleRegister::TYPE_INVOICE;
+            $row->type = CustomerInvoice::DOCUMENT_TYPE_INVOICE;
             $row->firm_invoicing_data_id = $proforma->firm_invoicing_data_id;
             $row->proforma_id = $proforma->id;
-            $row->sale_register_id = $validated["sale_register_id"];
             $row->created_user_id = $validated["created_user_id"];
             $row->customer_id = $validated["customer_id"] ?? null;
             $row->customer_type = $validated["customer_type"];
@@ -238,84 +235,6 @@ class CustomerInvoicesController extends Controller
         });
         
         return $row->id;
-    }
-
-    public function correctionCreate(StoreCustomerCorrectionRequest $request, $invoiceId)
-    {
-        User::checkAccess("customer_invoices:create");
-
-        $invoice = CustomerInvoice::find($invoiceId);
-        if(!$invoice)
-            throw new ObjectNotExist(__("Invoice to correction does not exist"));
-            
-        if(!$invoice->canMakeCorrection())
-            throw new ObjectNotExist(__("Cannot correction selected invoice"));
-        
-        $validated = $request->validated();
-
-        $row = DB::transaction(function () use($validated, $invoice) {
-            $row = new CustomerInvoice;
-            $row->firm_invoicing_data_id = CustomerInvoice::getCurrentFirmInvoicingDataId();
-            $row->type = SaleRegister::TYPE_CORRECTION;
-            $row->sale_register_id = $validated["sale_register_id"];
-            $row->created_user_id = $validated["created_user_id"];
-            $row->customer_id = $invoice->customer_id ?? null;
-            $row->customer_type = $invoice->customer_type;
-            $row->customer_name = $invoice->customer_name;
-            $row->customer_street = $invoice->customer_street;
-            $row->customer_house_no = $invoice->customer_house_no;
-            $row->customer_apartment_no = $invoice->customer_apartment_no;
-            $row->customer_city = $invoice->customer_city;
-            $row->customer_zip = $invoice->customer_zip;
-            $row->customer_country = $invoice->customer_country;
-            $row->customer_nip = $invoice->customer_nip;
-            $row->comment = $validated["comment"] ?? null;
-            $row->document_date = $validated["document_date"];
-            $row->sell_date = $validated["sell_date"];
-            $row->payment_date = $validated["payment_date"];
-            $row->payment_type_id = $invoice->payment_type_id;
-            $row->account_number = $validated["account_number"] ?? null;
-            $row->swift_number = $validated["swift_number"] ?? null;
-            $row->language = $invoice->language;
-            $row->currency = $invoice->currency;
-            $row->save();
-    
-            $invoice->correction_id = $row->id;
-            $invoice->save();
-    
-            $row->addItems($validated["items"], true);
-            
-            return $row;
-        });
-        
-        return $row->id;
-    }
-
-    public function correctionUpdate(UpdateCustomerCorrectionRequest $request, $correctionId)
-    {
-        User::checkAccess("customer_invoices:update");
-
-        $row = CustomerInvoice::find($correctionId);
-        if(!$row || $row->type != SaleRegister::TYPE_CORRECTION)
-            throw new ObjectNotExist(__("Correction does not exist"));
-
-        $validated = $request->validated();
-            
-        $row = DB::transaction(function () use($validated, $row) {
-            $row->created_user_id = $validated["created_user_id"];
-            $row->comment = $validated["comment"] ?? null;
-            $row->document_date = $validated["document_date"];
-            $row->sell_date = $validated["sell_date"];
-            $row->payment_date = $validated["payment_date"];
-            $row->account_number = $validated["account_number"] ?? null;
-            $row->save();
-            
-            $row->addItems($validated["items"]);
-    
-            return $row;
-        });
-        
-        return true;
     }
 
     public function delete(Request $request, $id)
@@ -411,6 +330,8 @@ class CustomerInvoicesController extends Controller
             Config::saveConfig("invoice", "use_invoice_firm_data", !empty($validated["use_invoice_firm_data"]));
             Config::saveConfig("invoice", "invoice_mask_number", $validated["invoice_mask_number"]);
             Config::saveConfig("invoice", "proforma_mask_number", $validated["proforma_mask_number"]);
+            Config::saveConfig("invoice", "invoice_number_continuation", $validated["invoice_number_continuation"]);
+            Config::saveConfig("invoice", "proforma_number_continuation", $validated["proforma_number_continuation"]);
         }
         elseif($validated["invoicing_type"] == "infakt")
         {
@@ -455,13 +376,8 @@ class CustomerInvoicesController extends Controller
         return true;
     }
     
-    public function getInvoiceNextNumber(Request $request, $saleRegisterId)
+    public function getInvoiceNextNumber(Request $request, $type)
     {
-        $saleRegister = SaleRegister::find($saleRegisterId);
-        
-        if(!$saleRegister)
-            throw new ObjectNotExist(__("Sale register does not exist"));
-        
-        return CustomerInvoice::getInvoiceNextNumber($saleRegister->id);
+        return ["number" => CustomerInvoice::getInvoiceNextNumber($type)];
     }
 }

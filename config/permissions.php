@@ -30,6 +30,10 @@ return [
             "module" => "Customer invoices",
             "operation" => ["list", "create", "update", "delete"]
         ],
+        "customer" => [
+            "module" => "Customers",
+            "operation" => ["list", "create", "update", "delete"]
+        ],
         "config" => [
             "module" => "Configurations",
             "operation" => ["update"]

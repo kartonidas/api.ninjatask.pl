@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use App\Models\Country;
+use App\Models\Numbering;
 
 class UpdateCustomerInvoiceDataRequest extends FormRequest
 {
@@ -29,15 +30,17 @@ class UpdateCustomerInvoiceDataRequest extends FormRequest
             case "app":
                 if(empty($this->use_invoice_firm_data))
                 {
-                    $rules ["invoice_mask_number"] = "required|max:100";
-                    $rules ["proforma_mask_number"] = "required|max:100";
-                    $rules ["type"] = "required|in:firm,person";
-                    $rules ["street"] = "required|max:80";
-                    $rules ["house_no"] = "required|max:20";
-                    $rules ["apartment_no"] = "nullable|max:20";
-                    $rules ["city"] = "required|max:120";
-                    $rules ["zip"] = "required|max:10";
-                    $rules ["country"] = ["required", Rule::in(Country::getAllowedCodes())];
+                    $rules["invoice_mask_number"] = "required|max:100";
+                    $rules["proforma_mask_number"] = "required|max:100";
+                    $rules["invoice_number_continuation"] = ["required", Rule::in(array_keys(Numbering::getNumberingContinuation()))];
+                    $rules["proforma_number_continuation"] = ["required", Rule::in(array_keys(Numbering::getNumberingContinuation()))];
+                    $rules["type"] = "required|in:firm,person";
+                    $rules["street"] = "required|max:80";
+                    $rules["house_no"] = "required|max:20";
+                    $rules["apartment_no"] = "nullable|max:20";
+                    $rules["city"] = "required|max:120";
+                    $rules["zip"] = "required|max:10";
+                    $rules["country"] = ["required", Rule::in(Country::getAllowedCodes())];
                     
                     if(empty($this->type) || $this->type == "firm")
                     {

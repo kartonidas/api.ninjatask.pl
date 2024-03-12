@@ -1,5 +1,5 @@
 @php
-    use App\Models\SaleRegister;
+    use App\Models\CustomerInvoice;
     use App\Libraries\Helper;
 @endphp
 <style>
@@ -65,26 +65,16 @@
             pieczęć firmowa
         </td>
         <td rowspan="2" colspan="2" style="height: 160px; text-align: center; vertical-align: middle;">
-            @if($invoice->type == SaleRegister::TYPE_INVOICE)
+            @if($invoice->type == CustomerInvoice::DOCUMENT_TYPE_INVOICE)
                 <strong>
                     FAKTURA<br/>
                     {{ $invoice->full_number }}
                 </strong>
-            @elseif($invoice->type == SaleRegister::TYPE_PROFORMA)
+            @elseif($invoice->type == CustomerInvoice::DOCUMENT_TYPE_PROFORMA)
                 <strong>
                     FAKTURA PROFORMA<br/>
                     {{ $invoice->full_number }}
                 </strong>
-            @elseif($invoice->type == SaleRegister::TYPE_CORRECTION)
-                <strong>
-                    FAKTURA Korygująca<br/>
-                    {{ $invoice->full_number }}
-                </strong>
-                <div style="font-size: 10px;">
-                    <br/>
-                    Korekta do faktury:<br/>
-                    {{ $invoice->getCorrectionSource()["full_number"] }} z dnia: {{ $invoice->getCorrectionSource()["document_date"] }}
-                </div>
             @endif
         </td>
         <td class="text-center" style="width: 35%; vertical-align: middle;">
@@ -147,58 +137,7 @@
     </tr>
 </table>
 
-@if($invoice->type == SaleRegister::TYPE_CORRECTION)
-    <div style="margin-top:50px">
-        Przed korektą:
-        <table id="items">
-            <thead>
-                <tr>
-                    <th style="width: 40px">Lp.</th>
-                    <th>Nazwa i PKWiU</th>
-                    <th style="width: 80px">Kod GTU</th>
-                    <th style="width: 60px">Ilość</th>
-                    <th style="width: 70px">JM</th>
-                    <th style="width: 100px">VAT</th>
-                    <th style="width: 100px">Cena netto</th>
-                    <th style="width: 100px">Wartość netto</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($items_after_correction as $index => $item)
-                    <tr>
-                        <td>{{ $index+1 }}.</td>
-                        <td>{{ $item->name }}</td>
-                        <td class="text-center">{{ $item->gtu }}</td>
-                        <td class="text-center">{{ $item->quantity }}</td>
-                        <td class="text-center">{{ $item->unit_type }}</td>
-                        <td style="text-align: right">{{ $item->vat_value }}{{ is_numeric($item->vat_value) ? "%" : "" }}</td>
-                        <td style="text-align: right">
-                            @if($item->discount > 0)
-                                {{ Helper::amount($item->net_amount_discount) }}
-                            @else
-                                {{ Helper::amount($item->net_amount) }}
-                            @endif
-                            {{ $invoice->currency }}
-                        </td>
-                        <td style="text-align: right">
-                            @if($item->discount > 0)
-                                {{ Helper::amount($item->net_amount_discount * $item->quantity) }}
-                            @else
-                                {{ Helper::amount($item->net_amount * $item->quantity) }}
-                            @endif
-                            {{ $invoice->currency }}
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-@endif
-
 <div style="margin-top:50px">
-    @if($invoice->type == SaleRegister::TYPE_CORRECTION)
-        Po korekcie:
-    @endif
     <table id="items">
         <thead>
             <tr>
@@ -240,19 +179,11 @@
                 </tr>
             @endforeach
 
-            @if($invoice->type == SaleRegister::TYPE_CORRECTION)
-                @include("pdf.customer-invoices._summary-correction")
-            @else
-                @include("pdf.customer-invoices._summary")
-            @endif
+            @include("pdf.customer-invoices._summary")
         </tbody>
     </table>
 </div>
 
 <div style="margin-top: 20px; border: 1px solid #000; padding: 10px">
-    @if($invoice->type == SaleRegister::TYPE_CORRECTION)
-        {{ Helper::slownie(abs($corrected_invoice->gross_amount - $invoice->gross_amount), $invoice->currency) }}
-    @else
-        {{ Helper::slownie($invoice->gross_amount, $invoice->currency) }}
-    @endif
+    {{ Helper::slownie($invoice->gross_amount, $invoice->currency) }}
 </div>

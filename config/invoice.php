@@ -30,16 +30,12 @@
 			"GTU_12" => "Świadczenie usług doradczych, księgowych, prawnych, zarządczych, szkoleniowych, marketingowych",
 			"GTU_13" => "Świadczenie usług transportowych i gospodarki magazynowej",
 		],
-		"sale_document_types" => [
-			"invoice" => "Faktura VAT",
-			"proforma" => "Proforma",
-		],
         "default_mask" => [
             "invoice" => "@N5/@Y/@M",
             "proforma" => "@N5/@Y/@M",
         ],
         "default_continuation" => [
-            "invoice" => "year",
+            "invoice" => "month",
             "proforma" => "month",
         ]
     ];

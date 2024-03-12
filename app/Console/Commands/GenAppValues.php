@@ -5,7 +5,9 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Libraries\Templates\Rental as TemplateRental;
 use App\Libraries\Data;
+use App\Models\CustomerInvoice;
 use App\Models\Dictionary;
+use App\Models\Numbering;
 
 class GenAppValues extends Command
 {
@@ -46,6 +48,12 @@ class GenAppValues extends Command
             
             foreach(Dictionary::getAllowedTypes() as $type => $name)
                 $toJson[$lang]["dictionaries"][$type] = $name;
+                
+            foreach(Numbering::getNumberingContinuation() as $type => $name)
+                $toJson[$lang]["continuation"][$type] = $name;
+                
+            foreach(CustomerInvoice::getAllowedDocumentTypes() as $type => $name)
+                $toJson[$lang]["sale_document_types"][$type] = $name;
         }
         
         $fp = fopen(__DIR__ . "/../../../../app.ninjatask.pl/resources/js/data/values.json", "w");

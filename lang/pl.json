@@ -148,5 +148,7 @@
     "Cannot delete object": "Cannot delete object",
     "Invoice does not exists": "Invoice does not exists",
     "No customer invoicing data configured": "No customer invoicing data configured",
-    "Invalid source class type": "Invalid source class type"
+    "Invalid source class type": "Invalid source class type",
+    "VAT invoice": "Faktura VAT",
+    "Proforma": "Proforma"
 }

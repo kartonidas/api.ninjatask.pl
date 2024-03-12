@@ -3,10 +3,10 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Http\Requests\StoreSaleRegisterRequest;
+use App\Http\Requests\StoreCustomerRequest;
 use App\Traits\RequestUpdateRules;
 
-class UpdateSaleRegisterRequest extends StoreSaleRegisterRequest
+class UpdateCustomerRequest extends StoreCustomerRequest
 {
     use RequestUpdateRules;
     

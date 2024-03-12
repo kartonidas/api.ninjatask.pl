@@ -25,7 +25,7 @@ class StoreCustomerInvoicesRequest extends FormRequest
         $userIds = User::pluck("id")->all();
         $paymentTypeIds = Dictionary::where("type", "payment_types")->pluck("id")->all();
         
-        $rules["type"] = ["required", Rule::in(array_keys(config("invoice.sale_document_types")))];
+        $rules["type"] = ["required", Rule::in(array_keys(CustomerInvoice::getAllowedDocumentTypes()))];
         $rules["created_user_id"] = ["required", Rule::in($userIds)];
         
         $rules["customer_id"] = ["sometimes", Rule::in($customerIds)];

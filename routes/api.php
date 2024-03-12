@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerInvoicesController;
 use App\Http\Controllers\DictionaryController;
 use App\Http\Controllers\IndexController;
@@ -161,12 +162,12 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'locale'])->group(function () u
     $router->put('/dictionary/{id}', [DictionaryController::class, "update"])->where("id", "[0-9]+");
     $router->delete('/dictionary/{id}', [DictionaryController::class, "delete"])->where("id", "[0-9]+");
     
-    // REJESTR SPRZEDAŻY
-    $router->get('/sale-register', [SaleRegisterController::class, "list"]);
-    $router->put('/sale-register', [SaleRegisterController::class, "create"]);
-    $router->get('/sale-register/{id}', [SaleRegisterController::class, "get"])->where("id", "[0-9]+");
-    $router->put('/sale-register/{id}', [SaleRegisterController::class, "update"])->where("id", "[0-9]+");
-    $router->delete('/sale-register/{id}', [SaleRegisterController::class, "delete"])->where("id", "[0-9]+");
+    // KLIENCI
+    $router->get('/customers', [CustomerController::class, "list"]);
+    $router->put('/customer', [CustomerController::class, "create"]);
+    $router->get('/customer/{id}', [CustomerController::class, "get"])->where("id", "[0-9]+");
+    $router->put('/customer/{id}', [CustomerController::class, "update"])->where("id", "[0-9]+");
+    $router->delete('/customer/{id}', [CustomerController::class, "delete"])->where("id", "[0-9]+");
     
     // FAKTURY
     $router->get('/customer-invoices', [CustomerInvoicesController::class, "list"]);
@@ -176,7 +177,7 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'locale'])->group(function () u
     $router->delete('/customer-invoice/{id}', [CustomerInvoicesController::class, "delete"])->where("id", "[0-9]+");
     $router->put('/customer-invoice/from-proforma/{pid}', [CustomerInvoicesController::class, "fromProforma"])->where("pid", "[0-9]+");
     $router->get('/customer-invoice/{id}/pdf', [CustomerInvoicesController::class, "getPdf"])->where("id", "[0-9]+");
-    $router->get('/customer-invoice/number/{srid}', [CustomerInvoicesController::class, "getInvoiceNextNumber"])->where("srid", "[0-9]+");
+    $router->get('/customer-invoice/number/{type}', [CustomerInvoicesController::class, "getInvoiceNextNumber"]);
     
     $router->get('/customer-invoice/settings', [CustomerInvoicesController::class, "settings"]);
     $router->put('/customer-invoice/settings', [CustomerInvoicesController::class, "settingsUpdate"]);
