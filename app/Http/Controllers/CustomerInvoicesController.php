@@ -141,6 +141,7 @@ class CustomerInvoicesController extends Controller
         $row->can_update = CustomerInvoice::checkOperation($row, "update");
         $row->make_from_proforma = $row->canMakeFromProforma();
         $row->proforma_number = $row->getProformaNumber();
+        $row->seller = $row->getFirmInvoicingData();
         
         return $row;
     }

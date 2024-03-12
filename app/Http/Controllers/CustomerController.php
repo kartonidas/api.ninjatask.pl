@@ -59,7 +59,10 @@ class CustomerController extends Controller
             ->get();
         
         foreach($customers as $i => $customer)
+        {
             $customers[$i]->can_delete = $customer->canDelete();
+            $customers[$i]->contacts = $customer->getContacts();
+        }
         
         $out = [
             "total_rows" => $total,
