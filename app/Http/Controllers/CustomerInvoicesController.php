@@ -39,8 +39,8 @@ class CustomerInvoicesController extends Controller
         
         $validated = $request->validated();
         
-        $size = $validated["size"] ?? config("api.list.size");
-        $skip = isset($validated["first"]) ? $validated["first"] : (($validated["page"] ?? 1)-1)*$size;
+        $size = $request->input("size", config("api.list.size"));
+        $page = $request->input("page", 1);
         
         $userInvoices = CustomerInvoice::whereRaw("1=1");
         
@@ -68,7 +68,7 @@ class CustomerInvoicesController extends Controller
         
         $orderBy = $this->getOrderBy($request, CustomerInvoice::class, "document_date,desc");
         $userInvoices = $userInvoices->take($size)
-            ->skip($skip)
+            ->skip(($page-1)*$size)
             ->orderBy($orderBy[0], $orderBy[1])
             ->get();
         
@@ -83,6 +83,8 @@ class CustomerInvoicesController extends Controller
         $out = [
             "total_rows" => $total,
             "total_pages" => ceil($total / $size),
+            "current_page" => $page,
+            "has_more" => ceil($total / $size) > $page,
             "data" => $userInvoices,
         ];
             
@@ -267,7 +269,7 @@ class CustomerInvoicesController extends Controller
     
     public function settings(Request $request)
     {
-        User::checkAccess("config:update");
+        User::checkAccess("customer_invoices:list");
         
         $config = Config::getConfig("invoice");
         $useInvoiceFirmData = !isset($config["use_invoice_firm_data"]) || !empty($config["use_invoice_firm_data"]);
@@ -321,7 +323,7 @@ class CustomerInvoicesController extends Controller
     
     public function settingsUpdate(UpdateCustomerInvoiceDataRequest $request)
     {
-        User::checkAccess("config:update");
+        User::checkAccess("customer_invoices:list");
         
         $validated = $request->validated();
         
@@ -374,11 +376,19 @@ class CustomerInvoicesController extends Controller
             }
         }
         
+        Config::saveConfig("invoice", "is_configured", 1);
+        
         return true;
     }
     
     public function getInvoiceNextNumber(Request $request, $type)
     {
         return ["number" => CustomerInvoice::getInvoiceNextNumber($type)];
+    }
+    
+    public function customerInvoiceConfigured(Request $request)
+    {
+        $config = Config::getConfig("invoice");
+        return !empty($config["is_configured"]);
     }
 }

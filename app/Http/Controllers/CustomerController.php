@@ -27,7 +27,7 @@ class CustomerController extends Controller
         $validated = $request->validated();
         
         $size = $validated["size"] ?? config("api.list.size");
-        $skip = isset($validated["first"]) ? $validated["first"] : (($validated["page"] ?? 1)-1)*$size;
+        $page = $request->input("page", 1);
         
         $customers = Customer::customer();
             
@@ -54,7 +54,7 @@ class CustomerController extends Controller
         
         $orderBy = $this->getOrderBy($request, Customer::class, "name,asc");
         $customers = $customers->take($size)
-            ->skip($skip)
+            ->skip(($page-1)*$size)
             ->orderBy($orderBy[0], $orderBy[1])
             ->get();
         
@@ -67,6 +67,8 @@ class CustomerController extends Controller
         $out = [
             "total_rows" => $total,
             "total_pages" => ceil($total / $size),
+            "current_page" => $page,
+            "has_more" => ceil($total / $size) > $page,
             "data" => $customers,
         ];
             

@@ -50,7 +50,7 @@ class DictionaryController extends Controller
         ]);
         
         $size = $validated["size"] ?? config("api.list.size");
-        $skip = isset($validated["first"]) ? $validated["first"] : (($validated["page"] ?? 1)-1)*$size;
+        $page = $request->input("page", 1);
         
         $dictionaries = Dictionary
             ::where("type", $type);
@@ -58,7 +58,7 @@ class DictionaryController extends Controller
         $total = $dictionaries->count();
             
         $dictionaries = $dictionaries->take($size)
-            ->skip($skip)
+            ->skip(($page-1)*$size)
             ->orderBy("name", "ASC")
             ->get();
             
@@ -70,6 +70,8 @@ class DictionaryController extends Controller
         $out = [
             "total_rows" => $total,
             "total_pages" => ceil($total / $size),
+            "current_page" => $page,
+            "has_more" => ceil($total / $size) > $page,
             "data" => $dictionaries,
         ];
             

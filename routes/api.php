@@ -13,7 +13,6 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\SaleRegisterController;
 use App\Http\Controllers\StatsController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TaskController;
@@ -178,6 +177,7 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'locale'])->group(function () u
     $router->put('/customer-invoice/from-proforma/{pid}', [CustomerInvoicesController::class, "fromProforma"])->where("pid", "[0-9]+");
     $router->get('/customer-invoice/{id}/pdf', [CustomerInvoicesController::class, "getPdf"])->where("id", "[0-9]+");
     $router->get('/customer-invoice/number/{type}', [CustomerInvoicesController::class, "getInvoiceNextNumber"]);
+    $router->get('/customer-invoice/configured', [CustomerInvoicesController::class, "customerInvoiceConfigured"]);
     
     $router->get('/customer-invoice/settings', [CustomerInvoicesController::class, "settings"]);
     $router->put('/customer-invoice/settings', [CustomerInvoicesController::class, "settingsUpdate"]);
