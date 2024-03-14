@@ -5,9 +5,13 @@ use Illuminate\Http\Request;
 
 trait Sortable
 {
-    public function getOrderBy(Request $request, $model, string $default)
+    public function getOrderBy(Request $request, $model, string|null $default)
     {
-        list($sort, $order) = explode(",", $default);
+        $sort = $order = null;
+        
+        if($default !== null)
+            list($sort, $order) = explode(",", $default);
+            
         if(property_exists($model, "sortable") && property_exists($model, "defaultSortable"))
         {
             if(!empty($request->input("sort")) && in_array($request->input("sort"), $model::$sortable))

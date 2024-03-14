@@ -4,7 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Customer;
 use App\Models\SoftDeletedObject;
 use App\Models\Task;
 use App\Traits\DbTimestamp;
@@ -15,6 +17,8 @@ class Project extends Model
     use \App\Traits\UuidTrait {
         boot as traitBoot;
     }
+    
+    protected $hidden = ["uuid"];
     
     public function delete()
     {
@@ -37,7 +41,7 @@ class Project extends Model
     
     public function scopeApiFields(Builder $query): void
     {
-        $query->select("id", "name", "location", "description", "owner", "created_at");
+        $query->select("id", "name", "location", "description", "owner", "customer_id", "created_at");
     }
     
     public function getTaskCount()
@@ -49,5 +53,10 @@ class Project extends Model
             "opened" => $cntOpened,
             "me" => 3
         ];
+    }
+    
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class, "customer_id");
     }
 }

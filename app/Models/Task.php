@@ -20,6 +20,9 @@ class Task extends Model
         boot as traitBoot;
     }
     
+    public static $sortable = ["name", "created_at"];
+    public static $defaultSortable = null;
+    
     public function delete()
     {
         $notifications = Notification::where("object_id", $this->id)->where("type", "LIKE", "task:%")->get();

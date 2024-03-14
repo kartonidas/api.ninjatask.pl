@@ -83,6 +83,7 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'locale'])->group(function () u
     
     // ZADANIA
     $router->get('/tasks/{id}', [TaskController::class, "list"])->where("id", "[0-9]+");
+    $router->get('/tasks/customer/{id}', [TaskController::class, "listCustomer"])->where("id", "[0-9]+");
     $router->put('/task', [TaskController::class, "create"]);
     $router->get('/task/{id}', [TaskController::class, "get"])->where("id", "[0-9]+");
     $router->put('/task/{id}', [TaskController::class, "update"])->where("id", "[0-9]+");

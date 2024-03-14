@@ -13,6 +13,7 @@ use App\Exceptions\AccessDenied;
 use App\Exceptions\InvalidStatus;
 use App\Exceptions\ObjectExist;
 use App\Exceptions\ObjectNotExist;
+use App\Models\Customer;
 use App\Models\File;
 use App\Models\Project;
 use App\Models\Status;
@@ -21,9 +22,12 @@ use App\Models\Task;
 use App\Models\TaskAssignedUser;
 use App\Models\User;
 use App\Rules\Attachment;
+use App\Traits\Sortable;
 
 class TaskController extends Controller
 {
+    use Sortable;
+    
     /**
     * Get tasks list
     *
@@ -43,10 +47,19 @@ class TaskController extends Controller
     public function list(Request $request, $id)
     {
         User::checkAccess("task:list");
-        
-        $project = Project::find($id);
-        if(!$project)
-            throw new ObjectNotExist(__("Project not exist"));
+        return $this->_getTask($request, "project", $id);
+    }
+    
+    public function listCustomer(Request $request, $id)
+    {
+        User::checkAccess("task:list");
+        return $this->_getTask($request, "customer", $id);
+    }
+    
+    private function _getTask(Request $request, $source = "project", $id)
+    {
+        if(!in_array($source, ["project", "customer"]))
+            throw new Exception(__("Invalid type"));
         
         $request->validate([
             "size" => "nullable|integer|gt:0",
@@ -56,6 +69,9 @@ class TaskController extends Controller
             "status" => ["nullable", "integer", Rule::in($this->getAllowedStatuses())],
             "priority" => ["nullable", "integer", Rule::in([1,2,3])],
             "state" => ["nullable", Rule::in(["opened", "closed"])],
+            "name" => "nullable|max:200",
+            "created_from" => "nullable|date_format:Y-m-d",
+            "created_to" => "nullable|date_format:Y-m-d",
         ]);
         
         $size = $request->input("size", config("api.list.size"));
@@ -66,10 +82,27 @@ class TaskController extends Controller
         $searchStatus = $request->input("status", null);
         $searchPriority = $request->input("priority", null);
         $searchState = $request->input("state", null);
+        $searchName = $request->input("name", null);
+        $searchCreatedAtFrom = $request->input("created_from", null);
+        $searchCreatedAtTo = $request->input("created_to", null);
 
-        $tasks = Task
-            ::apiFields()
-            ->where("project_id", $id);
+        if($source == "project")
+        {
+            $project = Project::find($id);
+            if(!$project)
+                throw new ObjectNotExist(__("Project not exist"));
+            
+            $tasks = Task::apiFields()->where("project_id", $id);
+        }
+        else
+        {
+            $customer = Customer::find($id);
+            if(!$customer)
+                throw new ObjectNotExist(__("Customer not exist"));
+            
+            $projectIds = Project::where("customer_id", $customer->id)->pluck("id")->all();
+            $tasks = Task::apiFields()->whereIn("project_id", $projectIds);
+        }
             
         if($searchStatus)
             $tasks->where("status_id", $searchStatus);
@@ -97,16 +130,29 @@ class TaskController extends Controller
                     ->orWhere("description", "LIKE", "%" . $searchQuery . "%");
             });
         }
+        if($searchName)
+            $tasks->where("name", "LIKE", "%" . $searchName . "%");
+        if($searchCreatedAtFrom)
+            $tasks->whereDate("created_at", ">=", $searchCreatedAtFrom);
+        if($searchCreatedAtTo)
+            $tasks->whereDate("created_at", "<=", $searchCreatedAtTo);
         
         $total = $tasks->count();
+        
+        $tasks = $tasks->take($size)->skip(($page-1)*$size);
             
-        $tasks = $tasks->take($size)
-            ->skip(($page-1)*$size)
-            ->orderBy("completed", "ASC")
-            ->orderBy("priority", "DESC")
-            ->orderBy("updated_at", "DESC")
-            ->get();
-            
+        $orderBy = $this->getOrderBy($request, Task::class, null);
+        if(!empty($orderBy[0]))
+            $tasks->orderBy($orderBy[0], $orderBy[1]);
+        else
+        {
+            $tasks
+                ->orderBy("completed", "ASC")
+                ->orderBy("priority", "DESC")
+                ->orderBy("updated_at", "DESC");
+        }
+        $tasks = $tasks->get();
+        
         foreach($tasks as $k => $task)
         {
             $tasks[$k]->assigned_to = $task->getAssignedUserIds();
@@ -122,7 +168,7 @@ class TaskController extends Controller
             "current_page" => $page,
             "has_more" => ceil($total / $size) > $page,
             "data" => $tasks,
-            "project_name" => $project->name,
+            "project_name" => isset($project) ? $project->name : null,
         ];
             
         return $out;

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use App\Models\Customer;
 use App\Models\Project;
 use App\Models\Subscription;
 use App\Models\Task;
@@ -32,14 +33,18 @@ class ProjectController extends Controller
         $request->validate([
             "size" => "nullable|integer|gt:0",
             "page" => "nullable|integer|gt:0",
+            "customer_id" => "nullable|integer",
         ]);
         
         $size = $request->input("size", config("api.list.size"));
         $page = $request->input("page", 1);
         
-        $projects = Project
-            ::apiFields()
-            ->take($size)
+        $projects = Project::apiFields();
+            
+        if($request->input("customer_id", null))
+            $projects->where("customer_id", $request->input("customer_id"));
+            
+        $projects = $projects->take($size)
             ->skip(($page-1)*$size)
             ->get();
             
@@ -47,6 +52,7 @@ class ProjectController extends Controller
         {
             $count = $project->getTaskCount();
             $projects[$k]->tasks = $count;
+            $projects[$k]->customer = $project->customer()->first();
         }
     
         $total = Project::count();
@@ -81,6 +87,7 @@ class ProjectController extends Controller
         
         $count = $project->getTaskCount();
         $project->tasks = $count;
+        $project->customer = $project->customer()->first();
         
         return $project;
     }
@@ -93,6 +100,7 @@ class ProjectController extends Controller
     * @bodyParam location string Project location.
     * @bodyParam description string Project description.
     * @bodyParam owner string Project owner.
+    * @bodyParam customer_id integer Customer identifier.
     * @responseField id integer The id of the newly created project
     * @header Authorization: Bearer {TOKEN}
     * @group Projects
@@ -107,13 +115,22 @@ class ProjectController extends Controller
             "location" => "nullable|max:5000",
             "description" => "nullable|max:5000",
             "owner" => "nullable|max:5000",
+            "customer_id" => "nullable|integer",
         ]);
+        
+        if($request->input("customer_id", null))
+        {
+            $customer = Customer::find($request->input("customer_id", null));
+            if(!$customer)
+                throw new Exception("Customer does not exists");
+        }
         
         $project = new Project;
         $project->name = $request->input("name");
         $project->location = $request->input("location", "");
         $project->description = $request->input("description", "");
         $project->owner = $request->input("owner", "");
+        $project->customer_id = $request->input("customer_id", null);
         $project->save();
         
         return $project->id;
@@ -128,6 +145,7 @@ class ProjectController extends Controller
     * @bodyParam location string Project location.
     * @bodyParam description string Project description.
     * @bodyParam owner string Project owner.
+    * @bodyParam customer_id integer Customer identifier.
     * @responseField status boolean Update status
     * @header Authorization: Bearer {TOKEN}
     * @group Projects
@@ -145,10 +163,11 @@ class ProjectController extends Controller
             "location" => "nullable|max:5000",
             "description" => "nullable|max:5000",
             "owner" => "nullable|max:5000",
+            "customer_id" => "nullable|integer",
         ];
         
         $validate = [];
-        $updateFields = ["name", "location", "description", "owner"];
+        $updateFields = ["name", "location", "description", "owner", "customer_id"];
         foreach($updateFields as $field)
         {
             if($request->has($field))
@@ -156,6 +175,13 @@ class ProjectController extends Controller
                 if(!empty($rules[$field]))
                     $validate[$field] = $rules[$field];
             }
+        }
+        
+        if($request->input("customer_id", null))
+        {
+            $customer = Customer::find($request->input("customer_id", null));
+            if(!$customer)
+                throw new Exception("Customer does not exists");
         }
         
         if(!empty($validate))
