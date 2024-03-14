@@ -7,6 +7,6 @@ class CustomerInvoiceObserver
 {
     public function created(CustomerInvoice $invoice)
     {
-        $invoice->setNumber();
+        
     }
 }

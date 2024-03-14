@@ -18,11 +18,11 @@ class UpdateCustomerInvoiceDataRequest extends FormRequest
     {
         $rules = [
             "use_invoice_firm_data" => "sometimes|boolean",
-            "invoicing_type" => ["required", Rule::in("app" ,"infakt", "fakturownia")],
+            "invoicing_type" => ["required", Rule::in("app" ,"infakt", "fakturownia", "wfirma")],
         ];
         
         $invoicingType = "app";
-        if(!empty($this->invoicing_type) && in_array($this->invoicing_type, ["infakt", "fakturownia"]))
+        if(!empty($this->invoicing_type) && in_array($this->invoicing_type, ["infakt", "fakturownia", "wfirma"]))
             $invoicingType = $this->invoicing_type;
         
         switch($invoicingType)
@@ -68,6 +68,11 @@ class UpdateCustomerInvoiceDataRequest extends FormRequest
                 $rules["fakturownia_token"] = "required|max:1000";
                 $rules["fakturownia_department_id"] = "required|max:1000";
                 $rules["fakturownia_domain"] = "required|max:1000";
+            break;
+        
+            case "wfirma":
+                $rules["wfirma_access_key"] = "required|max:100";
+                $rules["wfirma_secret_key"] = "required|max:100";
             break;
         }
         

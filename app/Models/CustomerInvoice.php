@@ -29,12 +29,25 @@ class CustomerInvoice extends Model
     
     public const DOCUMENT_TYPE_INVOICE = "invoice";
     public const DOCUMENT_TYPE_PROFORMA = "proforma";
+    
+    public const PAYMENT_TRANSFER = "transfer";
+    public const PAYMENT_CASH = "cash";
+    public const PAYMENT_CARD = "card";
 
     public static function getAllowedDocumentTypes()
     {
         return [
 			self::DOCUMENT_TYPE_INVOICE => __("VAT invoice"),
 			self::DOCUMENT_TYPE_PROFORMA => __("Proforma"),
+		];
+    }
+    
+    public static function getAllowedPaymentTypes()
+    {
+        return [
+			self::PAYMENT_TRANSFER => __("Transfer"),
+			self::PAYMENT_CASH => __("Cash"),
+            self::PAYMENT_CARD => __("Card"),
 		];
     }
     
@@ -153,15 +166,13 @@ class CustomerInvoice extends Model
     public function canMakeFromProforma()
     {
         if($this->type == "proforma" && !self::where("proforma_id", $this->id)->count())
+        {
+            $config = Config::getConfig("invoice");
+            if($this->system != $config["invoicing_type"])
+                return false;
+            
             return true;
-
-        return false;
-    }
-
-    public function canMakeCorrection()
-    {
-        if($this->type == "invoice" && !$this->correction_id)
-            return true;
+        }
 
         return false;
     }
@@ -173,17 +184,6 @@ class CustomerInvoice extends Model
             $proforma = self::find($this->proforma_id);
             if($proforma)
                 return $proforma->full_number;
-        }
-        return "";
-    }
-
-    public function getCorrectionNumber()
-    {
-        if($this->correction_id)
-        {
-            $correction = self::find($this->correction_id);
-            if($correction)
-                return $correction->full_number;
         }
         return "";
     }
@@ -311,9 +311,7 @@ class CustomerInvoice extends Model
     {
         $operations = [
             "update" => true,
-            "payment:add" => true,
-            "payment:update" => true,
-            "payment:delete" => true,
+            "download" => true,
             "item:add" => true,
             "item:update" => true,
             "item:delete" => true,
@@ -321,32 +319,34 @@ class CustomerInvoice extends Model
 
         if($invoice)
         {
-            switch($invoice->type)
+            $config = Config::getConfig("invoice");
+            if($invoice->system != "app" && $invoice->system != $config["invoicing_type"])
             {
-                case "proforma":
-                    if(self::where("proforma_id", $invoice->id)->count())
-                    {
-                        foreach($operations as $op => $state)
-                            $operations[$op] = false;
-                    }
-                break;
-
-                case "invoice":
-                    if($invoice->correction_id)
-                    {
-                        $operations["update"] = false;
-                        $operations["item:add"] = false;
-                        $operations["item:update"] = false;
-                        $operations["item:delete"] = false;
-                    }
-                break;
-
-                case "correction":
-                    $operations["update"] = false;
-                    $operations["item:add"] = false;
-                    $operations["item:update"] = true;
-                    $operations["item:delete"] = false;
-                break;
+                foreach($operations as $op => $state)
+                    $operations[$op] = false;
+            }
+            else
+            {
+                switch($invoice->type)
+                {
+                    case "proforma":
+                        if(self::where("proforma_id", $invoice->id)->count())
+                        {
+                            foreach($operations as $op => $state)
+                                $operations[$op] = false;
+                        }
+                    break;
+    
+                    case "invoice":
+                        if($invoice->correction_id)
+                        {
+                            $operations["update"] = false;
+                            $operations["item:add"] = false;
+                            $operations["item:update"] = false;
+                            $operations["item:delete"] = false;
+                        }
+                    break;
+                }
             }
         }
         return $operations;

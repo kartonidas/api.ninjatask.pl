@@ -46,6 +46,6 @@ class CustomerInvoicePrinter
 
         $pdf = PDF::loadView("pdf.customer-invoices.invoice", $data);
         $pdf->getMpdf()->SetTitle($title);
-        return $pdf->stream($title . ".pdf");
+        return $pdf->output($title . ".pdf");
     }
 }

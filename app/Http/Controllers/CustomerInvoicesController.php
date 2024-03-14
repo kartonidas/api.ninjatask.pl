@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Schema;
 
 use App\Http\Requests\CustomerInvoicesRequest;
@@ -20,7 +21,8 @@ use App\Http\Requests\StoreCustomerInvoicesRequest;
 use App\Http\Requests\UpdateCustomerCorrectionRequest;
 use App\Http\Requests\UpdateCustomerInvoiceDataRequest;
 use App\Http\Requests\UpdateCustomerInvoicesRequest;
-use App\Libraries\CustomerInvoicePrinter;
+use App\Libraries\Helper;
+use App\Libraries\Invoicing\Invoicing;
 use App\Models\Config;
 use App\Models\Customer;
 use App\Models\CustomerInvoice;
@@ -76,6 +78,7 @@ class CustomerInvoicesController extends Controller
         {
             $userInvoices[$k]->can_delete = $userInvoice->canDelete();
             $userInvoices[$k]->can_update = CustomerInvoice::checkOperation($userInvoice, "update");
+            $userInvoices[$k]->can_download = CustomerInvoice::checkOperation($userInvoice, "download");
             $userInvoices[$k]->make_from_proforma = $userInvoice->canMakeFromProforma();
             $userInvoices[$k]->proforma_number = $userInvoice->getProformaNumber();
         }
@@ -96,9 +99,11 @@ class CustomerInvoicesController extends Controller
         User::checkAccess("customer_invoices:create");
         
         $validated = $request->validated();
-        
         $row = DB::transaction(function () use($validated) {
+            $config = Config::getConfig("invoice");
+            
             $row = new CustomerInvoice;
+            $row->system = $config["invoicing_type"];
             $row->firm_invoicing_data_id = CustomerInvoice::getCurrentFirmInvoicingDataId();
             $row->type = $validated["type"];
             $row->created_user_id = $validated["created_user_id"];
@@ -116,7 +121,7 @@ class CustomerInvoicesController extends Controller
             $row->document_date = $validated["document_date"];
             $row->sell_date = $validated["sell_date"];
             $row->payment_date = $validated["payment_date"];
-            $row->payment_type_id = $validated["payment_type_id"];
+            $row->payment_type = $validated["payment_type"];
             $row->account_number = $validated["account_number"] ?? null;
             $row->swift_number = $validated["swift_number"] ?? null;
             $row->language = $validated["language"];
@@ -124,6 +129,7 @@ class CustomerInvoicesController extends Controller
             $row->save();
     
             $row->addItems($validated["items"]);
+            Invoicing::newInvoice($row);
             
             return $row;
         });
@@ -141,6 +147,7 @@ class CustomerInvoicesController extends Controller
         
         $row->items = $row->items()->get();
         $row->can_update = CustomerInvoice::checkOperation($row, "update");
+        $row->can_download = CustomerInvoice::checkOperation($row, "download");
         $row->make_from_proforma = $row->canMakeFromProforma();
         $row->proforma_number = $row->getProformaNumber();
         $row->seller = $row->getFirmInvoicingData();
@@ -177,7 +184,7 @@ class CustomerInvoicesController extends Controller
             $row->document_date = $validated["document_date"];
             $row->sell_date = $validated["sell_date"];
             $row->payment_date = $validated["payment_date"];
-            $row->payment_type_id = $validated["payment_type_id"];
+            $row->payment_type = $validated["payment_type"];
             $row->account_number = $validated["account_number"] ?? null;
             $row->swift_number = $validated["swift_number"] ?? null;
             $row->language = $validated["language"];
@@ -185,6 +192,7 @@ class CustomerInvoicesController extends Controller
             $row->save();
     
             $row->addItems($validated["items"]);
+            Invoicing::updateInvoice($row);
             
             return $row;
         });
@@ -207,6 +215,7 @@ class CustomerInvoicesController extends Controller
         
         $row = DB::transaction(function () use($validated, $proforma) {
             $row = new CustomerInvoice;
+            $row->system = $proforma->system;
             $row->type = CustomerInvoice::DOCUMENT_TYPE_INVOICE;
             $row->firm_invoicing_data_id = $proforma->firm_invoicing_data_id;
             $row->proforma_id = $proforma->id;
@@ -225,7 +234,7 @@ class CustomerInvoicesController extends Controller
             $row->document_date = $validated["document_date"];
             $row->sell_date = $validated["sell_date"];
             $row->payment_date = $validated["payment_date"];
-            $row->payment_type_id = $validated["payment_type_id"];
+            $row->payment_type = $validated["payment_type"];
             $row->account_number = $validated["account_number"] ?? null;
             $row->swift_number = $validated["swift_number"] ?? null;
             $row->language = $validated["language"];
@@ -233,6 +242,7 @@ class CustomerInvoicesController extends Controller
             $row->save();
     
             $row->addItems($validated["items"]);
+            Invoicing::makeFromProforma($row);
             
             return $row;
         });
@@ -263,8 +273,14 @@ class CustomerInvoicesController extends Controller
         $row = CustomerInvoice::find($id);
         if(!$row)
             throw new ObjectNotExist(__("Invoice does not exist"));
-
-        CustomerInvoicePrinter::generatePDF($row);
+        
+        $name = Helper::__no_pl($row->customer_name . "-" . $row->full_number) . ".pdf";
+        $pdf = Invoicing::downloadInvoice($row);
+        $header = [
+            "Content-type" => "application/pdf",
+            "Content-Disposition" => "inline; filename=\"" . $name . "\""
+        ];
+        return Response::make($pdf, 200, $header);
     }
     
     public function settings(Request $request)
@@ -298,24 +314,37 @@ class CustomerInvoicesController extends Controller
             "proforma_number_continuation" => !empty($config["proforma_number_continuation"]) ? $config["proforma_number_continuation"] : config("invoice.default_continuation.proforma"),
         ];
         
-        if(!empty($config["invoicing_type"]) && $config["invoicing_type"] == "infakt")
+        if(!empty($config["invoicing_type"]))
         {
-            try
+            switch($config["invoicing_type"])
             {
-                $settings["infakt_api_key"] = Crypt::decryptString($config["infakt_api_key"]) ?? "";
+                case "infakt":
+                    try
+                    {
+                        $settings["infakt_api_key"] = Crypt::decryptString($config["infakt_api_key"]) ?? "";
+                    }
+                    catch(Throwable $e) {}
+                break;
+            
+                case "fakturownia":
+                    try
+                    {
+                        $settings["fakturownia_token"] = Crypt::decryptString($config["fakturownia_token"]) ?? "";
+                    }
+                    catch(Throwable $e) {}
+                    $settings["fakturownia_department_id"] = $config["fakturownia_department_id"] ?? "";
+                    $settings["fakturownia_domain"] = $config["fakturownia_domain"] ?? "";
+                break;
+            
+                case "wfirma":
+                    try
+                    {
+                        $settings["wfirma_access_key"] = Crypt::decryptString($config["wfirma_access_key"]) ?? "";
+                        $settings["wfirma_secret_key"] = Crypt::decryptString($config["wfirma_secret_key"]) ?? "";
+                    }
+                    catch(Throwable $e) {}
+                break;
             }
-            catch(Throwable $e) {}
-        }
-        
-        if(!empty($config["invoicing_type"]) && $config["invoicing_type"] == "fakturownia")
-        {
-            try
-            {
-                $settings["fakturownia_token"] = Crypt::decryptString($config["fakturownia_token"]) ?? "";
-            }
-            catch(Throwable $e) {}
-            $settings["fakturownia_department_id"] = $config["fakturownia_department_id"] ?? "";
-            $settings["fakturownia_domain"] = $config["fakturownia_domain"] ?? "";
         }
         
         return $settings;
@@ -345,6 +374,11 @@ class CustomerInvoicesController extends Controller
             Config::saveConfig("invoice", "fakturownia_token", Crypt::encryptString($validated["fakturownia_token"]));
             Config::saveConfig("invoice", "fakturownia_department_id", $validated["fakturownia_department_id"]);
             Config::saveConfig("invoice", "fakturownia_domain", $validated["fakturownia_domain"]);
+        }
+        elseif($validated["invoicing_type"] == "wfirma")
+        {
+            Config::saveConfig("invoice", "wfirma_access_key", Crypt::encryptString($validated["wfirma_access_key"]));
+            Config::saveConfig("invoice", "wfirma_secret_key", Crypt::encryptString($validated["wfirma_secret_key"]));
         }
         
         if($validated["invoicing_type"] == "app" && empty($validated["use_invoice_firm_data"]))

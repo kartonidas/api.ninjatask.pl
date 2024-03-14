@@ -54,6 +54,9 @@ class GenAppValues extends Command
                 
             foreach(CustomerInvoice::getAllowedDocumentTypes() as $type => $name)
                 $toJson[$lang]["sale_document_types"][$type] = $name;
+                
+            foreach(CustomerInvoice::getAllowedPaymentTypes() as $type => $name)
+                $toJson[$lang]["payment_types"][$type] = $name;
         }
         
         $fp = fopen(__DIR__ . "/../../../../app.ninjatask.pl/resources/js/data/values.json", "w");

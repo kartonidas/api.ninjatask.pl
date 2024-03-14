@@ -8,7 +8,6 @@ use Illuminate\Validation\Rule;
 use App\Models\Country;
 use App\Models\Customer;
 use App\Models\CustomerInvoice;
-use App\Models\Dictionary;
 use App\Models\User;
 
 class StoreCustomerInvoicesRequest extends FormRequest
@@ -23,7 +22,6 @@ class StoreCustomerInvoicesRequest extends FormRequest
         $rules = [];
         $customerIds = Customer::pluck("id")->all();
         $userIds = User::pluck("id")->all();
-        $paymentTypeIds = Dictionary::where("type", "payment_types")->pluck("id")->all();
         
         $rules["type"] = ["required", Rule::in(array_keys(CustomerInvoice::getAllowedDocumentTypes()))];
         $rules["created_user_id"] = ["required", Rule::in($userIds)];
@@ -44,7 +42,7 @@ class StoreCustomerInvoicesRequest extends FormRequest
         $rules["document_date"] = ["required", "date_format:Y-m-d"];
         $rules["sell_date"] = ["required", "date_format:Y-m-d"];
         $rules["payment_date"] = ["required", "date_format:Y-m-d"];
-        $rules["payment_type_id"] = ["required", Rule::in($paymentTypeIds)];
+        $rules["payment_type"] = ["required", Rule::in(array_keys(CustomerInvoice::getAllowedPaymentTypes()))];
         $rules["account_number"] = "sometimes|string|max:60";
         $rules["swift_number"] = "sometimes|string|max:60";
         $rules["language"] = ["required", Rule::in(config("invoice.languages"))];
