@@ -26,7 +26,7 @@ class StoreCustomerInvoicesRequest extends FormRequest
         $rules["type"] = ["required", Rule::in(array_keys(CustomerInvoice::getAllowedDocumentTypes()))];
         $rules["created_user_id"] = ["required", Rule::in($userIds)];
         
-        $rules["customer_id"] = ["sometimes", Rule::in($customerIds)];
+        $rules["customer_id"] = ["nullable", Rule::in($customerIds)];
         $rules["customer_type"] = ["required", Rule::in(CustomerInvoice::TYPE_PERSON, CustomerInvoice::TYPE_FIRM)];
         $rules["customer_name"] = "required|max:100";
         $rules["customer_street"] = "required|max:80";

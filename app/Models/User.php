@@ -25,6 +25,7 @@ use App\Mail\User\ForgotPasswordMessage;
 use App\Models\Firm;
 use App\Models\PasswordResetToken;
 use App\Models\Status;
+use App\Models\TaskAssignedUser;
 use App\Models\UserPermission;
 use App\Models\UserRegisterToken;
 use App\Models\UserSetting;
@@ -390,5 +391,10 @@ class User extends Authenticatable
             $this->delete();
             PersonalAccessToken::where("tokenable_id", $this->id)->delete();
         }
+    }
+    
+    public function getAssignedTaskIds()
+    {
+        return TaskAssignedUser::where("user_id", $this->id)->pluck("task_id")->all();
     }
 }

@@ -9,6 +9,7 @@ use App\Models\SoftDeletedObject;
 use App\Models\Status;
 use App\Models\Task;
 use App\Models\TaskAssignedUser;
+use App\Models\TaskCalendar;
 use App\Models\TaskComment;
 use App\Models\TaskTime;
 use App\Models\TaskTimeDay;
@@ -18,12 +19,14 @@ class TaskObserver
     public function created(Task $task): void
     {
         LimitsCalculate::dispatch($task->uuid);
+        TaskCalendar::generateDates($task);
     }
     
     public function deleted(Task $task): void
     {
         LimitsCalculate::dispatch($task->uuid);
         TaskTimeDay::where("task_id", $task->id)->delete();
+        TaskCalendar::deleteDates($task);
     }
     
     public function updated(Task $task): void
@@ -58,6 +61,9 @@ class TaskObserver
                     Notification::notify($id, Auth::user()->id, $task->id, "task:change_status_assigned");
             }
         }
+        
+        if($task->isDirty("start_date") || $task->isDirty("end_date"))
+            TaskCalendar::generateDates($task);
     }
     
     public function forceDeleting(Task $task): void

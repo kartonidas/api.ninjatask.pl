@@ -9,10 +9,13 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\File as RuleFile;
 use Illuminate\Validation\ValidationException;
+use App\Exceptions\Exception;
 use App\Exceptions\AccessDenied;
 use App\Exceptions\InvalidStatus;
 use App\Exceptions\ObjectExist;
 use App\Exceptions\ObjectNotExist;
+use App\Http\Requests\CalendarRequest;
+use App\Libraries\Data;
 use App\Models\Customer;
 use App\Models\File;
 use App\Models\Project;
@@ -20,6 +23,7 @@ use App\Models\Status;
 use App\Models\Subscription;
 use App\Models\Task;
 use App\Models\TaskAssignedUser;
+use App\Models\TaskCalendar;
 use App\Models\User;
 use App\Rules\Attachment;
 use App\Traits\Sortable;
@@ -216,6 +220,9 @@ class TaskController extends Controller
     * @bodyParam attachments array Array of files attach to task ([{"name": "File name", "base64": Base64 encoded file, "description": "Optional file description"}])
     * @bodyParam priority integer Task priority (one of: 1, 2, 3).
     * @bodyParam start_date date Task start date (format: Y-m-d)
+    * @bodyParam start_date_time string Task start time (format: HH:MM)
+    * @bodyParam end_date date Task end date (format: Y-m-d)
+    * @bodyParam end_date_time string Task end time (format: HH:MM)
     * @bodyParam due_date date Task due date (format: Y-m-d)
     * @responseField id integer The id of the newly created task
     * @header Authorization: Bearer {TOKEN}
@@ -237,6 +244,9 @@ class TaskController extends Controller
             "priority" => ["nullable", Rule::in(array_keys(config("api.tasks.priority")))],
             "status_id" => ["nullable", "numeric", Rule::in($this->getAllowedStatuses())],
             "start_date" => ["nullable", "date_format:Y-m-d"],
+            "start_date_time" => ["nullable", Rule::in(Data::getAllowedTimes())],
+            "end_date" => ["nullable", "date_format:Y-m-d"],
+            "end_date_time" => ["nullable", Rule::in(Data::getAllowedTimes())],
             "due_date" => ["nullable", "date_format:Y-m-d"],
         ]);
         
@@ -252,6 +262,9 @@ class TaskController extends Controller
         $task->priority = intval($request->input("priority", 2));
         $task->status_id = intval($request->input("status_id"));
         $task->start_date = $request->input("start_date");
+        $task->start_date_time = $request->input("start_date_time");
+        $task->end_date = $request->input("end_date");
+        $task->end_date_time = $request->input("end_date_time");
         $task->due_date = $request->input("due_date");
         $task->save();
         
@@ -275,6 +288,9 @@ class TaskController extends Controller
     * @bodyParam users integer Array of users identifier assigned to task.
     * @bodyParam priority integer Task priority (one of: 1, 2, 3).
     * @bodyParam start_date date Task start date (format: Y-m-d)
+    * @bodyParam start_date_time string Task start time (format: HH:MM)
+    * @bodyParam end_date date Task end date (format: Y-m-d)
+    * @bodyParam end_date_time string Task end time (format: HH:MM)
     * @bodyParam due_date date Task due date (format: Y-m-d)
     * @responseField status boolean Update status
     * @header Authorization: Bearer {TOKEN}
@@ -303,11 +319,14 @@ class TaskController extends Controller
             "priority" => ["nullable", Rule::in(array_keys(config("api.tasks.priority")))],
             "status_id" => ["nullable", "numeric", Rule::in($this->getAllowedStatuses())],
             "start_date" => ["nullable", "date_format:Y-m-d"],
+            "start_date_time" => ["nullable", Rule::in(Data::getAllowedTimes())],
+            "end_date" => ["nullable", "date_format:Y-m-d"],
+            "end_date_time" => ["nullable", Rule::in(Data::getAllowedTimes())],
             "due_date" => ["nullable", "date_format:Y-m-d"],
         ];
         
         $validate = [];
-        $updateFields = ["name", "description", "priority", "status_id", "start_date", "due_date"];
+        $updateFields = ["name", "description", "priority", "status_id", "start_date", "start_date_time", "end_date", "end_date_time", "due_date"];
         foreach($updateFields as $field)
         {
             if($request->has($field))
@@ -773,5 +792,70 @@ class TaskController extends Controller
             $users = array_unique($users);
             $request->merge(["users" => $users]);
         }
+    }
+    
+    public function calendar(CalendarRequest $request)
+    {
+        User::checkAccess("task:list");
+        
+        $validated = $request->validated();
+        
+        $taskIds = TaskCalendar::whereBetween("date", [$validated["date_from"], $validated["date_to"]]);
+        if(!User::checkAccess("user:list", false))
+            $taskIds->whereIn("task_id", Auth::user()->getAssignedTaskIds());
+        else
+        {
+            if(!empty($validated["user_id"]))
+            {
+                $user = User::byFirm()->apiFields()->find($validated["user_id"]);
+                if(!$user)
+                    throw new Exception("User does not exists");
+                
+                $taskIds->whereIn("task_id", $user->getAssignedTaskIds());
+            }
+        }
+        
+        $taskIds = $taskIds->pluck("task_id")->all();
+        $taskIds = array_unique($taskIds);
+        
+        $tasks = Task::whereIn("id", $taskIds)->get();
+        
+        $result = [];
+        if(!$tasks->isEmpty())
+        {
+            foreach($tasks as $task)
+            {
+                $placeInfo = [];
+                $place = $task->project_id ? Project::find($task->project_id) : null;
+                if($place)
+                {
+                    $placeInfo = [
+                        "id" => $place->id,
+                        "name" => $place->name,
+                    ];
+                    
+                    $customer = $place->customer()->first();
+                    if($customer)
+                    {
+                        $placeInfo["customer"] = [
+                            "id" => $customer->id,
+                            "name" => $customer->name,
+                        ];
+                    }
+                }
+                
+                $result[] = [
+                    "id" => $task->id,
+                    "start" => $task->getStartDateTime(),
+                    "end" => $task->getEndDateTime(),
+                    "title" => $task->name,
+                    "description" => $task->description,
+                    "place" => $placeInfo,
+                    "assigned" => self::getAllowedUsersList($task->id)
+                ];
+            }
+        }
+        
+        return $result;
     }
 }

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Notification;
 use App\Models\Status;
 use App\Models\TaskAssignedUser;
+use App\Models\TaskCalendar;
 use App\Models\TaskTime;
 use App\Traits\File;
 use App\Traits\DbTimestamp;
@@ -44,7 +45,7 @@ class Task extends Model
     
     public function scopeApiFields(Builder $query): void
     {
-        $query->select("id", "name", "description", "project_id", "status_id", "priority", "start_date", "due_date", "completed", "created_at");
+        $query->select("id", "name", "description", "project_id", "status_id", "priority", "start_date", "start_date_time", "end_date", "end_date_time", "due_date", "completed", "created_at");
     }
     
     public function calculateTotalTime()
@@ -140,5 +141,27 @@ class Task extends Model
             return static::$statuses[$this->status_id];
         
         return "-";
+    }
+    
+    public function getCalendarDates()
+    {
+        return TaskCalendar::where("task_id", $this->id)->orderBy("date", "ASC")->get();
+    }
+    
+    public function getStartDateTime()
+    {
+        if(!$this->start_date)
+            return null;
+        
+        return $this->start_date . " " . ($this->start_date_time ? $this->start_date_time : TaskCalendar::getDefaultStartTime()) . ":00";
+    }
+    
+    public function getEndDateTime()
+    {
+        if(!$this->start_date)
+            return null;
+        
+        $endDate = $this->end_date ? $this->end_date : $this->start_date;
+        return $endDate . " " . ($this->end_date_time ? $this->end_date_time : TaskCalendar::getDefaultEndTime()) . ":00";
     }
 }

@@ -59,6 +59,9 @@ class GenAppValues extends Command
                 $toJson[$lang]["payment_types"][$type] = $name;
         }
         
+        foreach(Data::getAllowedTimes() as $type => $name)
+            $toJson["global"]["times"][$type] = $name;
+        
         $fp = fopen(__DIR__ . "/../../../../app.ninjatask.pl/resources/js/data/values.json", "w");
         fwrite($fp, json_encode($toJson, JSON_PRETTY_PRINT));
         fclose($fp);
