@@ -76,30 +76,7 @@ class Infakt implements InvoicingInterface
     
     public function makeFromProforma(CustomerInvoice $invoice)
     {
-        //$proforma = CustomerInvoice::find($invoice->proforma_id);
-        //if(!$proforma || $proforma->system != "infakt" || empty($proforma->external_invoicing_system_id))
-        //    throw new Exception(__("Proforma does not exists"));
-        //
-        //$data = $this->prepareData($invoice);
-        //$data["proforma_number"] = $proforma->full_number;
-        //
-        //$response = Http
-        //    ::withOptions([
-        //        "headers" => $this->getAuthHeaders()
-        //    ])
-        //    ->withBody(json_encode(["invoice" => $data]), "application/json")
-        //    ->post($this->serviceUrl . "invoices.json");
-        //echo $response->body();
-        //$response = $this->parseResponse($response);
-        //
-        //if(!empty($response["number"]))
-        //{
-        //    $this->markAsAccounted($response);
-        //    
-        //    $invoice->external_invoicing_system_id = $response["id"];
-        //    $invoice->full_number = $response["number"];
-        //    $invoice->save();
-        //}
+        throw new Exception(__("Cannot make proforma via inFakt.pl API"));
     }
     
     public function downloadInvoice(CustomerInvoice $invoice)

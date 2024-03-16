@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
 use Throwable;
+use App\Exceptions\Exception;
 use App\Exceptions\ObjectNotExist;
 use App\Exceptions\InvalidStatus;
 use App\Http\Controllers\Controller;
@@ -101,6 +101,9 @@ class CustomerInvoicesController extends Controller
         $validated = $request->validated();
         $row = DB::transaction(function () use($validated) {
             $config = Config::getConfig("invoice");
+            
+            if(!in_array($config["invoicing_type"], CustomerInvoice::getProformaAllowedSystems()))
+                throw new Exception(sprintf(__("Cannot make proforma using %s API"), $config["invoicing_type"]));
             
             $row = new CustomerInvoice;
             $row->system = $config["invoicing_type"];
@@ -318,7 +321,7 @@ class CustomerInvoicesController extends Controller
         {
             switch($config["invoicing_type"])
             {
-                case "infakt":
+                case CustomerInvoice::SYSTEM_INFAKT:
                     try
                     {
                         $settings["infakt_api_key"] = Crypt::decryptString($config["infakt_api_key"]) ?? "";
@@ -326,7 +329,7 @@ class CustomerInvoicesController extends Controller
                     catch(Throwable $e) {}
                 break;
             
-                case "fakturownia":
+                case CustomerInvoice::SYSTEM_FAKTUROWNIA:
                     try
                     {
                         $settings["fakturownia_token"] = Crypt::decryptString($config["fakturownia_token"]) ?? "";
@@ -336,7 +339,7 @@ class CustomerInvoicesController extends Controller
                     $settings["fakturownia_domain"] = $config["fakturownia_domain"] ?? "";
                 break;
             
-                case "wfirma":
+                case CustomerInvoice::SYSTEM_WFIRMA:
                     try
                     {
                         $settings["wfirma_access_key"] = Crypt::decryptString($config["wfirma_access_key"]) ?? "";
@@ -357,7 +360,7 @@ class CustomerInvoicesController extends Controller
         $validated = $request->validated();
         
         Config::saveConfig("invoice", "invoicing_type", $validated["invoicing_type"]);
-        if($validated["invoicing_type"] == "app")
+        if($validated["invoicing_type"] == CustomerInvoice::SYSTEM_APP)
         {
             Config::saveConfig("invoice", "use_invoice_firm_data", !empty($validated["use_invoice_firm_data"]));
             Config::saveConfig("invoice", "invoice_mask_number", $validated["invoice_mask_number"]);
@@ -365,17 +368,17 @@ class CustomerInvoicesController extends Controller
             Config::saveConfig("invoice", "invoice_number_continuation", $validated["invoice_number_continuation"]);
             Config::saveConfig("invoice", "proforma_number_continuation", $validated["proforma_number_continuation"]);
         }
-        elseif($validated["invoicing_type"] == "infakt")
+        elseif($validated["invoicing_type"] == CustomerInvoice::SYSTEM_INFAKT)
         {
             Config::saveConfig("invoice", "infakt_api_key", Crypt::encryptString($validated["infakt_api_key"]));
         }
-        elseif($validated["invoicing_type"] == "fakturownia")
+        elseif($validated["invoicing_type"] == CustomerInvoice::SYSTEM_FAKTUROWNIA)
         {
             Config::saveConfig("invoice", "fakturownia_token", Crypt::encryptString($validated["fakturownia_token"]));
             Config::saveConfig("invoice", "fakturownia_department_id", $validated["fakturownia_department_id"]);
             Config::saveConfig("invoice", "fakturownia_domain", $validated["fakturownia_domain"]);
         }
-        elseif($validated["invoicing_type"] == "wfirma")
+        elseif($validated["invoicing_type"] == CustomerInvoice::SYSTEM_WFIRMA)
         {
             Config::saveConfig("invoice", "wfirma_access_key", Crypt::encryptString($validated["wfirma_access_key"]));
             Config::saveConfig("invoice", "wfirma_secret_key", Crypt::encryptString($validated["wfirma_secret_key"]));

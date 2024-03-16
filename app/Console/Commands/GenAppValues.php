@@ -61,6 +61,18 @@ class GenAppValues extends Command
         
         foreach(Data::getAllowedTimes() as $type => $name)
             $toJson["global"]["times"][$type] = $name;
+            
+        foreach(CustomerInvoice::getAllowedSystems() as $system)
+        {
+            foreach(CustomerInvoice::getAllowedDocumentTypes() as $type => $name)
+            {
+                $allowed = true;
+                if($type == CustomerInvoice::DOCUMENT_TYPE_PROFORMA && !in_array($system, CustomerInvoice::getProformaAllowedSystems()))
+                    $allowed = false;
+                
+                $toJson["global"]["sale_document_types_by_system"][$system][$type] = $allowed;
+            }
+        }
         
         $fp = fopen(__DIR__ . "/../../../../app.ninjatask.pl/resources/js/data/values.json", "w");
         fwrite($fp, json_encode($toJson, JSON_PRETTY_PRINT));

@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use App\Models\Country;
+use App\Models\CustomerInvoice;
 use App\Models\Numbering;
 
 class UpdateCustomerInvoiceDataRequest extends FormRequest
@@ -18,16 +19,16 @@ class UpdateCustomerInvoiceDataRequest extends FormRequest
     {
         $rules = [
             "use_invoice_firm_data" => "sometimes|boolean",
-            "invoicing_type" => ["required", Rule::in("app" ,"infakt", "fakturownia", "wfirma")],
+            "invoicing_type" => ["required", Rule::in(CustomerInvoice::getAllowedSystems())],
         ];
         
         $invoicingType = "app";
-        if(!empty($this->invoicing_type) && in_array($this->invoicing_type, ["infakt", "fakturownia", "wfirma"]))
+        if(!empty($this->invoicing_type) && in_array($this->invoicing_type, [CustomerInvoice::SYSTEM_INFAKT, CustomerInvoice::SYSTEM_FAKTUROWNIA, CustomerInvoice::SYSTEM_WFIRMA]))
             $invoicingType = $this->invoicing_type;
         
         switch($invoicingType)
         {
-            case "app":
+            case CustomerInvoice::SYSTEM_APP:
                 $rules["invoice_mask_number"] = "required|max:100";
                 $rules["proforma_mask_number"] = "required|max:100";
                 $rules["invoice_number_continuation"] = ["required", Rule::in(array_keys(Numbering::getNumberingContinuation()))];
@@ -60,17 +61,17 @@ class UpdateCustomerInvoiceDataRequest extends FormRequest
                 }
             break;
         
-            case "infakt":
+            case CustomerInvoice::SYSTEM_INFAKT:
                 $rules["infakt_api_key"] = "required|max:1000";
             break;
         
-            case "fakturownia":
+            case CustomerInvoice::SYSTEM_FAKTUROWNIA:
                 $rules["fakturownia_token"] = "required|max:1000";
                 $rules["fakturownia_department_id"] = "required|max:1000";
                 $rules["fakturownia_domain"] = "required|max:1000";
             break;
         
-            case "wfirma":
+            case CustomerInvoice::SYSTEM_WFIRMA:
                 $rules["wfirma_access_key"] = "required|max:100";
                 $rules["wfirma_secret_key"] = "required|max:100";
             break;

@@ -9,10 +9,6 @@ use App\Libraries\Invoicing\Systems\Infakt;
 use App\Libraries\Invoicing\Systems\Wfirma;
 use App\Models\CustomerInvoice;
 
-/*
- * Do zrobienia / dokończenia:
- * 4. wfirma - całość
- */
 class Invoicing
 {
     public static function newInvoice(CustomerInvoice $invoice)
@@ -59,19 +55,19 @@ class Invoicing
     {
         switch($invoice->system)
         {
-            case "app":
+            case CustomerInvoice::SYSTEM_APP:
                 $obj = new Internal($invoice);
                 return $obj;
             break;
         
-            case "fakturownia":
+            case CustomerInvoice::SYSTEM_FAKTUROWNIA:
                 return (new Fakturownia($invoice))->initialize();
             break;
         
-            case "wfirma":
+            case CustomerInvoice::SYSTEM_WFIRMA:
                 return (new Wfirma($invoice))->initialize();
             break;
-            case "infakt":
+            case CustomerInvoice::SYSTEM_INFAKT:
                 return (new Infakt($invoice))->initialize();
             break;
         }

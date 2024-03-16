@@ -33,6 +33,11 @@ class CustomerInvoice extends Model
     public const PAYMENT_TRANSFER = "transfer";
     public const PAYMENT_CASH = "cash";
     public const PAYMENT_CARD = "card";
+    
+    public const SYSTEM_APP = "app";
+    public const SYSTEM_FAKTUROWNIA = "fakturownia";
+    public const SYSTEM_WFIRMA = "wfirma";
+    public const SYSTEM_INFAKT = "infakt";
 
     public static function getAllowedDocumentTypes()
     {
@@ -49,6 +54,16 @@ class CustomerInvoice extends Model
 			self::PAYMENT_CASH => __("Cash"),
             self::PAYMENT_CARD => __("Card"),
 		];
+    }
+    
+    public static function getAllowedSystems()
+    {
+        return [self::SYSTEM_APP, self::SYSTEM_FAKTUROWNIA, self::SYSTEM_WFIRMA, self::SYSTEM_INFAKT];
+    }
+    
+    public static function getProformaAllowedSystems()
+    {
+        return [self::SYSTEM_APP, self::SYSTEM_FAKTUROWNIA];
     }
     
     protected $casts = [
@@ -168,7 +183,7 @@ class CustomerInvoice extends Model
         if($this->type == "proforma" && !self::where("proforma_id", $this->id)->count())
         {
             $config = Config::getConfig("invoice");
-            if($this->system != $config["invoicing_type"])
+            if($this->system != $config["invoicing_type"] || !in_array($this->system, self::getProformaAllowedSystems()))
                 return false;
             
             return true;

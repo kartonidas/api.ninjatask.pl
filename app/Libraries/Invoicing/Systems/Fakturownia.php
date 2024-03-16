@@ -83,7 +83,7 @@ class Fakturownia implements InvoicingInterface
     public function makeFromProforma(CustomerInvoice $invoice)
     {
         $proforma = CustomerInvoice::find($invoice->proforma_id);
-        if(!$proforma || $proforma->system != "fakturownia" || empty($proforma->external_invoicing_system_id))
+        if(!$proforma || $proforma->system != CustomerInvoice::SYSTEM_FAKTUROWNIA || empty($proforma->external_invoicing_system_id))
             throw new Exception(__("Proforma does not exists"));
         
         $data = $this->prepareData($invoice);

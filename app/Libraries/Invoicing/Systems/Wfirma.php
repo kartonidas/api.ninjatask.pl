@@ -89,9 +89,8 @@ class Wfirma implements InvoicingInterface
     
     public function makeFromProforma(CustomerInvoice $invoice)
     {
-        throw new Exception("Not yet implemented");
+        throw new Exception(__("Cannot make proforma via wfirma.pl API"));
     }
-    
     
     private function getAuthHeaders()
     {
