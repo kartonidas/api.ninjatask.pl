@@ -82,6 +82,7 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'locale'])->group(function () u
     $router->get('/permission/modules', [PermissionController::class, "permissionModules"]);
     
     // ZADANIA
+    $router->get('/tasks', [TaskController::class, "listAll"])->where("id", "[0-9]+");
     $router->get('/tasks/{id}', [TaskController::class, "list"])->where("id", "[0-9]+");
     $router->get('/tasks/customer/{id}', [TaskController::class, "listCustomer"])->where("id", "[0-9]+");
     $router->put('/task', [TaskController::class, "create"]);

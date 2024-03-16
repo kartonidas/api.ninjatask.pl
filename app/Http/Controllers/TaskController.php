@@ -60,9 +60,15 @@ class TaskController extends Controller
         return $this->_getTask($request, "customer", $id);
     }
     
+    public function listAll(Request $request)
+    {
+        User::checkAccess("task:list");
+        return $this->_getTask($request, "all", null);
+    }
+    
     private function _getTask(Request $request, $source = "project", $id)
     {
-        if(!in_array($source, ["project", "customer"]))
+        if(!in_array($source, ["project", "customer", "all"]))
             throw new Exception(__("Invalid type"));
         
         $request->validate([
@@ -74,6 +80,7 @@ class TaskController extends Controller
             "priority" => ["nullable", "integer", Rule::in([1,2,3])],
             "state" => ["nullable", Rule::in(["opened", "closed"])],
             "name" => "nullable|max:200",
+            "project_id" => "nullable|integer",
             "created_from" => "nullable|date_format:Y-m-d",
             "created_to" => "nullable|date_format:Y-m-d",
         ]);
@@ -87,25 +94,27 @@ class TaskController extends Controller
         $searchPriority = $request->input("priority", null);
         $searchState = $request->input("state", null);
         $searchName = $request->input("name", null);
+        $searchProject = $request->input("project_id", null);
         $searchCreatedAtFrom = $request->input("created_from", null);
         $searchCreatedAtTo = $request->input("created_to", null);
 
+        $tasks = Task::apiFields();
         if($source == "project")
         {
             $project = Project::find($id);
             if(!$project)
                 throw new ObjectNotExist(__("Project not exist"));
             
-            $tasks = Task::apiFields()->where("project_id", $id);
+            $tasks->where("project_id", $id);
         }
-        else
+        elseif($source == "customer")
         {
             $customer = Customer::find($id);
             if(!$customer)
                 throw new ObjectNotExist(__("Customer not exist"));
             
             $projectIds = Project::where("customer_id", $customer->id)->pluck("id")->all();
-            $tasks = Task::apiFields()->whereIn("project_id", $projectIds);
+            $tasks->whereIn("project_id", $projectIds);
         }
             
         if($searchStatus)
@@ -140,6 +149,8 @@ class TaskController extends Controller
             $tasks->whereDate("created_at", ">=", $searchCreatedAtFrom);
         if($searchCreatedAtTo)
             $tasks->whereDate("created_at", "<=", $searchCreatedAtTo);
+        if($searchProject)
+            $tasks->where("project_id", $searchProject);
         
         $total = $tasks->count();
         
@@ -254,6 +265,7 @@ class TaskController extends Controller
         if(!$project)
             throw new ObjectNotExist(__("Project not exist"));
         
+        
         $task = new Task;
         $task->project_id = $project->id;
         $task->name = $request->input("name");
@@ -266,6 +278,7 @@ class TaskController extends Controller
         $task->end_date = $request->input("end_date");
         $task->end_date_time = $request->input("end_date_time");
         $task->due_date = $request->input("due_date");
+        $this->validateDates($task);
         $task->save();
         
         if(!empty($request->input("attachments", [])))
@@ -338,7 +351,7 @@ class TaskController extends Controller
         
         if($request->has("users"))
             $validate["users"] = $rules["users"];
-        
+            
         if(!empty($validate))
             $request->validate($validate);
         
@@ -347,6 +360,7 @@ class TaskController extends Controller
             if($request->has($field))
                 $task->{$field} = $request->input($field);
         }
+        $this->validateDates($task);
         $task->save();
         
         if($request->has("users"))
@@ -857,5 +871,20 @@ class TaskController extends Controller
         }
         
         return $result;
+    }
+    
+    private function validateDates(Task $task)
+    {
+        if($task->start_date && $task->end_date)
+        {
+            $startDate = $task->start_date;
+            $startDate = $startDate . ($task->start_date_time ? (" " . $task->start_date_time . ":00") : " 00:00:00");
+            
+            $endDate = $task->end_date;
+            $endDate = $endDate . ($task->end_date_time ? (" " . $task->end_date_time . ":59") : " 23:59:59");
+            
+            if(strtotime($startDate) > strtotime($endDate))
+                throw new Exception(__("The end date must be greater than or equal to the start date"));
+        }
     }
 }

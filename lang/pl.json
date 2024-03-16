@@ -171,5 +171,6 @@
     "Complete your bank account number at infakt.pl.": "Uzupełnij rachunek bankowy w aplikacji infakt.pl.",
     "Invalid authorization data. Check your integration settings.": "Nieprawidłowe dane autoryzacyjne. Sprawdź ustawienia integracji.",
     "Unexpected error occurred.": "Wystąpił nieoczekiwany błąd.",
-    "Obiect not exists.": "Obiekt nie istnieje."
+    "Obiect not exists.": "Obiekt nie istnieje.",
+    "The end date must be greater than or equal to the start date" : "Data zakończenia musi być większa lub równa dacie rozpoczęcia"
 }
