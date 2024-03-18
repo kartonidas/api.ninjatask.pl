@@ -185,6 +185,8 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'locale'])->group(function () u
     $router->put('/customer-invoice/settings', [CustomerInvoicesController::class, "settingsUpdate"]);
     
     $router->get('/calendar', [TaskController::class, "calendar"]);
+    $router->post('/geocode', [IndexController::class, "geocode"]);
+    $router->post('/send-message', [IndexController::class, "sendMessage"]);
 
     // USUNIĘCIE KONTA
     $router->delete('removeAccount', [UserController::class, "removeAccount"]);

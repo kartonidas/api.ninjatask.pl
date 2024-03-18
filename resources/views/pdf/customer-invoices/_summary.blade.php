@@ -3,7 +3,7 @@
 @endphp
 
 <tr>
-    <td colspan="4" style="border: 0"></td>
+    <td colspan="3" style="border: 0"></td>
     <td class="text-center">VAT</td>
     <td class="text-center">Wartość netto</td>
     <td class="text-center">Wartość VAT</td>
@@ -14,7 +14,7 @@
 @endphp
 @foreach($grouped_items as $item)
     <tr>
-        <td colspan="4" style="border: 0"></td>
+        <td colspan="3" style="border: 0"></td>
         <td class="text-center">
             {{ $item["vat_value"] }}@if(is_numeric($item["vat_value"])){{ "%" }}@endif
         </td>
@@ -39,7 +39,7 @@
     @endphp
 @endforeach
 <tr>
-    <td colspan="4" style="border: 0; text-align: right"><strong>RAZEM</strong></td>
+    <td colspan="3" style="border: 0; text-align: right"><strong>RAZEM</strong></td>
     <td class="text-center"></td>
     <td class="text-center">
         <strong>
@@ -68,7 +68,6 @@
             {{ $invoice->currency }}
         </strong>
     </td>
-    <td style="border: 0;"></td>
     <td style="border: 0;"></td>
     <td colspan="2" style="border-right: 0; text-align: left">
         Wpłacono:

@@ -83,6 +83,8 @@ class TaskController extends Controller
             "project_id" => "nullable|integer",
             "created_from" => "nullable|date_format:Y-m-d",
             "created_to" => "nullable|date_format:Y-m-d",
+            "start_date_from" => "nullable|date_format:Y-m-d",
+            "start_date_to" => "nullable|date_format:Y-m-d",
         ]);
         
         $size = $request->input("size", config("api.list.size"));
@@ -97,6 +99,8 @@ class TaskController extends Controller
         $searchProject = $request->input("project_id", null);
         $searchCreatedAtFrom = $request->input("created_from", null);
         $searchCreatedAtTo = $request->input("created_to", null);
+        $searchStartDateFrom = $request->input("start_date_from", null);
+        $searchStartDateTo = $request->input("start_date_to", null);
 
         $tasks = Task::apiFields();
         if($source == "project")
@@ -125,15 +129,18 @@ class TaskController extends Controller
             $tasks->where("completed", $searchState == "opened" ? 0 : 1);
         if($searchUsers)
         {
-            $taskAddignedIds = [-1];
-            $assigned = TaskAssignedUser::select("task_id")->whereIn("user_id", $searchUsers)->get();
-            if(!$assigned->isEmpty())
+            if(in_array("_not_assigned", $searchUsers))
             {
-                foreach($assigned as $a)
-                    $taskAddignedIds[] = $a->task_id;
+                $taskAddignedIds = TaskAssignedUser::pluck("task_id")->all();
+                $taskAddignedIds = array_unique($taskAddignedIds);
+                $tasks->whereNotIn("id", $taskAddignedIds);
             }
-            $taskAddignedIds = array_unique($taskAddignedIds);
-            $tasks->whereIn("id", $taskAddignedIds);
+            else
+            {
+                $taskAddignedIds = TaskAssignedUser::whereIn("user_id", $searchUsers)->pluck("task_id")->all();
+                $taskAddignedIds = array_unique($taskAddignedIds);
+                $tasks->whereIn("id", $taskAddignedIds);
+            }
         }
         if($searchQuery)
         {
@@ -149,6 +156,10 @@ class TaskController extends Controller
             $tasks->whereDate("created_at", ">=", $searchCreatedAtFrom);
         if($searchCreatedAtTo)
             $tasks->whereDate("created_at", "<=", $searchCreatedAtTo);
+        if($searchStartDateFrom)
+            $tasks->whereDate("start_date", ">=", $searchStartDateFrom);
+        if($searchStartDateTo)
+            $tasks->whereDate("start_date", "<=", $searchStartDateTo);
         if($searchProject)
             $tasks->where("project_id", $searchProject);
         
@@ -171,10 +182,12 @@ class TaskController extends Controller
         foreach($tasks as $k => $task)
         {
             $tasks[$k]->assigned_to = $task->getAssignedUserIds();
+            $tasks[$k]->assigned_users = $task->getAssignedUsers();
             $tasks[$k]->attachments = $task->getAttachments();
             $tasks[$k]->timer = $task->getActiveTaskTime();
             $tasks[$k]->completed = $task->completed == 1;
             $tasks[$k]->status = $task->getStatusName();
+            $tasks[$k]->place = $task->getProject();
         }
         
         $out = [
@@ -212,6 +225,7 @@ class TaskController extends Controller
         $task->timer = $task->getActiveTaskTime();
         $task->completed = $task->completed == 1;
         $task->status = $task->getStatusName();
+        $task->place = $task->getProject();
         
         $project = Project::find($task->project_id);
         $task->project_name = $project ? $project->name : "";
@@ -706,10 +720,12 @@ class TaskController extends Controller
         foreach($tasks as $k => $task)
         {
             $tasks[$k]->assigned_to = $task->getAssignedUserIds();
+            $tasks[$k]->assigned_users = $task->getAssignedUsers();
             $tasks[$k]->attachments = $task->getAttachments();
             $tasks[$k]->timer = $task->getActiveTaskTime();
             $tasks[$k]->completed = $task->completed == 1;
             $tasks[$k]->status = $task->getStatusName();
+            $tasks[$k]->place = $task->getProject();
         }
         
         $out = [

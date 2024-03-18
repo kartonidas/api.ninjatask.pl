@@ -28,6 +28,7 @@ use App\Models\Customer;
 use App\Models\CustomerInvoice;
 use App\Models\CustomerInvoiceItem;
 use App\Models\FirmInvoicingData;
+use App\Models\Subscription;
 use App\Models\User;
 use App\Traits\Sortable;
 
@@ -96,14 +97,12 @@ class CustomerInvoicesController extends Controller
 
     public function create(StoreCustomerInvoicesRequest $request)
     {
+        Subscription::checkPackage("customer-invoicing");
         User::checkAccess("customer_invoices:create");
         
         $validated = $request->validated();
         $row = DB::transaction(function () use($validated) {
             $config = Config::getConfig("invoice");
-            
-            if(!in_array($config["invoicing_type"], CustomerInvoice::getProformaAllowedSystems()))
-                throw new Exception(sprintf(__("Cannot make proforma using %s API"), $config["invoicing_type"]));
             
             $row = new CustomerInvoice;
             $row->system = $config["invoicing_type"];
@@ -160,6 +159,7 @@ class CustomerInvoicesController extends Controller
 
     public function update(UpdateCustomerInvoicesRequest $request, $id)
     {
+        Subscription::checkPackage("customer-invoicing");
         User::checkAccess("customer_invoices:update");
 
         $row = CustomerInvoice::find($id);
@@ -205,7 +205,12 @@ class CustomerInvoicesController extends Controller
     
     public function fromProforma(StoreCustomerInvoicesFromProformaRequest $request, $proformaId)
     {
+        Subscription::checkPackage("customer-invoicing");
         User::checkAccess("customer_invoices:create");
+        
+        $config = Config::getConfig("invoice");
+        if(!in_array($config["invoicing_type"], CustomerInvoice::getProformaAllowedSystems()))
+            throw new Exception(sprintf(__("Cannot make proforma using %s API"), $config["invoicing_type"]));
         
         $proforma = CustomerInvoice::find($proformaId);
         if(!$proforma || $proforma->type != CustomerInvoice::DOCUMENT_TYPE_PROFORMA)
@@ -355,6 +360,7 @@ class CustomerInvoicesController extends Controller
     
     public function settingsUpdate(UpdateCustomerInvoiceDataRequest $request)
     {
+        Subscription::checkPackage("customer-invoicing");
         User::checkAccess("customer_invoices:list");
         
         $validated = $request->validated();

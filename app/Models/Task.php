@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Notification;
+use App\Models\Project;
 use App\Models\Status;
 use App\Models\TaskAssignedUser;
 use App\Models\TaskCalendar;
 use App\Models\TaskTime;
+use App\Models\User;
 use App\Traits\File;
 use App\Traits\DbTimestamp;
 
@@ -21,7 +23,7 @@ class Task extends Model
         boot as traitBoot;
     }
     
-    public static $sortable = ["name", "created_at"];
+    public static $sortable = ["name", "created_at", "start_date", "end_date"];
     public static $defaultSortable = null;
     
     public function delete()
@@ -71,6 +73,13 @@ class Task extends Model
         foreach($rows as $row)
             $out[] = $row->user_id;
         return $out;
+    }
+    
+    public function getAssignedUsers()
+    {
+        $out = [];
+        $userIds = TaskAssignedUser::where("task_id", $this->id)->pluck("user_id")->all();
+        return User::byFirm()->whereIn("id", $userIds)->withTrashed()->get();
     }
     
     public function assignUsers($users)
@@ -163,5 +172,10 @@ class Task extends Model
         
         $endDate = $this->end_date ? $this->end_date : $this->start_date;
         return $endDate . " " . ($this->end_date_time ? $this->end_date_time : TaskCalendar::getDefaultEndTime()) . ":00";
+    }
+    
+    public function getProject()
+    {
+        return Project::find($this->project_id);
     }
 }

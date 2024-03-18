@@ -8,7 +8,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
+use App\Http\Requests\ContactRequest;
 use App\Exceptions\ObjectNotExist;
+use App\Mail\ContactForm;
 use App\Models\Country;
 use App\Models\FirmInvoicingData;
 use App\Models\Limit;
@@ -317,6 +321,8 @@ class IndexController extends Controller
             ];
         }
         
+        $out["customer_invoicing"] = Subscription::checkPackage("customer-invoicing", false);
+        
         return $out;
     }
     
@@ -507,5 +513,47 @@ class IndexController extends Controller
             ->orderBy("eu", "DESC")
             ->orderBy(($lang == "pl" ? "name" : "name_en"), "DESC")
             ->get();
+    }
+    
+    public function sendMessage(ContactRequest $request)
+    {
+        $validated = $request->validated();
+        
+        $mailable = new ContactForm(Auth::user()->id, $validated);
+        $mailable->to(env("CONTACT_FORM_EMAIL"), env("CONTACT_FORM_EMAIL"));
+        Mail::send($mailable);
+        
+        return [
+            "success" => true,
+        ];
+    }
+    
+    public function geocode(Request $request)
+    {
+        $address = $request->input("address");
+        $query = [
+            "q" => $address,
+            "format" => "json",
+        ];
+        
+        $response = Http::get("https://nominatim.openstreetmap.org/search?" . http_build_query($query));
+        $result = $response->json();
+    
+        $out = [
+            "results" => []
+        ];
+        if(!empty($result))
+        {
+            foreach($result as $res)
+            {
+                $out["results"][] = [
+                    "id" => $res["place_id"],
+                    "text" => $res["display_name"],
+                    "lat" => $res["lat"],
+                    "lon" => $res["lon"],
+                ];
+            }
+        }
+        return $out;
     }
 }

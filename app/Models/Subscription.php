@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use App\Exceptions\ModuleNotAllowed;
 use App\Exceptions\OutOffLimit;
 use App\Models\ExpirationNotify;
 use App\Models\Firm;
@@ -125,6 +126,11 @@ class Subscription extends Model
                             throw new OutOffLimit(__("Maximum file size exceeded"));
                         return false;
                     }
+                break;
+                case "customer-invoicing":
+                    if($exception)
+                        throw new ModuleNotAllowed(__("Module not allowed"));
+                    return false;
                 break;
             }
         }

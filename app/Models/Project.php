@@ -20,6 +20,9 @@ class Project extends Model
     
     protected $hidden = ["uuid"];
     
+    public static $sortable = ["name", "created_at"];
+    public static $defaultSortable = ["created_at", "desc"];
+    
     public function delete()
     {
         $tasks = Task::where("project_id", $this->id)->get();
@@ -41,7 +44,7 @@ class Project extends Model
     
     public function scopeApiFields(Builder $query): void
     {
-        $query->select("id", "name", "location", "description", "owner", "customer_id", "created_at");
+        $query->select("id", "name", "location", "description", "owner", "address", "lat", "lon", "customer_id", "created_at");
     }
     
     public function getTaskCount()

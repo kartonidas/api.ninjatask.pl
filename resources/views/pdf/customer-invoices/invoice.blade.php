@@ -143,7 +143,6 @@
             <tr>
                 <th style="width: 40px">Lp.</th>
                 <th>Nazwa i PKWiU</th>
-                <th style="width: 80px">Kod GTU</th>
                 <th style="width: 60px">Ilość</th>
                 <th style="width: 70px">JM</th>
                 <th style="width: 100px">VAT</th>
@@ -156,7 +155,6 @@
                 <tr>
                     <td>{{ $index+1 }}.</td>
                     <td>{{ $item->name }}</td>
-                    <td class="text-center">{{ $item->gtu }}</td>
                     <td class="text-center">{{ $item->quantity }}</td>
                     <td class="text-center">{{ $item->unit_type }}</td>
                     <td style="text-align: right">{{ $item->vat_value }}{{ is_numeric($item->vat_value) ? "%" : "" }}</td>

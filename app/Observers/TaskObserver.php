@@ -31,15 +31,25 @@ class TaskObserver
     
     public function updated(Task $task): void
     {
-        if($task->isDirty("status_id") && !$task->completed)
+        if($task->isDirty("status_id"))
         {
             $status = Status::find($task->status_id);
-            if($status && $status->close_task)
+            if(!$task->completed)
             {
-                $task->completed = 1;
-                $task->completed_at = date("Y-m-d H:i:s");
-                $task->saveQuietly();
+                if($status && $status->close_task)
+                    $task->completed = 1;
             }
+            else
+            {
+                if($status && !$status->close_task)
+                    $task->completed = 0;
+            }
+        }
+        
+        if($task->isDirty("completed"))
+        {
+            $task->completed_at = $task->completed ? date("Y-m-d H:i:s") : null;
+            $task->saveQuietly();
         }
         
         if($task->isDirty("status_id"))

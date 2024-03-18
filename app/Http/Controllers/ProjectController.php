@@ -13,9 +13,12 @@ use App\Models\Subscription;
 use App\Models\Task;
 use App\Models\TaskAssignedUser;
 use App\Models\User;
+use App\Traits\Sortable;
 
 class ProjectController extends Controller
 {
+    use Sortable;
+    
     /**
     * Get projects list
     *
@@ -34,18 +37,42 @@ class ProjectController extends Controller
             "size" => "nullable|integer|gt:0",
             "page" => "nullable|integer|gt:0",
             "customer_id" => "nullable|integer",
+            "name" => "nullable|max:200",
+            "created_from" => "nullable|date_format:Y-m-d",
+            "created_to" => "nullable|date_format:Y-m-d",
         ]);
+        
+        $searchName = $request->input("name", null);
+        $searchCreatedAtFrom = $request->input("created_from", null);
+        $searchCreatedAtTo = $request->input("created_to", null);
         
         $size = $request->input("size", config("api.list.size"));
         $page = $request->input("page", 1);
         
         $projects = Project::apiFields();
+        
+        if($searchName)
+        {
+            $projectIds = Task::where("name", "LIKE", "%" . $searchName . "%")->pluck("project_id")->all();
+            $projects->where(function($q) use($searchName, $projectIds) {
+                $q
+                    ->where("name", "LIKE", "%" . $searchName . "%")
+                    ->orWhereIn("id", $projectIds);
+            });
+        }
+        if($searchCreatedAtFrom)
+            $projects->whereDate("created_at", ">=", $searchCreatedAtFrom);
+        if($searchCreatedAtTo)
+            $projects->whereDate("created_at", "<=", $searchCreatedAtTo);
             
         if($request->input("customer_id", null))
             $projects->where("customer_id", $request->input("customer_id"));
-            
+        
+        $orderBy = $this->getOrderBy($request, Project::class, "created_at,desc");
+        
         $projects = $projects->take($size)
             ->skip(($page-1)*$size)
+            ->orderBy($orderBy[0], $orderBy[1])
             ->get();
             
         foreach($projects as $k => $project)
@@ -116,6 +143,9 @@ class ProjectController extends Controller
             "description" => "nullable|max:5000",
             "owner" => "nullable|max:5000",
             "customer_id" => "nullable|integer",
+            "address" => "nullable|string|max:500",
+            "lat" => "nullable|numeric",
+            "lon" => "nullable|numeric",
         ]);
         
         if($request->input("customer_id", null))
@@ -131,6 +161,9 @@ class ProjectController extends Controller
         $project->description = $request->input("description", "");
         $project->owner = $request->input("owner", "");
         $project->customer_id = $request->input("customer_id", null);
+        $project->address = $request->input("address", null);
+        $project->lat = $request->input("lat", null);
+        $project->lon = $request->input("lon", null);
         $project->save();
         
         return $project->id;
@@ -164,10 +197,13 @@ class ProjectController extends Controller
             "description" => "nullable|max:5000",
             "owner" => "nullable|max:5000",
             "customer_id" => "nullable|integer",
+            "address" => "nullable|string|max:500",
+            "lat" => "nullable|numeric",
+            "lon" => "nullable|numeric",
         ];
         
         $validate = [];
-        $updateFields = ["name", "location", "description", "owner", "customer_id"];
+        $updateFields = ["name", "location", "description", "owner", "customer_id", "address", "lat", "lon"];
         foreach($updateFields as $field)
         {
             if($request->has($field))
