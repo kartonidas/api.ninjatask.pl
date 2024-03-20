@@ -25,7 +25,7 @@ abstract class TestCase extends BaseTestCase
     {
         $account = $this->getAccount($id);
             
-        $response = $this->post('/api/register', ['email' => $account['email']]);
+        $response = $this->post('/api/v1/register', ['email' => $account['email']]);
         $status = $response->getContent();
         
         if($status !== "1")
@@ -46,7 +46,7 @@ abstract class TestCase extends BaseTestCase
     {
         $token = $this->userRegister($id);
         
-        $response = $this->post('/api/register/confirm/' . $token, $this->getAccount($id)['data']);
+        $response = $this->post('/api/v1/register/confirm/' . $token, $this->getAccount($id)['data']);
         $response->getContent();
     }
     
@@ -64,7 +64,7 @@ abstract class TestCase extends BaseTestCase
             $data["firm_id"] = $user->firm_id;
         }
         
-        $response = $this->post('/api/login', $data);
+        $response = $this->post('/api/v1/login', $data);
         $response->assertStatus(200);
         
         $response = json_decode($response->getContent());
@@ -124,7 +124,7 @@ abstract class TestCase extends BaseTestCase
     
     protected function getAccountUuui($token)
     {
-        $response = $this->withToken($token)->getJson('/api/get-firm-id');
+        $response = $this->withToken($token)->getJson('/api/v1/get-firm-id');
         $firmId = $response->getContent();
         
         $firm = Firm::find($firmId);

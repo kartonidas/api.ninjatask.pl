@@ -11,6 +11,8 @@ class TaskCommentTest extends TestCase
 {
     use RefreshDatabase;
     
+    private $loginUserId = null;
+    
     private function init()
     {
         $accountUserId = 2;
@@ -20,9 +22,10 @@ class TaskCommentTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
+        $this->loginUserId = $response->id;
         
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
@@ -40,9 +43,10 @@ class TaskCommentTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], $permission);
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
+        $this->loginUserId = $response->id;
         
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
@@ -58,7 +62,7 @@ class TaskCommentTest extends TestCase
         $data = [
             'comment' => 'Example comment'
         ];
-        $response = $this->withToken($token)->putJson('/api/task/' . $task->id . '/comment', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id . '/comment', $data);
         $response->assertStatus(200);
         
         $this->assertDatabaseCount('task_comments', 1);
@@ -81,7 +85,7 @@ class TaskCommentTest extends TestCase
             $data = $commentData;
             unset($data[$field]);
             
-            $response = $this->withToken($token)->putJson('/api/task/' . $task->id . '/comment', $data);
+            $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id . '/comment', $data);
             $response->assertStatus(422);
         }
     }
@@ -94,7 +98,7 @@ class TaskCommentTest extends TestCase
         $data = [
             'comment' => 'Example comment'
         ];
-        $response = $this->putJson('/api/task/' . $task->id . '/comment', $data);
+        $response = $this->putJson('/api/v1/task/' . $task->id . '/comment', $data);
         $response->assertStatus(200);
         
         $this->assertDatabaseCount('task_comments', 1);
@@ -102,12 +106,12 @@ class TaskCommentTest extends TestCase
             'comment' => $data['comment']
         ]);
         
-        $response = $this->withToken($token)->putJson('/api/task/-9/comment', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/-9/comment', $data);
         $response->assertStatus(404);
         
         $uuid = $this->getAccountUuui($token);
         $otherUserTask = Task::withoutGlobalScopes()->where('uuid', '!=', $uuid)->inRandomOrder()->first();
-        $response = $this->withToken($token)->putJson('/api/task/' . $otherUserTask->id . 'comment', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $otherUserTask->id . 'comment', $data);
         $response->assertStatus(404);
     }
     
@@ -116,7 +120,7 @@ class TaskCommentTest extends TestCase
     {
         list($task, $token) = $this->init();
         
-        $response = $this->withToken($token)->getJson('/api/task/' . $task->id . '/comments');
+        $response = $this->withToken($token)->getJson('/api/v1/task/' . $task->id . '/comments');
         $response
             ->assertStatus(200)
             ->assertJson([
@@ -139,7 +143,7 @@ class TaskCommentTest extends TestCase
         $comment->comment = 'Example comment';
         $comment->save();
         
-        $response = $this->withToken($token)->getJson('/api/task/' . $task->id . '/comments');
+        $response = $this->withToken($token)->getJson('/api/v1/task/' . $task->id . '/comments');
         $response
             ->assertStatus(200)
             ->assertJson([
@@ -163,7 +167,7 @@ class TaskCommentTest extends TestCase
         $comment->save();
         
         $this->assertDatabaseCount('task_comments', 1);
-        $response = $this->withToken($token)->deleteJson('/api/task/' . $task->id . '/comment/' . $comment->id);
+        $response = $this->withToken($token)->deleteJson('/api/v1/task/' . $task->id . '/comment/' . $comment->id);
         $response->assertStatus(200);
         $this->assertDatabaseCount('task_comments', 0);
     }
@@ -180,17 +184,17 @@ class TaskCommentTest extends TestCase
         $comment->save();
         
         $this->assertDatabaseCount('task_comments', 1);
-        $response = $this->withToken($token)->deleteJson('/api/task/-9/comment/' . $comment->id);
+        $response = $this->withToken($token)->deleteJson('/api/v1/task/-9/comment/' . $comment->id);
         $response->assertStatus(404);
         $this->assertDatabaseCount('task_comments', 1);
-        $response = $this->withToken($token)->deleteJson('/api/task/' . $task->id . '/comment/-9');
+        $response = $this->withToken($token)->deleteJson('/api/v1/task/' . $task->id . '/comment/-9');
         $response->assertStatus(404);
         $this->assertDatabaseCount('task_comments', 1);
         
         // Try delete other users task
         $uuid = $this->getAccountUuui($token);
         $otherUserTask = Task::withoutGlobalScopes()->where('uuid', '!=', $uuid)->inRandomOrder()->first();
-        $response = $this->withToken($token)->deleteJson('/api/task/-9/comment/' . $comment->id);
+        $response = $this->withToken($token)->deleteJson('/api/v1/task/-9/comment/' . $comment->id);
         $response->assertStatus(404);
         $this->assertDatabaseCount('task_comments', 1);
     }
@@ -206,7 +210,7 @@ class TaskCommentTest extends TestCase
         $comment->comment = 'Example comment';
         $comment->save();
         
-        $response = $this->withToken($token)->getJson('/api/task/' . $task->id . '/comment/' . $comment->id);
+        $response = $this->withToken($token)->getJson('/api/v1/task/' . $task->id . '/comment/' . $comment->id);
         $response
             ->assertStatus(200)
             ->assertJson([
@@ -225,16 +229,16 @@ class TaskCommentTest extends TestCase
         $comment->comment = 'Example comment';
         $comment->save();
         
-        $response = $this->withToken($token)->getJson('/api/task/' . $task->id . '/comment/-9');
+        $response = $this->withToken($token)->getJson('/api/v1/task/' . $task->id . '/comment/-9');
         $response->assertStatus(404);
         
-        $response = $this->withToken($token)->getJson('/api/task/-9/comment/' . $comment->id);
+        $response = $this->withToken($token)->getJson('/api/v1/task/-9/comment/' . $comment->id);
         $response->assertStatus(404);
         
         // Try get other users task
         $uuid = $this->getAccountUuui($token);
         $otherUserTask = Task::withoutGlobalScopes()->where('uuid', '!=', $uuid)->inRandomOrder()->first();
-        $response = $this->withToken($token)->getJson('/api/task/' . $otherUserTask->id . '/comment/' . $comment->id);
+        $response = $this->withToken($token)->getJson('/api/v1/task/' . $otherUserTask->id . '/comment/' . $comment->id);
         $response->assertStatus(404);
     }
     
@@ -245,7 +249,7 @@ class TaskCommentTest extends TestCase
         list($task, $token) = $this->init();
         
         $comment = new TaskComment;
-        $comment->user_id = 0;
+        $comment->user_id = $this->loginUserId;
         $comment->task_id = $task->id;
         $comment->comment = 'Example comment';
         $comment->save();
@@ -253,7 +257,7 @@ class TaskCommentTest extends TestCase
         $data = [
             'comment' => 'Comment updated',
         ];
-        $response = $this->withToken($token)->putJson('/api/task/' . $task->id . '/comment/' . $comment->id, $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id . '/comment/' . $comment->id, $data);
         $response->assertStatus(200);
         
         $this->assertDatabaseHas('task_comments', [
@@ -276,16 +280,16 @@ class TaskCommentTest extends TestCase
         $data = [
             'comment' => 'Comment updated',
         ];
-        $response = $this->withToken($token)->putJson('/api/task/-9/comment/' . $comment->id, $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/-9/comment/' . $comment->id, $data);
         $response->assertStatus(404);
         
-        $response = $this->withToken($token)->putJson('/api/task/' . $task->id . '/comment/-9', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id . '/comment/-9', $data);
         $response->assertStatus(404);
         
         // Try delete otherr users project
         $uuid = $this->getAccountUuui($token);
         $otherUserTask = Task::withoutGlobalScopes()->where('uuid', '!=', $uuid)->inRandomOrder()->first();
-        $response = $this->withToken($token)->putJson('/api/task/' . $otherUserTask->id . '/comment/' . $comment->id);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $otherUserTask->id . '/comment/' . $comment->id);
         $response->assertStatus(404);
     }
     
@@ -297,7 +301,7 @@ class TaskCommentTest extends TestCase
         $data = [
             'comment' => 'Example comment'
         ];
-        $response = $this->withToken($token)->putJson('/api/task/' . $task->id . '/comment', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id . '/comment', $data);
         $response->assertStatus(200);
         
         $this->assertDatabaseCount('task_comments', 1);
@@ -314,7 +318,7 @@ class TaskCommentTest extends TestCase
         $data = [
             'comment' => 'Example comment'
         ];
-        $response = $this->withToken($token)->putJson('/api/task/' . $task->id . '/comment', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id . '/comment', $data);
         $response->assertStatus(403);
     }
     
@@ -323,7 +327,7 @@ class TaskCommentTest extends TestCase
     {
         list($task, $token) = $this->initPermission('task:list');
         
-        $response = $this->withToken($token)->getJson('/api/task/' . $task->id . '/comments');
+        $response = $this->withToken($token)->getJson('/api/v1/task/' . $task->id . '/comments');
         $response
             ->assertStatus(200)
             ->assertJson([
@@ -340,7 +344,7 @@ class TaskCommentTest extends TestCase
     {
         list($task, $token) = $this->initPermission('');
         
-        $response = $this->withToken($token)->getJson('/api/task/' . $task->id . '/comments');
+        $response = $this->withToken($token)->getJson('/api/v1/task/' . $task->id . '/comments');
         $response->assertStatus(403);
     }
     
@@ -350,13 +354,13 @@ class TaskCommentTest extends TestCase
         list($task, $token) = $this->initPermission('task:list');
         
         $comment = new TaskComment;
-        $comment->user_id = 0;
+        $comment->user_id = $this->loginUserId;
         $comment->task_id = $task->id;
         $comment->comment = 'Example comment';
         $comment->save();
         
         $this->assertDatabaseCount('task_comments', 1);
-        $response = $this->withToken($token)->deleteJson('/api/task/' . $task->id . '/comment/' . $comment->id);
+        $response = $this->withToken($token)->deleteJson('/api/v1/task/' . $task->id . '/comment/' . $comment->id);
         $response->assertStatus(200);
         $this->assertDatabaseCount('task_comments', 0);
     }
@@ -373,7 +377,7 @@ class TaskCommentTest extends TestCase
         $comment->save();
         
         $this->assertDatabaseCount('task_comments', 1);
-        $response = $this->withToken($token)->deleteJson('/api/task/' . $task->id . '/comment/' . $comment->id);
+        $response = $this->withToken($token)->deleteJson('/api/v1/task/' . $task->id . '/comment/' . $comment->id);
         $response->assertStatus(403);
         $this->assertDatabaseCount('task_comments', 1);
     }
@@ -389,7 +393,7 @@ class TaskCommentTest extends TestCase
         $comment->comment = 'Example comment';
         $comment->save();
         
-        $response = $this->withToken($token)->getJson('/api/task/' . $task->id . '/comment/' . $comment->id);
+        $response = $this->withToken($token)->getJson('/api/v1/task/' . $task->id . '/comment/' . $comment->id);
         $response
             ->assertStatus(200)
             ->assertJson([
@@ -408,7 +412,7 @@ class TaskCommentTest extends TestCase
         $comment->comment = 'Example comment';
         $comment->save();
         
-        $response = $this->withToken($token)->getJson('/api/task/' . $task->id . '/comment/' . $comment->id);
+        $response = $this->withToken($token)->getJson('/api/v1/task/' . $task->id . '/comment/' . $comment->id);
         $response->assertStatus(403);
     }
     
@@ -418,7 +422,7 @@ class TaskCommentTest extends TestCase
         list($task, $token) = $this->initPermission('task:list');
         
         $comment = new TaskComment;
-        $comment->user_id = 0;
+        $comment->user_id = $this->loginUserId;
         $comment->task_id = $task->id;
         $comment->comment = 'Example comment';
         $comment->save();
@@ -426,7 +430,7 @@ class TaskCommentTest extends TestCase
         $data = [
             'comment' => 'Comment updated',
         ];
-        $response = $this->withToken($token)->putJson('/api/task/' . $task->id . '/comment/' . $comment->id, $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id . '/comment/' . $comment->id, $data);
         $response->assertStatus(200);
         
         $this->assertDatabaseHas('task_comments', [
@@ -449,7 +453,7 @@ class TaskCommentTest extends TestCase
         $data = [
             'comment' => 'Comment updated',
         ];
-        $response = $this->withToken($token)->putJson('/api/task/' . $task->id . '/comment/' . $comment->id, $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id . '/comment/' . $comment->id, $data);
         $response->assertStatus(403);
         
         $this->assertDatabaseHas('task_comments', [

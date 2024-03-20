@@ -25,7 +25,7 @@ class TaskTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
@@ -33,7 +33,7 @@ class TaskTest extends TestCase
         $data = $this->getAccount($accountUserId)['projects'][0]['tasks'][0];
         $data['project_id'] = $project->id;
         
-        $response = $this->withToken($token)->putJson('/api/task/', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/', $data);
         $response->assertStatus(200);
         
         $uuid = $this->getAccountUuui($token);
@@ -45,7 +45,7 @@ class TaskTest extends TestCase
             $userIds[] = $user->id;
         $data['users'] = $userIds;
         
-        $response = $this->withToken($token)->putJson('/api/task/', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/', $data);
         $response->assertStatus(200);
         $this->assertDatabaseCount('task_assigned_users', count($userIds));
     }
@@ -60,7 +60,7 @@ class TaskTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
@@ -74,7 +74,7 @@ class TaskTest extends TestCase
             $data = $taskData;
             unset($data[$field]);
             
-            $response = $this->withToken($token)->putJson('/api/task', $data);
+            $response = $this->withToken($token)->putJson('/api/v1/task', $data);
             $response->assertStatus(422);
         }
         
@@ -84,16 +84,16 @@ class TaskTest extends TestCase
         $users = User::where('firm_id', $firm->id)->where('owner', 0)->get();
         
         $data['users'] = [-1];
-        $response = $this->withToken($token)->putJson('/api/task/', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/', $data);
         $response->assertStatus(422);
         
         $data['users'] = $users[0]->id;
-        $response = $this->withToken($token)->putJson('/api/task/', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/', $data);
         $response->assertStatus(422);
         
         $otherUser = User::withoutGlobalScopes()->where('firm_id', '!=', $firm->id)->inRandomOrder()->first();
         $data['users'] = [$otherUser->id];
-        $response = $this->withToken($token)->putJson('/api/task/', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/', $data);
         $response->assertStatus(422);
     }
     
@@ -107,7 +107,7 @@ class TaskTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
@@ -115,13 +115,13 @@ class TaskTest extends TestCase
         $taskData = $this->getAccount($accountUserId)['projects'][0]['tasks'][0];
         $taskData['project_id'] = -9;
         
-        $response = $this->withToken($token)->putJson('/api/task', $taskData);
+        $response = $this->withToken($token)->putJson('/api/v1/task', $taskData);
         $response->assertStatus(404);
         
         $uuid = $this->getAccountUuui($token);
         $otherUserProject = Project::withoutGlobalScopes()->where('uuid', '!=', $uuid)->inRandomOrder()->first();
         $taskData['project_id'] = $otherUserProject->id;
-        $response = $this->withToken($token)->putJson('/api/task/', $taskData);
+        $response = $this->withToken($token)->putJson('/api/v1/task/', $taskData);
         $response->assertStatus(404);
     }
     
@@ -135,13 +135,13 @@ class TaskTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
         $project = $this->getProject($token);
         
-        $response = $this->withToken($token)->getJson('/api/tasks/' . $project->id);
+        $response = $this->withToken($token)->getJson('/api/v1/tasks/' . $project->id);
         $response
             ->assertStatus(200)
             ->assertJson([
@@ -163,14 +163,14 @@ class TaskTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
         $project = $this->getProject($token);
         $totalTasks = Task::withoutGlobalScopes()->where('project_id', $project->id)->count();
         
-        $response = $this->withToken($token)->getJson('/api/tasks/' . $project->id);
+        $response = $this->withToken($token)->getJson('/api/v1/tasks/' . $project->id);
         $response
             ->assertStatus(200)
             ->assertJson([
@@ -192,7 +192,7 @@ class TaskTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
@@ -200,10 +200,10 @@ class TaskTest extends TestCase
         $totalTasks = Task::withoutGlobalScopes()->where('project_id', $project->id)->count();
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->deleteJson('/api/task/' . $task->id);
+        $response = $this->withToken($token)->deleteJson('/api/v1/task/' . $task->id);
         $response->assertStatus(200);
         
-        $response = $this->withToken($token)->getJson('/api/tasks/' . $project->id);
+        $response = $this->withToken($token)->getJson('/api/v1/tasks/' . $project->id);
         $response
             ->assertStatus(200)
             ->assertJson([
@@ -225,23 +225,23 @@ class TaskTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
         $project = $this->getProject($token);
         $totalTasks = Task::withoutGlobalScopes()->where('project_id', $project->id)->count();
         
-        $response = $this->withToken($token)->deleteJson('/api/task/' . -9);
+        $response = $this->withToken($token)->deleteJson('/api/v1/task/' . -9);
         $response->assertStatus(404);
         
         // Try delete otherr users project
         $uuid = $this->getAccountUuui($token);
         $otherUserTask = Task::withoutGlobalScopes()->where('uuid', '!=', $uuid)->inRandomOrder()->first();
-        $response = $this->withToken($token)->deleteJson('/api/task/' . $otherUserTask->id);
+        $response = $this->withToken($token)->deleteJson('/api/v1/task/' . $otherUserTask->id);
         $response->assertStatus(404);
         
-        $response = $this->withToken($token)->getJson('/api/tasks/' . $project->id);
+        $response = $this->withToken($token)->getJson('/api/v1/tasks/' . $project->id);
         $response
             ->assertStatus(200)
             ->assertJson([
@@ -263,14 +263,14 @@ class TaskTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->getJson('/api/task/' . $task->id);
+        $response = $this->withToken($token)->getJson('/api/v1/task/' . $task->id);
         $response
             ->assertStatus(200)
             ->assertJson([
@@ -289,17 +289,17 @@ class TaskTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
-        $response = $this->withToken($token)->getJson('/api/task/' . -9);
+        $response = $this->withToken($token)->getJson('/api/v1/task/' . -9);
         $response->assertStatus(404);
         
         // Try delete other users task
         $uuid = $this->getAccountUuui($token);
         $otherUserTask = Task::withoutGlobalScopes()->where('uuid', '!=', $uuid)->inRandomOrder()->first();
-        $response = $this->withToken($token)->deleteJson('/api/task/' . $otherUserTask->id);
+        $response = $this->withToken($token)->deleteJson('/api/v1/task/' . $otherUserTask->id);
         $response->assertStatus(404);
     }
     
@@ -313,7 +313,7 @@ class TaskTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
@@ -324,10 +324,10 @@ class TaskTest extends TestCase
             'name' => 'Name updated',
             'description' => 'Description updated',
         ];
-        $response = $this->withToken($token)->putJson('/api/task/' . $task->id, $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id, $data);
         $response->assertStatus(200);
         
-        $response = $this->withToken($token)->getJson('/api/task/' . $task->id);
+        $response = $this->withToken($token)->getJson('/api/v1/task/' . $task->id);
         $response
             ->assertStatus(200)
             ->assertJson([
@@ -345,7 +345,7 @@ class TaskTest extends TestCase
             $userIds[] = $user->id;
         $data['users'] = $userIds;
         
-        $response = $this->withToken($token)->putJson('/api/task/' . $task->id, $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id, $data);
         $response->assertStatus(200);
         $this->assertDatabaseCount('task_assigned_users', count($userIds));
     }
@@ -360,7 +360,7 @@ class TaskTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
@@ -368,13 +368,13 @@ class TaskTest extends TestCase
             'name' => 'Name updated',
             'description' => 'Description updated',
         ];
-        $response = $this->withToken($token)->putJson('/api/task/' . -9, $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . -9, $data);
         $response->assertStatus(404);
         
         // Try update other users task
         $uuid = $this->getAccountUuui($token);
         $otherUserTask = Task::withoutGlobalScopes()->where('uuid', '!=', $uuid)->inRandomOrder()->first();
-        $response = $this->withToken($token)->deleteJson('/api/task/' . $otherUserTask->id);
+        $response = $this->withToken($token)->deleteJson('/api/v1/task/' . $otherUserTask->id);
         $response->assertStatus(404);
         
         
@@ -384,16 +384,16 @@ class TaskTest extends TestCase
         $users = User::where('firm_id', $firm->id)->where('owner', 0)->get();
         
         $data['users'] = [-2];
-        $response = $this->withToken($token)->putJson('/api/task/' . $task->id, $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id, $data);
         $response->assertStatus(422);
         
         $data['users'] = $users[0]->id;
-        $response = $this->withToken($token)->putJson('/api/task/' . $task->id, $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id, $data);
         $response->assertStatus(422);
         
         $otherUser = User::withoutGlobalScopes()->where('firm_id', '!=', $firm->id)->inRandomOrder()->first();
         $data['users'] = [$otherUser->id];
-        $response = $this->withToken($token)->putJson('/api/task/' . $task->id, $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id, $data);
         $response->assertStatus(422);
     }
     
@@ -407,7 +407,7 @@ class TaskTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         $uuid = $this->getAccountUuui($token);
@@ -418,7 +418,7 @@ class TaskTest extends TestCase
         $data = [
             'user_id' => $user->id,
         ];
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/assign', $data);
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/assign', $data);
         $response->assertStatus(200);
         
         $this->assertDatabaseCount('task_assigned_users', 1);
@@ -438,7 +438,7 @@ class TaskTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         $uuid = $this->getAccountUuui($token);
@@ -448,36 +448,36 @@ class TaskTest extends TestCase
         $user = User::where('firm_id', $firm->id)->where('owner', 0)->first();
         
         $data = [];
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/assign', $data);
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/assign', $data);
         $response->assertStatus(422);
         
         $data = ['user_id' => $user->id];
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/assign', $data);
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/assign', $data);
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/assign', $data);
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/assign', $data);
         $response->assertStatus(409);
         
         
         $data = ['user_id' => $user->id];
-        $response = $this->withToken($token)->postJson('/api/task/-9/assign', $data);
+        $response = $this->withToken($token)->postJson('/api/v1/task/-9/assign', $data);
         $response->assertStatus(404);
         
         $data = ['user_id' => -1];
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/assign', $data);
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/assign', $data);
         $response->assertStatus(404);
         
         $otherUserTask = Task::withoutGlobalScopes()->where('uuid', '!=', $uuid)->inRandomOrder()->first();
         $otherUser = User::withoutGlobalScopes()->where('firm_id', '!=', $firm->id)->inRandomOrder()->first();
         
         $data = ['user_id' => $user->id];
-        $response = $this->withToken($token)->postJson('/api/task/' . $otherUserTask->id . '/assign', $data);
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $otherUserTask->id . '/assign', $data);
         $response->assertStatus(404);
         
         $data = ['user_id' => $otherUser->id];
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/assign', $data);
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/assign', $data);
         $response->assertStatus(404);
         
         $data = ['user_id' => $otherUser->id];
-        $response = $this->withToken($token)->postJson('/api/task/' . $otherUserTask->id . '/assign', $data);
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $otherUserTask->id . '/assign', $data);
         $response->assertStatus(404);
     }
     
@@ -491,7 +491,7 @@ class TaskTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         $uuid = $this->getAccountUuui($token);
@@ -508,7 +508,7 @@ class TaskTest extends TestCase
         $data = [
             'user_id' => $user->id,
         ];
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/deassign', $data);
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/deassign', $data);
         $response->assertStatus(200);
         
         $this->assertDatabaseCount('task_assigned_users', 0);
@@ -524,7 +524,7 @@ class TaskTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         $uuid = $this->getAccountUuui($token);
@@ -539,12 +539,12 @@ class TaskTest extends TestCase
         $assign->save();
         
         $data = [];
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/deassign', $data);
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/deassign', $data);
         $response->assertStatus(422);
         
         $data = ['user_id' => $user->id];
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/deassign', $data);
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/deassign', $data);
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/deassign', $data);
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/deassign', $data);
         $response->assertStatus(404);
         
         $assign = new TaskAssignedUser;
@@ -553,11 +553,11 @@ class TaskTest extends TestCase
         $assign->save();
         
         $data = ['user_id' => $user->id];
-        $response = $this->withToken($token)->postJson('/api/task/-9/deassign', $data);
+        $response = $this->withToken($token)->postJson('/api/v1/task/-9/deassign', $data);
         $response->assertStatus(404);
         
         $data = ['user_id' => -1];
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/deassign', $data);
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/deassign', $data);
         $response->assertStatus(404);
         
         $otherUserTask = Task::withoutGlobalScopes()->where('uuid', '!=', $uuid)->inRandomOrder()->first();
@@ -569,15 +569,15 @@ class TaskTest extends TestCase
         $assign->save();
         
         $data = ['user_id' => $user->id];
-        $response = $this->withToken($token)->postJson('/api/task/' . $otherUserTask->id . '/deassign', $data);
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $otherUserTask->id . '/deassign', $data);
         $response->assertStatus(404);
         
         $data = ['user_id' => $otherUser->id];
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/deassign', $data);
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/deassign', $data);
         $response->assertStatus(404);
         
         $data = ['user_id' => $otherUser->id];
-        $response = $this->withToken($token)->postJson('/api/task/' . $otherUserTask->id . '/deassign', $data);
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $otherUserTask->id . '/deassign', $data);
         $response->assertStatus(404);
     }
     
@@ -592,7 +592,7 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "task:create");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
@@ -600,7 +600,7 @@ class TaskTest extends TestCase
         $data = $this->getAccount($accountUserId)['projects'][0]['tasks'][0];
         $data['project_id'] = $project->id;
         
-        $response = $this->withToken($token)->putJson('/api/task', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task', $data);
         $response->assertStatus(200);
     }
     
@@ -615,7 +615,7 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "task:list,update,delete");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
@@ -623,7 +623,7 @@ class TaskTest extends TestCase
         $data = $this->getAccount($accountUserId)['projects'][0]['tasks'][0];
         $data['project_id'] = $project->id;
         
-        $response = $this->withToken($token)->putJson('/api/task', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task', $data);
         $response->assertStatus(403);
     }
     
@@ -638,13 +638,13 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "task:list");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
         $project = $this->getProject($token);
         
-        $response = $this->withToken($token)->getJson('/api/tasks/' . $project->id);
+        $response = $this->withToken($token)->getJson('/api/v1/tasks/' . $project->id);
         $response->assertStatus(200);
     }
     
@@ -660,13 +660,13 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "task:create,update,delete");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
         $project = $this->getProject($token);
         
-        $response = $this->withToken($token)->getJson('/api/tasks/' . $project->id);
+        $response = $this->withToken($token)->getJson('/api/v1/tasks/' . $project->id);
         $response->assertStatus(403);
     }
     
@@ -681,14 +681,14 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "task:delete");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->deleteJson('/api/task/' . $task->id);
+        $response = $this->withToken($token)->deleteJson('/api/v1/task/' . $task->id);
         $response->assertStatus(200);
     }
     
@@ -703,14 +703,14 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "task:list,create,update");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->deleteJson('/api/task/' . $task->id);
+        $response = $this->withToken($token)->deleteJson('/api/v1/task/' . $task->id);
         $response->assertStatus(403);
     }
     
@@ -725,14 +725,14 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "task:list,create,update,delete");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->getJson('/api/task/' . $task->id);
+        $response = $this->withToken($token)->getJson('/api/v1/task/' . $task->id);
         $response->assertStatus(200);
     }
     
@@ -747,14 +747,14 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "task:create,update,delete");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->getJson('/api/task/' . $task->id);
+        $response = $this->withToken($token)->getJson('/api/v1/task/' . $task->id);
         $response->assertStatus(403);
     }
     
@@ -769,7 +769,7 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "task:update");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
@@ -780,7 +780,7 @@ class TaskTest extends TestCase
             'name' => 'Name updated',
             'description' => 'Description updated',
         ];
-        $response = $this->withToken($token)->putJson('/api/task/' . $task->id, $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id, $data);
         $response->assertStatus(200);
     }
     
@@ -795,7 +795,7 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "task:list,create,delete");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
@@ -806,7 +806,7 @@ class TaskTest extends TestCase
             'name' => 'Name updated',
             'description' => 'Description updated',
         ];
-        $response = $this->withToken($token)->putJson('/api/task/' . $task->id, $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id, $data);
         $response->assertStatus(403);
     }
     
@@ -821,7 +821,7 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "task:update");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         $uuid = $this->getAccountUuui($token);
@@ -832,7 +832,7 @@ class TaskTest extends TestCase
         $data = [
             'user_id' => $user->id,
         ];
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/assign', $data);
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/assign', $data);
         $response->assertStatus(200);
     }
     
@@ -847,7 +847,7 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "task:list,create,delete");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         $uuid = $this->getAccountUuui($token);
@@ -858,7 +858,7 @@ class TaskTest extends TestCase
         $data = [
             'user_id' => $user->id,
         ];
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/assign', $data);
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/assign', $data);
         $response->assertStatus(403);
     }
     
@@ -873,7 +873,7 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "task:update");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         $uuid = $this->getAccountUuui($token);
@@ -890,7 +890,7 @@ class TaskTest extends TestCase
         $data = [
             'user_id' => $user->id,
         ];
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/deassign', $data);
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/deassign', $data);
         $response->assertStatus(200);
     }
     
@@ -905,7 +905,7 @@ class TaskTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "task:list,create,delete");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         $uuid = $this->getAccountUuui($token);
@@ -922,7 +922,7 @@ class TaskTest extends TestCase
         $data = [
             'user_id' => $user->id,
         ];
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/deassign', $data);
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/deassign', $data);
         $response->assertStatus(403);
     }
 }

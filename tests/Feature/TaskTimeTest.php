@@ -21,7 +21,7 @@ class TaskTimeTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         return $response->token;
     }
@@ -36,7 +36,7 @@ class TaskTimeTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], $permission);
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         return $response->token;
     }
@@ -49,7 +49,7 @@ class TaskTimeTest extends TestCase
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/time/start');
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/time/start');
         $response->assertStatus(200);
         
         $taskTimeRow = TaskTime::first();
@@ -67,8 +67,8 @@ class TaskTimeTest extends TestCase
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/time/start');
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/time/start');
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/time/start');
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/time/start');
         $response->assertStatus(409);
     }
     
@@ -80,13 +80,13 @@ class TaskTimeTest extends TestCase
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->postJson('/api/task/-9/time/start');
+        $response = $this->withToken($token)->postJson('/api/v1/task/9999999999/time/start');
         $response->assertStatus(404);
         
         // Try start timer other user task
         $uuid = $this->getAccountUuui($token);
         $otherUserTask = Task::withoutGlobalScopes()->where('uuid', '!=', $uuid)->inRandomOrder()->first();
-        $response = $this->withToken($token)->postJson('/api/task/' . $otherUserTask->id . '/time/start');
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $otherUserTask->id . '/time/start');
         $response->assertStatus(404);
     }
     
@@ -98,7 +98,7 @@ class TaskTimeTest extends TestCase
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/time/start');
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/time/start');
         $response->assertStatus(200);
         
         $taskTimeRow = TaskTime::first();
@@ -107,7 +107,7 @@ class TaskTimeTest extends TestCase
             'status' => TaskTime::ACTIVE
         ]);
         
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/time/stop');
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/time/stop');
         $response->assertStatus(200);
         
         $taskTimeRow = TaskTime::first();
@@ -125,7 +125,7 @@ class TaskTimeTest extends TestCase
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/time/stop');
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/time/stop');
         $response->assertStatus(404);
     }
     
@@ -137,13 +137,13 @@ class TaskTimeTest extends TestCase
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->postJson('/api/task/-9/time/stop');
+        $response = $this->withToken($token)->postJson('/api/v1/task/9999999999/time/stop');
         $response->assertStatus(404);
         
         // Try start timer other user task
         $uuid = $this->getAccountUuui($token);
         $otherUserTask = Task::withoutGlobalScopes()->where('uuid', '!=', $uuid)->inRandomOrder()->first();
-        $response = $this->withToken($token)->postJson('/api/task/' . $otherUserTask->id . '/time/stop');
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $otherUserTask->id . '/time/stop');
         $response->assertStatus(404);
     }
     
@@ -155,7 +155,7 @@ class TaskTimeTest extends TestCase
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/time/start');
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/time/start');
         $response->assertStatus(200);
         
         $taskTimeRow = TaskTime::first();
@@ -164,7 +164,7 @@ class TaskTimeTest extends TestCase
             'status' => TaskTime::ACTIVE
         ]);
         
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/time/pause');
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/time/pause');
         $response->assertStatus(200);
         
         $taskTimeRow = TaskTime::first();
@@ -173,7 +173,7 @@ class TaskTimeTest extends TestCase
             'status' => TaskTime::PAUSED
         ]);
         
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/time/start');
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/time/start');
         $response->assertStatus(200);
         
         $taskTimeRow = TaskTime::first();
@@ -191,7 +191,7 @@ class TaskTimeTest extends TestCase
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/time/pause');
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/time/pause');
         $response->assertStatus(404);
     }
     
@@ -203,13 +203,13 @@ class TaskTimeTest extends TestCase
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->postJson('/api/task/-9/time/pause');
+        $response = $this->withToken($token)->postJson('/api/v1/task/9999999999/time/pause');
         $response->assertStatus(404);
         
         // Try start timer other user task
         $uuid = $this->getAccountUuui($token);
         $otherUserTask = Task::withoutGlobalScopes()->where('uuid', '!=', $uuid)->inRandomOrder()->first();
-        $response = $this->withToken($token)->postJson('/api/task/' . $otherUserTask->id . '/time/pause');
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $otherUserTask->id . '/time/pause');
         $response->assertStatus(404);
     }
     
@@ -221,7 +221,7 @@ class TaskTimeTest extends TestCase
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->getJson('/api/task/' . $task->id . '/times');
+        $response = $this->withToken($token)->getJson('/api/v1/task/' . $task->id . '/times');
         $response
             ->assertStatus(200)
             ->assertJson([
@@ -241,12 +241,12 @@ class TaskTimeTest extends TestCase
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $this->withToken($token)->postJson('/api/task/' . $task->id . '/time/start');
-        $this->withToken($token)->postJson('/api/task/' . $task->id . '/time/stop');
-        $this->withToken($token)->postJson('/api/task/' . $task->id . '/time/start');
-        $this->withToken($token)->postJson('/api/task/' . $task->id . '/time/stop');
+        $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/time/start');
+        $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/time/stop');
+        $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/time/start');
+        $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/time/stop');
         
-        $response = $this->withToken($token)->getJson('/api/task/' . $task->id . '/times');
+        $response = $this->withToken($token)->getJson('/api/v1/task/' . $task->id . '/times');
         $response
             ->assertStatus(200)
             ->assertJson([
@@ -272,10 +272,10 @@ class TaskTimeTest extends TestCase
             'billable' => 1,
             'comment' => 'Example time comment'
         ];
-        $response = $this->withToken($token)->putJson('/api/task/' . $task->id . '/time', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id . '/time', $data);
         $response->assertStatus(200);
         
-        $response = $this->withToken($token)->getJson('/api/task/' . $task->id . '/times');
+        $response = $this->withToken($token)->getJson('/api/v1/task/' . $task->id . '/times');
         $times = json_decode($response->getContent());
         $taskTimeRow = TaskTime::find($times->data[0]->id);
         $this->assertDatabaseHas('task_times', [
@@ -310,7 +310,7 @@ class TaskTimeTest extends TestCase
             $data = $taskTimeData;
             unset($data[$field]);
             
-            $response = $this->withToken($token)->putJson('/api/task/' . $task->id . '/time', $data);
+            $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id . '/time', $data);
             $response->assertStatus(422);
         }
     }
@@ -323,13 +323,13 @@ class TaskTimeTest extends TestCase
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->putJson('/api/task/-9/time');
+        $response = $this->withToken($token)->putJson('/api/v1/task/9999999999/time');
         $response->assertStatus(404);
         
         // Try start timer other user task
         $uuid = $this->getAccountUuui($token);
         $otherUserTask = Task::withoutGlobalScopes()->where('uuid', '!=', $uuid)->inRandomOrder()->first();
-        $response = $this->withToken($token)->putJson('/api/task/' . $otherUserTask->id . '/time');
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $otherUserTask->id . '/time');
         $response->assertStatus(404);
     }
     
@@ -347,10 +347,10 @@ class TaskTimeTest extends TestCase
             'billable' => 1,
             'comment' => 'Example time comment'
         ];
-        $response = $this->withToken($token)->putJson('/api/task/' . $task->id . '/time', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id . '/time', $data);
         $response->assertStatus(200);
         
-        $response = $this->withToken($token)->getJson('/api/task/' . $task->id . '/times');
+        $response = $this->withToken($token)->getJson('/api/v1/task/' . $task->id . '/times');
         $times = json_decode($response->getContent());
         $taskTimeRow = TaskTime::find($times->data[0]->id);
         $this->assertDatabaseHas('task_times', [
@@ -370,7 +370,7 @@ class TaskTimeTest extends TestCase
             'billable' => 0,
             'comment' => 'Example time comment updated'
         ];
-        $response = $this->withToken($token)->putJson('/api/task/' . $task->id . '/time/' . $taskTimeRow->id, $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id . '/time/' . $taskTimeRow->id, $data);
         $response->assertStatus(200);
         
         $taskTimeRow = TaskTime::find($times->data[0]->id);
@@ -379,8 +379,8 @@ class TaskTimeTest extends TestCase
             'task_id' => $task->id,
             'status' => TaskTime::FINISHED,
             'started' => $data['started'],
-            'finished' => $data['started'] + $data['total'],
-            'total' => $data['total'],
+            'finished' => $data['started'] + \App\Libraries\Helper::roundTime($data['total']),
+            'total' => \App\Libraries\Helper::roundTime($data['total']),
             'comment' => $data['comment'],
             'billable' => $data['billable'],
         ]);
@@ -400,22 +400,22 @@ class TaskTimeTest extends TestCase
             'billable' => 1,
             'comment' => 'Example time comment'
         ];
-        $response = $this->withToken($token)->putJson('/api/task/' . $task->id . '/time', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id . '/time', $data);
         $response->assertStatus(200);
         
-        $response = $this->withToken($token)->getJson('/api/task/' . $task->id . '/times');
+        $response = $this->withToken($token)->getJson('/api/v1/task/' . $task->id . '/times');
         $times = json_decode($response->getContent());
         
-        $response = $this->withToken($token)->putJson('/api/task/-9/time/' . $times->data[0]->id);
+        $response = $this->withToken($token)->putJson('/api/v1/task/9999999999/time/' . $times->data[0]->id);
         $response->assertStatus(404);
         
-        $response = $this->withToken($token)->putJson('/api/task/' . $task->id . '/time/-9');
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id . '/time/9999999999');
         $response->assertStatus(404);
         
         //// Try start timer other user task
         $uuid = $this->getAccountUuui($token);
         $otherUserTask = Task::withoutGlobalScopes()->where('uuid', '!=', $uuid)->inRandomOrder()->first();
-        $response = $this->withToken($token)->putJson('/api/task/' . $otherUserTask->id . '/time/' . $times->data[0]->id);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $otherUserTask->id . '/time/' . $times->data[0]->id);
         $response->assertStatus(404);
     }
     
@@ -433,15 +433,15 @@ class TaskTimeTest extends TestCase
             'billable' => 1,
             'comment' => 'Example time comment'
         ];
-        $response = $this->withToken($token)->putJson('/api/task/' . $task->id . '/time', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id . '/time', $data);
         $response->assertStatus(200);
         
         $this->assertDatabaseCount('task_times', 1);
         
-        $response = $this->withToken($token)->getJson('/api/task/' . $task->id . '/times');
+        $response = $this->withToken($token)->getJson('/api/v1/task/' . $task->id . '/times');
         $times = json_decode($response->getContent());
         
-        $response = $this->withToken($token)->deleteJson('/api/task/' . $task->id . '/time/' . $times->data[0]->id);
+        $response = $this->withToken($token)->deleteJson('/api/v1/task/' . $task->id . '/time/' . $times->data[0]->id);
         $response->assertStatus(200);
         
         $this->assertDatabaseCount('task_times', 0);
@@ -461,22 +461,22 @@ class TaskTimeTest extends TestCase
             'billable' => 1,
             'comment' => 'Example time comment'
         ];
-        $response = $this->withToken($token)->putJson('/api/task/' . $task->id . '/time', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id . '/time', $data);
         $response->assertStatus(200);
         
-        $response = $this->withToken($token)->getJson('/api/task/' . $task->id . '/times');
+        $response = $this->withToken($token)->getJson('/api/v1/task/' . $task->id . '/times');
         $times = json_decode($response->getContent());
         
-        $response = $this->withToken($token)->deleteJson('/api/task/-9/time/' . $times->data[0]->id);
+        $response = $this->withToken($token)->deleteJson('/api/v1/task/9999999999/time/' . $times->data[0]->id);
         $response->assertStatus(404);
         
-        $response = $this->withToken($token)->deleteJson('/api/task/' . $task->id . '/time/-9');
+        $response = $this->withToken($token)->deleteJson('/api/v1/task/' . $task->id . '/time/9999999999');
         $response->assertStatus(404);
         
         //// Try start timer other user task
         $uuid = $this->getAccountUuui($token);
         $otherUserTask = Task::withoutGlobalScopes()->where('uuid', '!=', $uuid)->inRandomOrder()->first();
-        $response = $this->withToken($token)->deleteJson('/api/task/' . $otherUserTask->id . '/time/' . $times->data[0]->id);
+        $response = $this->withToken($token)->deleteJson('/api/v1/task/' . $otherUserTask->id . '/time/' . $times->data[0]->id);
         $response->assertStatus(404);
     }
     
@@ -488,7 +488,7 @@ class TaskTimeTest extends TestCase
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/time/start');
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/time/start');
         $response->assertStatus(200);
     }
     
@@ -500,7 +500,7 @@ class TaskTimeTest extends TestCase
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/time/start');
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/time/start');
         $response->assertStatus(403);
     }
     
@@ -512,7 +512,7 @@ class TaskTimeTest extends TestCase
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->getJson('/api/get-id');
+        $response = $this->withToken($token)->getJson('/api/v1/get-id');
         $userId = $response->getContent();
         
         $timer = new TaskTime;
@@ -521,7 +521,7 @@ class TaskTimeTest extends TestCase
         $timer->started = time();
         $timer->save();
         
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/time/stop');
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/time/stop');
         $response->assertStatus(200);
     }
     
@@ -533,7 +533,7 @@ class TaskTimeTest extends TestCase
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->getJson('/api/get-id');
+        $response = $this->withToken($token)->getJson('/api/v1/get-id');
         $userId = $response->getContent();
         
         $timer = new TaskTime;
@@ -542,7 +542,7 @@ class TaskTimeTest extends TestCase
         $timer->started = time();
         $timer->save();
         
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/time/stop');
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/time/stop');
         $response->assertStatus(403);
     }
     
@@ -554,7 +554,7 @@ class TaskTimeTest extends TestCase
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->getJson('/api/get-id');
+        $response = $this->withToken($token)->getJson('/api/v1/get-id');
         $userId = $response->getContent();
         
         $timer = new TaskTime;
@@ -563,7 +563,7 @@ class TaskTimeTest extends TestCase
         $timer->started = time();
         $timer->save();
         
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/time/pause');
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/time/pause');
         $response->assertStatus(200);
     }
     
@@ -575,7 +575,7 @@ class TaskTimeTest extends TestCase
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->getJson('/api/get-id');
+        $response = $this->withToken($token)->getJson('/api/v1/get-id');
         $userId = $response->getContent();
         
         $timer = new TaskTime;
@@ -584,7 +584,7 @@ class TaskTimeTest extends TestCase
         $timer->started = time();
         $timer->save();
         
-        $response = $this->withToken($token)->postJson('/api/task/' . $task->id . '/time/pause');
+        $response = $this->withToken($token)->postJson('/api/v1/task/' . $task->id . '/time/pause');
         $response->assertStatus(403);
     }
     
@@ -596,7 +596,7 @@ class TaskTimeTest extends TestCase
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->getJson('/api/task/' . $task->id . '/times');
+        $response = $this->withToken($token)->getJson('/api/v1/task/' . $task->id . '/times');
         $response->assertStatus(200);
     }
     
@@ -608,7 +608,7 @@ class TaskTimeTest extends TestCase
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->getJson('/api/task/' . $task->id . '/times');
+        $response = $this->withToken($token)->getJson('/api/v1/task/' . $task->id . '/times');
         $response->assertStatus(403);
     }
     
@@ -620,7 +620,7 @@ class TaskTimeTest extends TestCase
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->getJson('/api/get-id');
+        $response = $this->withToken($token)->getJson('/api/v1/get-id');
         $userId = $response->getContent();
         
         $timer = new TaskTime;
@@ -629,7 +629,7 @@ class TaskTimeTest extends TestCase
         $timer->started = time();
         $timer->save();
         
-        $response = $this->withToken($token)->deleteJson('/api/task/' . $task->id . '/time/' . $timer->id);
+        $response = $this->withToken($token)->deleteJson('/api/v1/task/' . $task->id . '/time/' . $timer->id);
         $response->assertStatus(200);
     }
     
@@ -641,7 +641,7 @@ class TaskTimeTest extends TestCase
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->getJson('/api/get-id');
+        $response = $this->withToken($token)->getJson('/api/v1/get-id');
         $userId = $response->getContent();
         
         $timer = new TaskTime;
@@ -650,7 +650,7 @@ class TaskTimeTest extends TestCase
         $timer->started = time();
         $timer->save();
         
-        $response = $this->withToken($token)->deleteJson('/api/task/' . $task->id . '/time/' . $timer->id);
+        $response = $this->withToken($token)->deleteJson('/api/v1/task/' . $task->id . '/time/' . $timer->id);
         $response->assertStatus(403);
     }
     
@@ -668,7 +668,7 @@ class TaskTimeTest extends TestCase
             'billable' => 1,
             'comment' => 'Example time comment'
         ];
-        $response = $this->withToken($token)->putJson('/api/task/' . $task->id . '/time', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id . '/time', $data);
         $response->assertStatus(200);
     }
     
@@ -686,7 +686,7 @@ class TaskTimeTest extends TestCase
             'billable' => 1,
             'comment' => 'Example time comment'
         ];
-        $response = $this->withToken($token)->putJson('/api/task/' . $task->id . '/time', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id . '/time', $data);
         $response->assertStatus(403);
     }
     
@@ -698,7 +698,7 @@ class TaskTimeTest extends TestCase
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->getJson('/api/get-id');
+        $response = $this->withToken($token)->getJson('/api/v1/get-id');
         $userId = $response->getContent();
         
         $timer = new TaskTime;
@@ -706,6 +706,8 @@ class TaskTimeTest extends TestCase
         $timer->task_id = $task->id;
         $timer->user_id = $userId;
         $timer->started = time();
+        $timer->finished = time()+10;
+        $timer->total = 10;
         $timer->save();
         
         $data = [
@@ -714,7 +716,7 @@ class TaskTimeTest extends TestCase
             'billable' => 0,
             'comment' => 'Example time comment updated'
         ];
-        $response = $this->withToken($token)->putJson('/api/task/' . $task->id . '/time/' . $timer->id, $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id . '/time/' . $timer->id, $data);
         $response->assertStatus(200);
     }
     
@@ -726,13 +728,14 @@ class TaskTimeTest extends TestCase
         $project = $this->getProject($token);
         $task = Task::withoutGlobalScopes()->where('project_id', $project->id)->inRandomOrder()->first();
         
-        $response = $this->withToken($token)->getJson('/api/get-id');
+        $response = $this->withToken($token)->getJson('/api/v1/get-id');
         $userId = $response->getContent();
         
         $timer = new TaskTime;
         $timer->task_id = $task->id;
         $timer->user_id = $userId;
         $timer->started = time();
+        $timer->finished = time()+10;
         $timer->save();
         
         $data = [
@@ -741,7 +744,7 @@ class TaskTimeTest extends TestCase
             'billable' => 0,
             'comment' => 'Example time comment updated'
         ];
-        $response = $this->withToken($token)->putJson('/api/task/' . $task->id . '/time/' . $timer->id, $data);
+        $response = $this->withToken($token)->putJson('/api/v1/task/' . $task->id . '/time/' . $timer->id, $data);
         $response->assertStatus(403);
     }
 }

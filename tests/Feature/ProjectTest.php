@@ -20,11 +20,11 @@ class ProjectTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
-        $response = $this->withToken($token)->putJson('/api/project', $this->getAccount($accountUserId)['projects'][0]['data']);
+        $response = $this->withToken($token)->putJson('/api/v1/project', $this->getAccount($accountUserId)['projects'][0]['data']);
         $response->assertStatus(200);
     }
     
@@ -38,7 +38,7 @@ class ProjectTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
@@ -50,7 +50,7 @@ class ProjectTest extends TestCase
             $data = $projectData;
             unset($data[$field]);
             
-            $response = $this->withToken($token)->putJson('/api/project', $data);
+            $response = $this->withToken($token)->putJson('/api/v1/project', $data);
             $response->assertStatus(422);
         }
     }
@@ -65,11 +65,11 @@ class ProjectTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
-        $response = $this->withToken($token)->getJson('/api/projects');
+        $response = $this->withToken($token)->getJson('/api/v1/projects');
         $response
             ->assertStatus(200)
             ->assertJson([
@@ -91,11 +91,11 @@ class ProjectTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
-        $response = $this->withToken($token)->getJson('/api/projects');
+        $response = $this->withToken($token)->getJson('/api/v1/projects');
         $response
             ->assertStatus(200)
             ->assertJson([
@@ -117,17 +117,17 @@ class ProjectTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
-        $response = $this->withToken($token)->getJson('/api/projects');
+        $response = $this->withToken($token)->getJson('/api/v1/projects');
         $projects = json_decode($response->getContent());
         
-        $response = $this->withToken($token)->deleteJson('/api/project/' . $projects->data[0]->id);
+        $response = $this->withToken($token)->deleteJson('/api/v1/project/' . $projects->data[0]->id);
         $response->assertStatus(200);
         
-        $response = $this->withToken($token)->getJson('/api/projects');
+        $response = $this->withToken($token)->getJson('/api/v1/projects');
         $response
             ->assertStatus(200)
             ->assertJson([
@@ -149,20 +149,20 @@ class ProjectTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
-        $response = $this->withToken($token)->deleteJson('/api/project/' . -9);
+        $response = $this->withToken($token)->deleteJson('/api/v1/project/' . -9);
         $response->assertStatus(404);
         
         // Try delete otherr users project
         $uuid = $this->getAccountUuui($token);
         $otherUserProject = Project::withoutGlobalScopes()->where('uuid', '!=', $uuid)->inRandomOrder()->first();
-        $response = $this->withToken($token)->deleteJson('/api/project/' . $otherUserProject->id);
+        $response = $this->withToken($token)->deleteJson('/api/v1/project/' . $otherUserProject->id);
         $response->assertStatus(404);
         
-        $response = $this->withToken($token)->getJson('/api/projects');
+        $response = $this->withToken($token)->getJson('/api/v1/projects');
         $response
             ->assertStatus(200)
             ->assertJson([
@@ -184,15 +184,15 @@ class ProjectTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
-        $response = $this->withToken($token)->getJson('/api/projects');
+        $response = $this->withToken($token)->getJson('/api/v1/projects');
         $projects = json_decode($response->getContent());
         
         $projectDB = Project::find($projects->data[0]->id);
-        $response = $this->withToken($token)->getJson('/api/project/' . $projects->data[0]->id);
+        $response = $this->withToken($token)->getJson('/api/v1/project/' . $projects->data[0]->id);
         $response
             ->assertStatus(200)
             ->assertJson([
@@ -213,17 +213,17 @@ class ProjectTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
-        $response = $this->withToken($token)->getJson('/api/project/' . -9);
+        $response = $this->withToken($token)->getJson('/api/v1/project/' . -9);
         $response->assertStatus(404);
         
         // Try delete otherr users project
         $uuid = $this->getAccountUuui($token);
         $otherUserProject = Project::withoutGlobalScopes()->where('uuid', '!=', $uuid)->inRandomOrder()->first();
-        $response = $this->withToken($token)->deleteJson('/api/project/' . $otherUserProject->id);
+        $response = $this->withToken($token)->deleteJson('/api/v1/project/' . $otherUserProject->id);
         $response->assertStatus(404);
     }
     
@@ -237,11 +237,11 @@ class ProjectTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
-        $response = $this->withToken($token)->getJson('/api/projects');
+        $response = $this->withToken($token)->getJson('/api/v1/projects');
         $projects = json_decode($response->getContent());
         
         $data = [
@@ -250,11 +250,11 @@ class ProjectTest extends TestCase
             'location' => 'Location updated',
             'owner' => 'Owner updated',
         ];
-        $response = $this->withToken($token)->putJson('/api/project/' . $projects->data[0]->id, $data);
+        $response = $this->withToken($token)->putJson('/api/v1/project/' . $projects->data[0]->id, $data);
         $response->assertStatus(200);
         
         $projectDB = Project::find($projects->data[0]->id);
-        $response = $this->withToken($token)->getJson('/api/project/' . $projects->data[0]->id);
+        $response = $this->withToken($token)->getJson('/api/v1/project/' . $projects->data[0]->id);
         $response
             ->assertStatus(200)
             ->assertJson([
@@ -275,7 +275,7 @@ class ProjectTest extends TestCase
             'password' => $this->getAccount($accountUserId)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
@@ -285,13 +285,13 @@ class ProjectTest extends TestCase
             'location' => 'Location updated',
             'owner' => 'Owner updated',
         ];
-        $response = $this->withToken($token)->putJson('/api/project/' . -9, $data);
+        $response = $this->withToken($token)->putJson('/api/v1/project/' . -9, $data);
         $response->assertStatus(404);
         
         // Try delete otherr users project
         $uuid = $this->getAccountUuui($token);
         $otherUserProject = Project::withoutGlobalScopes()->where('uuid', '!=', $uuid)->inRandomOrder()->first();
-        $response = $this->withToken($token)->deleteJson('/api/project/' . $otherUserProject->id);
+        $response = $this->withToken($token)->deleteJson('/api/v1/project/' . $otherUserProject->id);
         $response->assertStatus(404);
     }
     
@@ -306,11 +306,11 @@ class ProjectTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "project:list,update,delete");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
-        $response = $this->withToken($token)->putJson('/api/project', $this->getAccount($accountUserId)['projects'][0]['data']);
+        $response = $this->withToken($token)->putJson('/api/v1/project', $this->getAccount($accountUserId)['projects'][0]['data']);
         $response->assertStatus(403);
     }
     
@@ -325,11 +325,11 @@ class ProjectTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "project:create");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
-        $response = $this->withToken($token)->putJson('/api/project', $this->getAccount($accountUserId)['projects'][0]['data']);
+        $response = $this->withToken($token)->putJson('/api/v1/project', $this->getAccount($accountUserId)['projects'][0]['data']);
         $response->assertStatus(200);
     }
     
@@ -344,11 +344,11 @@ class ProjectTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "project:create,update,delete");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
-        $response = $this->withToken($token)->getJson('/api/projects');
+        $response = $this->withToken($token)->getJson('/api/v1/projects');
         $response->assertStatus(403);
     }
     
@@ -363,11 +363,11 @@ class ProjectTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "project:list");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
-        $response = $this->withToken($token)->getJson('/api/projects');
+        $response = $this->withToken($token)->getJson('/api/v1/projects');
         $response->assertStatus(200);
     }
     
@@ -382,13 +382,13 @@ class ProjectTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "project:list,create,update");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
         $project = $this->getProject($token);
         
-        $response = $this->withToken($token)->deleteJson('/api/project/' . $project->id);
+        $response = $this->withToken($token)->deleteJson('/api/v1/project/' . $project->id);
         $response->assertStatus(403);
     }
     
@@ -403,13 +403,13 @@ class ProjectTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "project:delete");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
         $project = $this->getProject($token);
         
-        $response = $this->withToken($token)->deleteJson('/api/project/' . $project->id);
+        $response = $this->withToken($token)->deleteJson('/api/v1/project/' . $project->id);
         $response->assertStatus(200);
     }
     
@@ -424,13 +424,13 @@ class ProjectTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "project:create,update,delete");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
         $project = $this->getProject($token);
         
-        $response = $this->withToken($token)->getJson('/api/project/' . $project->id);
+        $response = $this->withToken($token)->getJson('/api/v1/project/' . $project->id);
         $response->assertStatus(403);
     }
     
@@ -445,13 +445,13 @@ class ProjectTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "project:list,create,update,delete");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
         $project = $this->getProject($token);
         
-        $response = $this->withToken($token)->getJson('/api/project/' . $project->id);
+        $response = $this->withToken($token)->getJson('/api/v1/project/' . $project->id);
         $response->assertStatus(200);
     }
     
@@ -466,7 +466,7 @@ class ProjectTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "project:list,create,delete");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
@@ -478,7 +478,7 @@ class ProjectTest extends TestCase
             'location' => 'Location updated',
             'owner' => 'Owner updated',
         ];
-        $response = $this->withToken($token)->putJson('/api/project/' . $project->id, $data);
+        $response = $this->withToken($token)->putJson('/api/v1/project/' . $project->id, $data);
         $response->assertStatus(403);
     }
     
@@ -493,7 +493,7 @@ class ProjectTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "project:update");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
@@ -505,7 +505,7 @@ class ProjectTest extends TestCase
             'location' => 'Location updated',
             'owner' => 'Owner updated',
         ];
-        $response = $this->withToken($token)->putJson('/api/project/' . $project->id, $data);
+        $response = $this->withToken($token)->putJson('/api/v1/project/' . $project->id, $data);
         $response->assertStatus(200);
     }
 }

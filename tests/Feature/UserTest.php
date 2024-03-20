@@ -18,7 +18,7 @@ class UserTest extends TestCase
     {
         $token = $this->userRegister();
         
-        $response = $this->post('/api/register/confirm/' . $token, $this->getAccount(0)['data']);
+        $response = $this->post('/api/v1/register/confirm/' . $token, $this->getAccount(0)['data']);
         $status = $response->getContent();
         if($status == '1')
         {
@@ -27,12 +27,12 @@ class UserTest extends TestCase
                 'password' => $this->getAccount(0)['data']['password'],
                 'device_name' => 'test'
             ];
-            $response = $this->postJson('/api/login', $data);
+            $response = $this->postJson('/api/v1/login', $data);
             $response->assertStatus(200);
             $response = json_decode($response->getContent());
             $token = $response->token;
             
-            $response = $this->withToken($token)->getJson('/api/get-firm-id');
+            $response = $this->withToken($token)->getJson('/api/v1/get-firm-id');
             $response->assertStatus(200);
             
             $user = User::where('email', $this->getAccount(0)['email'])->where('owner', 1)->first();
@@ -45,7 +45,7 @@ class UserTest extends TestCase
     {
         $token = $this->userRegister();
         
-        $response = $this->postJson('/api/register/confirm/' . $token, $this->getAccount(0)['data']);
+        $response = $this->postJson('/api/v1/register/confirm/' . $token, $this->getAccount(0)['data']);
         $status = $response->getContent();
         if($status == '1')
         {
@@ -54,7 +54,7 @@ class UserTest extends TestCase
                 'password' => 'INVALID:PASSWORD',
                 'device_name' => 'test'
             ];
-            $response = $this->postJson('/api/login', $data);
+            $response = $this->postJson('/api/v1/login', $data);
             $response->assertStatus(422);
         }
     }
@@ -68,7 +68,7 @@ class UserTest extends TestCase
             'password' => $this->getAccount(0)['data']['password'],
             'device_name' => 'test'
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response->assertStatus(422);
     }
     
@@ -81,7 +81,7 @@ class UserTest extends TestCase
             'password' => $this->getAccount(0)['data']['password'],
             'device_name' => 'test',
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response->assertStatus(422);
     }
     
@@ -96,12 +96,12 @@ class UserTest extends TestCase
             'device_name' => 'test',
             'firm_id' => $user->firm_id,
         ];
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response->assertStatus(200);
         $response = json_decode($response->getContent());
         $loginToken = $response->token;
         
-        $response = $this->withToken($loginToken)->getJson('/api/get-firm-id');
+        $response = $this->withToken($loginToken)->getJson('/api/v1/get-firm-id');
         $response->assertStatus(200)->assertSeeText($user->firm_id);
     }
     
@@ -110,7 +110,7 @@ class UserTest extends TestCase
     {
         $this->userRegisterWithConfirmation();
         $data = ['email' => $this->getAccount(0)['email']];
-        $response = $this->postJson('/api/forgot-password', $data);
+        $response = $this->postJson('/api/v1/forgot-password', $data);
         $response->assertStatus(200);
     }
     
@@ -118,7 +118,7 @@ class UserTest extends TestCase
     public function test_login_forgot_invalid_email(): void
     {
         $data = ['email' => 'xxxx'];
-        $response = $this->postJson('/api/forgot-password', $data);
+        $response = $this->postJson('/api/v1/forgot-password', $data);
         $response->assertStatus(422);
     }
     
@@ -126,7 +126,7 @@ class UserTest extends TestCase
     public function test_login_forgot_not_exist_email(): void
     {
         $data = ['email' => 'invalid@example.com'];
-        $response = $this->postJson('/api/forgot-password', $data);
+        $response = $this->postJson('/api/v1/forgot-password', $data);
         $response->assertStatus(404);
     }
     
@@ -135,7 +135,7 @@ class UserTest extends TestCase
     {
         $this->userRegister();
         $data = ['email' => $this->getAccount(0)['email']];
-        $response = $this->postJson('/api/forgot-password', $data);
+        $response = $this->postJson('/api/v1/forgot-password', $data);
         $response->assertStatus(404);
     }
     
@@ -143,7 +143,7 @@ class UserTest extends TestCase
     {
         $this->userRegisterWithConfirmation();
         $data = ['email' => $this->getAccount(0)['email']];
-        $response = $this->postJson('/api/forgot-password', $data);
+        $response = $this->postJson('/api/v1/forgot-password', $data);
         $status = $response->getContent();
         if($status == '1')
         {
@@ -155,7 +155,7 @@ class UserTest extends TestCase
                 'email' => $this->getAccount(0)['email'],
                 'token' => $tokenRow->token,
             ];
-            $response = $this->getJson('/api/reset-password?' . http_build_query($data));
+            $response = $this->getJson('/api/v1/reset-password?' . http_build_query($data));
             $response->assertStatus(200);
         }
     }
@@ -164,7 +164,7 @@ class UserTest extends TestCase
     {
         $this->userRegisterWithConfirmation();
         $data = ['email' => $this->getAccount(0)['email']];
-        $response = $this->postJson('/api/forgot-password', $data);
+        $response = $this->postJson('/api/v1/forgot-password', $data);
         $status = $response->getContent();
         if($status == '1')
         {
@@ -176,7 +176,7 @@ class UserTest extends TestCase
                 'email' => $this->getAccount(0)['email'],
                 'token' => 'INVALID:TOKEN',
             ];
-            $response = $this->getJson('/api/reset-password?' . http_build_query($data));
+            $response = $this->getJson('/api/v1/reset-password?' . http_build_query($data));
             $response->assertStatus(422);
         }
     }
@@ -185,7 +185,7 @@ class UserTest extends TestCase
     {
         $this->userRegisterWithConfirmation();
         $data = ['email' => $this->getAccount(0)['email']];
-        $response = $this->postJson('/api/forgot-password', $data);
+        $response = $this->postJson('/api/v1/forgot-password', $data);
         $status = $response->getContent();
         if($status == '1')
         {
@@ -197,7 +197,7 @@ class UserTest extends TestCase
                 'email' => 'invalid@example.com',
                 'token' => $tokenRow->token,
             ];
-            $response = $this->getJson('/api/reset-password?' . http_build_query($data));
+            $response = $this->getJson('/api/v1/reset-password?' . http_build_query($data));
             $response->assertStatus(422);
         }
     }
@@ -206,7 +206,7 @@ class UserTest extends TestCase
     {
         $this->userRegisterWithConfirmation();
         $data = ['email' => $this->getAccount(0)['email']];
-        $response = $this->postJson('/api/forgot-password', $data);
+        $response = $this->postJson('/api/v1/forgot-password', $data);
         $status = $response->getContent();
         if($status == '1')
         {
@@ -226,7 +226,7 @@ class UserTest extends TestCase
                 $data = $resetPasswordData;
                 unset($data[$field]);
                 
-                $response = $this->postJson('/api/reset-password?' .  http_build_query($data));
+                $response = $this->postJson('/api/v1/reset-password?' .  http_build_query($data));
                 $response->assertStatus(422);
             }
         }
@@ -236,7 +236,7 @@ class UserTest extends TestCase
     {
         $this->userRegisterWithConfirmation();
         $data = ['email' => $this->getAccount(0)['email']];
-        $response = $this->postJson('/api/forgot-password', $data);
+        $response = $this->postJson('/api/v1/forgot-password', $data);
         $status = $response->getContent();
         if($status == '1')
         {
@@ -250,7 +250,7 @@ class UserTest extends TestCase
                 'password' => $this->getAccount(0)['data']['password'],
                 'password_confirmation' => $this->getAccount(0)['data']['password_confirmation'],
             ];
-            $response = $this->postJson('/api/reset-password', $data);
+            $response = $this->postJson('/api/v1/reset-password', $data);
             $response->assertStatus(200);
         }
         else
@@ -263,7 +263,7 @@ class UserTest extends TestCase
     {
         $this->userRegisterWithConfirmation();
         $data = ['email' => $this->getAccount(0)['email']];
-        $response = $this->postJson('/api/forgot-password', $data);
+        $response = $this->postJson('/api/v1/forgot-password', $data);
         $status = $response->getContent();
         if($status == '1')
         {
@@ -271,13 +271,12 @@ class UserTest extends TestCase
             if(!$tokenRow)
                 throw new Exception('Token not exist');
             
-            $requiredData = ['email', 'token', 'password', 'password_confirmation'];
+            $requiredData = ['email', 'token', 'password'];
             
             $resetPasswordData = [
                 'email' => $this->getAccount(0)['email'],
                 'token' => $tokenRow->token,
                 'password' => $this->getAccount(0)['data']['password'],
-                'password_confirmation' => $this->getAccount(0)['data']['password_confirmation'],
             ];
             
             foreach($requiredData as $field)
@@ -285,7 +284,7 @@ class UserTest extends TestCase
                 $data = $resetPasswordData;
                 unset($data[$field]);
                 
-                $response = $this->postJson('/api/reset-password', $data);
+                $response = $this->postJson('/api/v1/reset-password', $data);
                 $response->assertStatus(422);
             }
         }
@@ -299,7 +298,7 @@ class UserTest extends TestCase
     {
         $this->userRegisterWithConfirmation();
         $data = ['email' => $this->getAccount(0)['email']];
-        $response = $this->postJson('/api/forgot-password', $data);
+        $response = $this->postJson('/api/v1/forgot-password', $data);
         $status = $response->getContent();
         if($status == '1')
         {
@@ -314,7 +313,7 @@ class UserTest extends TestCase
                 'password_confirmation' => $this->getAccount(0)['data']['password_confirmation'],
             ];
             
-            $response = $this->postJson('/api/reset-password', $data);
+            $response = $this->postJson('/api/v1/reset-password', $data);
             $response->assertStatus(422);
         }
         else
@@ -327,7 +326,7 @@ class UserTest extends TestCase
     {
         $this->userRegisterWithConfirmation();
         $data = ['email' => $this->getAccount(0)['email']];
-        $response = $this->postJson('/api/forgot-password', $data);
+        $response = $this->postJson('/api/v1/forgot-password', $data);
         $status = $response->getContent();
         if($status == '1')
         {
@@ -342,7 +341,7 @@ class UserTest extends TestCase
                 'password_confirmation' => $this->getAccount(0)['data']['password_confirmation'],
             ];
             
-            $response = $this->postJson('/api/reset-password', $data);
+            $response = $this->postJson('/api/v1/reset-password', $data);
             $response->assertStatus(422);
         }
         else
@@ -354,7 +353,7 @@ class UserTest extends TestCase
     public function test_get_user_empty_list_successfull(): void
     {
         $token = $this->getOwnerLoginToken();
-        $response = $this->withToken($token)->getJson('/api/users');
+        $response = $this->withToken($token)->getJson('/api/v1/users');
         
         $response
             ->assertStatus(200)
@@ -370,7 +369,7 @@ class UserTest extends TestCase
     public function test_get_user_list_invalid_token(): void
     {
         $token = $this->getOwnerLoginToken();
-        $response = $this->withToken('INVALID:TOKEN')->getJson('/api/users');
+        $response = $this->withToken('INVALID:TOKEN')->getJson('/api/v1/users');
         
         $response->assertStatus(401);
     }
@@ -381,13 +380,13 @@ class UserTest extends TestCase
         
         foreach($this->getAccount(0)['workers'] as $data)
         {
-            $response = $this->withToken($token)->putJson('/api/user', $data);
+            $response = $this->withToken($token)->putJson('/api/v1/user', $data);
             $response->assertStatus(200);
         }
         
         $this->assertDatabaseCount('users', count($this->getAccount(0)['workers']) + 1);
         
-        $response = $this->withToken($token)->getJson('/api/users');
+        $response = $this->withToken($token)->getJson('/api/v1/users');
         
         $response
             ->assertStatus(200)
@@ -411,7 +410,7 @@ class UserTest extends TestCase
             $data = $workerData;
             unset($data[$field]);
             
-            $response = $this->withToken($token)->putJson('/api/user', $data);
+            $response = $this->withToken($token)->putJson('/api/v1/user', $data);
             $response->assertStatus(422);
         }
         $this->assertDatabaseCount('users', 1);
@@ -420,10 +419,10 @@ class UserTest extends TestCase
         $data = $workerData;
         $data['email'] = 'xxxx';
         
-        $response = $this->withToken($token)->putJson('/api/user', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/user', $data);
         $response->assertStatus(422);
         
-        $response = $this->withToken($token)->getJson('/api/users');
+        $response = $this->withToken($token)->getJson('/api/v1/users');
         
         $response
             ->assertStatus(200)
@@ -440,13 +439,13 @@ class UserTest extends TestCase
         $token = $this->getOwnerLoginToken();
         
         $data = $this->getAccount(0)['workers'][0];
-        $response = $this->withToken($token)->putJson('/api/user', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/user', $data);
         $response->assertStatus(200);
         
-        $response = $this->withToken($token)->putJson('/api/user', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/user', $data);
         $response->assertStatus(409);
         
-        $response = $this->withToken($token)->getJson('/api/users');
+        $response = $this->withToken($token)->getJson('/api/v1/users');
         
         $response
             ->assertStatus(200)
@@ -466,14 +465,14 @@ class UserTest extends TestCase
         $userIds = [];
         foreach($this->getAccount(0)['workers'] as $data)
         {
-            $response = $this->withToken($token)->putJson('/api/user', $data);
+            $response = $this->withToken($token)->putJson('/api/v1/user', $data);
             $response->assertStatus(200);
             $userIds[] = $response->getContent();
         }
         
         $this->assertDatabaseCount('users', $totalUsers);
         
-        $response = $this->withToken($token)->getJson('/api/users');
+        $response = $this->withToken($token)->getJson('/api/v1/users');
         
         $response
             ->assertStatus(200)
@@ -484,10 +483,10 @@ class UserTest extends TestCase
                 'has_more' => false,
             ]);
             
-        $response = $this->withToken($token)->deleteJson('/api/user/' . end($userIds));
+        $response = $this->withToken($token)->deleteJson('/api/v1/user/' . end($userIds));
         $response->assertStatus(200);
         
-        $response = $this->withToken($token)->getJson('/api/users');
+        $response = $this->withToken($token)->getJson('/api/v1/users');
         
         $response
             ->assertStatus(200)
@@ -506,14 +505,14 @@ class UserTest extends TestCase
         $userIds = [];
         foreach($this->getAccount(0)['workers'] as $data)
         {
-            $response = $this->withToken($token)->putJson('/api/user', $data);
+            $response = $this->withToken($token)->putJson('/api/v1/user', $data);
             $response->assertStatus(200);
             $userIds[] = $response->getContent();
         }
         
         $this->assertDatabaseCount('users', count($this->getAccount(0)['workers']) + 1);
         
-        $response = $this->withToken($token)->getJson('/api/users');
+        $response = $this->withToken($token)->getJson('/api/v1/users');
         
         $response
             ->assertStatus(200)
@@ -524,12 +523,12 @@ class UserTest extends TestCase
                 'has_more' => false,
             ]);
             
-        $response = $this->withToken($token)->deleteJson('/api/user/' . time());
+        $response = $this->withToken($token)->deleteJson('/api/v1/user/' . time());
         $response->assertStatus(404);
         
         $this->assertDatabaseCount('users', count($this->getAccount(0)['workers']) + 1);
         
-        $response = $this->withToken($token)->getJson('/api/users');
+        $response = $this->withToken($token)->getJson('/api/v1/users');
         
         $response
             ->assertStatus(200)
@@ -546,11 +545,11 @@ class UserTest extends TestCase
         $token = $this->getOwnerLoginToken();
         
         $data = $this->getAccount(0)['workers'][0];
-        $response = $this->withToken($token)->putJson('/api/user', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/user', $data);
         $response->assertStatus(200);
         $userId = $response->getContent();
         
-        $response = $this->withToken($token)->getJson('/api/user/' . $userId);
+        $response = $this->withToken($token)->getJson('/api/v1/user/' . $userId);
         
         $response
             ->assertStatus(200)
@@ -569,11 +568,11 @@ class UserTest extends TestCase
         $token = $this->getOwnerLoginToken();
         
         $data = $this->getAccount(0)['workers'][0];
-        $response = $this->withToken($token)->putJson('/api/user', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/user', $data);
         $response->assertStatus(200);
         $userId = $response->getContent();
         
-        $response = $this->withToken($token)->getJson('/api/user/' . time());
+        $response = $this->withToken($token)->getJson('/api/v1/user/' . time());
         
         $response->assertStatus(404);
     }
@@ -583,11 +582,11 @@ class UserTest extends TestCase
         $token = $this->getOwnerLoginToken();
         
         $data = $this->getAccount(0)['workers'][0];
-        $response = $this->withToken($token)->putJson('/api/user', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/user', $data);
         $response->assertStatus(200);
         $userId = $response->getContent();
         
-        $response = $this->withToken($token)->getJson('/api/user/' . $userId);
+        $response = $this->withToken($token)->getJson('/api/v1/user/' . $userId);
         
         $response
             ->assertStatus(200)
@@ -601,10 +600,10 @@ class UserTest extends TestCase
             ]);
         
         $data = $this->getAccount(0)['workers'][1];
-        $response = $this->withToken($token)->putJson('/api/user/' . $userId, $data);
+        $response = $this->withToken($token)->putJson('/api/v1/user/' . $userId, $data);
         $response->assertStatus(200);
         
-        $response = $this->withToken($token)->getJson('/api/user/' . $userId);
+        $response = $this->withToken($token)->getJson('/api/v1/user/' . $userId);
         
         $response
             ->assertStatus(200)
@@ -623,11 +622,11 @@ class UserTest extends TestCase
         $token = $this->getOwnerLoginToken();
         
         $data = $this->getAccount(0)['workers'][0];
-        $response = $this->withToken($token)->putJson('/api/user', $data);
+        $response = $this->withToken($token)->putJson('/api/v1/user', $data);
         $response->assertStatus(200);
         $userId = $response->getContent();
         
-        $response = $this->withToken($token)->getJson('/api/user/' . $userId);
+        $response = $this->withToken($token)->getJson('/api/v1/user/' . $userId);
         
         $response
             ->assertStatus(200)
@@ -641,10 +640,10 @@ class UserTest extends TestCase
             ]);
         
         $data = $this->getAccount(0)['workers'][1];
-        $response = $this->withToken($token)->putJson('/api/user/' . time(), $data);
+        $response = $this->withToken($token)->putJson('/api/v1/user/' . time(), $data);
         $response->assertStatus(404);
         
-        $response = $this->withToken($token)->getJson('/api/user/' . $userId);
+        $response = $this->withToken($token)->getJson('/api/v1/user/' . $userId);
         
         $data = $this->getAccount(0)['workers'][0];
         $response
@@ -666,16 +665,16 @@ class UserTest extends TestCase
         $userIds = [];
         foreach($this->getAccount(0)['workers'] as $data)
         {
-            $response = $this->withToken($token)->putJson('/api/user', $data);
+            $response = $this->withToken($token)->putJson('/api/v1/user', $data);
             $response->assertStatus(200);
             $userIds[] = $response->getContent();
         }
         
         $data = $this->getAccount(0)['workers'][1];
-        $response = $this->withToken($token)->putJson('/api/user/' . $userIds[0], ['firstname' => $this->getAccount(0)['workers'][1]['firstname'], 'email' => $this->getAccount(0)['workers'][1]['email']]);
+        $response = $this->withToken($token)->putJson('/api/v1/user/' . $userIds[0], ['firstname' => $this->getAccount(0)['workers'][1]['firstname'], 'email' => $this->getAccount(0)['workers'][1]['email']]);
         $response->assertStatus(409);
         
-        $response = $this->withToken($token)->getJson('/api/user/' . $userIds[0]);
+        $response = $this->withToken($token)->getJson('/api/v1/user/' . $userIds[0]);
         
         $data = $this->getAccount(0)['workers'][0];
         $response
@@ -695,7 +694,7 @@ class UserTest extends TestCase
         $token = $this->getOwnerLoginToken();
         
         $data = ['email' => 'johndoe@example.com'];
-        $response = $this->withToken($token)->postJson('/api/invite', $data);
+        $response = $this->withToken($token)->postJson('/api/v1/invite', $data);
         $response->assertStatus(200);
         
         $invitationRow = UserInvitation::where('email', 'johndoe@example.com')->first();
@@ -703,7 +702,7 @@ class UserTest extends TestCase
             throw new Exception('Token not exist');
         
         // Validate token
-        $response = $this->getJson('/api/invite/' . $invitationRow->token);
+        $response = $this->getJson('/api/v1/invite/' . $invitationRow->token);
         $response->assertStatus(200);
         
         // Confirm invitation
@@ -714,11 +713,11 @@ class UserTest extends TestCase
             "password_confirmation" => $this->getAccount(0)['workers'][0]["password"],
             "phone" => $this->getAccount(0)['workers'][0]["phone"],
         ];
-        $response = $this->putJson('/api/invite/' . $invitationRow->token, $data);
+        $response = $this->putJson('/api/v1/invite/' . $invitationRow->token, $data);
         $response->assertStatus(200);
         
         // Get user list
-        $response = $this->withToken($token)->getJson('/api/users');
+        $response = $this->withToken($token)->getJson('/api/v1/users');
         
         $response
             ->assertStatus(200)
@@ -735,11 +734,11 @@ class UserTest extends TestCase
         $token = $this->getOwnerLoginToken();
         
         $data = ['email' => 'arturpatura@gmail.com'];
-        $response = $this->withToken($token)->postJson('/api/invite', $data);
+        $response = $this->withToken($token)->postJson('/api/v1/invite', $data);
         $response->assertStatus(409);
         
         // Get user list
-        $response = $this->withToken($token)->getJson('/api/users');
+        $response = $this->withToken($token)->getJson('/api/v1/users');
         
         $response
             ->assertStatus(200)
@@ -756,7 +755,7 @@ class UserTest extends TestCase
         $token = $this->getOwnerLoginToken();
         
         $data = ['email' => 'johndoe@example.com'];
-        $response = $this->withToken($token)->postJson('/api/invite', $data);
+        $response = $this->withToken($token)->postJson('/api/v1/invite', $data);
         $response->assertStatus(200);
         
         $invitationRow = UserInvitation::where('email', 'johndoe@example.com')->first();
@@ -764,7 +763,7 @@ class UserTest extends TestCase
             throw new Exception('Token not exist');
         
         // Validate token
-        $response = $this->getJson('/api/invite/' . 'INVALID:TOKEN');
+        $response = $this->getJson('/api/v1/invite/' . 'INVALID:TOKEN');
         $response->assertStatus(409);
         
         // Confirm invitation
@@ -775,11 +774,11 @@ class UserTest extends TestCase
             "password_confirmation" => $this->getAccount(0)['workers'][0]["password"],
             "phone" => $this->getAccount(0)['workers'][0]["phone"],
         ];
-        $response = $this->putJson('/api/invite/' . 'INVALID:TOKEN', $data);
+        $response = $this->putJson('/api/v1/invite/' . 'INVALID:TOKEN', $data);
         $response->assertStatus(409);
         
         // Get user list
-        $response = $this->withToken($token)->getJson('/api/users');
+        $response = $this->withToken($token)->getJson('/api/v1/users');
         
         $response
             ->assertStatus(200)
@@ -796,7 +795,7 @@ class UserTest extends TestCase
         $token = $this->getOwnerLoginToken();
         
         $data = ['email' => 'johndoe@example.com'];
-        $response = $this->withToken($token)->postJson('/api/invite', $data);
+        $response = $this->withToken($token)->postJson('/api/v1/invite', $data);
         $response->assertStatus(200);
         
         $invitationRow = UserInvitation::where('email', 'johndoe@example.com')->first();
@@ -804,7 +803,7 @@ class UserTest extends TestCase
             throw new Exception('Token not exist');
         
         // Validate token
-        $response = $this->getJson('/api/invite/' . $invitationRow->token);
+        $response = $this->getJson('/api/v1/invite/' . $invitationRow->token);
         $response->assertStatus(200);
         
         // Confirm invitation
@@ -819,12 +818,12 @@ class UserTest extends TestCase
         {
             $data = $confirmData;
             unset($data[$field]);
-            $response = $this->putJson('/api/invite/' . $invitationRow->token, $data);
+            $response = $this->putJson('/api/v1/invite/' . $invitationRow->token, $data);
             $response->assertStatus(422);
         }
         
         // Get user list
-        $response = $this->withToken($token)->getJson('/api/users');
+        $response = $this->withToken($token)->getJson('/api/v1/users');
         
         $response
             ->assertStatus(200)
@@ -846,11 +845,11 @@ class UserTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "user:list");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
-        $response = $this->withToken($token)->getJson('/api/users');
+        $response = $this->withToken($token)->getJson('/api/v1/users');
         $response->assertStatus(200);
     }
     
@@ -864,11 +863,11 @@ class UserTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "user:create,update,delete");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
-        $response = $this->withToken($token)->getJson('/api/users');
+        $response = $this->withToken($token)->getJson('/api/v1/users');
         $response->assertStatus(403);
     }
     
@@ -882,11 +881,11 @@ class UserTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "user:create");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
-        $response = $this->withToken($token)->putJson('/api/user', $this->getAccount(0)['workers'][0]);
+        $response = $this->withToken($token)->putJson('/api/v1/user', $this->getAccount(0)['workers'][0]);
         $response->assertStatus(200);
     }
     
@@ -900,11 +899,11 @@ class UserTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "user:list,update,delete");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
-        $response = $this->withToken($token)->putJson('/api/user', $this->getAccount(0)['workers'][0]);
+        $response = $this->withToken($token)->putJson('/api/v1/user', $this->getAccount(0)['workers'][0]);
         $response->assertStatus(403);
     }
     
@@ -918,11 +917,11 @@ class UserTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "user:update");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
-        $response = $this->withToken($token)->getJson('/api/get-firm-id');
+        $response = $this->withToken($token)->getJson('/api/v1/get-firm-id');
         $firmId = $response->getContent();
         
         $user = new User;
@@ -931,7 +930,7 @@ class UserTest extends TestCase
         $user->password = 'example';
         $user->save();
         
-        $response = $this->withToken($token)->putJson('/api/user/' . $user->id);
+        $response = $this->withToken($token)->putJson('/api/v1/user/' . $user->id);
         $response->assertStatus(200);
     }
     
@@ -945,11 +944,11 @@ class UserTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "user:list,create,delete");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
-        $response = $this->withToken($token)->getJson('/api/get-firm-id');
+        $response = $this->withToken($token)->getJson('/api/v1/get-firm-id');
         $firmId = $response->getContent();
         
         $user = new User;
@@ -958,7 +957,7 @@ class UserTest extends TestCase
         $user->password = 'example';
         $user->save();
         
-        $response = $this->withToken($token)->putJson('/api/user/' . $user->id);
+        $response = $this->withToken($token)->putJson('/api/v1/user/' . $user->id);
         $response->assertStatus(403);
     }
     
@@ -972,7 +971,7 @@ class UserTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "user:list,create,update,delete");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
@@ -982,7 +981,7 @@ class UserTest extends TestCase
         $user->password = 'example';
         $user->save();
         
-        $response = $this->withToken($token)->putJson('/api/user/' . $user->id);
+        $response = $this->withToken($token)->putJson('/api/v1/user/' . $user->id);
         $response->assertStatus(404);
     }
     
@@ -996,11 +995,11 @@ class UserTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "user:delete");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
-        $response = $this->withToken($token)->getJson('/api/get-firm-id');
+        $response = $this->withToken($token)->getJson('/api/v1/get-firm-id');
         $firmId = $response->getContent();
         
         $user = new User;
@@ -1009,7 +1008,7 @@ class UserTest extends TestCase
         $user->password = 'example';
         $user->save();
         
-        $response = $this->withToken($token)->deleteJson('/api/user/' . $user->id);
+        $response = $this->withToken($token)->deleteJson('/api/v1/user/' . $user->id);
         $response->assertStatus(200);
     }
     
@@ -1023,11 +1022,11 @@ class UserTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "user:list,create,update");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
-        $response = $this->withToken($token)->getJson('/api/get-firm-id');
+        $response = $this->withToken($token)->getJson('/api/v1/get-firm-id');
         $firmId = $response->getContent();
         
         $user = new User;
@@ -1036,7 +1035,7 @@ class UserTest extends TestCase
         $user->password = 'example';
         $user->save();
         
-        $response = $this->withToken($token)->deleteJson('/api/user/' . $user->id);
+        $response = $this->withToken($token)->deleteJson('/api/v1/user/' . $user->id);
         $response->assertStatus(403);
     }
     
@@ -1050,11 +1049,11 @@ class UserTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "user:list,create,update,delete");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
-        $response = $this->withToken($token)->getJson('/api/get-firm-id');
+        $response = $this->withToken($token)->getJson('/api/v1/get-firm-id');
         $firmId = $response->getContent();
         
         $user = new User;
@@ -1063,7 +1062,7 @@ class UserTest extends TestCase
         $user->password = 'example';
         $user->save();
         
-        $response = $this->withToken($token)->deleteJson('/api/user/' . $user->id);
+        $response = $this->withToken($token)->deleteJson('/api/v1/user/' . $user->id);
         $response->assertStatus(404);
     }
     
@@ -1077,11 +1076,11 @@ class UserTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "user:list");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
-        $response = $this->withToken($token)->getJson('/api/get-firm-id');
+        $response = $this->withToken($token)->getJson('/api/v1/get-firm-id');
         $firmId = $response->getContent();
         
         $user = new User;
@@ -1090,7 +1089,7 @@ class UserTest extends TestCase
         $user->password = 'example';
         $user->save();
         
-        $response = $this->withToken($token)->getJson('/api/user/' . $user->id);
+        $response = $this->withToken($token)->getJson('/api/v1/user/' . $user->id);
         
         $response->assertStatus(200);
     }
@@ -1105,11 +1104,11 @@ class UserTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "user:create,update,delete");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
-        $response = $this->withToken($token)->getJson('/api/get-firm-id');
+        $response = $this->withToken($token)->getJson('/api/v1/get-firm-id');
         $firmId = $response->getContent();
         
         $user = new User;
@@ -1118,7 +1117,7 @@ class UserTest extends TestCase
         $user->password = 'example';
         $user->save();
         
-        $response = $this->withToken($token)->getJson('/api/user/' . $user->id);
+        $response = $this->withToken($token)->getJson('/api/v1/user/' . $user->id);
         
         $response->assertStatus(403);
     }
@@ -1133,11 +1132,11 @@ class UserTest extends TestCase
             'device_name' => 'test',
         ];
         $this->setUserPermission($data['email'], "user:list,create,update,delete");
-        $response = $this->postJson('/api/login', $data);
+        $response = $this->postJson('/api/v1/login', $data);
         $response = json_decode($response->getContent());
         $token = $response->token;
         
-        $response = $this->withToken($token)->getJson('/api/get-firm-id');
+        $response = $this->withToken($token)->getJson('/api/v1/get-firm-id');
         $firmId = $response->getContent();
         
         $user = new User;
@@ -1146,7 +1145,7 @@ class UserTest extends TestCase
         $user->password = 'example';
         $user->save();
         
-        $response = $this->withToken($token)->getJson('/api/user/' . $user->id);
+        $response = $this->withToken($token)->getJson('/api/v1/user/' . $user->id);
         
         $response->assertStatus(404);
     }
