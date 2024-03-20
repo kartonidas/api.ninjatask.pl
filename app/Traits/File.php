@@ -171,7 +171,7 @@ trait File
         $current = Limit::first();
         $limits = $subscription->free ? config("packages.free") : config("packages.paid");
         
-        if($current->space + $size > $limits["space"])
+        if($current && $current->space + $size > $limits["space"])
             throw new Exception(__("Out of disk space"));
     }
 }

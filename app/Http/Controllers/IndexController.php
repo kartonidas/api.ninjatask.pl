@@ -317,6 +317,7 @@ class IndexController extends Controller
                 "tasks" => 0,
                 "projects" => 0,
                 "space" => 0,
+                "can_add_files" => Subscription::checkPackage("space", false),
             ];
         }
         

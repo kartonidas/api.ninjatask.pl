@@ -99,7 +99,7 @@ class Subscription extends Model
     {
         $subscription = Subscription::where("status", Subscription::STATUS_ACTIVE)->first();
         
-        if($subscription)
+        if(!$subscription)
             throw new SubscriptionRequired(__("Subscription required"));
         
         $current = Limit::first();
@@ -115,5 +115,6 @@ class Subscription extends Model
                 }
             break;
         }
+        return true;
     }
 }
