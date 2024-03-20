@@ -19,12 +19,14 @@ use App\Exceptions\AccessDenied;
 use App\Exceptions\Exception;
 use App\Exceptions\ObjectNotExist;
 use App\Exceptions\Unauthorized;
+use App\Libraries\Helper;
 use App\Mail\Register\InitMessage;
 use App\Mail\Register\WelcomeMessage;
 use App\Mail\User\ForgotPasswordMessage;
 use App\Models\Firm;
 use App\Models\PasswordResetToken;
 use App\Models\Status;
+use App\Models\Subscription;
 use App\Models\TaskAssignedUser;
 use App\Models\UserPermission;
 use App\Models\UserRegisterToken;
@@ -184,12 +186,14 @@ class User extends Authenticatable
         $this->sendWelcomeMessage();
     }
     
-    public function ensureFirm($identifier)
+    public function ensureFirm()
     {
         if($this->owner)
         {
             if(!Firm::where("uuid", $this->firm_uuid)->count())
             {
+                $identifier = $this->generateFirmIdentifier();
+                
                 $firm = new Firm;
                 $firm->uuid = Str::uuid()->toString();
                 $firm->identifier = $identifier;
@@ -259,13 +263,14 @@ class User extends Authenticatable
         $defaultPermissions = new UserPermission;
         $defaultPermissions->withoutGlobalScopes();
         $defaultPermissions->uuid = $this->getUuid();
-        $defaultPermissions->name = "Read only";
+        $defaultPermissions->name = __("Read only");
         $defaultPermissions->is_default = 1;
         $defaultPermissions->permissions = implode(";", $permissions);
         $defaultPermissions->saveQuietly();
         
         Status::createDefaultStatuses($this->getUuid());
         $this->ensureAccountSettings();
+        $this->addTrialPackage();
     }
     
     public function getAllUserPermissions($uuid = null, $appReady = false)
@@ -396,5 +401,36 @@ class User extends Authenticatable
     public function getAssignedTaskIds()
     {
         return TaskAssignedUser::where("user_id", $this->id)->pluck("task_id")->all();
+    }
+    
+    public function hasActiveSubscription(): bool
+    {
+        return Subscription::where("status", Subscription::STATUS_ACTIVE)->count() > 0;
+    }
+    
+    private function addTrialPackage()
+    {
+        $end = (new DateTime())->add(new DateInterval("P14D"));
+        $end = Helper::setDateTime($end, "23:59:59", true);
+        
+        $package = new Subscription;
+        $package->uuid = $this->getUuid();
+        $package->status = Subscription::STATUS_ACTIVE;
+        $package->start = time();
+        $package->end = $end;
+        $package->free = 1;
+        $package->save();
+    }
+    
+    private function generateFirmIdentifier() {
+        $p1 = mb_substr($this->firstname, 0, 3);
+        $p2 = mb_substr($this->lastname, 0, 3);
+        $p3 = str_pad(rand(1, 9999), 4, "0", STR_PAD_LEFT);
+        
+        $identifier = mb_strtolower($p1 . $p2 . $p3);
+        if(!Firm::where("identifier", $identifier)->count())
+            return $identifier;
+        
+        return $this->generateFirmIdentifier();
     }
 }

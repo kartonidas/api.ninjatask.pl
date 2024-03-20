@@ -166,12 +166,12 @@ trait File
     {
         $subscription = Subscription::where("status", Subscription::STATUS_ACTIVE)->first();
         if(!$subscription)
-        {
-            $current = Limit::first();
-            $limits = config("packages.free");
-            
-            if($current->space + $size > $limits["space"])
-                throw new Exception(__("Out of disk space"));
-        }
+            throw new Exception(__("Out of disk space"));
+        
+        $current = Limit::first();
+        $limits = $subscription->free ? config("packages.free") : config("packages.paid");
+        
+        if($current->space + $size > $limits["space"])
+            throw new Exception(__("Out of disk space"));
     }
 }

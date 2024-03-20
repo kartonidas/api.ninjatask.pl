@@ -28,7 +28,6 @@ use App\Models\Customer;
 use App\Models\CustomerInvoice;
 use App\Models\CustomerInvoiceItem;
 use App\Models\FirmInvoicingData;
-use App\Models\Subscription;
 use App\Models\User;
 use App\Traits\Sortable;
 
@@ -97,7 +96,6 @@ class CustomerInvoicesController extends Controller
 
     public function create(StoreCustomerInvoicesRequest $request)
     {
-        Subscription::checkPackage("customer-invoicing");
         User::checkAccess("customer_invoices:create");
         
         $validated = $request->validated();
@@ -159,7 +157,6 @@ class CustomerInvoicesController extends Controller
 
     public function update(UpdateCustomerInvoicesRequest $request, $id)
     {
-        Subscription::checkPackage("customer-invoicing");
         User::checkAccess("customer_invoices:update");
 
         $row = CustomerInvoice::find($id);
@@ -205,7 +202,6 @@ class CustomerInvoicesController extends Controller
     
     public function fromProforma(StoreCustomerInvoicesFromProformaRequest $request, $proformaId)
     {
-        Subscription::checkPackage("customer-invoicing");
         User::checkAccess("customer_invoices:create");
         
         $config = Config::getConfig("invoice");
@@ -360,7 +356,6 @@ class CustomerInvoicesController extends Controller
     
     public function settingsUpdate(UpdateCustomerInvoiceDataRequest $request)
     {
-        Subscription::checkPackage("customer-invoicing");
         User::checkAccess("customer_invoices:list");
         
         $validated = $request->validated();

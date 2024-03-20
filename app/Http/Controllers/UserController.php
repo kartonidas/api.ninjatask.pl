@@ -1108,6 +1108,7 @@ class UserController extends Controller
             "locale" => $settings->locale,
             "owner" => Auth::user()->owner,
             "avatar" => Auth::user()->getUserAvatar(),
+            "subscription" => Auth::user()->hasActiveSubscription(),
         ];
         return $out;
     }

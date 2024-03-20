@@ -125,20 +125,17 @@ class IndexController extends Controller
     private static function getLatestTasks($limit = 10)
     {
         $out = [];
-        $tasks = Task::select("id", "name", "priority")->orderBy("created_at", "DESC")->limit($limit)->get();
+        $tasks = Task::apiFields()->orderBy("created_at", "DESC")->limit($limit)->get();
         if(!$tasks->isEmpty())
         {
-            foreach($tasks as $task)
+            foreach($tasks as $k => $task)
             {
-                $out[] = [
-                    "id" => $task->id,
-                    "name" => $task->name,
-                    "priority" => $task->priority,
-                ];
+                $tasks[$k]->place = $task->getProject();
+                $tasks[$k]->status = $task->getStatusName();
             }
         }
         
-        return $out ? $out : null;
+        return $tasks;
     }
     
     private static function getMyWork($limit = 10)
@@ -193,6 +190,14 @@ class IndexController extends Controller
                     "status" => $time->status,
                     "total" => $total,
                     "task" => $task->name,
+                    "name" => $task->name,
+                    "place" => $task->getProject(),
+                    "status" => $task->getStatusName(),
+                    "priority" => $task->priority,
+                    "start_date" => $task->start_date,
+                    "start_date_time" => $task->start_date_time,
+                    "end_date" => $task->end_date,
+                    "end_date_time" => $task->end_date_time,
                 ];
             }
             $out["total"] = count($data);
@@ -290,7 +295,7 @@ class IndexController extends Controller
     
     /**
     * Get current stats
-    * @response 200 {"tasks": 18, "can_add_task": true, "projects": 2, "can_add_project": false, "space": 512012, "can_add_files": false}
+    * @response 200 {"tasks": 18, "projects": 2, "space": 512012}
     *
     * @group Subscription
     */
@@ -299,12 +304,9 @@ class IndexController extends Controller
         $limit = Limit::select("tasks", "projects", "space")->first();
         if($limit)
         {
-            $free = config("packages.free");
             $out = [
                 "tasks" => $limit->tasks,
-                "can_add_task" => Subscription::checkPackage("task", false),
                 "projects" => $limit->projects,
-                "can_add_project" => Subscription::checkPackage("project", false),
                 "space" => $limit->space,
                 "can_add_files" => Subscription::checkPackage("space", false),
             ];
@@ -313,15 +315,10 @@ class IndexController extends Controller
         {
             $out = [
                 "tasks" => 0,
-                "can_add_task" => true,
                 "projects" => 0,
-                "can_add_project" => true,
                 "space" => 0,
-                "can_add_files" => true,
             ];
         }
-        
-        $out["customer_invoicing"] = Subscription::checkPackage("customer-invoicing", false);
         
         return $out;
     }
@@ -469,6 +466,7 @@ class IndexController extends Controller
     */
     public function packages()
     {
+        $packages = config("packages");
         if(Auth::check())
         {
             $invoicingData = FirmInvoicingData::first();
@@ -479,7 +477,6 @@ class IndexController extends Controller
                     
                 if($reverseCharge)
                 {
-                    $packages = config("packages");
                     foreach($packages["allowed"] as $k => $p)
                     {
                         $packages["allowed"][$k]["price"] = $p["price"] * ((100 + $p["vat"]) / 100);
@@ -492,7 +489,6 @@ class IndexController extends Controller
             }
         }
         
-        $packages = config("packages");
         foreach($packages["allowed"] as $k => $p)
             $packages["allowed"][$k]["price_gross"] = $p["price"] * ((100 + $p["vat"]) / 100);
         

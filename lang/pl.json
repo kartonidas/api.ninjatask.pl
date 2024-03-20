@@ -178,5 +178,6 @@
     "Cannot make proforma using %s API": "Nie można utworzyć proformy dla %s API",
     "Invoice was not created using wfirma.pl": "Faktura nie została utworzona za pomocą wfirma.pl",
     "Cannot make proforma via wfirma.pl API": "Nie można utworzyć proformy za pomocą wFirma.pl API",
-    "Cannot make proforma via inFakt.pl API": "Nie można utworzyć proformy za pomocą  inFakt.pl API"
+    "Cannot make proforma via inFakt.pl API": "Nie można utworzyć proformy za pomocą  inFakt.pl API",
+    "Read only" : "Tylko odczyt"
 }

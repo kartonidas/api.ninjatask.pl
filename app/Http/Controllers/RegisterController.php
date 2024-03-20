@@ -126,20 +126,17 @@ class RegisterController extends Controller
         $request->validate([
             "firstname" => "required|max:100",
             "lastname" => "required|max:100",
-            "phone" => "required|max:30",
             "password" => ["required", Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
-            "firm_identifier" => ["required", new FirmIdentifier, "max:200"]
         ]);
         
         DB::transaction(function () use($user, $request) {
             $user->firstname = $request->input("firstname");
             $user->lastname = $request->input("lastname");
-            $user->phone = $request->input("phone");
             $user->password = Hash::make($request->input("password"));
             $user->default_locale = app()->getLocale();
             $user->confirm();
             
-            $user->ensureFirm($request->input("firm_identifier"));
+            $user->ensureFirm();
             $user->prepareAccount();
         });
         

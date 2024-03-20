@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use App\Exceptions\ModuleNotAllowed;
 use App\Exceptions\OutOffLimit;
+use App\Exceptions\SubscriptionRequired;
 use App\Models\ExpirationNotify;
 use App\Models\Firm;
 use App\Models\Limit;
@@ -97,43 +98,22 @@ class Subscription extends Model
     public static function checkPackage($type, $exception = true)
     {
         $subscription = Subscription::where("status", Subscription::STATUS_ACTIVE)->first();
-        if(!$subscription)
+        
+        if($subscription)
+            throw new SubscriptionRequired(__("Subscription required"));
+        
+        $current = Limit::first();
+        $limits = $subscription->free ? config("packages.free") : config("packages.paid");
+        switch($type)
         {
-            $current = Limit::first();
-            $limits = config("packages.free");
-            switch($type)
-            {
-                case "task":
-                    if($current && $current->tasks >= $limits["tasks"])
-                    {
-                        if($exception)
-                            throw new OutOffLimit(__("Exceeded the maximum number of tasks on the free account"));
-                        return false;
-                    }
-                break;
-                case "project":
-                    if($current && $current->projects >= $limits["projects"])
-                    {
-                        if($exception)
-                            throw new OutOffLimit(__("Exceeded the maximum number of projects on the free account"));
-                        return false;
-                    }
-                break;
-                case "space":
-                    if($current && $current->space >= $limits["space"])
-                    {
-                        if($exception)
-                            throw new OutOffLimit(__("Maximum file size exceeded"));
-                        return false;
-                    }
-                break;
-                case "customer-invoicing":
+            case "space":
+                if($current && $current->space >= $limits["space"])
+                {
                     if($exception)
-                        throw new ModuleNotAllowed(__("Module not allowed"));
+                        throw new OutOffLimit(__("Maximum file size exceeded"));
                     return false;
-                break;
-            }
+                }
+            break;
         }
-        return true;
     }
 }

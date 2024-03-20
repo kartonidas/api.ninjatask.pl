@@ -2,6 +2,9 @@
 
 namespace App\Libraries;
 
+use DateTime;
+use DateInterval;
+use DatePeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
@@ -43,7 +46,7 @@ class Helper
     }
 
     public static function _validateDate($date, $format = "Y-m-d") {
-        $d = \DateTime::createFromFormat($format, $date);
+        $d = DateTime::createFromFormat($format, $date);
         return $d && $d->format($format) == $date;
     }
 
@@ -53,7 +56,7 @@ class Helper
 
     public static function parseDateTime($date, $type = "date")
     {
-        $date = new \DateTime($date);
+        $date = new DateTime($date);
         switch($type)
         {
             case "date": return $date->format("Y-m-d");
@@ -297,10 +300,10 @@ class Helper
 
     public static function calculateWorkingDays($d1, $d2)
     {
-        $objStartDate = new \DateTime($d1);
-        $objEndDate = new \DateTime($d2);
-        $interval = new \DateInterval("P1D");
-        $dateRange = new \DatePeriod($objStartDate, $interval, $objEndDate);
+        $objStartDate = new DateTime($d1);
+        $objEndDate = new DateTime($d2);
+        $interval = new DateInterval("P1D");
+        $dateRange = new DatePeriod($objStartDate, $interval, $objEndDate);
 
         $count = 0;
         foreach ($dateRange as $eachDate) {
@@ -315,8 +318,8 @@ class Helper
 
     public static function getNextWorkingDay($d1)
     {
-        $date = new \DateTime($d1);
-        $date->add(new \DateInterval("P1D"));
+        $date = new DateTime($d1);
+        $date->add(new DateInterval("P1D"));
         if($date->format("w") == 6 || $date->format("w") == 0 || \App\Libraries\Holiday::isHoliday($date))
             return self::getNextWorkingDay($date->format("Y-m-d"));
         return $date->format("Y-m-d");
@@ -324,8 +327,8 @@ class Helper
 
     public static function dateDiff($d1, $d2)
     {
-        $objStartDate = new \DateTime($d1);
-        $objEndDate = new \DateTime($d2);
+        $objStartDate = new DateTime($d1);
+        $objEndDate = new DateTime($d2);
 
         return $objEndDate->diff($objStartDate)->format("%a");
     }
@@ -347,5 +350,12 @@ class Helper
         }
         
         return $total;
+    }
+    
+    public static function setDateTime($date, $time = "00:00:00", $timestamp = false)
+    {
+        if(!($date instanceof DateTime))
+            $date = new DateTime($date);
+        return $timestamp ? strtotime($date->format("Y-m-d") . " " . $time) : $date->format("Y-m-d") . " " . $time;
     }
 }

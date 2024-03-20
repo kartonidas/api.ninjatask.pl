@@ -20,7 +20,6 @@ use App\Models\Customer;
 use App\Models\File;
 use App\Models\Project;
 use App\Models\Status;
-use App\Models\Subscription;
 use App\Models\Task;
 use App\Models\TaskAssignedUser;
 use App\Models\TaskCalendar;
@@ -256,7 +255,6 @@ class TaskController extends Controller
     public function create(Request $request)
     {
         User::checkAccess("task:create");
-        Subscription::checkPackage("task");
         
         self::prepareSelfAssignedId($request);
         
