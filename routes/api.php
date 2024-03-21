@@ -77,6 +77,8 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'locale', 'subscription'])->gro
     $router->post('/task/{id}/open', [TaskController::class, "open"])->where("id", "[0-9]+");
     $router->get('/tasks/my-work', [TaskController::class, "myWork"]);
     $router->get('/task/{id}/time', [TaskController::class, "time"]);
+    $router->post('/task/{id}/priority', [TaskController::class, "updatePriority"])->where("id", "[0-9]+");
+    $router->post('/task/{id}/status', [TaskController::class, "updateStatus"])->where("id", "[0-9]+");
     
     // ZADANIA - CZAS PRACY
     $router->post('/task/{id}/time/start', [TaskTimeController::class, "start"])->where("id", "[0-9]+");

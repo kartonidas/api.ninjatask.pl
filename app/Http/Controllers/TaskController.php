@@ -709,11 +709,17 @@ class TaskController extends Controller
             
         $total = $tasks->count();
         
-        $tasks = $tasks->take($size)
-            ->skip(($page-1)*$size)
-            ->orderBy("priority", "DESC")
-            ->orderBy("updated_at", "desc")
-            ->get();
+        $tasks = $tasks->take($size)->skip(($page-1)*$size);
+        $orderBy = $this->getOrderBy($request, Task::class, null);
+        if(!empty($orderBy[0]))
+            $tasks->orderBy($orderBy[0], $orderBy[1]);
+        else
+        {
+            $tasks
+                ->orderBy("priority", "DESC")
+                ->orderBy("updated_at", "desc");
+        }
+        $tasks = $tasks->get();
         
         foreach($tasks as $k => $task)
         {
@@ -885,6 +891,44 @@ class TaskController extends Controller
         }
         
         return $result;
+    }
+    
+    public function updatePriority(Request $request, $id)
+    {
+        User::checkAccess("task:update");
+        
+        $task = Task::find($id);
+        if(!$task)
+            throw new ObjectNotExist(__("Task does not exist"));
+        
+        $request->validate([
+            "priority" => ["required", "numeric", Rule::in(array_keys(config("api.tasks.priority")))],
+        ]);
+        
+        $task->priority = $request->input("priority");
+        $task->save();
+    }
+    
+    public function updateStatus(Request $request, $id)
+    {
+        $task = Task::find($id);
+        
+        try {
+            User::checkAccess("task:update");
+        } catch(AccessDenied $e) {
+            if($task && !in_array(Auth::user()->id, $task->getAssignedUserIds()))
+                throw $e;
+        }
+        
+        if(!$task)
+            throw new ObjectNotExist(__("Task does not exist"));
+        
+        $request->validate([
+            "status_id" => ["required", "numeric", Rule::in($this->getAllowedStatuses())],
+        ]);
+        
+        $task->status_id = $request->input("status_id");
+        $task->save();
     }
     
     private function validateDates(Task $task)
