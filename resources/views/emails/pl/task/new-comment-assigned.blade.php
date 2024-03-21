@@ -1,20 +1,25 @@
-@extends("emails.template")
-
-@section("title")
-    {{ $title }}
-@endsection
+@extends("emails.template", ["hide_bottom" => true])
 
 @section("content")
-    <p>
-        Nowy komentarz w zadaniu: 
-        <a href="{{ $url }}" style="color: #506fd9; text-decoration: none;">
-            <b>{{ $task->name }}</b>
-        </a>
-        [<b>{{ $task->getStatusName($task->uuid) }}</b>]
-    </p>
-    <p style="font-size: 13px">
-        <i>
-            {{ strip_tags($comment->comment) }}
-        </i>
-    </p>
+    <div style="margin-bottom: 15px;">
+        <div style="margin-top:15px; margin-bottom: 15px">
+            W zadania: 
+            <a href="{{ $url }}" style="color: #506fd9; text-decoration: none;">
+                <b>{{ $task->name }}</b>
+            </a>
+            @if($project)
+                <div>
+                    Miejsce: {{$project->name}}
+                </div>
+            @endif
+        </div>
+        Został dodany nowy komentarz:
+        @if(!empty($comment->comment))
+            <div style="font-size: 13px margin-top:5px">
+                <i>
+                    {{ strip_tags($comment->comment) }}
+                </i>
+            </div>
+        @endif
+    </div>    
 @endsection

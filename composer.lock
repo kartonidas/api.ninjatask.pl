@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "64aa7175c8e25ec04cdd9350985a9146",
+    "content-hash": "e1fbfedcfdab53481de26cb4bc3c1ded",
     "packages": [
         {
             "name": "ably/ably-php",
@@ -4569,6 +4569,58 @@
                 }
             ],
             "time": "2023-02-09T10:38:43+00:00"
+        },
+        {
+            "name": "simonschaufi/laravel-dkim",
+            "version": "v3.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/simonschaufi/laravel-dkim.git",
+                "reference": "6df531e67a91918cee5db2acf9ffb6b5078d9779"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/simonschaufi/laravel-dkim/zipball/6df531e67a91918cee5db2acf9ffb6b5078d9779",
+                "reference": "6df531e67a91918cee5db2acf9ffb6b5078d9779",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/config": "^9.0 || ^10.0 || ^11.0",
+                "illuminate/contracts": "^9.0 || ^10.0 || ^11.0",
+                "illuminate/mail": "^9.0 || ^10.0 || ^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SimonSchaufi\\LaravelDKIM\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Simon Schaufelberger",
+                    "email": "simonschaufi+dkim@gmail.com"
+                }
+            ],
+            "description": "Laravel package for signing outgoing messages with DKIM.",
+            "support": {
+                "issues": "https://github.com/simonschaufi/laravel-dkim/issues",
+                "source": "https://github.com/simonschaufi/laravel-dkim/tree/v3.4.0"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.me/simonschaufi/10",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/simonschaufi",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-03-18T12:37:04+00:00"
         },
         {
             "name": "symfony/cache",

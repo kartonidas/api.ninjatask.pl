@@ -23,7 +23,7 @@ class ForgotPasswordMessage extends Mailable
     
     public function getTitle()
     {
-        return __('Procedure for resetting your password in our application');
+        return __('ninjaTask. - password change');
     }
 
     /**

@@ -24,7 +24,7 @@ class InitMessage extends Mailable
     
     public function getTitle()
     {
-        return __('Thank you for registering! Please confirm and complete your information.');
+        return __('ninjaTask. - confirm registration');
     }
 
     /**

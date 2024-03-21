@@ -66,11 +66,11 @@ class Notification extends Model
                         {
                             $url = env("FRONTEND_URL") . "task/" . $row->object_id;
                             if($type == "task:assign")
-                                Mail::to($user->email)->locale($locale)->queue(new AssignedMessage($url, $task));
+                                Mail::to($user->email, $user->email)->locale($locale)->queue(new AssignedMessage($url, $task));
                             if($type == "task:change_status_owner")
-                                Mail::to($user->email)->locale($locale)->queue(new ChangeStatusOwner($url, $task));
+                                Mail::to($user->email, $user->email)->locale($locale)->queue(new ChangeStatusOwner($url, $task));
                             if($type == "task:change_status_assigned")
-                                Mail::to($user->email)->locale($locale)->queue(new ChangeStatusAssigned($url, $task));
+                                Mail::to($user->email, $user->email)->locale($locale)->queue(new ChangeStatusAssigned($url, $task));
                         }
                         
                         if(in_array($type, $settings->mobile_notifications))
@@ -90,9 +90,9 @@ class Notification extends Model
                             {
                                 $url = env("FRONTEND_URL") . "task/" . $task->id;
                                 if($type == "task:new_comment_owner")
-                                    Mail::to($user->email)->locale($locale)->queue(new NewCommentOwner($url, $comment, $task));
+                                    Mail::to($user->email, $user->email)->locale($locale)->queue(new NewCommentOwner($url, $comment, $task));
                                 if($type == "task:new_comment_assigned")
-                                    Mail::to($user->email)->locale($locale)->queue(new NewCommentAssigned($url, $comment, $task));
+                                    Mail::to($user->email, $user->email)->locale($locale)->queue(new NewCommentAssigned($url, $comment, $task));
                             }
                             
                             if(in_array($type, $settings->mobile_notifications))
@@ -109,13 +109,13 @@ class Notification extends Model
                     if($subscription)
                     {
                         if($type == "subscription:expired")
-                            Mail::to($user->email)->locale($locale)->queue(new Expired($subscription));
+                            Mail::to($user->email, $user->email)->locale($locale)->queue(new Expired($subscription));
                         if($type == "subscription:expiration3")    
-                            Mail::to($user->email)->locale($locale)->queue(new Expiration($subscription, 3));
+                            Mail::to($user->email, $user->email)->locale($locale)->queue(new Expiration($subscription, 3));
                         if($type == "subscription:activated")
-                            Mail::to($user->email)->locale($locale)->queue(new Activated($subscription));
+                            Mail::to($user->email, $user->email)->locale($locale)->queue(new Activated($subscription));
                         if($type == "subscription:renewed")
-                            Mail::to($user->email)->locale($locale)->queue(new Renewed($subscription));
+                            Mail::to($user->email, $user->email)->locale($locale)->queue(new Renewed($subscription));
                             
                         $message = self::generateMessage($locale, $type, $subscription);
                         if($message)

@@ -23,7 +23,7 @@ class Expired extends Mailable
     
     public function getTitle()
     {
-        return __('Your premium package expired');
+        return __('ninjaTask. - your subscription has expired');
     }
 
     /**

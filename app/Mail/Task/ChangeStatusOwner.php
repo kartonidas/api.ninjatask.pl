@@ -23,16 +23,9 @@ class ChangeStatusOwner extends Mailable
     {
     }
     
-    public function getTitle($mailSubject = true)
+    public function getTitle()
     {
-        if($mailSubject)
-        {
-            $project = Project::withoutGlobalScopes()->find($this->task->project_id);
-            if($project)
-                return "[" . $project->name . "] " . $this->task->name .  " (" . __('Change status') . ")";
-        }
-        
-        return __('Change status');
+        return "ninjaTask. - " . $this->task->name .  " [" . mb_strtolower(__('Change status')) . "]";
     }
 
     /**
@@ -50,6 +43,8 @@ class ChangeStatusOwner extends Mailable
      */
     public function content(): Content
     {
+        $project = Project::withoutGlobalScopes()->find($this->task->project_id);
+        
         $view = 'emails.' . $this->locale . '.task.change-status-owner';
         if(!view()->exists($view))
             $view = 'emails.'.config("api.default_language").'.task.update-status-author';
@@ -57,8 +52,9 @@ class ChangeStatusOwner extends Mailable
         return new Content(
             view: $view,
             with: [
-                "title" => $this->getTitle(false),
+                "title" => $this->getTitle(),
                 "task" => $this->task,
+                "project" => $project,
             ]
         );
     }

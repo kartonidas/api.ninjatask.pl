@@ -23,7 +23,7 @@ class InviteMessage extends Mailable
     
     public function getTitle()
     {
-        return __('Invitation to Activate Your Account in Our Application');
+        return __('ninjaTask. - invitation to create account');
     }
 
     /**

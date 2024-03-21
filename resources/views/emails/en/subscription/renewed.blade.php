@@ -1,22 +1,13 @@
 @extends("emails.template")
 
-@section("title")
-    {{ $title }}
-@endsection
-
 @section("content")
-    <p>
-        Thank you for renewing the premium package of our app!
-    </p>
-    <p>
-        We are committed to providing you with the highest quality service and continuous improvement of our application.
-    </p>
-    <p>
-        If you have any questions, concerns or suggestions regarding our app, please don't hesitate to contact our customer service team.
-    </p>
-    <p>
-        Best regards,
-        <br/>
-        ninjaTask team
-    </p>
+    Thank you for renewing and paying for your subscription.
+    <br/>
+    The subscription will remain valid until: {{ date("Y-m-d H:i:s", $subscription->end) }}
+    
+    <div style="text-align: left; margin-top: 10px; margin-bottom: 10px">
+        You will find the invoice for the purchase in the section <a href="{{ env("FRONTEND_URL") }}invoices" style="text-decoration: none">"Settlement documents"</a>.
+    </div>
+        
+    @include("emails.en.footer")
 @endsection

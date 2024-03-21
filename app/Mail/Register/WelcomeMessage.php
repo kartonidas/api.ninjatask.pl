@@ -23,7 +23,7 @@ class WelcomeMessage extends Mailable
     
     public function getTitle()
     {
-        return __('Thank you for completing your registration in our app!');
+        return __('ninjaTask. - the account has been created');
     }
 
     /**

@@ -9,6 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
+use App\Libraries\Helper;
 use App\Models\Subscription;
 
 class Expiration extends Mailable
@@ -24,7 +25,8 @@ class Expiration extends Mailable
     
     public function getTitle()
     {
-        return sprintf(__('Reminder: Expiring premium package in %s Days'), $this->days);
+        $days = app()->getLocale() == "pl" ? Helper::plurals($this->days, "dzień", "dni", "dni") : Helper::plurals($this->days, "day", "days", "days");
+        return sprintf(__('ninjaTask. - your subscription will expire in %d %s'), $this->days, $days);
     }
 
     /**

@@ -102,7 +102,7 @@ class User extends Authenticatable
         $tokenRow->save();
         
         $url = env("FRONTEND_URL") . app()->getLocale() . "/reset-password?token=" . $token . "&email=" . $this->email;
-        Mail::to($this->email)->locale(app()->getLocale())->queue(new ForgotPasswordMessage($url));
+        Mail::to($this->email, $this->email)->locale(app()->getLocale())->queue(new ForgotPasswordMessage($url));
     }
     
     public static function userTokenResetPassword($data)
@@ -168,12 +168,12 @@ class User extends Authenticatable
     
     public function sendInitMessage($token, $source = "www")
     {
-        Mail::to($this->email)->locale(app()->getLocale())->queue(new InitMessage($this, $token, $source));
+        Mail::to($this->email, $this->email)->locale(app()->getLocale())->queue(new InitMessage($this, $token, $source));
     }
     
     public function sendWelcomeMessage()
     {
-        Mail::to($this->email)->locale(app()->getLocale())->queue(new WelcomeMessage($this));
+        Mail::to($this->email, $this->email)->locale(app()->getLocale())->queue(new WelcomeMessage($this));
     }
     
     public function confirm()

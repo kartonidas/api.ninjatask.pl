@@ -23,7 +23,7 @@ class Renewed extends Mailable
     
     public function getTitle()
     {
-        return __('Thank you for renew premium package!');
+        return __('ninjaTask. - thank you for renewing your subscription');
     }
 
     /**

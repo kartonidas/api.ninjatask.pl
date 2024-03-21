@@ -1,22 +1,13 @@
 @extends("emails.template")
 
-@section("title")
-    {{ $title }}
-@endsection
-
 @section("content")
-    <p>
-        Dziękujemy za wykupienie pakietu premium naszej aplikacji!
-    </p>
-    <p>
-        Zobowiązujemy się do zapewnienia Ci najwyższej jakości obsługi i stałego doskonalenia naszej aplikacji.
-    </p>
-    <p>
-        Jeśli masz jakiekolwiek pytania, wątpliwości lub sugestie dotyczące naszej aplikacji, nie wahaj się skontaktować z naszym zespołem obsługi klienta.
-    </p>
-    <p>
-        Z wyrazami szacunku,
-        <br/>
-        Zespół ninjaTask
-    </p>
+    Dziękujemy za wykupienie i opłacenie subskrypcji.
+    <br/>
+    Subskrypcja pozostanie ważna do dnia: {{ date("Y-m-d H:i:s", $subscription->end) }}
+    
+    <div style="text-align: left; margin-top: 10px; margin-bottom: 10px">
+        Fakturę za zakup znajdziesz w dziale <a href="{{ env("FRONTEND_URL") }}invoices" style="text-decoration: none">"Dokumenty rozliczeniowe"</a>.
+    </div>
+    
+    @include("emails.pl.footer")
 @endsection

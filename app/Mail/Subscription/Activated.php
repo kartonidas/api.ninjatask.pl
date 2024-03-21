@@ -23,7 +23,7 @@ class Activated extends Mailable
     
     public function getTitle()
     {
-        return __('Thank you for purchase premium package!');
+        return __('ninjaTask. - thank you for purchasing a subscription');
     }
 
     /**

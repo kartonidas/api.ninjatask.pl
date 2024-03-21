@@ -24,16 +24,9 @@ class NewCommentAssigned extends Mailable
     {
     }
     
-    public function getTitle($mailSubject = true)
+    public function getTitle()
     {
-        if($mailSubject)
-        {
-            $project = Project::withoutGlobalScopes()->find($this->task->project_id);
-            if($project)
-                return "[" . $project->name . "] " . $this->task->name .  " (" . __('New comment') . ")";
-        }
-        
-        return __('New comment');
+        return "ninjaTask. - " . $this->task->name .  " [" . mb_strtolower(__('New comment')) . "]";
     }
 
     /**
@@ -51,6 +44,8 @@ class NewCommentAssigned extends Mailable
      */
     public function content(): Content
     {
+        $project = Project::withoutGlobalScopes()->find($this->task->project_id);
+        
         $view = 'emails.' . $this->locale . '.task.new-comment-assigned';
         if(!view()->exists($view))
             $view = 'emails.'.config("api.default_language").'.task.new-comment-assigned';
@@ -61,6 +56,7 @@ class NewCommentAssigned extends Mailable
                 "title" => $this->getTitle(false),
                 "task" => $this->task,
                 "comment" => $this->comment,
+                "project" => $project,
             ]
         );
     }

@@ -18,6 +18,6 @@ class UserInvitationObserver
     public function created(UserInvitation $userInvitation): void
     {
         $user = User::find($userInvitation->invited_by);
-        Mail::to($userInvitation->email)->locale(app()->getLocale())->queue(new InviteMessage($user, $userInvitation->getConfirmationUrl()));
+        Mail::to($userInvitation->email, $userInvitation->email)->locale(app()->getLocale())->queue(new InviteMessage($user, $userInvitation->getConfirmationUrl()));
     }
 }
