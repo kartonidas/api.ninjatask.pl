@@ -52,7 +52,7 @@ class ProjectController extends Controller
         
         if($searchName)
         {
-            $projectIds = Task::where("name", "LIKE", "%" . $searchName . "%")->pluck("project_id")->all();
+            $projectIds = Task::assignedList()->where("name", "LIKE", "%" . $searchName . "%")->pluck("project_id")->all();
             $projects->where(function($q) use($searchName, $projectIds) {
                 $q
                     ->where("name", "LIKE", "%" . $searchName . "%")

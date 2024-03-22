@@ -166,7 +166,7 @@ class StatsController extends Controller
         User::checkAccess("stats:list");
         
         $task = Task::find($id);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
 
         $allowedMonths = TaskTimeDay::getAllowedMonths("task", $id);
@@ -200,7 +200,7 @@ class StatsController extends Controller
         User::checkAccess("stats:list");
         
         $task = Task::find($id);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
         $allowedYears = TaskTimeDay::getAllowedYears("task", $id);

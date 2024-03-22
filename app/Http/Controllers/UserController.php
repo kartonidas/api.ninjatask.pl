@@ -340,6 +340,7 @@ class UserController extends Controller
             "phone" => "nullable|max:30",
             "user_permission_id" => ["nullable", Rule::in(UserPermission::getIds())],
             "superuser" => "nullable|boolean",
+            "show_only_assigned_tasks" => "nullable|boolean",
         ]);
         
         $userByEmail = User::where("firm_id", Auth::user()->getFirm()->id)
@@ -368,6 +369,7 @@ class UserController extends Controller
         $user->activated = 1;
         $user->user_permission_id = $permissionId;
         $user->superuser = $request->input("superuser", 0);
+        $user->show_only_assigned_tasks = $request->input("show_only_assigned_tasks", 0);
         $user->default_locale = app()->getLocale();
         $user->save();
         
@@ -562,10 +564,15 @@ class UserController extends Controller
             "phone" => "nullable|max:30",
             "superuser" => "nullable|boolean",
             "user_permission_id" => ["nullable", Rule::in(UserPermission::getIds())],
+            "show_only_assigned_tasks" => "nullable|boolean",
         ];
         
         $validate = [];
-        $updateFields = ["firstname", "lastname", "email", "phone", "password", "superuser", "user_permission_id"];
+        $updateFields = ["firstname", "lastname", "email", "phone", "password", "superuser", "user_permission_id", "show_only_assigned_tasks"];
+        
+        if(!empty($user->owner))
+            unset($updateFields["show_only_assigned_tasks"]);
+        
         foreach($updateFields as $field)
         {
             if($request->has($field))

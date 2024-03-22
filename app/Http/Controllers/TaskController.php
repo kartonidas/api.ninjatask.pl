@@ -49,24 +49,23 @@ class TaskController extends Controller
     */
     public function list(Request $request, $id)
     {
-        User::checkAccess("task:list");
         return $this->_getTask($request, "project", $id);
     }
     
     public function listCustomer(Request $request, $id)
     {
-        User::checkAccess("task:list");
         return $this->_getTask($request, "customer", $id);
     }
     
     public function listAll(Request $request)
     {
-        User::checkAccess("task:list");
         return $this->_getTask($request, "all", null);
     }
     
     private function _getTask(Request $request, $source = "project", $id)
     {
+        User::checkAccess("task:list");
+        
         if(!in_array($source, ["project", "customer", "all"]))
             throw new Exception(__("Invalid type"));
         
@@ -100,7 +99,7 @@ class TaskController extends Controller
         $searchStartDateFrom = $request->input("start_date_from", null);
         $searchStartDateTo = $request->input("start_date_to", null);
 
-        $tasks = Task::apiFields();
+        $tasks = Task::assignedList()->apiFields();
         if($source == "project")
         {
             $project = Project::find($id);
@@ -212,7 +211,7 @@ class TaskController extends Controller
         User::checkAccess("task:list");
         
         $task = Task::apiFields()->find($id);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
         $task->assigned_to = $task->getAssignedUserIds();
@@ -320,14 +319,11 @@ class TaskController extends Controller
     */
     public function update(Request $request, $id)
     {
-        $task = Task::find($id);
+        User::checkAccess("task:update");
         
-        try {
-            User::checkAccess("task:update");
-        } catch(AccessDenied $e) {
-            if($task && !in_array(Auth::user()->id, $task->getAssignedUserIds()))
-                throw $e;
-        }
+        $task = Task::find($id);
+        if(!$task || !$task->hasAccess())
+            throw new ObjectNotExist(__("Task does not exist"));
         
         self::prepareSelfAssignedId($request);
         
@@ -393,7 +389,7 @@ class TaskController extends Controller
         User::checkAccess("task:delete");
         
         $task = Task::find($id);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
         $task->delete();
@@ -416,7 +412,7 @@ class TaskController extends Controller
         User::checkAccess("task:update");
         
         $task = Task::find($id);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
         $request->validate([
@@ -454,7 +450,7 @@ class TaskController extends Controller
         User::checkAccess("task:update");
         
         $task = Task::find($id);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
         $request->validate([
@@ -488,7 +484,7 @@ class TaskController extends Controller
         User::checkAccess("task:list");
         
         $task = Task::find($taskId);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
         $file = File::where("type", $task->getTable())->where("object_id", $task->id)->apiFields()->find($id);
@@ -520,7 +516,7 @@ class TaskController extends Controller
         User::checkAccess("task:update");
         
         $task = Task::find($id);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
         $allowedMimeTypes = config("api.upload.allowed_mime_types");
@@ -557,7 +553,7 @@ class TaskController extends Controller
         User::checkAccess("task:update");
         
         $task = Task::find($taskId);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
         $file = File::where("type", $task->getTable())->where("object_id", $task->id)->find($id);
@@ -581,33 +577,7 @@ class TaskController extends Controller
     public function getAllowedUsers(Request $request, $taskId = 0)
     {
         User::checkAccess("task:list");
-        
         return $this->getAllowedUsersList($taskId, false);
-        
-        $currentAssignedUsers = [];
-        if($taskId)
-        {
-            $task = Task::find($taskId);
-            if($task)
-                $currentAssignedUsers = $task->getAssignedUserIds();
-        }
-        
-        $out = [];
-        $users = User::withTrashed()->byFirm()->where("activated", 1)->orderBy("lastname", "ASC")->orderBy("firstname", "ASC")->get();
-        foreach($users as $user)
-        {
-            $out[] = [
-                "id" => $user->id,
-                "firstname" => $user->firstname,
-                "lastname" => $user->lastname,
-                "email" => $user->email,
-                "_me" => $user->id == Auth::user()->id,
-                "_allowed" => !$user->trashed(),
-                "_check" => in_array($user->id, $currentAssignedUsers),
-            ];
-        }
-        
-        return $out;
     }
     
     /**
@@ -620,6 +590,8 @@ class TaskController extends Controller
     */
     public function myWork(Request $request)
     {
+        User::checkAccess("task:list");
+        
         $request->validate([
             "size" => "nullable|integer|gt:0",
             "page" => "nullable|integer|gt:0",
@@ -628,17 +600,9 @@ class TaskController extends Controller
         $size = $request->input("size", config("api.list.size"));
         $page = $request->input("page", 1);
         
-        $taskIds = [-1];
-        $assignedTasks = TaskAssignedUser::select("task_id")->where("user_id", Auth::user()->id)->get();
-        if(!$assignedTasks->isEmpty())
-        {
-            foreach($assignedTasks as $row)
-                $taskIds[] = $row->task_id;
-        }
-
         $tasks = Task
             ::apiFields()
-            ->whereIn("id", $taskIds)
+            ->assignedList(true)
             ->where("state", "!=", Task::STATE_CLOSED);
             
         $total = $tasks->count();
@@ -690,7 +654,7 @@ class TaskController extends Controller
         User::checkAccess("task:list");
         
         $task = Task::select("total")->find($id);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
         return $task->total;
@@ -768,7 +732,7 @@ class TaskController extends Controller
         $validated = $request->validated();
         
         $taskIds = TaskCalendar::whereBetween("date", [$validated["date_from"], $validated["date_to"]]);
-        if(!User::checkAccess("user:list", false))
+        if(!User::checkAccess("user:list", false) || Auth::user()->show_only_assigned_tasks)
             $taskIds->whereIn("task_id", Auth::user()->getAssignedTaskIds());
         else
         {
@@ -831,7 +795,7 @@ class TaskController extends Controller
         User::checkAccess("task:update");
         
         $task = Task::find($id);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
         $request->validate([
@@ -845,15 +809,7 @@ class TaskController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $task = Task::find($id);
-        
-        try {
-            User::checkAccess("task:update");
-        } catch(AccessDenied $e) {
-            if($task && !in_array(Auth::user()->id, $task->getAssignedUserIds()))
-                throw $e;
-        }
-        
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
         $request->validate([
@@ -867,15 +823,7 @@ class TaskController extends Controller
     public function start(Request $request, $id)
     {
         $task = Task::find($id);
-        
-        try {
-            User::checkAccess("task:update");
-        } catch(AccessDenied $e) {
-            if($task && !in_array(Auth::user()->id, $task->getAssignedUserIds()))
-                throw $e;
-        }
-        
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
         $task->start();
@@ -885,15 +833,7 @@ class TaskController extends Controller
     public function stop(Request $request, $id)
     {
         $task = Task::find($id);
-        
-        try {
-            User::checkAccess("task:update");
-        } catch(AccessDenied $e) {
-            if($task && !in_array(Auth::user()->id, $task->getAssignedUserIds()))
-                throw $e;
-        }
-        
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
         $task->stop();

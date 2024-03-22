@@ -46,7 +46,7 @@ class Status extends Model
             $row->name = $status[0];
             $row->is_default = $status[1];
             $row->close_task = $status[2];
-            $row->set_when = $status[3];
+            $row->task_state = $status[3];
             $row->saveQuietly();
         }
     }
