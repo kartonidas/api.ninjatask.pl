@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use App\Exceptions\InvalidStatus;
 use App\Models\Notification;
 use App\Models\Project;
 use App\Models\Status;
@@ -22,6 +23,11 @@ class Task extends Model
     use \App\Traits\UuidTrait {
         boot as traitBoot;
     }
+    
+    public const STATE_OPEN = "open";
+    public const STATE_IN_PROGRESS = "in_progress";
+    public const STATE_SUSPENDED = "suspended";
+    public const STATE_CLOSED = "closed";
     
     public static $sortable = ["name", "created_at", "start_date", "end_date"];
     public static $defaultSortable = null;
@@ -47,7 +53,7 @@ class Task extends Model
     
     public function scopeApiFields(Builder $query): void
     {
-        $query->select("id", "name", "description", "project_id", "status_id", "priority", "start_date", "start_date_time", "end_date", "end_date_time", "due_date", "completed", "created_at");
+        $query->select("id", "name", "description", "project_id", "status_id", "priority", "start_date", "start_date_time", "end_date", "end_date_time", "due_date", "created_at", "state");
     }
     
     public function calculateTotalTime()
@@ -177,5 +183,45 @@ class Task extends Model
     public function getProject()
     {
         return Project::find($this->project_id);
+    }
+    
+    public function canStart()
+    {
+        if($this->state == self::STATE_IN_PROGRESS)
+            return false;
+        return true;
+    }
+    
+    public function start()
+    {
+        if(!$this->canStart())
+            throw new InvalidStatus(__("The task is already in progress"));
+        
+        $status = Status::where("task_state", Status::TASK_STATE_IN_PROGRESS)->orderBy("is_default", "DESC")->first();
+        if($status)
+        {
+            $this->status_id = $status->id;
+            $this->save();
+        }
+    }
+    
+    public function canStop()
+    {
+        if($this->state !== self::STATE_IN_PROGRESS)
+            return false;
+        return true;
+    }
+    
+    public function stop()
+    {
+        if(!$this->canStop())
+            throw new InvalidStatus(__("The task is not in progress"));
+        
+        $status = Status::where("task_state", Status::TASK_STATE_IN_CLOSED)->orderBy("is_default", "DESC")->first();
+        if($status)
+        {
+            $this->status_id = $status->id;
+            $this->save();
+        }
     }
 }

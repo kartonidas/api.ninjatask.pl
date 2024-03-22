@@ -73,12 +73,12 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'locale', 'subscription'])->gro
     $router->post('/task/{id}/attachment', [TaskController::class, "addAttachment"])->where("id", "[0-9]+");
     $router->delete('/task/{id}/attachment/{aid}', [TaskController::class, "removeAttachment"])->where("id", "[0-9]+")->where("aid", "[0-9]+");
     $router->get('/task/users/{id?}', [TaskController::class, "getAllowedUsers"])->where("id", "[0-9]+");
-    $router->post('/task/{id}/close', [TaskController::class, "close"])->where("id", "[0-9]+");
-    $router->post('/task/{id}/open', [TaskController::class, "open"])->where("id", "[0-9]+");
     $router->get('/tasks/my-work', [TaskController::class, "myWork"]);
     $router->get('/task/{id}/time', [TaskController::class, "time"]);
     $router->post('/task/{id}/priority', [TaskController::class, "updatePriority"])->where("id", "[0-9]+");
     $router->post('/task/{id}/status', [TaskController::class, "updateStatus"])->where("id", "[0-9]+");
+    $router->post('/task/{id}/start', [TaskController::class, "start"]);
+    $router->post('/task/{id}/stop', [TaskController::class, "stop"]);
     
     // ZADANIA - CZAS PRACY
     $router->post('/task/{id}/time/start', [TaskTimeController::class, "start"])->where("id", "[0-9]+");

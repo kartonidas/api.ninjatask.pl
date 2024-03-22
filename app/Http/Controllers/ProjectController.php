@@ -266,7 +266,7 @@ class ProjectController extends Controller
     {
         User::checkAccess("task:list");
         
-        $tasks = Task::select("project_id");//->where("completed", 0);
+        $tasks = Task::select("project_id");
         if(!Auth::user()->owner)
         {
             $taskIds = [-1];

@@ -50,7 +50,7 @@ class Project extends Model
     public function getTaskCount()
     {
         $cntTotal = Task::where("project_id", $this->id)->count();
-        $cntOpened = Task::where("project_id", $this->id)->where("completed", 0)->count();
+        $cntOpened = Task::where("project_id", $this->id)->where("state", "!=", Task::STATE_CLOSED)->count();
         return [
             "total" => $cntTotal,
             "opened" => $cntOpened,

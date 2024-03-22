@@ -189,8 +189,14 @@
     "ninjaTask. - the account has been created": "ninjaTask. - konto zosta\u0142o za\u0142o\u017cone",
     "ninjaTask. - confirm registration": "ninjaTask. - potwierd\u017a rejestracj\u0119",
     "ninjaTask. - invitation to create account": "ninjaTask. - zaproszenie do za\u0142o\u017cenia konta",
-    "ninjaTask. - your subscription has expired": "ninjaTask. - Twoja subskrypcja wygasła",
-    "ninjaTask. - your subscription will expire in %d %s": "ninjaTask. - Twoja subskrypcja wygaśnie za %d %s",
-    "ninjaTask. - thank you for purchasing a subscription": "ninjaTask. - dziękujemy za zakup subskrypcji",
-    "ninjaTask. - thank you for renewing your subscription": "ninjaTask. - dziękujemy za odnowienie subskrypcji"
+    "ninjaTask. - your subscription has expired": "ninjaTask. - Twoja subskrypcja wygas\u0142a",
+    "ninjaTask. - your subscription will expire in %d %s": "ninjaTask. - Twoja subskrypcja wyga\u015bnie za %d %s",
+    "ninjaTask. - thank you for purchasing a subscription": "ninjaTask. - dzi\u0119kujemy za zakup subskrypcji",
+    "ninjaTask. - thank you for renewing your subscription": "ninjaTask. - dzi\u0119kujemy za odnowienie subskrypcji",
+    "Open": "Nowe",
+    "Suspended": "Zawieszone",
+    "Closed": "Zamkni\u0119te",
+    "Invalid API": "Invalid API",
+    "The task is already in progress": "Zadanie jest już w trakcie wykonywania",
+    "The task is not in progress": "Zadanie nie jest w trakcie wykonywania"
 }

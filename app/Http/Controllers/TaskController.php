@@ -43,7 +43,7 @@ class TaskController extends Controller
     * @queryParam status integer Search task by task status identifier. Default: 1
     * @queryParam priority integer Search task by task priority. Default: 1
     * @queryParam state string Search task by task state (one of: opened, closed). Default: opened
-    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": "1", "name": "Example task", "description": "Example description", "project_id": 1, "priority" : 2, "status_id": 2, "status": "To do", "start_date" : "Y-m-d", "due_date" : "Y-m-d", "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "timer": {"state": "active", "total": 250, "total_logged": 1000}, "completed": 1, "status": "Done"}], "project_name": "Project name"}
+    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": "1", "name": "Example task", "description": "Example description", "project_id": 1, "priority" : 2, "status_id": 2, "status": "To do", "start_date" : "Y-m-d", "due_date" : "Y-m-d", "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "timer": {"state": "active", "total": 250, "total_logged": 1000}, "status": "Done"}], "project_name": "Project name"}
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
     */
@@ -77,7 +77,6 @@ class TaskController extends Controller
             "users" => ["nullable", "array"],
             "status" => ["nullable", "integer", Rule::in($this->getAllowedStatuses())],
             "priority" => ["nullable", "integer", Rule::in([1,2,3])],
-            "state" => ["nullable", Rule::in(["opened", "closed"])],
             "name" => "nullable|max:200",
             "project_id" => "nullable|integer",
             "created_from" => "nullable|date_format:Y-m-d",
@@ -124,8 +123,6 @@ class TaskController extends Controller
             $tasks->where("status_id", $searchStatus);
         if($searchPriority)
             $tasks->where("priority", $searchPriority);
-        if($searchState)
-            $tasks->where("completed", $searchState == "opened" ? 0 : 1);
         if($searchUsers)
         {
             if(in_array("_not_assigned", $searchUsers))
@@ -172,7 +169,7 @@ class TaskController extends Controller
         else
         {
             $tasks
-                ->orderBy("completed", "ASC")
+                ->orderByRaw("CASE WHEN state = '" . Task::STATE_CLOSED . "' THEN 0 ELSE 1 END DESC")
                 ->orderBy("priority", "DESC")
                 ->orderBy("updated_at", "DESC");
         }
@@ -184,7 +181,6 @@ class TaskController extends Controller
             $tasks[$k]->assigned_users = $task->getAssignedUsers();
             $tasks[$k]->attachments = $task->getAttachments();
             $tasks[$k]->timer = $task->getActiveTaskTime();
-            $tasks[$k]->completed = $task->completed == 1;
             $tasks[$k]->status = $task->getStatusName();
             $tasks[$k]->place = $task->getProject();
         }
@@ -206,7 +202,7 @@ class TaskController extends Controller
     *
     * Return task details.
     * @urlParam id integer required Task identifier.
-    * @response 200 {"id": 1, "name": "Example task", "description": "Example description", "project_id": 1, "priority" : 2, "status_id": 2, "status": "To do", "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "timer": {"state": "active", "total": 250, "total_logged": 1000}, "completed": 1, "status": "Done", "project_name": "Project name", "start_date" : "Y-m-d", "due_date" : "Y-m-d"}
+    * @response 200 {"id": 1, "name": "Example task", "description": "Example description", "project_id": 1, "priority" : 2, "status_id": 2, "status": "To do", "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "timer": {"state": "active", "total": 250, "total_logged": 1000}, "status": "Done", "project_name": "Project name", "start_date" : "Y-m-d", "due_date" : "Y-m-d"}
     * @response 404 {"error":true,"message":"Task does not exist"}
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
@@ -222,9 +218,10 @@ class TaskController extends Controller
         $task->assigned_to = $task->getAssignedUserIds();
         $task->attachments = $task->getAttachments();
         $task->timer = $task->getActiveTaskTime();
-        $task->completed = $task->completed == 1;
         $task->status = $task->getStatusName();
         $task->place = $task->getProject();
+        $task->can_start = $task->canStart();
+        $task->can_stop = $task->canStop();
         
         $project = Project::find($task->project_id);
         $task->project_name = $project ? $project->name : "";
@@ -614,73 +611,10 @@ class TaskController extends Controller
     }
     
     /**
-    * Close task
-    *
-    * Set task as closed.
-    * @urlParam id integer optional Task identifier.
-    * @responseField status boolean Update status
-    * @header Authorization: Bearer {TOKEN}
-    * @group Tasks
-    */
-    public function close(Request $request, $id = 0)
-    {
-        $task = Task::find($id);
-        try {
-            User::checkAccess("task:update");
-        } catch(AccessDenied $e) {
-            if($task && !in_array(Auth::user()->id, $task->getAssignedUserIds()))
-                throw $e;
-        }
-        
-        if(!$task)
-            throw new ObjectNotExist(__("Task does not exist"));
-        
-        if($task->completed)
-            throw new InvalidStatus(__("The task is currently closed"));
-        
-        $task->completed = 1;
-        $task->completed_at = date("Y-m-d H:i:s");
-        $task->save();
-        
-        return true;
-    }
-    
-    /**
-    * Open task
-    *
-    * Set task as opened.
-    * @urlParam id integer optional Task identifier.
-    * @responseField status boolean Update status
-    * @header Authorization: Bearer {TOKEN}
-    * @group Tasks
-    */
-    public function open(Request $request, $id = 0)
-    {
-        $task = Task::find($id);
-        try {
-            User::checkAccess("task:update");
-        } catch(AccessDenied $e) {
-            if($task && !in_array(Auth::user()->id, $task->getAssignedUserIds()))
-                throw $e;
-        }
-        
-        if(!$task)
-            throw new ObjectNotExist(__("Task does not exist"));
-        
-        if(!$task->completed)
-            throw new InvalidStatus(__("The task is currently opened"));
-        
-        $task->completed = 0;
-        $task->save();
-        
-        return true;
-    }
-    
-    /**
     * My work
     *
     * Get logged user opened and assigned tasks.
-    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": "1", "name": "Example task", "description": "Example description", "project_id": 1, "priority" : 2, "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "timer": {"state": "active", "total": 250, "total_logged": 1000}, "completed": 1, "status": "Done"}]}
+    * @response 200 {"total_rows": 100, "total_pages": "4", "current_page": 1, "has_more": true, "data": [{"id": "1", "name": "Example task", "description": "Example description", "project_id": 1, "priority" : 2, "created_at": "2020-01-01 10:00:00", "assigned_to": [1,2], "attachments": [{"id": 1, "user_id": 1, "type": "tasks", "filename": "filename.ext", "orig_name": "filename.ext", "extension": "ext", "size": 100, "description": "Example description", "created_at": "2020-01-01 10:00:00", "base64": "Base64 encode file content"}], "timer": {"state": "active", "total": 250, "total_logged": 1000}, "status": "Done"}]}
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
     */
@@ -705,7 +639,7 @@ class TaskController extends Controller
         $tasks = Task
             ::apiFields()
             ->whereIn("id", $taskIds)
-            ->where("completed", 0);
+            ->where("state", "!=", Task::STATE_CLOSED);
             
         $total = $tasks->count();
         
@@ -727,7 +661,6 @@ class TaskController extends Controller
             $tasks[$k]->assigned_users = $task->getAssignedUsers();
             $tasks[$k]->attachments = $task->getAttachments();
             $tasks[$k]->timer = $task->getActiveTaskTime();
-            $tasks[$k]->completed = $task->completed == 1;
             $tasks[$k]->status = $task->getStatusName();
             $tasks[$k]->place = $task->getProject();
         }
@@ -929,6 +862,42 @@ class TaskController extends Controller
         
         $task->status_id = $request->input("status_id");
         $task->save();
+    }
+    
+    public function start(Request $request, $id)
+    {
+        $task = Task::find($id);
+        
+        try {
+            User::checkAccess("task:update");
+        } catch(AccessDenied $e) {
+            if($task && !in_array(Auth::user()->id, $task->getAssignedUserIds()))
+                throw $e;
+        }
+        
+        if(!$task)
+            throw new ObjectNotExist(__("Task does not exist"));
+        
+        $task->start();
+        return true;
+    }
+    
+    public function stop(Request $request, $id)
+    {
+        $task = Task::find($id);
+        
+        try {
+            User::checkAccess("task:update");
+        } catch(AccessDenied $e) {
+            if($task && !in_array(Auth::user()->id, $task->getAssignedUserIds()))
+                throw $e;
+        }
+        
+        if(!$task)
+            throw new ObjectNotExist(__("Task does not exist"));
+        
+        $task->stop();
+        return true;
     }
     
     private function validateDates(Task $task)

@@ -42,7 +42,7 @@ class IndexController extends Controller
                 "data" => array_values(self::getTaskStats()),
             ],
             "completed_tasks" => [
-                "total" => Task::where("completed", 1)->count(),
+                "total" => Task::where("state", Task::STATE_CLOSED)->count(),
                 "data" => array_values(self::getTaskStats(true)),
             ],
             "tasks_summary" => self::getTaskSummaryStats(14),
@@ -151,7 +151,7 @@ class IndexController extends Controller
         $tasks = Task
             ::apiFields()
             ->whereIn("id", $taskIds)
-            ->where("completed", 0);
+            ->where("state", "!=", Task::STATE_CLOSED);
             
         $total = $tasks->count();
         
@@ -213,7 +213,7 @@ class IndexController extends Controller
         
         $dbStats = [];
         if($completed)
-            $stats = Task::where("completed", 1)->where("completed_at", ">=", $date->format("Y-m-d"))->orderBy("completed_at", "ASC")->get();
+            $stats = Task::where("state", Task::STATE_CLOSED)->where("closed_at", ">=", $date->format("Y-m-d"))->orderBy("closed_at", "ASC")->get();
         else
             $stats = Task::whereDate("created_at", ">=", $date->format("Y-m-d"))->orderBy("created_at", "ASC")->get();
             
@@ -221,7 +221,7 @@ class IndexController extends Controller
         {
             foreach($stats as $stat)
             {
-                $d = substr($completed ? $stat->completed_at : $stat->created_at, 0, 10);
+                $d = substr($completed ? $stat->closed_at : $stat->created_at, 0, 10);
                 if(empty($dbStats[$d]))
                     $dbStats[$d] = 0;
                     

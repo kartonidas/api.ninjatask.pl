@@ -6,6 +6,7 @@ use App\Exceptions\ObjectNotExist;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use App\Models\Status;
 use App\Models\User;
@@ -38,23 +39,34 @@ class StatusController extends Controller
             ::apiFields()
             ->take($size)
             ->skip(($page-1)*$size)
+            ->orderBy("is_default", "DESC")
             ->orderBy("name", "ASC")
             ->get();
             
+        $statusesSortByTaskStateTmp = [];
         foreach($statuses as $k => $status)
         {
             $count = $status->getTaskCount();
             $statuses[$k]->tasks = $count;
             $statuses[$k]->can_delete = $status->canDelete();
+            
+            $statusesSortByTaskStateTmp[$status->task_state][] = $status->toArray();
         }
-    
+        
+        $statusesSortByTaskState = [];
+        foreach(Status::getAllowedTaskStates() as $state => $tmp)
+        {
+            if(!empty($statusesSortByTaskStateTmp[$state]))
+                $statusesSortByTaskState = array_merge($statusesSortByTaskState, $statusesSortByTaskStateTmp[$state]);
+        }
+        
         $total = Status::count();
         $out = [
             "total_rows" => $total,
             "total_pages" => ceil($total / $size),
             "current_page" => $page,
             "has_more" => ceil($total / $size) > $page,
-            "data" => $statuses,
+            "data" => $statusesSortByTaskState,
         ];
             
         return $out;
@@ -104,12 +116,14 @@ class StatusController extends Controller
             "name" => "required|max:250",
             "is_default" => "nullable",
             "close_task" => "nullable",
+            "task_state" => ["required", Rule::in(array_keys(Status::getAllowedTaskStates()))],
         ]);
         
         $status = new Status;
         $status->name = $request->input("name");
         $status->is_default = $request->input("is_default", "");
         $status->close_task = $request->input("close_task", "");
+        $status->task_state = $request->input("task_state");
         $status->save();
         
         $status->isDefaultFlag();
@@ -144,7 +158,11 @@ class StatusController extends Controller
         ]);
         
         $validate = [];
-        $updateFields = ["name", "is_default", "close_task"];
+        $updateFields = ["name", "is_default"];
+        
+        if(!$status->is_default)
+            $updateFields[] = "close_task";
+        
         foreach($updateFields as $field)
         {
             if($request->has($field))

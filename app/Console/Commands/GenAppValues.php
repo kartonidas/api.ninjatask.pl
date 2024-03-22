@@ -8,6 +8,7 @@ use App\Libraries\Data;
 use App\Models\CustomerInvoice;
 use App\Models\Dictionary;
 use App\Models\Numbering;
+use App\Models\Status;
 
 class GenAppValues extends Command
 {
@@ -57,6 +58,9 @@ class GenAppValues extends Command
                 
             foreach(CustomerInvoice::getAllowedPaymentTypes() as $type => $name)
                 $toJson[$lang]["payment_types"][$type] = $name;
+            
+            foreach(Status::getAllowedTaskStates() as $type => $name)    
+                $toJson[$lang]["task_states"][$type] = $name;
         }
         
         foreach(Data::getAllowedTimes() as $type => $name)

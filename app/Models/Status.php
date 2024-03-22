@@ -13,12 +13,27 @@ class Status extends Model
         boot as traitBoot;
     }
     
+    public const TASK_STATE_OPEN = "open";
+    public const TASK_STATE_IN_PROGRESS = "in_progress";
+    public const TASK_STATE_IN_SUSPENDED = "suspended";
+    public const TASK_STATE_IN_CLOSED = "closed";
+    
     public static function getDefaultStatuses()
     {
         return [
-            [__("New"), 1, 0],
-            [__("In progress"), 0, 0],
-            [__("Done"), 0, 1],
+            [__("New"), 1, 0, self::TASK_STATE_OPEN],
+            [__("In progress"), 0, 0, self::TASK_STATE_IN_PROGRESS],
+            [__("Done"), 0, 1, self::TASK_STATE_IN_CLOSED],
+        ];
+    }
+    
+    public static function getAllowedTaskStates()
+    {
+        return [
+            self::TASK_STATE_OPEN => __("Open"),
+            self::TASK_STATE_IN_PROGRESS => __("In progress"),
+            self::TASK_STATE_IN_SUSPENDED => __("Suspended"),
+            self::TASK_STATE_IN_CLOSED => __("Closed"),
         ];
     }
     
@@ -31,13 +46,14 @@ class Status extends Model
             $row->name = $status[0];
             $row->is_default = $status[1];
             $row->close_task = $status[2];
+            $row->set_when = $status[3];
             $row->saveQuietly();
         }
     }
     
     public function scopeApiFields(Builder $query): void
     {
-        $query->select("id", "name", "is_default", "close_task");
+        $query->select("id", "name", "is_default", "close_task", "task_state");
     }
     
     public function getTaskCount()
@@ -47,6 +63,9 @@ class Status extends Model
     
     public function canDelete()
     {
+        if($this->is_default)
+            return false;
+        
         $cnt = Task::where("status_id", $this->id)->count();
         if($cnt > 0)
             return false;
@@ -63,7 +82,7 @@ class Status extends Model
     {
         if($this->is_default)
         {
-            foreach(self::where("id", "!=", $this->id)->get() as $row)
+            foreach(self::where("id", "!=", $this->id)->where("task_state", $this->task_state)->get() as $row)
             {
                 $row->is_default = 0;
                 $row->save();

@@ -16,6 +16,11 @@ use App\Models\TaskTimeDay;
 
 class TaskObserver
 {
+    public function creating(Task $task): void
+    {
+        $this->setStateOnStatusChanged($task);
+    }
+    
     public function created(Task $task): void
     {
         LimitsCalculate::dispatch($task->uuid);
@@ -29,29 +34,14 @@ class TaskObserver
         TaskCalendar::deleteDates($task);
     }
     
-    public function updated(Task $task): void
+    public function updating(Task $task): void
     {
         if($task->isDirty("status_id"))
-        {
-            $status = Status::find($task->status_id);
-            if(!$task->completed)
-            {
-                if($status && $status->close_task)
-                    $task->completed = 1;
-            }
-            else
-            {
-                if($status && !$status->close_task)
-                    $task->completed = 0;
-            }
-        }
-        
-        if($task->isDirty("completed"))
-        {
-            $task->completed_at = $task->completed ? date("Y-m-d H:i:s") : null;
-            $task->saveQuietly();
-        }
-        
+            $this->setStateOnStatusChanged($task);
+    }
+    
+    public function updated(Task $task): void
+    {
         if($task->isDirty("status_id"))
         {
             $notifyTaskAuthor = null;
@@ -123,7 +113,7 @@ class TaskObserver
         }
     }
     
-    function restored(Task $task): void
+    public function restored(Task $task): void
     {
         LimitsCalculate::dispatch($task->uuid);
         
@@ -146,5 +136,37 @@ class TaskObserver
         }
         
         TaskTimeDay::where("task_id", $task->id)->restore();
+    }
+    
+    private function setStateOnStatusChanged(Task $task)
+    {
+        $status = Status::find($task->status_id);
+        if($status)
+        {
+            switch($status->task_state)
+            {
+                case Status::TASK_STATE_OPEN:
+                    $task->state = Task::STATE_OPEN;
+                    $task->closed_at = null;
+                break;
+            
+                case Status::TASK_STATE_IN_PROGRESS:
+                    $task->state = Task::STATE_IN_PROGRESS;
+                    $task->closed_at = null;
+                break;
+                    
+                case Status::TASK_STATE_IN_SUSPENDED:
+                    $task->state = Task::STATE_SUSPENDED;
+                    $task->closed_at = null;
+                break;
+                    
+                case Status::TASK_STATE_IN_CLOSED:
+                    if($task->state != Task::STATE_CLOSED)
+                        $task->closed_at = date("Y-m-m H:i:s");
+                    
+                    $task->state = Task::STATE_CLOSED;
+                break;
+            }
+        }
     }
 }

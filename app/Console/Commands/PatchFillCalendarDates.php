@@ -7,14 +7,14 @@ use App\Libraries\Templates\Rental as TemplateRental;
 use App\Models\Task;
 use App\Models\TaskCalendar;
 
-class FillCalendarDates extends Command
+class PatchFillCalendarDates extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:fill-calendar-dates';
+    protected $signature = 'patch:fill-calendar-dates';
 
     /**
      * The console command description.
