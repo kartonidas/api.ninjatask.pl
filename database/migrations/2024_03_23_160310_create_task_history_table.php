@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('task_history', function (Blueprint $table) {
             $table->id();
             $table->integer("task_id")->index();
+            $table->integer("object_id")->nullable()->default(null);
             $table->string("operation", 20);
             $table->integer("user_id");
             $table->text("extra")->nullable()->default(null);

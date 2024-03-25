@@ -101,6 +101,7 @@ class TaskHistory extends Model
     {
         $history = new self;
         $history->task_id = self::getObjectId($object);
+        $history->object_id = $object->id;
         $history->operation = $operation;
         $history->user_id = Auth::user()->id ?? 0;
         $history->extra = self::getExtra($object, $operation);
