@@ -5,7 +5,7 @@
                 <img src="{{ $message->embed(resource_path() . "/mail-logo.png") }}">
 			</div>
 			<div style="margin:0; padding:0;">
-				<div>
+				<div id="mail-body">
                     @yield("content")
 				</div>
                     

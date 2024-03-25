@@ -260,7 +260,7 @@ class TaskController extends Controller
             "description" => "nullable|max:5000",
             "users" => ["nullable", "array", Rule::in($this->getAllowedUserIds())],
             "attachments" => ["nullable", "array", new Attachment],
-            "priority" => ["nullable", Rule::in(array_keys(config("api.tasks.priority")))],
+            "priority" => ["nullable", Rule::in(array_keys(Task::getAllowedPriorities()))],
             "status_id" => ["nullable", "numeric", Rule::in($this->getAllowedStatuses())],
             "start_date" => ["nullable", "date_format:Y-m-d"],
             "start_date_time" => ["nullable", Rule::in(Data::getAllowedTimes())],
@@ -334,7 +334,7 @@ class TaskController extends Controller
             "name" => "required|max:250",
             "description" => "nullable|max:5000",
             "users" => ["nullable", "array", Rule::in($this->getAllowedUserIds($id))],
-            "priority" => ["nullable", Rule::in(array_keys(config("api.tasks.priority")))],
+            "priority" => ["nullable", Rule::in(array_keys(Task::getAllowedPriorities()))],
             "status_id" => ["nullable", "numeric", Rule::in($this->getAllowedStatuses())],
             "start_date" => ["nullable", "date_format:Y-m-d"],
             "start_date_time" => ["nullable", Rule::in(Data::getAllowedTimes())],
@@ -799,7 +799,7 @@ class TaskController extends Controller
             throw new ObjectNotExist(__("Task does not exist"));
         
         $request->validate([
-            "priority" => ["required", "numeric", Rule::in(array_keys(config("api.tasks.priority")))],
+            "priority" => ["required", "numeric", Rule::in(array_keys(Task::getAllowedPriorities()))],
         ]);
         
         $task->priority = $request->input("priority");

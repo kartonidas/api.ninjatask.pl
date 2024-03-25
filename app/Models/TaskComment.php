@@ -28,6 +28,6 @@ class TaskComment extends Model
     
     public function scopeApiFields(Builder $query): void
     {
-        $query->select("id", "comment", "user_id", "created_at");
+        $query->select("id", "comment", "user_id", "created_at", "task_id");
     }
 }

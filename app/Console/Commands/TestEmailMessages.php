@@ -48,7 +48,7 @@ class TestEmailMessages extends Command
      */
     public function handle(): void
     {
-        app()->setLocale("en");
+        app()->setLocale("pl");
         $user = User::find(1);
         if(!$user)
             throw new Exception("Brak użytkownika o podanym ID");

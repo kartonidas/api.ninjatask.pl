@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Notification;
 use App\Models\Task;
 use App\Models\TaskComment;
+use App\Models\TaskHistory;
 
 class TaskCommentObserver
 {
@@ -31,5 +32,16 @@ class TaskCommentObserver
                     Notification::notify($id, Auth::user()->id, $task->id, "task:new_comment_assigned", $row->id);
             }
         }
+        TaskHistory::log(TaskHistory::OPERATION_COMMENT_ADD, $row);
+    }
+    
+    public function updated(TaskComment $row): void
+    {
+        TaskHistory::log(TaskHistory::OPERATION_COMMENT_UPDATE, $row);
+    }
+    
+    public function deleted(TaskComment $row): void
+    {
+        TaskHistory::log(TaskHistory::OPERATION_COMMENT_DELETE, $row);
     }
 }

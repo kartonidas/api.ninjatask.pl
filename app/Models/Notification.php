@@ -12,6 +12,7 @@ use Kreait\Laravel\Firebase\Facades\Firebase;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification as FirebaseNotification;
 use Kreait\Firebase\Messaging\AndroidConfig;
+use App\Jobs\TaskLoggedMail;
 use App\Mail\Subscription\Activated;
 use App\Mail\Subscription\Expiration;
 use App\Mail\Subscription\Expired;
@@ -66,11 +67,11 @@ class Notification extends Model
                         {
                             $url = env("FRONTEND_URL") . "task/" . $row->object_id;
                             if($type == "task:assign")
-                                Mail::to($user->email, $user->email)->locale($locale)->queue(new AssignedMessage($url, $task));
+                                TaskLoggedMail::dispatch($user, $task, $locale, new AssignedMessage($url, $task));
                             if($type == "task:change_status_owner")
-                                Mail::to($user->email, $user->email)->locale($locale)->queue(new ChangeStatusOwner($url, $task));
+                                TaskLoggedMail::dispatch($user, $task, $locale, new ChangeStatusOwner($url, $task));
                             if($type == "task:change_status_assigned")
-                                Mail::to($user->email, $user->email)->locale($locale)->queue(new ChangeStatusAssigned($url, $task));
+                                TaskLoggedMail::dispatch($user, $task, $locale, new ChangeStatusAssigned($url, $task));
                         }
                         
                         if(in_array($type, $settings->mobile_notifications))
@@ -90,9 +91,9 @@ class Notification extends Model
                             {
                                 $url = env("FRONTEND_URL") . "task/" . $task->id;
                                 if($type == "task:new_comment_owner")
-                                    Mail::to($user->email, $user->email)->locale($locale)->queue(new NewCommentOwner($url, $comment, $task));
+                                    TaskLoggedMail::dispatch($user, $task, $locale, new NewCommentOwner($url, $comment, $task));
                                 if($type == "task:new_comment_assigned")
-                                    Mail::to($user->email, $user->email)->locale($locale)->queue(new NewCommentAssigned($url, $comment, $task));
+                                    TaskLoggedMail::dispatch($user, $task, $locale, new NewCommentAssigned($url, $comment, $task));
                             }
                             
                             if(in_array($type, $settings->mobile_notifications))
