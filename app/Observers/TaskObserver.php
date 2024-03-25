@@ -11,6 +11,7 @@ use App\Models\Task;
 use App\Models\TaskAssignedUser;
 use App\Models\TaskCalendar;
 use App\Models\TaskComment;
+use App\Models\TaskHistory;
 use App\Models\TaskTime;
 use App\Models\TaskTimeDay;
 
@@ -24,6 +25,7 @@ class TaskObserver
     public function created(Task $task): void
     {
         LimitsCalculate::dispatch($task->uuid);
+        TaskHistory::log(TaskHistory::OPERATION_CREATE, $task);
         TaskCalendar::generateDates($task);
     }
     
@@ -32,6 +34,8 @@ class TaskObserver
         LimitsCalculate::dispatch($task->uuid);
         TaskTimeDay::where("task_id", $task->id)->delete();
         TaskCalendar::deleteDates($task);
+        
+        TaskHistory::log(TaskHistory::OPERATION_DELETE, $task);
     }
     
     public function updating(Task $task): void
@@ -64,6 +68,8 @@ class TaskObserver
         
         if($task->isDirty("start_date") || $task->isDirty("end_date"))
             TaskCalendar::generateDates($task);
+            
+        TaskHistory::log(TaskHistory::OPERATION_UPDATE, $task);
     }
     
     public function forceDeleting(Task $task): void

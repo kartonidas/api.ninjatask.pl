@@ -29,8 +29,21 @@ class Task extends Model
     public const STATE_SUSPENDED = "suspended";
     public const STATE_CLOSED = "closed";
     
+    public const PRIORITY_LOW = 1;
+    public const PRIORITY_NORMAL = 2;
+    public const PRIORITY_HIGH = 3;
+    
     public static $sortable = ["name", "created_at", "start_date", "end_date"];
     public static $defaultSortable = null;
+    
+    public static function getAllowedPriorities()
+    {
+        return [
+            self::PRIORITY_LOW => __("Low"),
+            self::PRIORITY_NORMAL => __("Normal"),
+            self::PRIORITY_HIGH => __("High"),
+        ];
+    }
     
     public function delete()
     {
@@ -103,10 +116,16 @@ class Task extends Model
                     $assign->save();
                 }
             }
-            TaskAssignedUser::where("task_id", $this->id)->whereNotIn("user_id", $users)->delete();
+            $toDeassignUsers = TaskAssignedUser::where("task_id", $this->id)->whereNotIn("user_id", $users)->get();
+            foreach($toDeassignUsers as $toDeassignUser)
+                $toDeassignUser->delete();
         }
         else
-            TaskAssignedUser::where("task_id", $this->id)->delete();
+        {
+            $toDeassignUsers = TaskAssignedUser::where("task_id", $this->id)->get();
+            foreach($toDeassignUsers as $toDeassignUser)
+                $toDeassignUser->delete();
+        }
     }
     
     public function getActiveTaskTime() {
