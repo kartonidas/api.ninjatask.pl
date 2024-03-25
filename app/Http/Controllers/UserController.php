@@ -1116,6 +1116,7 @@ class UserController extends Controller
             "owner" => Auth::user()->owner,
             "avatar" => Auth::user()->getUserAvatar(),
             "subscription" => Auth::user()->hasActiveSubscription(),
+            "total_open_tasks" => Task::getTotalActiveUserTasks(),
         ];
         return $out;
     }

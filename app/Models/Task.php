@@ -243,4 +243,13 @@ class Task extends Model
         
         return true;
     }
+    
+    public static function getTotalActiveUserTasks()
+    {
+        return self
+            ::apiFields()
+            ->assignedList(true)
+            ->where("state", "!=", Task::STATE_CLOSED)
+            ->count();
+    }
 }
