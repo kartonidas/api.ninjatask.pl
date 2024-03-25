@@ -36,7 +36,7 @@ class TaskCommentController extends Controller
         User::checkAccess("task:list");
         
         $task = Task::find($id);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task not exist"));
         
         $request->validate([
@@ -91,7 +91,7 @@ class TaskCommentController extends Controller
         User::checkAccess("task:list");
         
         $task = Task::find($id);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task not exist"));
         
         $request->validate([
@@ -152,7 +152,7 @@ class TaskCommentController extends Controller
         User::checkAccess("task:list");
         
         $task = Task::find($taskId);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task not exist"));
         
         $comment = TaskComment::where("task_id", $taskId)->apiFields()->find($id);
@@ -188,7 +188,7 @@ class TaskCommentController extends Controller
         ]);
         
         $task = Task::find($taskId);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task not exist"));
         
         $comment = new TaskComment;
@@ -219,7 +219,7 @@ class TaskCommentController extends Controller
         User::checkAccess("task:list");
         
         $task = Task::find($taskId);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
         $comment = TaskComment::where("task_id", $taskId)->apiFields()->find($id);
@@ -273,7 +273,7 @@ class TaskCommentController extends Controller
         User::checkAccess("task:list");
         
         $task = Task::find($taskId);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
         $comment = TaskComment::where("task_id", $taskId)->apiFields()->find($id);
@@ -304,7 +304,7 @@ class TaskCommentController extends Controller
         User::checkAccess("task:list");
         
         $task = Task::find($taskId);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
         $comment = TaskComment::where("task_id", $taskId)->apiFields()->find($commentId);
@@ -341,7 +341,7 @@ class TaskCommentController extends Controller
         User::checkAccess("task:update");
         
         $task = Task::find($taskId);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
         $comment = TaskComment::where("task_id", $taskId)->apiFields()->find($id);
@@ -382,7 +382,7 @@ class TaskCommentController extends Controller
         User::checkAccess("task:update");
         
         $task = Task::find($taskId);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
         $comment = TaskComment::where("task_id", $taskId)->apiFields()->find($commentId);

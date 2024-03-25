@@ -33,7 +33,7 @@ class TaskTimeController extends Controller
         User::checkAccess("task:list");
         
         $task = Task::find($id);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
         if(TaskTime::where("task_id", $id)->where("user_id", Auth::user()->id)->where("status", TaskTime::ACTIVE)->count())
@@ -72,7 +72,7 @@ class TaskTimeController extends Controller
         User::checkAccess("task:list");
         
         $task = Task::find($id);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
         $timer = TaskTime::where("task_id", $id)->where("user_id", Auth::user()->id)->where("status", TaskTime::ACTIVE)->first();
@@ -103,7 +103,7 @@ class TaskTimeController extends Controller
         User::checkAccess("task:list");
         
         $task = Task::find($id);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
         $timer = TaskTime::where("task_id", $id)->where("user_id", Auth::user()->id)->whereIn("status", [TaskTime::ACTIVE, TaskTime::PAUSED])->first();
@@ -141,7 +141,7 @@ class TaskTimeController extends Controller
         User::checkAccess("task:list");
         
         $task = Task::find($id);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
         $request->validate([
@@ -186,7 +186,7 @@ class TaskTimeController extends Controller
         User::checkAccess("task:list");
         
         $task = Task::find($taskId);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
         $timer = TaskTime::where("task_id", $taskId)->find($id);
@@ -253,7 +253,7 @@ class TaskTimeController extends Controller
         User::checkAccess("task:list");
         
         $task = Task::find($id);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
         $request->validate([
@@ -312,7 +312,7 @@ class TaskTimeController extends Controller
         User::checkAccess("task:list");
         
         $task = Task::find($id);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
         $time = TaskTime
@@ -348,7 +348,7 @@ class TaskTimeController extends Controller
         User::checkAccess("task:list");
         
         $task = Task::find($taskId);
-        if(!$task)
+        if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
         $timer = TaskTime::where("task_id", $taskId)->find($id);

@@ -224,4 +224,32 @@ class Task extends Model
             $this->save();
         }
     }
+    
+    public function scopeAssignedList(Builder $query, $force = false): void
+    {
+        $user = Auth::user();
+        if($force || (!$user->owner && $user->show_only_assigned_tasks))
+        {
+            $assignedTaskIds = TaskAssignedUser::select("task_id")->where("user_id", $user->id)->pluck("task_id")->all();
+            $query->whereIn("id", $assignedTaskIds);
+        }
+    }
+    
+    public function hasAccess()
+    {
+        $user = Auth::user();
+        if(!$user->owner && $user->show_only_assigned_tasks)
+            return in_array($user->id, $this->getAssignedUserIds());
+        
+        return true;
+    }
+    
+    public static function getTotalActiveUserTasks()
+    {
+        return self
+            ::apiFields()
+            ->assignedList(true)
+            ->where("state", "!=", Task::STATE_CLOSED)
+            ->count();
+    }
 }
