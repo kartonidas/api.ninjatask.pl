@@ -135,7 +135,7 @@
         @foreach($data->getItems() as $k => $item)
             <tr>
                 <td style="text-align:center">{{ $k+1 }}</td>
-                <td>{{ \App\Models\Invoice::getItemName($item["name"], "pl") }}</td>
+                <td>{{ \App\Models\Invoice::getItemName($item["name"], "pl", $item) }}</td>
                 <td style="text-align:center">{{ $item["qt"] }}</td>
                 <td style="text-align:center">sztuka</td>
                 <td style="text-align:center">

@@ -4,9 +4,10 @@ namespace App\Libraries\SMS\API;
 
 use Illuminate\Support\Facades\Http;
 use App\Exceptions\Exception;
-use App\Libraries\SMS\SmsInterface;
+use App\Libraries\SMS\SmsAbstract;
+use App\Models\SmsHistory;
 
-class JustSend implements SmsInterface
+class JustSend extends SmsAbstract
 {
     private $token = null;
     private $serviceUrl = null;
@@ -19,7 +20,12 @@ class JustSend implements SmsInterface
         return $this;
     }
     
-    public function send(string $number, string $text)
+    public function getType(): string
+    {
+        return "JustSend";
+    }
+    
+    public function send(string $number, string $text): bool
     {
         $data = [
             "to" => $number,
@@ -39,9 +45,14 @@ class JustSend implements SmsInterface
             $json = $response->json();
             if($json["message"] == "Successful")
             {
-                echo "TODO: zapis i zdjecie z limitu";
+                $this->log(SmsHistory::STATUS_OK, $number, $text);
+                return true;
             }
+            else
+                $this->log(SmsHistory::STATUS_ERR, $number, $text, $json["message"]);
         }
+        
+        return false;
     }
     
     private function getAuthHeaders()

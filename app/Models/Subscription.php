@@ -13,6 +13,7 @@ use App\Models\Firm;
 use App\Models\Limit;
 use App\Models\Order;
 use App\Models\Project;
+use App\Models\SmsPackage;
 use App\Models\Task;
 
 class Subscription extends Model
@@ -49,6 +50,9 @@ class Subscription extends Model
 
         $order->subscription_id = $row->id;
         $order->saveQuietly();
+        
+        if($order->sms)
+            SmsPackage::deposit($row->uuid, $order->sms);
         
         ExpirationNotify::where("subscription_id", $row->id)->delete();
         
