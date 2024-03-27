@@ -17,12 +17,15 @@ use App\Exceptions\AccessDenied;
 use App\Exceptions\Exception;
 use App\Exceptions\ObjectNotExist;
 use App\Exceptions\UserExist;
+use App\Http\Requests\SaveSmsConfigRequest;
+use App\Models\Config;
 use App\Models\Country;
 use App\Models\Firm;
 use App\Models\FirmInvoicingData;
 use App\Models\File;
 use App\Models\PasswordResetToken;
 use App\Models\PersonalAccessToken;
+use App\Models\SmsNotification;
 use App\Models\SoftDeletedObject;
 use App\Models\Task;
 use App\Models\TaskTime;
@@ -1133,6 +1136,35 @@ class UserController extends Controller
     public function removeAccount()
     {
         Auth::user()->removeAccount();
+        return true;
+    }
+    
+    public function sms()
+    {
+        User::checkAccess("config:update");
+        return Auth::user()->getFirm()->getSmsConfig();
+    }
+    
+    public function smsSave(SaveSmsConfigRequest $request)
+    {
+        User::checkAccess("config:update");
+        
+        $validated = $request->validated();
+        
+        foreach(SmsNotification::getAllowedNotifications() as $type => $tmp)
+        {
+            $row = SmsNotification::where("type", $type)->first();
+            if(!$row)
+            {
+                $row = new SmsNotification;
+                $row->type = $type;
+            }
+            $row->send = $validated[$type]["send"] ?? 0;
+            $row->message = $validated[$type]["message"] ?? "";
+            $row->days = $validated[$type]["days"] ?? null;
+            $row->save();
+        }
+        
         return true;
     }
 }

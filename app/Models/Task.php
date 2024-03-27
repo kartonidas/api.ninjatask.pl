@@ -201,7 +201,7 @@ class Task extends Model
     
     public function getProject()
     {
-        return Project::find($this->project_id);
+        return Project::withoutGlobalScope("uuid")->find($this->project_id);
     }
     
     public function canStart()

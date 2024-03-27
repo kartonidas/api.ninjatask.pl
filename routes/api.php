@@ -147,6 +147,8 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'locale', 'subscription'])->gro
     $router->put('/customer-invoice/settings', [CustomerInvoicesController::class, "settingsUpdate"]);
     
     $router->post('/geocode', [IndexController::class, "geocode"]);
+    $router->get('/sms', [UserController::class, "sms"]);
+    $router->post('/sms', [UserController::class, "smsSave"]);
 });
 
 Route::prefix('v1')->middleware(['auth:sanctum', 'locale'])->group(function () use($router) {

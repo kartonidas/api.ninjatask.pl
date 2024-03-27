@@ -25,8 +25,6 @@ class TestSend extends SmsAbstract
             "to" => $number,
             "from" => "ninjaTask",
             "message" => $text,
-            "bulkVariant" => "PRO",
-            "doubleEncode" => false,
         ];
         
         $file = storage_path("logs/test-send.txt");

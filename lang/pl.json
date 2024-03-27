@@ -216,5 +216,7 @@
     "End time": "Planowany czas zakończenia",
     "Low": "Niski",
     "Normal": "Średni",
-    "High": "Wysoki"
+    "High": "Wysoki",
+    "New task: [NAZWA] (see: [LINK])" : "Nowe zadanie: [NAZWA] (zobacz: [LINK])",
+    "Reminder: [NAZWA], date: [DATA] (see: [LINK])" : "Przypomnienie: [NAZWA], data: [DATA] (zobacz: [LINK])"
 }
