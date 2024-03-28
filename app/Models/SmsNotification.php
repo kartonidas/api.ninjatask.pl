@@ -73,24 +73,26 @@ class SmsNotification extends Model
         return [];
     }
     
-    public static function taskAttach(Task $task, User $user)
+    public static function taskMessage($type, Task $task, User $user)
     {
         $smsConfig = $user->getFirm()->getSmsConfig($user->getUuid());
-        if(!empty($smsConfig[self::TYPE_TASK_ATTACH]["send"]))
+        if(!empty($smsConfig["allowed"]) && $smsConfig["allowed"] > 0 && !empty($smsConfig[$type]["send"]))
         {
-            $message = trim($smsConfig[self::TYPE_TASK_ATTACH]["message"]);
-            if(!empty($message))
-            {
-                $place = $task->getProject();
-                $message = str_ireplace(["[NAZWA]", "[NAME]"], mb_substr($task->name, 0, 30), $message);
-                $message = str_ireplace(["[MIEJSCE]", "[PLACE]"], mb_substr($place ? $place->name : "", 0, 30), $message);
-                $message = str_ireplace(["[DATA]", "[DATE]"], $task->start_date, $message);
-                $message = str_ireplace(["[LINK]"], "https://", $message);
-                $message = Helper::__no_pl($message, false);
-            }
-            
+            $message = self::prepareTaskMessage(trim($smsConfig[$type]["message"]), $task);
             if(!empty($message) && !empty($user->phone))
                 SmsSend::dispatch($task->uuid, $user->phone, $message);
         }
+    }
+    
+    private static function prepareTaskMessage($message, Task $task)
+    {
+        $place = $task->getProject();
+        $message = str_ireplace(["[NAZWA]", "[NAME]"], mb_substr($task->name, 0, 30), $message);
+        $message = str_ireplace(["[MIEJSCE]", "[PLACE]"], mb_substr($place ? $place->name : "", 0, 30), $message);
+        $message = str_ireplace(["[DATA]", "[DATE]"], $task->start_date, $message);
+        $message = str_ireplace(["[LINK]"], $task->getShortLink(), $message);
+        $message = Helper::__no_pl($message, false);
+        
+        return trim($message);
     }
 }

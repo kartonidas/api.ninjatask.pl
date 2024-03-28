@@ -20,6 +20,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('app:remove-deleted-tasks')->daily();
         $schedule->command('app:expire-subscriptions')->everyFiveMinutes();
         $schedule->command('app:expiration-subscription')->everyFifteenMinutes();
+        $schedule->command('app:sms-task-reminder')->everyFifteenMinutes();
     }
 
     /**

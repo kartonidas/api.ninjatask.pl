@@ -19,7 +19,7 @@ class TestSend extends SmsAbstract
         return "TestSend";
     }
     
-    public function send(string $number, string $text): bool
+    public function send(string $number, string $text): array
     {
         $data = [
             "to" => $number,
@@ -29,11 +29,12 @@ class TestSend extends SmsAbstract
         
         $file = storage_path("logs/test-send.txt");
         $fp = fopen($file, "a");
-        fwrite($fp, serialize($data) . "\n");
+        fwrite($fp, date("Y-m-d H:i:s") . "\n");
+        fwrite($fp, serialize($data) . "\n\n\n");
         fclose($fp);
         
-        $this->log(SmsHistory::STATUS_OK, $number, $text);
+        $this->log(SmsHistory::STATUS_OK, $number, $text, 1);
         
-        return false;
+        return ["status" => true, "used" => 1];
     }
 }

@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use DateTime;
+use DateInterval;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
+use App\Jobs\SmsSend;
 use App\Libraries\SMS\Sms;
 use App\Models\SmsPackage;
 use App\Models\SmsPackageHistory;
@@ -45,22 +48,46 @@ class SmsPackage extends Model
     
     public static function sendFromPackage($uuid, $number, $message)
     {
+        // Sprawdzamy czy wysyłka miesci się w dostepnych do wysyłki godzinach
+        // Jeśli nie kolejkujemy wysyłkę po dostępnej godzinie
+        $hours = Sms::getServiceAllowedHours($uuid);
+        if($hours != null)
+        {
+            $currentHour = intval(date("H"));
+            if(!($currentHour >= $hours[0] && $currentHour < $hours[1]))
+            {
+                $date = new DateTime();
+                if($currentHour < $hours[0])
+                {
+                    $date->setTime($hours[0], 0);
+                }
+                elseif($currentHour >= $hours[1])
+                {
+                    $date->add(new DateInterval("P1D"));
+                    $date->setTime($hours[0], 0);
+                }
+                
+                SmsSend::dispatch($uuid, $number, $message)->delay($date);
+                return;
+            }
+        }
+        
         DB::transaction(function () use($uuid, $number, $message) {
             $package = self::getPackage($uuid)->lockForUpdate()->first();
             
             if($package)
             {
-                $status = Sms::send($number, $message);
-                if($status)
+                $status = Sms::send($uuid, $number, $message);
+                if(!empty($status["status"]))
                 {
-                    $package->allowed = $package->allowed - 1;
-                    $package->used = $package->used + 1;
+                    $package->allowed = $package->allowed - ($status["used"] ?? 1);
+                    $package->used = $package->used + ($status["used"] ?? 1);
                     $package->save();
                     
                     $history = new SmsPackageHistory;
                     $history->sms_package_id = $package->id;
                     $history->operation = SmsPackageHistory::OPERATION_SEND;
-                    $history->quantity = -1;
+                    $history->quantity = -($status["used"] ?? 1);
                     $history->save();
                 }
             }

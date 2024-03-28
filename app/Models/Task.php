@@ -271,4 +271,9 @@ class Task extends Model
             ->where("state", "!=", Task::STATE_CLOSED)
             ->count();
     }
+    
+    public function getShortLink()
+    {
+        return str_ireplace(":ID", $this->id, config("api.short_task_link"));
+    }
 }

@@ -33,11 +33,11 @@ class TestSmsMessage extends Command
         //die;
         
         //for($i = 0; $i < 90; $i++)
-            \App\Jobs\SmsSend::dispatch("14d26775-0f60-40be-a4de-949daafe7e4c", 723310782, "Test!");
+            //\App\Jobs\SmsSend::dispatch("14d26775-0f60-40be-a4de-949daafe7e4c", 723310782, "Test!");
             
-        die;
+        //die;
         
-        $status = Sms::send("723310782", "Wiadomosc testowa API");
+        $status = Sms::send("14d26775-0f60-40be-a4de-949daafe7e4c", "723310782", "Wiadomosc testowa API");
         print_r($status);
     }
 }

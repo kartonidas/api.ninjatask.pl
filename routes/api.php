@@ -149,6 +149,7 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'locale', 'subscription'])->gro
     $router->post('/geocode', [IndexController::class, "geocode"]);
     $router->get('/sms', [UserController::class, "sms"]);
     $router->post('/sms', [UserController::class, "smsSave"]);
+    $router->get('/sms/history', [UserController::class, "smsHistory"]);
 });
 
 Route::prefix('v1')->middleware(['auth:sanctum', 'locale'])->group(function () use($router) {

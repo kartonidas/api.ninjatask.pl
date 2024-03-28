@@ -79,7 +79,7 @@ class Notification extends Model
                             self::mobileTaskNotify($user_id, $addedUser, $task, $type, $locale);
                             
                         if($type == "task:assign")
-                            SmsNotification::taskAttach($task, $user);
+                            SmsNotification::taskMessage(SmsNotification::TYPE_TASK_ATTACH, $task, $user);
                     }
                 break;
             

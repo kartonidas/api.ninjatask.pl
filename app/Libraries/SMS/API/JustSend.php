@@ -25,7 +25,12 @@ class JustSend extends SmsAbstract
         return "JustSend";
     }
     
-    public function send(string $number, string $text): bool
+    public function getServiceAllowedHours(): array|null
+    {
+        return [8, 22];
+    }
+    
+    public function send(string $number, string $text): array
     {
         $data = [
             "to" => $number,
@@ -45,14 +50,14 @@ class JustSend extends SmsAbstract
             $json = $response->json();
             if($json["message"] == "Successful")
             {
-                $this->log(SmsHistory::STATUS_OK, $number, $text);
-                return true;
+                $this->log(SmsHistory::STATUS_OK, $number, $text, self::calculateSingleMessage($text));
+                return ["status" => true, "used" => self::calculateSingleMessage($text)];
             }
             else
-                $this->log(SmsHistory::STATUS_ERR, $number, $text, $json["message"]);
+                $this->log(SmsHistory::STATUS_ERR, $number, $text, 0, $json["message"]);
         }
         
-        return false;
+        return ["status" => false];
     }
     
     private function getAuthHeaders()
@@ -62,5 +67,10 @@ class JustSend extends SmsAbstract
             "Content-Type" => "application/json",
             "Accept" => "application/json",
         ];
+    }
+    
+    private static function calculateSingleMessage($text)
+    {
+        return ceil(mb_strlen($text) / 160);
     }
 }
