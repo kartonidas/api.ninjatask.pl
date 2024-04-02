@@ -199,13 +199,13 @@ class Invoice extends Model
             break;
         
             case "premium:1:sms_50":
-                return $language == "pl" ? "Dostęp do pełnej wersji serwisu ninjatask.pl (1 miesiąc) + 50 SMS" : "Access to the full version of the ninjatask.pl website (1 month) + 50 SMS";
+                return $language == "pl" ? "Dostęp do pełnej wersji serwisu ninjatask.pl (1 miesiąc) + 50 punktów SMS" : "Access to the full version of the ninjatask.pl website (1 month) + 50 SMS points";
             break;
             case "premium:12:sms_50":
-                return $language == "pl" ? "Dostęp do pełnej wersji serwisu ninjatask.pl (12 miesięcy) + 600 SMS" : "Access to the full version of the ninjatask.pl website (12 months) + 600 SMS";
+                return $language == "pl" ? "Dostęp do pełnej wersji serwisu ninjatask.pl (12 miesięcy) + 600 punktów SMS" : "Access to the full version of the ninjatask.pl website (12 months) + 600 SMS points";
             break;
             case "sms":
-                return $language == "pl" ? sprintf("Pakiet %d SMS", $item["sms"]) : sprintf("SMS %d package", $item["sms"]);
+                return $language == "pl" ? sprintf("Pakiet %d punktów SMS", $item["sms"]) : sprintf("SMS %d points", $item["sms"]);
             break;
         }
         return $itemName;

@@ -91,8 +91,18 @@ class SmsNotification extends Model
         $message = str_ireplace(["[MIEJSCE]", "[PLACE]"], mb_substr($place ? $place->name : "", 0, 30), $message);
         $message = str_ireplace(["[DATA]", "[DATE]"], $task->start_date, $message);
         $message = str_ireplace(["[LINK]"], $task->getShortLink(), $message);
-        $message = Helper::__no_pl($message, false);
+        $message = self::prepareForSend($message);
         
         return trim($message);
+    }
+    
+    public static function prepareForSend($message)
+    {
+        $message = Helper::__no_pl($message, false);
+        $allowedChars = [
+            "@", "_", "^", "{", "}", "\\", "[", "~", "]", "|", "!", "\"", "#", "%",
+            "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "$",
+        ];
+        return preg_replace('/[^a-z\d\s' . preg_quote(implode("", $allowedChars), "/") . ']/i', "", $message);
     }
 }
