@@ -22,8 +22,9 @@ class Status extends Model
     {
         return [
             [__("New"), 1, 0, self::TASK_STATE_OPEN],
-            [__("In progress"), 0, 0, self::TASK_STATE_IN_PROGRESS],
-            [__("Done"), 0, 1, self::TASK_STATE_IN_CLOSED],
+            [__("In progress"), 1, 0, self::TASK_STATE_IN_PROGRESS],
+            [__("Suspended"), 1, 0, self::TASK_STATE_IN_SUSPENDED],
+            [__("Done"), 1, 1, self::TASK_STATE_IN_CLOSED],
         ];
     }
     
