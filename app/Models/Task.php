@@ -37,7 +37,7 @@ class Task extends Model
     public const PRIORITY_NORMAL = 2;
     public const PRIORITY_HIGH = 3;
     
-    public static $sortable = ["name", "created_at", "start_date", "end_date"];
+    public static $sortable = ["name", "created_at", "start_date", "end_date", "cost_gross"];
     public static $defaultSortable = null;
     
     public static function getAllowedPriorities()
@@ -70,7 +70,7 @@ class Task extends Model
     
     public function scopeApiFields(Builder $query): void
     {
-        $query->select("id", "name", "description", "project_id", "status_id", "priority", "start_date", "start_date_time", "end_date", "end_date_time", "due_date", "created_at", "state");
+        $query->select("id", "name", "description", "project_id", "status_id", "priority", "start_date", "start_date_time", "end_date", "end_date_time", "due_date", "created_at", "state", "cost_gross");
     }
     
     public function calculateTotalTime()
