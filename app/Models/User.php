@@ -19,6 +19,7 @@ use App\Exceptions\AccessDenied;
 use App\Exceptions\Exception;
 use App\Exceptions\ObjectNotExist;
 use App\Exceptions\Unauthorized;
+use App\Libraries\AccountInitialData;
 use App\Libraries\Helper;
 use App\Mail\Register\InitMessage;
 use App\Mail\Register\WelcomeMessage;
@@ -271,6 +272,8 @@ class User extends Authenticatable
         Status::createDefaultStatuses($this->getUuid());
         $this->ensureAccountSettings();
         $this->addTrialPackage();
+        
+        (new AccountInitialData($this->getUuid()))->setInitial();
     }
     
     public function getAllUserPermissions($uuid = null, $appReady = false)

@@ -35,7 +35,7 @@ class ContactPhone implements ValidationRule
                         $fail(__("Invalid area code"));
                     else
                     {
-                        if(!preg_match('/^[0-9]{3}-[0-9]{3}-[0-9]{3}([0-9]{1,6})?$/', $contact["val"]))
+                        if(!preg_match('/^[0-9]{3}([-\s]?)[0-9]{3}([-\s]?)[0-9]{3}([0-9]{1,6})?$/', $contact["val"]))
                             $fail(__("Invalid phone number"));
                     }
                 }
