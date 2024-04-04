@@ -50,6 +50,7 @@ class StoreCustomerInvoicesRequest extends FormRequest
         
         $rules["items"] = "required|array";
         $rules["items.*.gtu"] = "sometimes|max:10";
+        $rules["items.*.task_id"] = "nullable|integer|gt:0";
         $rules["items.*.name"] = "required|max:200";
         $rules["items.*.quantity"] = "required|numeric|gt:0";
         $rules["items.*.unit_type"] = "required|string|max:50";
