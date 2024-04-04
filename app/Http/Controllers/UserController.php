@@ -17,12 +17,17 @@ use App\Exceptions\AccessDenied;
 use App\Exceptions\Exception;
 use App\Exceptions\ObjectNotExist;
 use App\Exceptions\UserExist;
+use App\Http\Requests\SaveSmsConfigRequest;
+use App\Http\Requests\SmsHistoryRequest;
+use App\Models\Config;
 use App\Models\Country;
 use App\Models\Firm;
 use App\Models\FirmInvoicingData;
 use App\Models\File;
 use App\Models\PasswordResetToken;
 use App\Models\PersonalAccessToken;
+use App\Models\SmsHistory;
+use App\Models\SmsNotification;
 use App\Models\SoftDeletedObject;
 use App\Models\Task;
 use App\Models\TaskTime;
@@ -31,9 +36,12 @@ use App\Models\UserInvitation;
 use App\Models\UserPermission;
 use App\Rules\Notifications as NotificationsRule;
 use App\Rules\MobileNotifications as MobileNotificationsRule;
+use App\Traits\Sortable;
 
 class UserController extends Controller
 {
+    use Sortable;
+    
     /**
     * Get token
     *
@@ -1134,5 +1142,74 @@ class UserController extends Controller
     {
         Auth::user()->removeAccount();
         return true;
+    }
+    
+    public function sms()
+    {
+        User::checkAccess("config:update");
+        return Auth::user()->getFirm()->getSmsConfig();
+    }
+    
+    public function smsSave(SaveSmsConfigRequest $request)
+    {
+        User::checkAccess("config:update");
+        
+        $validated = $request->validated();
+        
+        foreach(SmsNotification::getAllowedNotifications() as $type => $tmp)
+        {
+            $row = SmsNotification::where("type", $type)->first();
+            if(!$row)
+            {
+                $row = new SmsNotification;
+                $row->type = $type;
+            }
+            $row->send = $validated[$type]["send"] ?? 0;
+            $row->message = $validated[$type]["message"] ?? "";
+            $row->days = $validated[$type]["days"] ?? null;
+            $row->save();
+        }
+        
+        return true;
+    }
+    
+    public function smsHistory(SmsHistoryRequest $request)
+    {
+        User::checkAccess("task:list");
+        
+        $validated = $request->validated();
+        
+        $size = $validated["size"] ?? config("api.list.size");
+        $page = $request->input("page", 1);
+        
+        $history = SmsHistory::whereRaw("1=1");
+            
+        if(!empty($validated["search"]))
+        {
+            if(!empty($validated["search"]["number"]))
+                $history->where("number", "LIKE", "%" . $validated["search"]["number"] . "%");
+            if(!empty($validated["search"]["date_from"]))
+                $history->whereDate("created_at", ">=", $validated["search"]["date_from"]);
+            if(!empty($validated["search"]["date_to"]))
+                $history->whereDate("created_at", "<=", $validated["search"]["date_to"]);
+        }
+            
+        $total = $history->count();
+        
+        $orderBy = $this->getOrderBy($request, SmsHistory::class, "created_at,desc");
+        $history = $history->take($size)
+            ->skip(($page-1)*$size)
+            ->orderBy($orderBy[0], $orderBy[1])
+            ->get();
+        
+        $out = [
+            "total_rows" => $total,
+            "total_pages" => ceil($total / $size),
+            "current_page" => $page,
+            "has_more" => ceil($total / $size) > $page,
+            "data" => $history,
+        ];
+            
+        return $out;
     }
 }

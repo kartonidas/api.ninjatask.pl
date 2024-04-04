@@ -47,6 +47,7 @@ class Invoice extends Model
                 "vat" => $order->vat,
                 "gross" => $order->gross,
                 "qt" => 1,
+                "sms" => $order->sms,
             ]
         ];
             
@@ -186,9 +187,9 @@ class Invoice extends Model
         return $out;
     }
     
-    public static function getItemName($item, $language = "pl")
+    public static function getItemName($itemName, $language = "pl", $item = [])
     {
-        switch($item)
+        switch($itemName)
         {
             case "premium:1":
                 return $language == "pl" ? "Dostęp do pełnej wersji serwisu ninjatask.pl (1 miesiąc)" : "Access to the full version of the ninjatask.pl website (1 month)";
@@ -196,7 +197,17 @@ class Invoice extends Model
             case "premium:12":
                 return $language == "pl" ? "Dostęp do pełnej wersji serwisu ninjatask.pl (12 miesięcy)" : "Access to the full version of the ninjatask.pl website (12 months)";
             break;
+        
+            case "premium:1:sms_50":
+                return $language == "pl" ? "Dostęp do pełnej wersji serwisu ninjatask.pl (1 miesiąc) + 50 punktów SMS" : "Access to the full version of the ninjatask.pl website (1 month) + 50 SMS points";
+            break;
+            case "premium:12:sms_50":
+                return $language == "pl" ? "Dostęp do pełnej wersji serwisu ninjatask.pl (12 miesięcy) + 600 punktów SMS" : "Access to the full version of the ninjatask.pl website (12 months) + 600 SMS points";
+            break;
+            case "sms":
+                return $language == "pl" ? sprintf("Pakiet %d punktów SMS", $item["sms"]) : sprintf("SMS %d points", $item["sms"]);
+            break;
         }
-        return $item;
+        return $itemName;
     }
 }

@@ -221,6 +221,8 @@ class TaskController extends Controller
         $task->place = $task->getProject();
         $task->can_start = $task->canStart();
         $task->can_stop = $task->canStop();
+        $task->can_suspend = $task->canSuspend();
+        $task->can_resume = $task->canResume();
         
         $project = Project::find($task->project_id);
         $task->project_name = $project ? $project->name : "";
@@ -837,6 +839,26 @@ class TaskController extends Controller
             throw new ObjectNotExist(__("Task does not exist"));
         
         $task->stop();
+        return true;
+    }
+    
+    public function suspend(Request $request, $id)
+    {
+        $task = Task::find($id);
+        if(!$task || !$task->hasAccess())
+            throw new ObjectNotExist(__("Task does not exist"));
+        
+        $task->suspend();
+        return true;
+    }
+    
+    public function resume(Request $request, $id)
+    {
+        $task = Task::find($id);
+        if(!$task || !$task->hasAccess())
+            throw new ObjectNotExist(__("Task does not exist"));
+        
+        $task->resume();
         return true;
     }
     

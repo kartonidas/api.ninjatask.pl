@@ -22,24 +22,26 @@ class Order extends Model
             $this->status = "finished";
             $this->paid = date("Y-m-d H:i:s");
             $this->save();
+            
+            $createInvoice = false;
 
             switch($this->type) {
                 case "subscription":
-                    $subscription = Subscription::addPackageFromOrder($this);
-                    
-                    $items = [];
-                    $items[] = [
-                        "name" => $this->name,
-                        "amount" => $this->amount,
-                        "vat" => $this->vat,
-                        "gross" => $this->gross,
-                        "qt" => 1,
-                    ];
-                    //$invoiceId = Invoice::createInvoice($this->id, $this->firm_invoicing_data_id, $this->paid, $this->uuid, $items);
-                    $invoiceId = Invoice::createInvoice($this);
-                    $this->invoice_id = $invoiceId;
-                    $this->save();
+                    Subscription::addPackageFromOrder($this);
+                    $createInvoice = true;
                 break;
+            
+                case "sms":
+                    SmsPackage::deposit($this->uuid, $this->sms);
+                    $createInvoice = true;
+                break;
+            }
+            
+            if($createInvoice)
+            {
+                $invoiceId = Invoice::createInvoice($this);
+                $this->invoice_id = $invoiceId;
+                $this->save();
             }
         }
     }
