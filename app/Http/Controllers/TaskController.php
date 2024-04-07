@@ -17,6 +17,8 @@ use App\Exceptions\ObjectNotExist;
 use App\Http\Requests\CalendarRequest;
 use App\Libraries\Data;
 use App\Models\Customer;
+use App\Models\CustomerInvoice;
+use App\Models\CustomerInvoiceItem;
 use App\Models\File;
 use App\Models\Project;
 use App\Models\Status;
@@ -74,14 +76,16 @@ class TaskController extends Controller
             "page" => "nullable|integer|gt:0",
             "query" => "nullable|max:200",
             "users" => ["nullable", "array"],
-            "status" => ["nullable", "integer", Rule::in($this->getAllowedStatuses())],
+            "status" => ["nullable"],
             "priority" => ["nullable", "integer", Rule::in([1,2,3])],
             "name" => "nullable|max:200",
             "project_id" => "nullable|integer",
+            "customer_id" => "nullable|integer",
             "created_from" => "nullable|date_format:Y-m-d",
             "created_to" => "nullable|date_format:Y-m-d",
             "start_date_from" => "nullable|date_format:Y-m-d",
             "start_date_to" => "nullable|date_format:Y-m-d",
+            "settled" => "nullable|integer"
         ]);
         
         $size = $request->input("size", config("api.list.size"));
@@ -94,10 +98,12 @@ class TaskController extends Controller
         $searchState = $request->input("state", null);
         $searchName = $request->input("name", null);
         $searchProject = $request->input("project_id", null);
+        $searchCustomer = $request->input("customer_id", null);
         $searchCreatedAtFrom = $request->input("created_from", null);
         $searchCreatedAtTo = $request->input("created_to", null);
         $searchStartDateFrom = $request->input("start_date_from", null);
         $searchStartDateTo = $request->input("start_date_to", null);
+        $settled = $request->input("settled", null);
 
         $tasks = Task::assignedList()->apiFields();
         if($source == "project")
@@ -119,7 +125,15 @@ class TaskController extends Controller
         }
             
         if($searchStatus)
-            $tasks->where("status_id", $searchStatus);
+        {
+            if($searchStatus == "opened")
+            {
+                $openedStatuses = Status::where("task_state", "!=", Status::TASK_STATE_IN_CLOSED)->pluck("id")->all();
+                $tasks->whereIn("status_id", $openedStatuses);
+            }
+            else
+                $tasks->where("status_id", $searchStatus);
+        }
         if($searchPriority)
             $tasks->where("priority", $searchPriority);
         if($searchUsers)
@@ -157,6 +171,20 @@ class TaskController extends Controller
             $tasks->whereDate("start_date", "<=", $searchStartDateTo);
         if($searchProject)
             $tasks->where("project_id", $searchProject);
+        if($searchCustomer)
+        {
+            $placeIds = Project::where("customer_id", $searchCustomer)->pluck("id")->all();
+            $tasks->whereIn("project_id", $placeIds);
+        }
+        if($settled === "0" || $settled === "1")
+        {
+            $customerInvoiceIds = CustomerInvoice::pluck("id")->all();
+            $invoicedTaskIds = CustomerInvoiceItem::whereIn("customer_invoice_id", $customerInvoiceIds)->where("task_id", ">", 0)->pluck("task_id")->all();
+            if($settled === "0")
+                $tasks->whereNotIn("id", $invoicedTaskIds);
+            else
+                $tasks->whereIn("id", $invoicedTaskIds);
+        }
         
         $total = $tasks->count();
         
@@ -219,8 +247,11 @@ class TaskController extends Controller
         $task->timer = $task->getActiveTaskTime();
         $task->status = $task->getStatusName();
         $task->place = $task->getProject();
+        $task->customer_id = $task->place ? $task->place->customer_id : null;
         $task->can_start = $task->canStart();
         $task->can_stop = $task->canStop();
+        $task->can_suspend = $task->canSuspend();
+        $task->can_resume = $task->canResume();
         
         $project = Project::find($task->project_id);
         $task->project_name = $project ? $project->name : "";
@@ -267,6 +298,7 @@ class TaskController extends Controller
             "end_date" => ["nullable", "date_format:Y-m-d"],
             "end_date_time" => ["nullable", Rule::in(Data::getAllowedTimes())],
             "due_date" => ["nullable", "date_format:Y-m-d"],
+            "cost_gross" => ["nullable", "numeric", "gte:0"],
         ]);
         
         $project = Project::find($request->input("project_id"));
@@ -286,6 +318,7 @@ class TaskController extends Controller
         $task->end_date = $request->input("end_date");
         $task->end_date_time = $request->input("end_date_time");
         $task->due_date = $request->input("due_date");
+        $task->cost_gross = $request->input("cost_gross", null);
         $this->validateDates($task);
         $task->save();
         
@@ -341,10 +374,11 @@ class TaskController extends Controller
             "end_date" => ["nullable", "date_format:Y-m-d"],
             "end_date_time" => ["nullable", Rule::in(Data::getAllowedTimes())],
             "due_date" => ["nullable", "date_format:Y-m-d"],
+            "cost_gross" => ["nullable", "numeric", "gte:0"],
         ];
         
         $validate = [];
-        $updateFields = ["name", "description", "priority", "status_id", "start_date", "start_date_time", "end_date", "end_date_time", "due_date"];
+        $updateFields = ["name", "description", "priority", "status_id", "start_date", "start_date_time", "end_date", "end_date_time", "due_date", "cost_gross"];
         foreach($updateFields as $field)
         {
             if($request->has($field))
@@ -837,6 +871,26 @@ class TaskController extends Controller
             throw new ObjectNotExist(__("Task does not exist"));
         
         $task->stop();
+        return true;
+    }
+    
+    public function suspend(Request $request, $id)
+    {
+        $task = Task::find($id);
+        if(!$task || !$task->hasAccess())
+            throw new ObjectNotExist(__("Task does not exist"));
+        
+        $task->suspend();
+        return true;
+    }
+    
+    public function resume(Request $request, $id)
+    {
+        $task = Task::find($id);
+        if(!$task || !$task->hasAccess())
+            throw new ObjectNotExist(__("Task does not exist"));
+        
+        $task->resume();
         return true;
     }
     

@@ -4,9 +4,10 @@ namespace App\Libraries\SMS\API;
 
 use Illuminate\Support\Facades\Http;
 use App\Exceptions\Exception;
-use App\Libraries\SMS\SmsInterface;
+use App\Libraries\SMS\SmsAbstract;
+use App\Models\SmsHistory;
 
-class JustSend implements SmsInterface
+class JustSend extends SmsAbstract
 {
     private $token = null;
     private $serviceUrl = null;
@@ -19,7 +20,17 @@ class JustSend implements SmsInterface
         return $this;
     }
     
-    public function send(string $number, string $text)
+    public function getType(): string
+    {
+        return "JustSend";
+    }
+    
+    public function getServiceAllowedHours(): array|null
+    {
+        return [8, 22];
+    }
+    
+    public function send(string $number, string $text): array
     {
         $data = [
             "to" => $number,
@@ -39,9 +50,14 @@ class JustSend implements SmsInterface
             $json = $response->json();
             if($json["message"] == "Successful")
             {
-                echo "TODO: zapis i zdjecie z limitu";
+                $this->log(SmsHistory::STATUS_OK, $number, $text, self::calculateSingleMessage($text));
+                return ["status" => true, "used" => self::calculateSingleMessage($text)];
             }
+            else
+                $this->log(SmsHistory::STATUS_ERR, $number, $text, 0, $json["message"]);
         }
+        
+        return ["status" => false];
     }
     
     private function getAuthHeaders()
@@ -51,5 +67,10 @@ class JustSend implements SmsInterface
             "Content-Type" => "application/json",
             "Accept" => "application/json",
         ];
+    }
+    
+    private static function calculateSingleMessage($text)
+    {
+        return ceil(mb_strlen($text) / 160);
     }
 }

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rule;
 use App\Exceptions\Exception;
 use App\Exceptions\ObjectNotExist;
+use App\Http\Requests\OrderRequest;
 use App\Models\FirmInvoicingData;
 use App\Models\Invoice;
 use App\Models\Order;
@@ -26,7 +27,7 @@ class OrderController extends Controller
     * @header Authorization: Bearer {TOKEN}
     * @group Orders
     */
-    public function create(Request $request)
+    public function create(OrderRequest $request)
     {
         $validInvoicing = FirmInvoicingData::validateInvoicingData();
         if(!$validInvoicing)
@@ -41,12 +42,15 @@ class OrderController extends Controller
         $foreign = strtolower($invoicingData->country) != "pl";
         $reverseCharge = $foreign && $invoicingData->type == "firm";
         
-        $request->validate([
-            "package" => ["required", Rule::in(array_keys(config("packages.allowed")))],
-        ]);
-        
+        $validated = $request->validated();
         $packages = config("packages.allowed");
-        $package = $packages[$request->input("package")];
+        $package = $packages[$validated["package"]];
+        
+        if($validated["package"] == "sms")
+        {
+            $package["price"] = $package["price"] * ($validated["quantity"] / 50);
+            $package["sms"] = $validated["quantity"];
+        }
         
         $url = DB::transaction(function () use($package, $invoicingData, $reverseCharge) {
             $order = new Order;
@@ -60,6 +64,7 @@ class OrderController extends Controller
             $order->gross = $order->unit_price_gross * $order->quantity;
             $order->name = $package["name"];
             $order->months = $package["months"];
+            $order->sms = $package["sms"] ?? 0;
             $order->firm_invoicing_data_id = $invoicingData->id;
             $order->reverse = $reverseCharge ? 1 : 0;
             $order->save();

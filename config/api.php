@@ -53,4 +53,5 @@ return [
         "task:assign",
         "task:new_comment_assigned",
     ],
+    "short_task_link" => env("SITE_URL") . "t/:ID",
 ];

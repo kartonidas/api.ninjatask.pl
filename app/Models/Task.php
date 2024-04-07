@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use Throwable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use App\Exceptions\InvalidStatus;
+use App\Exceptions\ObjectExist;
+use App\Exceptions\ObjectNotExist;
+use App\Libraries\Helper;
 use App\Models\Notification;
 use App\Models\Project;
 use App\Models\Status;
@@ -33,7 +37,7 @@ class Task extends Model
     public const PRIORITY_NORMAL = 2;
     public const PRIORITY_HIGH = 3;
     
-    public static $sortable = ["name", "created_at", "start_date", "end_date"];
+    public static $sortable = ["name", "created_at", "start_date", "end_date", "cost_gross"];
     public static $defaultSortable = null;
     
     public static function getAllowedPriorities()
@@ -66,7 +70,7 @@ class Task extends Model
     
     public function scopeApiFields(Builder $query): void
     {
-        $query->select("id", "name", "description", "project_id", "status_id", "priority", "start_date", "start_date_time", "end_date", "end_date_time", "due_date", "created_at", "state");
+        $query->select("id", "name", "description", "project_id", "status_id", "priority", "start_date", "start_date_time", "end_date", "end_date_time", "due_date", "created_at", "state", "cost_gross");
     }
     
     public function calculateTotalTime()
@@ -201,14 +205,14 @@ class Task extends Model
     
     public function getProject()
     {
-        return Project::find($this->project_id);
+        return Project::withoutGlobalScope("uuid")->find($this->project_id);
     }
     
     public function canStart()
     {
-        if($this->state == self::STATE_IN_PROGRESS)
-            return false;
-        return true;
+        if(in_array($this->state, [self::STATE_OPEN, self::STATE_CLOSED]))
+            return true;
+        return false;
     }
     
     public function start()
@@ -221,14 +225,18 @@ class Task extends Model
         {
             $this->status_id = $status->id;
             $this->save();
+            
+            try {
+                $this->startTimer(Auth::user()->id);
+            } catch(Throwable $e) {}
         }
     }
     
     public function canStop()
     {
-        if($this->state !== self::STATE_IN_PROGRESS)
-            return false;
-        return true;
+        if(in_array($this->state, [self::STATE_IN_PROGRESS, self::STATE_SUSPENDED]))
+            return true;
+        return false;
     }
     
     public function stop()
@@ -241,6 +249,58 @@ class Task extends Model
         {
             $this->status_id = $status->id;
             $this->save();
+            
+            try {
+                $this->stopTimer(Auth::user()->id);
+            } catch(Throwable $e) {}
+        }
+    }
+    
+    public function canSuspend()
+    {
+        if($this->state == self::STATE_IN_PROGRESS)
+            return true;
+        return false;
+    }
+    
+    public function suspend()
+    {
+        if(!$this->canSuspend())
+            throw new InvalidStatus(__("The task is not in progress"));
+        
+        $status = Status::where("task_state", Status::TASK_STATE_IN_SUSPENDED)->orderBy("is_default", "DESC")->first();
+        if($status)
+        {
+            $this->status_id = $status->id;
+            $this->save();
+            
+            try {
+                $this->stopTimer(Auth::user()->id);
+            } catch(Throwable $e) {}
+        }
+    }
+    
+    public function canResume()
+    {
+        if($this->state == self::STATE_SUSPENDED)
+            return true;
+        return false;
+    }
+    
+    public function resume()
+    {
+        if(!$this->canResume())
+            throw new InvalidStatus(__("The task is not suspended"));
+        
+        $status = Status::where("task_state", Status::TASK_STATE_IN_PROGRESS)->orderBy("is_default", "DESC")->first();
+        if($status)
+        {
+            $this->status_id = $status->id;
+            $this->save();
+            
+            try {
+                $this->startTimer(Auth::user()->id);
+            } catch(Throwable $e) {}
         }
     }
     
@@ -270,5 +330,60 @@ class Task extends Model
             ->assignedList(true)
             ->where("state", "!=", Task::STATE_CLOSED)
             ->count();
+    }
+    
+    public function getShortLink()
+    {
+        return str_ireplace(":ID", $this->id, config("api.short_task_link"));
+    }
+    
+    public function startTimer($userId)
+    {
+        if(TaskTime::where("task_id", $this->id)->where("user_id", $userId)->where("status", TaskTime::ACTIVE)->count())
+            throw new ObjectExist(__("Task has current active timer"));
+        
+        $time = time();
+        $timer = TaskTime::where("task_id", $this->id)->where("user_id", $userId)->where("status", TaskTime::PAUSED)->first();
+        if(!$timer)
+        {
+            $timer = new TaskTime;
+            $timer->uuid = $this->uuid;
+            $timer->task_id = $this->id;
+            $timer->started = $time;
+            $timer->user_id = $userId;
+        }
+            
+        $timer->status = TaskTime::ACTIVE;
+        $timer->timer_started = $time;
+        $timer->save();
+    }
+    
+    public function stopTimer($userId)
+    {
+        $timer = TaskTime::where("task_id", $this->id)->where("user_id", $userId)->whereIn("status", [TaskTime::ACTIVE, TaskTime::PAUSED])->first();
+        if(!$timer)
+            throw new ObjectNotExist(__("Task does not currently have an active timer"));
+        
+        $time = time();
+        $total = $timer->status == TaskTime::ACTIVE ? ($timer->total + ($time - $timer->timer_started)) : $timer->total;
+        
+        $timer->status = TaskTime::FINISHED;
+        $timer->finished = $time;
+        $timer->timer_started = null;
+        $timer->total = Helper::roundTime($total);
+        $timer->save();
+    }
+    
+    public function pauseTimer($userId)
+    {
+        $timer = TaskTime::where("task_id", $this->id)->where("user_id", $userId)->where("status", TaskTime::ACTIVE)->first();
+        if(!$timer)
+            throw new ObjectNotExist(__("Task does not currently have an active timer"));
+        
+        $total = time() - $timer->timer_started;
+        $timer->status = TaskTime::PAUSED;
+        $timer->timer_started = null;
+        $timer->total += $total;
+        $timer->save();
     }
 }

@@ -36,24 +36,7 @@ class TaskTimeController extends Controller
         if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
-        if(TaskTime::where("task_id", $id)->where("user_id", Auth::user()->id)->where("status", TaskTime::ACTIVE)->count())
-            throw new ObjectExist(__("Task has current active timer"));
-        
-        $time = time();
-        $timer = TaskTime::where("task_id", $id)->where("user_id", Auth::user()->id)->where("status", TaskTime::PAUSED)->first();
-        if(!$timer)
-        {
-            $timer = new TaskTime;
-            $timer->uuid = Auth::user()->getUuid();
-            $timer->task_id = $id;
-            $timer->started = $time;
-            $timer->user_id = Auth::user()->id;
-        }
-            
-        $timer->status = TaskTime::ACTIVE;
-        $timer->timer_started = $time;
-        $timer->save();
-        
+        $task->startTimer(Auth::user()->id);
         return $task->getActiveTaskTime();
     }
     
@@ -75,16 +58,7 @@ class TaskTimeController extends Controller
         if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
-        $timer = TaskTime::where("task_id", $id)->where("user_id", Auth::user()->id)->where("status", TaskTime::ACTIVE)->first();
-        if(!$timer)
-            throw new ObjectNotExist(__("Task does not currently have an active timer"));
-        
-        $total = time() - $timer->timer_started;
-        $timer->status = TaskTime::PAUSED;
-        $timer->timer_started = null;
-        $timer->total += $total;
-        $timer->save();
-        
+        $task->pauseTimer(Auth::user()->id);
         return $task->getActiveTaskTime();
     }
     
@@ -106,19 +80,7 @@ class TaskTimeController extends Controller
         if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
-        $timer = TaskTime::where("task_id", $id)->where("user_id", Auth::user()->id)->whereIn("status", [TaskTime::ACTIVE, TaskTime::PAUSED])->first();
-        if(!$timer)
-            throw new ObjectNotExist(__("Task does not currently have an active timer"));
-        
-        $time = time();
-        $total = $timer->status == TaskTime::ACTIVE ? ($timer->total + ($time - $timer->timer_started)) : $timer->total;
-        
-        $timer->status = TaskTime::FINISHED;
-        $timer->finished = $time;
-        $timer->timer_started = null;
-        $timer->total = self::roundTime($total);
-        $timer->save();
-        
+        $task->stopTimer(Auth::user()->id);
         return $task->getActiveTaskTime();
     }
     
@@ -158,7 +120,7 @@ class TaskTimeController extends Controller
         $timer->status = TaskTime::FINISHED;
         $timer->started = $request->input("started");
         $timer->finished = $request->input("started") + $request->input("total");
-        $timer->total = self::roundTime($request->input("total"));
+        $timer->total = Helper::roundTime($request->input("total"));
         $timer->billable = $request->input("billable", 0);
         $timer->comment = $request->input("comment");
         $timer->save();
@@ -225,7 +187,7 @@ class TaskTimeController extends Controller
             if($request->has($field))
             {
                 if($field == "total")
-                    $timer->{$field} = self::roundTime($request->input($field));
+                    $timer->{$field} = Helper::roundTime($request->input($field));
                 else
                     $timer->{$field} = $request->input($field);
             }
@@ -360,10 +322,5 @@ class TaskTimeController extends Controller
         
         $timer->delete();
         return true;
-    }
-    
-    private static function roundTime($total)
-    {
-        return Helper::roundTime($total);
     }
 }

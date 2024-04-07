@@ -38,6 +38,7 @@ class TaskLoggedMail implements ShouldQueue
         Mail::to($this->user->email, $this->user->email)->locale($this->locale)->send($this->mail);
         
         $messageHistory = new MessageHistory;
+        $messageHistory->uuid = $this->user->getUuid();
         $messageHistory->type = MessageHistory::TYPE_EMAIL;
         $messageHistory->object = MessageHistory::OBJECT_TASK;
         $messageHistory->object_id = $this->task->id;

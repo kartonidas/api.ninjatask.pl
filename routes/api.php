@@ -79,6 +79,8 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'locale', 'subscription'])->gro
     $router->post('/task/{id}/status', [TaskController::class, "updateStatus"])->where("id", "[0-9]+");
     $router->post('/task/{id}/start', [TaskController::class, "start"]);
     $router->post('/task/{id}/stop', [TaskController::class, "stop"]);
+    $router->post('/task/{id}/suspend', [TaskController::class, "suspend"]);
+    $router->post('/task/{id}/resume', [TaskController::class, "resume"]);
     
     // ZADANIA - CZAS PRACY
     $router->post('/task/{id}/time/start', [TaskTimeController::class, "start"])->where("id", "[0-9]+");
@@ -147,6 +149,9 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'locale', 'subscription'])->gro
     $router->put('/customer-invoice/settings', [CustomerInvoicesController::class, "settingsUpdate"]);
     
     $router->post('/geocode', [IndexController::class, "geocode"]);
+    $router->get('/sms', [UserController::class, "sms"]);
+    $router->post('/sms', [UserController::class, "smsSave"]);
+    $router->get('/sms/history', [UserController::class, "smsHistory"]);
 });
 
 Route::prefix('v1')->middleware(['auth:sanctum', 'locale'])->group(function () use($router) {

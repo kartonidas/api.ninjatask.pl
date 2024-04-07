@@ -23,6 +23,7 @@ use App\Mail\Task\ChangeStatusOwner;
 use App\Mail\Task\NewCommentAssigned;
 use App\Mail\Task\NewCommentOwner;
 use App\Models\Invoice;
+use App\Models\SmsNotification;
 use App\Models\Subscription;
 use App\Models\Task;
 use App\Models\TaskComment;
@@ -76,6 +77,9 @@ class Notification extends Model
                         
                         if(in_array($type, $settings->mobile_notifications))
                             self::mobileTaskNotify($user_id, $addedUser, $task, $type, $locale);
+                            
+                        if($type == "task:assign")
+                            SmsNotification::taskMessage(SmsNotification::TYPE_TASK_ATTACH, $task, $user);
                     }
                 break;
             

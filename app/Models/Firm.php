@@ -5,7 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\SmsPackage;
 use App\Models\User;
+use App\Models\SmsNotification;
 
 class Firm extends Model
 {
@@ -30,5 +32,27 @@ class Firm extends Model
             if($user)
                 return $user;
         }
+    }
+    
+    public function getSmsConfig()
+    {
+        $packages = SmsPackage
+            ::withoutGlobalScope("uuid")
+            ->where("uuid", $this->uuid)
+            ->where("status", SmsPackage::STATUS_ACTIVE)
+            ->where(function($q) {
+                $q->whereNull("expired")->orWhere("expired", ">", time());
+            })
+            ->get();
+        
+        $out = ["allowed" => 0, "used" => 0];
+        foreach($packages as $package)
+        {
+            $out["allowed"] += $package->allowed;
+            $out["used"] += $package->used;
+        }
+        
+        $out = array_merge($out, SmsNotification::getNotifications($this->uuid));
+        return $out;
     }
 }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Libraries\Helper;
 use App\Models\CustomerInvoice;
+use App\Models\Task;
 
 class CustomerInvoiceItem extends Model
 {
@@ -61,6 +62,14 @@ class CustomerInvoiceItem extends Model
                 $row->gross_amount_discount = Helper::calculateGrossAmount($row->net_amount_discount, $item["vat_value"]);
                 $row->total_net_amount_discount = $row->net_amount_discount * $row->quantity;
                 $row->total_gross_amount_discount = $row->gross_amount_discount * $row->quantity;
+            }
+            
+            $row->task_id = null;
+            if(!empty($item["task_id"]) && intval($item["task_id"]) > 0)
+            {
+                $task = Task::withoutGlobalScope("uuid")->where("uuid", $invoice->uuid)->where("id", intval($item["task_id"]))->first();
+                if($task)
+                    $row->task_id = $task->id;
             }
             
             $row->save();

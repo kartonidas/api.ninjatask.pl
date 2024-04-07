@@ -24,6 +24,8 @@ use App\Models\Firm;
 use App\Observers\FirmObserver;
 use App\Models\CustomerInvoice;
 use App\Observers\CustomerInvoiceObserver;
+use App\Models\SmsPackage;
+use App\Observers\SmsPackageObserver;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -52,6 +54,7 @@ class EventServiceProvider extends ServiceProvider
         File::observe(FileObserver::class);
         Firm::observe(FirmObserver::class);
         CustomerInvoice::observe(CustomerInvoiceObserver::class);
+        SmsPackage::observe(SmsPackageObserver::class);
     }
 
     /**
