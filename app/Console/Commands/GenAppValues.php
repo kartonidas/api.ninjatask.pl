@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Libraries\Templates\Rental as TemplateRental;
+use App\Libraries\Templates\Customer as TemplateCustomer;
 use App\Libraries\Data;
 use App\Models\CustomerInvoice;
 use App\Models\Dictionary;
@@ -77,6 +77,9 @@ class GenAppValues extends Command
                 $toJson["global"]["sale_document_types_by_system"][$system][$type] = $allowed;
             }
         }
+        
+        foreach(TemplateCustomer::getAvailableVars()["fields"] as $variable => $variableInfo)
+            $toJson[$lang]["templates"]["variables"][] = ["var" => "[" . $variable . "]", "label" => $variableInfo[0]];
         
         $fp = fopen(__DIR__ . "/../../../../app.ninjatask.pl/resources/js/data/values.json", "w");
         fwrite($fp, json_encode($toJson, JSON_PRETTY_PRINT));
