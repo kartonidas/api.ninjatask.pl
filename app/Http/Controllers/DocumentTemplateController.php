@@ -12,6 +12,7 @@ use App\Http\Requests\DocumentTemplateRequest;
 use App\Http\Requests\StoreDocumentTemplateRequest;
 use App\Http\Requests\UpdateDocumentTemplateRequest;
 use App\Models\DocumentTemplate;
+use App\Models\DocumentTemplateVariable;
 use App\Models\User;
 use App\Traits\Sortable;
 
@@ -24,7 +25,7 @@ class DocumentTemplateController extends Controller
         $validated = $request->validated();
 
         $size = $validated["size"] ?? config("api.list.size");
-        $skip = isset($validated["first"]) ? $validated["first"] : (($validated["page"] ?? 1)-1)*$size;
+        $page = $request->input("page", 1);
         
         $documentTemplates = DocumentTemplate::whereRaw("1=1");
         
@@ -40,13 +41,15 @@ class DocumentTemplateController extends Controller
         
         $orderBy = $this->getOrderBy($request, DocumentTemplate::class, "title,asc");
         $documentTemplates = $documentTemplates->take($size)
-            ->skip($skip)
+            ->skip(($page-1)*$size)
             ->orderBy($orderBy[0], $orderBy[1])
             ->get();
             
         $out = [
             "total_rows" => $total,
             "total_pages" => ceil($total / $size),
+            "current_page" => $page,
+            "has_more" => ceil($total / $size) > $page,
             "data" => $documentTemplates,
         ];
             
@@ -58,14 +61,14 @@ class DocumentTemplateController extends Controller
         $validated = $request->validated();
 
         $size = $validated["size"] ?? config("api.list.size");
-        $skip = isset($validated["first"]) ? $validated["first"] : (($validated["page"] ?? 1)-1)*$size;
+        $page = $request->input("page", 1);
         
         $documentTemplates = DocumentTemplate::whereRaw("1=1");
         $total = $documentTemplates->count();
         
         $orderBy = $this->getOrderBy($request, DocumentTemplate::class, "title,asc");
         $documentTemplates = $documentTemplates->take($size)
-            ->skip($skip)
+            ->skip(($page-1)*$size)
             ->orderBy($orderBy[0], $orderBy[1])
             ->get();
         
@@ -87,12 +90,15 @@ class DocumentTemplateController extends Controller
         User::checkAccess("config:update");
         
         $validated = $request->validated();
+        DocumentTemplateVariable::checkUniqueVariableNames($validated["template_variables"] ?? []);
         
         $documentTemplate = new DocumentTemplate;
         $documentTemplate->type = $validated["type"];
         $documentTemplate->title = $validated["title"];
         $documentTemplate->content = $validated["content"];
         $documentTemplate->save();
+        
+        $documentTemplate->updateVariables($validated["template_variables"] ?? []);
         
         return $documentTemplate->id;
     }
@@ -104,6 +110,8 @@ class DocumentTemplateController extends Controller
         $documentTemplate = DocumentTemplate::find($documentTemplateId);
         if(!$documentTemplate)
             throw new ObjectNotExist(__("Document template does not exist"));
+        
+        $documentTemplate->template_variables = $documentTemplate->getTemplateVariables();
         
         return $documentTemplate;
     }
@@ -117,10 +125,17 @@ class DocumentTemplateController extends Controller
             throw new ObjectNotExist(__("Document template does not exist"));
         
         $validated = $request->validated();
+        DocumentTemplateVariable::checkUniqueVariableNames($validated["template_variables"] ?? []);
         
         foreach($validated as $field => $value)
+        {
+            if($field == "template_variables")
+                continue;
             $documentTemplate->{$field} = $value;
+        }
         $documentTemplate->save();
+        
+        $documentTemplate->updateVariables($validated["template_variables"] ?? []);
         
         return true;
     }

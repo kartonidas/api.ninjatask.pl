@@ -8,10 +8,10 @@ use App\Traits\RequestUpdateRules;
 
 class UpdateDocumentTemplateRequest extends StoreDocumentTemplateRequest
 {
-    use RequestUpdateRules;
-    
     public function rules(): array
     {
-        return $this->addSometimesToRules(parent::rules());
+        $rules = parent::rules();
+        unset($rules["type"]);
+        return $rules;
     }
 }

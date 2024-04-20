@@ -2,6 +2,7 @@
 
 namespace App\Libraries\Templates;
 
+use Illuminate\Support\Facades\Auth;
 use App\Interfaces\Template;
 use App\Libraries\Helper;
 use App\Libraries\Render;
@@ -41,8 +42,13 @@ class Customer extends TemplateManager implements Template
     {
         $variables = [
             "fields" => [
-                "klient_nazwa" => ["Nazwa najemcy", "name"],
-                "klient_adres" => ["Adres najemcy", "address"],
+                "klient_nazwa" => ["Nazwa zleceniodawcy", "name"],
+                "klient_adres" => ["Adres zleceniodawcy", "address"],
+                "klient_nip" => ["NIP zleceniodawcy", "nip"],
+                "firma_nazwa" => ["Nazwa zleceniobiorcy", "firm_name"],
+                "firma_adres" => ["Adres zleceniobiorcy", "firm_address"],
+                "firma_nip" => ["NIP zleceniobiorcy", "firm_nip"],
+                "data" => ["Data zawarcia umowy", "date"],
             ]
         ];
 
@@ -58,6 +64,16 @@ class Customer extends TemplateManager implements Template
         $object = $this->getObject();
         $out = $object->toArray();
         $out["address"] = Helper::generateAddress($object, ", ");
+        
+        $firmData = Auth::user()->getFirm();
+        if($firmData)
+        {
+            $out["firm_name"] = $firmData->name ? $firmData->name : ($firmData->firstname . " " . $firmData->lastname);
+            $out["firm_address"] = Helper::generateAddress($firmData, ", ");
+            $out["firm_nip"] = $firmData->nip;
+        }
+        
+        $out["date"] = date("Y-m-d");
         
         return $out;
     }
