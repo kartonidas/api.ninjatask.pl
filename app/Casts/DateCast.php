@@ -14,8 +14,8 @@ class DateCast implements CastsAttributes
         return substr($attributes["created_at"], 0, -3);
     }
  
-    public function set(Model $model, string $key, mixed $value, array $attributes): array
+    public function set(Model $model, string $key, mixed $value, array $attributes): string
     {
-        $attributes["created_at"] = $value;
+        return $value;
     }
 }

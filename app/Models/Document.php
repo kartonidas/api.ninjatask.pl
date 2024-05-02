@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Crypt;
 
 use App\Casts\DateCast;
 use App\Models\Customer;
@@ -31,6 +33,23 @@ class Document extends Model
     
     public function canEdit()
     {
-        return true;
+        return $this->hasCustomerSignature() ? false : true;
+    }
+    
+    public function hasCustomerSignature()
+    {
+        return !empty($this->customer_signature);
+    }
+    
+    public function getSignature()
+    {
+        if(!empty($this->customer_signature))
+        {
+            try {
+                return Crypt::decryptString($this->customer_signature);
+            } catch (DecryptException $e) {}
+        }
+        
+        return null;
     }
 }

@@ -7,12 +7,14 @@ use PDF;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 
 use Stevebauman\Purify\Facades\Purify;
 
 use App\Exceptions\Exception;
 use App\Exceptions\ObjectNotExist;
 use App\Http\Requests\DocumentRequest;
+use App\Http\Requests\DocumentSignatureRequest;
 use App\Http\Requests\GenerateTemplateDocumentRequest;
 use App\Http\Requests\StoreDocumentRequest;
 use App\Http\Requests\UpdateDocumentRequest;
@@ -78,6 +80,7 @@ class DocumentController extends Controller
             unset($documents[$i]->content);
             $documents[$i]->customer = $document->getCustomer();
             $documents[$i]->can_edit = $document->canEdit();
+            $documents[$i]->has_customer_signature = $document->hasCustomerSignature();
         }
         
         $out = [
@@ -121,6 +124,8 @@ class DocumentController extends Controller
         
         $document->customer = $document->getCustomer();
         $document->can_edit = $document->canEdit();
+        $document->has_customer_signature = $document->hasCustomerSignature();
+        $document->customer_signature = $document->getSignature();
         
         return $document;
     }
@@ -193,6 +198,9 @@ class DocumentController extends Controller
         if(!$document)
             throw new ObjectNotExist(__("Document does not exist"));
         
+        if(!$document->canEdit())
+            throw new ObjectNotExist(__("Cannot edit document"));
+        
         $validated = $request->validated();
         
         $document->title = $validated["title"];
@@ -211,6 +219,22 @@ class DocumentController extends Controller
             throw new ObjectNotExist(__("Document does not exist"));
         
         $document->delete();
+        
+        return true;
+    }
+    
+    public function signature(DocumentSignatureRequest $request, int $documentId)
+    {
+        User::checkAccess("document:update");
+        $document = Document::find($documentId);
+        
+        if(!$document)
+            throw new ObjectNotExist(__("Document does not exist"));
+        
+        
+        $validated = $request->validated();
+        $document->customer_signature = Crypt::encryptString($validated["signature"]);
+        $document->save();
         
         return true;
     }
