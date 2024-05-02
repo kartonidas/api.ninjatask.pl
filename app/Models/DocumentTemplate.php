@@ -43,15 +43,22 @@ class DocumentTemplate extends Model
         ];
     }
     
-    public function generateDocument(Customer $customer)
+    public function generateDocument(Customer $customer, array $customVariables = [])
     {
         $manager = TemplateManager::getTemplate($customer);
+        $manager->setCustomVariables($customVariables);
         return $manager->generateHtml($this->content);
     }
     
     public function getTemplateVariables()
     {
-        return DocumentTemplateVariable::where("document_template_id", $this->id)->get();
+        $variables = DocumentTemplateVariable::where("document_template_id", $this->id)->get();
+        
+        foreach($variables as $v => $variable)
+        {
+            $variables[$v]->item_values_array = $variable->getItemValues();
+        }
+        return $variables;
     }
     
     public function updateVariables($variables = [])

@@ -14,6 +14,10 @@ class DocumentRequest extends ListRequest
             "search.title" => "nullable|string",
             "search.item_name" => "nullable|string",
             "search.type" => ["nullable", Rule::in(array_keys(DocumentTemplate::getTypes()))],
+            "search.date_from" => ["nullable"],
+            "search.date_to" => ["nullable"],
+            "search.customer_name" => "nullable|string",
+            "search.customer_nip" => "nullable|string",
         ]);
     }
 }

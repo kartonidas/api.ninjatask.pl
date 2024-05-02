@@ -13,4 +13,5 @@ interface Template
     public static function getAvailableVars($array = false, $global = true);
     public function getData();
     public static function getClassObject();
+    public function setCustomVariables(array $variables);
 }

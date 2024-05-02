@@ -11,6 +11,7 @@ use App\Traits\TemplateVariablesTrait;
 
 class Customer extends TemplateManager implements Template
 {
+    private static $customVariables = [];
     use TemplateVariablesTrait;
 
     public static function getType()
@@ -51,6 +52,12 @@ class Customer extends TemplateManager implements Template
                 "data" => ["Data zawarcia umowy", "date"],
             ]
         ];
+        
+        if(!empty(static::$customVariables))
+        {
+            foreach(static::$customVariables as $fieldName => $tmp)
+                $variables["fields"][$fieldName] = ["", $fieldName];
+        }
 
         if($array)
             return self::availableVarsToArray($variables);
@@ -75,6 +82,13 @@ class Customer extends TemplateManager implements Template
         
         $out["date"] = date("Y-m-d");
         
+        $out = array_merge($out, static::$customVariables);
+        
         return $out;
+    }
+    
+    public function setCustomVariables(array $variables)
+    {
+        static::$customVariables = $variables;
     }
 }

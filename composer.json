@@ -14,7 +14,8 @@
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
-        "simonschaufi/laravel-dkim": "^3.4"
+        "simonschaufi/laravel-dkim": "^3.4",
+        "stevebauman/purify": "^6.2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

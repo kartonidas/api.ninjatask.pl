@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
+use Stevebauman\Purify\Facades\Purify;
+
 use App\Exceptions\ObjectNotExist;
 use App\Http\Requests\DocumentTemplateRequest;
 use App\Http\Requests\StoreDocumentTemplateRequest;
@@ -22,6 +24,8 @@ class DocumentTemplateController extends Controller
     
     public function list(DocumentTemplateRequest $request)
     {
+        User::checkAccess("documents:list");
+        
         $validated = $request->validated();
 
         $size = $validated["size"] ?? config("api.list.size");
@@ -58,6 +62,8 @@ class DocumentTemplateController extends Controller
     
     public function listGroupByType(DocumentTemplateRequest $request)
     {
+        User::checkAccess("documents:list");
+        
         $validated = $request->validated();
 
         $size = $validated["size"] ?? config("api.list.size");
@@ -87,7 +93,7 @@ class DocumentTemplateController extends Controller
     
     public function create(StoreDocumentTemplateRequest $request)
     {
-        User::checkAccess("config:update");
+        User::checkAccess("documents:create");
         
         $validated = $request->validated();
         DocumentTemplateVariable::checkUniqueVariableNames($validated["template_variables"] ?? []);
@@ -95,7 +101,7 @@ class DocumentTemplateController extends Controller
         $documentTemplate = new DocumentTemplate;
         $documentTemplate->type = $validated["type"];
         $documentTemplate->title = $validated["title"];
-        $documentTemplate->content = $validated["content"];
+        $documentTemplate->content = Purify::clean($validated["content"]);
         $documentTemplate->save();
         
         $documentTemplate->updateVariables($validated["template_variables"] ?? []);
@@ -105,7 +111,7 @@ class DocumentTemplateController extends Controller
     
     public function get(Request $request, int $documentTemplateId)
     {
-        User::checkAccess("config:update");
+        User::checkAccess("documents:list");
         
         $documentTemplate = DocumentTemplate::find($documentTemplateId);
         if(!$documentTemplate)
@@ -118,7 +124,7 @@ class DocumentTemplateController extends Controller
     
     public function update(UpdateDocumentTemplateRequest $request, int $documentTemplateId)
     {
-        User::checkAccess("config:update");
+        User::checkAccess("documents:update");
         
         $documentTemplate = DocumentTemplate::find($documentTemplateId);
         if(!$documentTemplate)
@@ -131,6 +137,10 @@ class DocumentTemplateController extends Controller
         {
             if($field == "template_variables")
                 continue;
+            
+            if($field == "content")
+                $value = Purify::clean($value);
+                
             $documentTemplate->{$field} = $value;
         }
         $documentTemplate->save();
@@ -142,7 +152,7 @@ class DocumentTemplateController extends Controller
     
     public function delete(Request $request, int $documentTemplateId)
     {
-        User::checkAccess("config:update");
+        User::checkAccess("documents:delete");
         
         $documentTemplate = DocumentTemplate::find($documentTemplateId);
         if(!$documentTemplate)

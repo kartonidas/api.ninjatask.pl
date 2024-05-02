@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\File as RuleFile;
 use Illuminate\Validation\ValidationException;
+
+use Stevebauman\Purify\Facades\Purify;
+
 use App\Exceptions\Exception;
 use App\Exceptions\AccessDenied;
 use App\Exceptions\InvalidStatus;
@@ -309,7 +312,7 @@ class TaskController extends Controller
         $task = new Task;
         $task->project_id = $project->id;
         $task->name = $request->input("name");
-        $task->description = $request->input("description", "");
+        $task->description = Purify::clean($request->input("description", ""));
         $task->created_user_id = Auth::user()->id;
         $task->priority = intval($request->input("priority", 2));
         $task->status_id = intval($request->input("status_id"));
@@ -397,7 +400,10 @@ class TaskController extends Controller
         foreach($updateFields as $field)
         {
             if($request->has($field))
-                $task->{$field} = $request->input($field);
+            {
+                $value = $field == "description" ? Purify::clean($request->input($field)) : $request->input($field);
+                $task->{$field} = $value;
+            }
         }
         $this->validateDates($task);
         $task->save();

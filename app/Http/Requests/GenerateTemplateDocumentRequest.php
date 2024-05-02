@@ -16,10 +16,10 @@ class GenerateTemplateDocumentRequest extends ListRequest
     public function rules(): array
     {
         $rules = [
-            "type" => ["required", Rule::in(array_keys(DocumentTemplate::getTypes()))],
             "template" => "required|integer",
             "task_id" => "nullable|integer",
             "customer_id" => "required|integer",
+            "variables" => "sometimes|array",
         ];
         
         return $rules;

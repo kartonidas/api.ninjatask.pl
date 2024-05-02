@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use Stevebauman\Purify\Facades\Purify;
+
 use App\Exceptions\Exception;
 use App\Exceptions\ObjectNotExist;
 use App\Http\Requests\DocumentRequest;
@@ -33,7 +35,7 @@ class DocumentController extends Controller
         $validated = $request->validated();
         
         $size = $validated["size"] ?? config("api.list.size");
-        $skip = isset($validated["first"]) ? $validated["first"] : (($validated["page"] ?? 1)-1)*$size;
+        $page = $request->input("page", 1);
         
         $documents = Document::whereRaw("1=1");
             
@@ -42,32 +44,47 @@ class DocumentController extends Controller
             if(!empty($validated["search"]["title"]))
                 $documents->where("title", "LIKE", "%" . $validated["search"]["title"] . "%");
                 
-            if(!empty($validated["search"]["item_name"]))
-            {
-                $itemIds = Item::where("name", "LIKE", "%" . $validated["search"]["item_name"] . "%")->pluck("id")->all();
-                $documents->whereIn("item_id", $itemIds);
-            }
-                
             if(!empty($validated["search"]["type"]))
                 $documents->where("type", $validated["search"]["type"]);
+                
+            if(!empty($validated["search"]["date_from"]))
+                $documents->whereDate("created_at", ">=", $validated["search"]["date_from"]);
+            
+            if(!empty($validated["search"]["date_to"]))
+                $documents->whereDate("created_at", "<=", $validated["search"]["date_to"]);
+                
+            if(!empty($validated["search"]["customer_name"]))
+            {
+                $ids = Customer::where("name", "LIKE", "%" . $validated["search"]["customer_name"] . "%")->pluck("id")->all();
+                $documents->whereIn("customer_id", $ids);
+            }
+            if(!empty($validated["search"]["customer_nip"]))
+            {
+                $ids = Customer::where("nip", "LIKE", "%" . $validated["search"]["customer_name"] . "%")->pluck("id")->all();
+                $documents->whereIn("customer_id", $ids);
+            }
         }
             
         $total = $documents->count();
         
         $orderBy = $this->getOrderBy($request, Document::class, "created_at,desc");
         $documents = $documents->take($size)
-            ->skip($skip)
+            ->skip(($page-1)*$size)
             ->orderBy($orderBy[0], $orderBy[1])
             ->get();
             
         foreach($documents as $i => $document)
         {
             unset($documents[$i]->content);
+            $documents[$i]->customer = $document->getCustomer();
+            $documents[$i]->can_edit = $document->canEdit();
         }
         
         $out = [
             "total_rows" => $total,
             "total_pages" => ceil($total / $size),
+            "current_page" => $page,
+            "has_more" => ceil($total / $size) > $page,
             "data" => $documents,
         ];
             
@@ -102,6 +119,9 @@ class DocumentController extends Controller
         if(!$document)
             throw new ObjectNotExist(__("Document does not exist"));
         
+        $document->customer = $document->getCustomer();
+        $document->can_edit = $document->canEdit();
+        
         return $document;
     }
     
@@ -124,13 +144,13 @@ class DocumentController extends Controller
         }
         
         $documentTemplate = DocumentTemplate::find($validated["template"]);
-        if(!$documentTemplate || $documentTemplate->type != $validated["type"])
+        if(!$documentTemplate)
             throw new ObjectNotExist(__("Template does not exists"));
         
-        $title = DocumentTemplate::getTypes()[$validated["type"]];
+        $title = sprintf("%s, [%s, %s]", $documentTemplate->title, $customer->name, $customer->city);
         
         return [
-            "content" => $documentTemplate->generateDocument($customer, $task),
+            "content" => $documentTemplate->generateDocument($customer, $validated["variables"] ?? []),
             "title" => $title
         ];
     }
@@ -158,7 +178,7 @@ class DocumentController extends Controller
         $document->task_id = $validated["task_id"] ?? null;
         $document->user_id = Auth::user()->id;
         $document->title = $validated["title"];
-        $document->content = $validated["content"];
+        $document->content = Purify::clean($validated["content"]);
         $document->type = $validated["type"];
         $document->save();
         
@@ -176,7 +196,7 @@ class DocumentController extends Controller
         $validated = $request->validated();
         
         $document->title = $validated["title"];
-        $document->content = $validated["content"];
+        $document->content = Purify::clean($validated["content"]);
         $document->save();
         
         return true;

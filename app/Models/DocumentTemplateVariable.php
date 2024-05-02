@@ -11,6 +11,7 @@ class DocumentTemplateVariable extends Model
     public const FIELD_SELECT = "select";
     public const FIELD_TEXT = "text";
     public const FIELD_TEXTAREA = "textarea";
+    public const FIELD_DATE = "date";
     
     public static function getAllowedTypes()
     {
@@ -19,6 +20,7 @@ class DocumentTemplateVariable extends Model
             self::FIELD_TEXTAREA => __("Large text box"),
             self::FIELD_CHECKBOX => __("Field yes/no"),
             self::FIELD_SELECT => __("Select list"),
+            self::FIELD_DATE => __("Date"),
         ];
     }
     
@@ -34,5 +36,10 @@ class DocumentTemplateVariable extends Model
             if(count($allVariables) != count($allUniqueVariables))
                 throw new Exception(__("Variable name must be unique"));
         }
+    }
+    
+    public function getItemValues()
+    {
+        return $this->type == self::FIELD_SELECT ? array_map("trim", explode("\n", $this->item_values)) : [];
     }
 }
