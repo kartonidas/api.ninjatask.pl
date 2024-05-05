@@ -172,6 +172,7 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'locale', 'subscription'])->gro
     $router->get('/document/{id}', [DocumentController::class, "get"])->where("id", "[0-9]+");
     $router->delete('/document/{id}', [DocumentController::class, "delete"])->where("id", "[0-9]+");
     $router->post('/document/{id}/signature', [DocumentController::class, "signature"])->where("id", "[0-9]+");
+    $router->delete('/document/{id}/signature', [DocumentController::class, "signatureDelete"])->where("id", "[0-9]+");
 });
 
 Route::prefix('v1')->middleware(['auth:sanctum', 'locale'])->group(function () use($router) {

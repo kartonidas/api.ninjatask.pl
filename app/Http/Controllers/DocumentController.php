@@ -65,6 +65,8 @@ class DocumentController extends Controller
                 $ids = Customer::where("nip", "LIKE", "%" . $validated["search"]["customer_name"] . "%")->pluck("id")->all();
                 $documents->whereIn("customer_id", $ids);
             }
+            if(!empty($validated["search"]["customer_id"]))
+                $documents->where("customer_id", $validated["search"]["customer_id"]);
         }
             
         $total = $documents->count();
@@ -109,7 +111,7 @@ class DocumentController extends Controller
         $manager = TemplateManager::getTemplate($customer);
         $html = $manager->generateHtml($document->content);
         
-        $pdf = PDF::loadView("pdf.customer_document", ["content" => $html]);
+        $pdf = PDF::loadView("pdf.customer_document", ["content" => $html, "document" => $document]);
         $pdf->getMpdf()->SetTitle(Helper::__no_pl($document->title) . ".pdf");
         $pdf->stream(Helper::__no_pl($document->title) . ".pdf");
     }
@@ -231,11 +233,20 @@ class DocumentController extends Controller
         if(!$document)
             throw new ObjectNotExist(__("Document does not exist"));
         
-        
         $validated = $request->validated();
-        $document->customer_signature = Crypt::encryptString($validated["signature"]);
-        $document->save();
+        $document->setSignature($validated["signature"]);
+        return true;
+    }
+    
+    public function signatureDelete(Request $request, int $documentId)
+    {
+        User::checkAccess("document:update");
+        $document = Document::find($documentId);
         
+        if(!$document)
+            throw new ObjectNotExist(__("Document does not exist"));
+        
+        $document->deleteSignature();
         return true;
     }
 }

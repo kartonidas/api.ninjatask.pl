@@ -25,3 +25,12 @@
 <div>
     {!! $content !!}
 </div>
+    
+@php
+    $signature = $document->getSignature();
+@endphp
+@if($signature)
+    <div style="text-align:right; margin-top: 40px;">
+        <img src="{{ $signature }}" style="max-width:250px; max-height:125px">
+    </div>
+@endif

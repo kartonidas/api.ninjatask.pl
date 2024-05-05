@@ -18,6 +18,7 @@ class DocumentRequest extends ListRequest
             "search.date_to" => ["nullable"],
             "search.customer_name" => "nullable|string",
             "search.customer_nip" => "nullable|string",
+            "search.customer_id" => "nullable|integer",
         ]);
     }
 }
