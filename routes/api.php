@@ -42,6 +42,7 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'locale', 'subscription'])->gro
     $router->delete('/project/{id}', [ProjectController::class, "delete"])->where("id", "[0-9]+");
     $router->get('/projectsWithTasks', [ProjectController::class, "getProjectsWithOpenedTasks"]);
     $router->get('/projects/simple', [ProjectController::class, "listSimple"]);
+    $router->post('/project/validate', [ProjectController::class, "validateAfterCreate"]);
     
     // PRACOWNICY
     $router->get('/users', [UserController::class, "list"]);
@@ -136,6 +137,7 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'locale', 'subscription'])->gro
     $router->get('/customer/{id}', [CustomerController::class, "get"])->where("id", "[0-9]+");
     $router->put('/customer/{id}', [CustomerController::class, "update"])->where("id", "[0-9]+");
     $router->delete('/customer/{id}', [CustomerController::class, "delete"])->where("id", "[0-9]+");
+    $router->post('/customer/validate', [CustomerController::class, "validateAfterCreate"]);
     
     // FAKTURY
     $router->get('/customer-invoices', [CustomerInvoicesController::class, "list"]);

@@ -539,7 +539,7 @@ class IndexController extends Controller
         $out = [
             "results" => []
         ];
-        if(!empty($result))
+        if(!empty($result) && empty($result["error"]))
         {
             foreach($result as $res)
             {

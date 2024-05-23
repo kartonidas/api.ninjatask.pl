@@ -11,6 +11,7 @@ use App\Exceptions\InvalidStatus;
 use App\Exceptions\ObjectExist;
 use App\Exceptions\ObjectNotExist;
 use App\Libraries\Helper;
+use App\Models\Customer;
 use App\Models\Notification;
 use App\Models\Project;
 use App\Models\Status;
@@ -70,7 +71,7 @@ class Task extends Model
     
     public function scopeApiFields(Builder $query): void
     {
-        $query->select("id", "name", "description", "project_id", "status_id", "priority", "start_date", "start_date_time", "end_date", "end_date_time", "due_date", "created_at", "state", "cost_gross");
+        $query->select("id", "name", "description", "customer_id", "project_id", "status_id", "priority", "start_date", "start_date_time", "end_date", "end_date_time", "due_date", "created_at", "state", "cost_gross");
     }
     
     public function calculateTotalTime()
@@ -206,6 +207,11 @@ class Task extends Model
     public function getProject()
     {
         return Project::withoutGlobalScope("uuid")->find($this->project_id);
+    }
+    
+    public function getCustomer()
+    {
+        return Customer::find($this->customer_id);
     }
     
     public function canStart()

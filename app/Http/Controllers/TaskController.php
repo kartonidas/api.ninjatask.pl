@@ -250,6 +250,7 @@ class TaskController extends Controller
         $task->timer = $task->getActiveTaskTime();
         $task->status = $task->getStatusName();
         $task->place = $task->getProject();
+        $task->customer = $task->getCustomer();
         $task->customer_id = $task->place ? $task->place->customer_id : null;
         $task->can_start = $task->canStart();
         $task->can_stop = $task->canStop();
@@ -289,6 +290,7 @@ class TaskController extends Controller
         self::prepareSelfAssignedId($request);
         
         $request->validate([
+            "xproject_id" => "required|integer",
             "project_id" => "required|integer",
             "name" => "required|max:250",
             "description" => "nullable|max:5000",
