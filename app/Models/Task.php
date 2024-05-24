@@ -392,4 +392,43 @@ class Task extends Model
         $timer->total += $total;
         $timer->save();
     }
+    
+    public static function getAllowedUserIds($taskId = null)
+    {
+        $users = self::getAllowedUsersList($taskId);
+        foreach($users as $user)
+            $userIds[] = $user["id"];
+        return $userIds;
+    }
+    
+    public static function getAllowedUsersList($taskId = null, $skipDeleted = true)
+    {
+        $currentAssignedUsers = [];
+        if($taskId)
+        {
+            $task = self::find($taskId);
+            if($task)
+                $currentAssignedUsers = $task->getAssignedUserIds();
+        }
+        
+        $out = [];
+        $users = User::withTrashed()->byFirm()->where("activated", 1)->orderBy("lastname", "ASC")->orderBy("firstname", "ASC")->get();
+        foreach($users as $user)
+        {
+            if($skipDeleted && !in_array($user->id, $currentAssignedUsers) && $user->trashed())
+                continue;
+            
+            $out[] = [
+                "id" => $user->id,
+                "firstname" => $user->firstname,
+                "lastname" => $user->lastname,
+                "email" => $user->email,
+                "_me" => $user->id == Auth::user()->id,
+                "_allowed" => !$user->trashed(),
+                "_check" => in_array($user->id, $currentAssignedUsers),
+            ];
+        }
+        
+        return $out;
+    }
 }

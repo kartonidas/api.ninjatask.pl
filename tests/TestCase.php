@@ -66,7 +66,7 @@ abstract class TestCase extends BaseTestCase
         
         $response = $this->post('/api/v1/login', $data);
         $response->assertStatus(200);
-        
+        $this->app->get('auth')->forgetGuards();
         $response = json_decode($response->getContent());
         return $response->token;
     }

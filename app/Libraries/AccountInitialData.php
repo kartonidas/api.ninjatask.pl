@@ -34,6 +34,9 @@ class AccountInitialData {
     
     public function setInitial()
     {
+        if(env("APP_ENV") == "testing")
+            return;
+    
         if(Auth::onceUsingId($this->user->id))
         {
             DB::transaction(function () {
