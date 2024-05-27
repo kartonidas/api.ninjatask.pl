@@ -131,7 +131,7 @@ class TaskController extends Controller
             $tasks->whereIn("project_id", $projectIds);
         }
             
-        if($searchStatus)
+        if($searchStatus && $searchStatus != "all")
         {
             if($searchStatus == "opened")
             {
@@ -217,6 +217,7 @@ class TaskController extends Controller
             $tasks[$k]->timer = $task->getActiveTaskTime();
             $tasks[$k]->status = $task->getStatusName();
             $tasks[$k]->place = $task->getProject();
+            $tasks[$k]->customer = $task->getCustomer();
         }
         
         $out = [
@@ -624,16 +625,61 @@ class TaskController extends Controller
         $request->validate([
             "size" => "nullable|integer|gt:0",
             "page" => "nullable|integer|gt:0",
+            "query" => "nullable|max:200",
+            "status" => ["nullable"],
+            "priority" => ["nullable", "integer", Rule::in([1,2,3])],
+            "created_from" => "nullable|date_format:Y-m-d",
+            "created_to" => "nullable|date_format:Y-m-d",
+            "start_date_from" => "nullable|date_format:Y-m-d",
+            "start_date_to" => "nullable|date_format:Y-m-d",
         ]);
         
         $size = $request->input("size", config("api.list.size"));
         $page = $request->input("page", 1);
         
+        $searchQuery = $request->input("query", null);
+        $searchStatus = $request->input("status", null);
+        $searchPriority = $request->input("priority", null);
+        $searchCreatedAtFrom = $request->input("created_from", null);
+        $searchCreatedAtTo = $request->input("created_to", null);
+        $searchStartDateFrom = $request->input("start_date_from", null);
+        $searchStartDateTo = $request->input("start_date_to", null);
+        
         $tasks = Task
             ::apiFields()
             ->assignedList(true)
             ->where("state", "!=", Task::STATE_CLOSED);
-            
+        
+        
+        if($searchQuery)
+        {
+            $tasks->where(function($q) use($searchQuery) {
+                $q
+                    ->where("name", "LIKE", "%" . $searchQuery . "%")
+                    ->orWhere("description", "LIKE", "%" . $searchQuery . "%");
+            });
+        }
+        if($searchStatus && $searchStatus != "all")
+        {
+            if($searchStatus == "opened")
+            {
+                $openedStatuses = Status::where("task_state", "!=", Status::TASK_STATE_IN_CLOSED)->pluck("id")->all();
+                $tasks->whereIn("status_id", $openedStatuses);
+            }
+            else
+                $tasks->where("status_id", $searchStatus);
+        }
+        if($searchPriority)
+            $tasks->where("priority", $searchPriority);
+        if($searchCreatedAtFrom)
+            $tasks->whereDate("created_at", ">=", $searchCreatedAtFrom);
+        if($searchCreatedAtTo)
+            $tasks->whereDate("created_at", "<=", $searchCreatedAtTo);
+        if($searchStartDateFrom)
+            $tasks->whereDate("start_date", ">=", $searchStartDateFrom);
+        if($searchStartDateTo)
+            $tasks->whereDate("start_date", "<=", $searchStartDateTo);
+        
         $total = $tasks->count();
         
         $tasks = $tasks->take($size)->skip(($page-1)*$size);
@@ -746,7 +792,7 @@ class TaskController extends Controller
                     "title" => $task->name,
                     "description" => $task->description,
                     "place" => $placeInfo,
-                    "assigned" => Task::getAllowedUsersList($task->id)
+                    "assigned" => $task->getAssignedUsers()
                 ];
             }
         }
