@@ -11,6 +11,7 @@ use App\Exceptions\InvalidStatus;
 use App\Exceptions\ObjectExist;
 use App\Exceptions\ObjectNotExist;
 use App\Libraries\Helper;
+use App\Models\Customer;
 use App\Models\Notification;
 use App\Models\Project;
 use App\Models\Status;
@@ -70,7 +71,7 @@ class Task extends Model
     
     public function scopeApiFields(Builder $query): void
     {
-        $query->select("id", "name", "description", "project_id", "status_id", "priority", "start_date", "start_date_time", "end_date", "end_date_time", "due_date", "created_at", "state", "cost_gross");
+        $query->select("id", "name", "description", "customer_id", "project_id", "status_id", "priority", "start_date", "start_date_time", "end_date", "end_date_time", "due_date", "created_at", "state", "cost_gross");
     }
     
     public function calculateTotalTime()
@@ -206,6 +207,11 @@ class Task extends Model
     public function getProject()
     {
         return Project::withoutGlobalScope("uuid")->find($this->project_id);
+    }
+    
+    public function getCustomer()
+    {
+        return Customer::find($this->customer_id);
     }
     
     public function canStart()
@@ -385,5 +391,44 @@ class Task extends Model
         $timer->timer_started = null;
         $timer->total += $total;
         $timer->save();
+    }
+    
+    public static function getAllowedUserIds($taskId = null)
+    {
+        $users = self::getAllowedUsersList($taskId);
+        foreach($users as $user)
+            $userIds[] = $user["id"];
+        return $userIds;
+    }
+    
+    public static function getAllowedUsersList($taskId = null, $skipDeleted = true)
+    {
+        $currentAssignedUsers = [];
+        if($taskId)
+        {
+            $task = self::find($taskId);
+            if($task)
+                $currentAssignedUsers = $task->getAssignedUserIds();
+        }
+        
+        $out = [];
+        $users = User::withTrashed()->byFirm()->where("activated", 1)->orderBy("lastname", "ASC")->orderBy("firstname", "ASC")->get();
+        foreach($users as $user)
+        {
+            if($skipDeleted && !in_array($user->id, $currentAssignedUsers) && $user->trashed())
+                continue;
+            
+            $out[] = [
+                "id" => $user->id,
+                "firstname" => $user->firstname,
+                "lastname" => $user->lastname,
+                "email" => $user->email,
+                "_me" => $user->id == Auth::user()->id,
+                "_allowed" => !$user->trashed(),
+                "_check" => in_array($user->id, $currentAssignedUsers),
+            ];
+        }
+        
+        return $out;
     }
 }

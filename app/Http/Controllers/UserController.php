@@ -1118,6 +1118,7 @@ class UserController extends Controller
         $settings = Auth::user()->getAccountSettings();
         
         $out = [
+            "id" => Auth::user()->id,
             "firstname" => Auth::user()->firstname,
             "lastname" => Auth::user()->lastname,
             "locale" => $settings->locale,

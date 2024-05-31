@@ -18,6 +18,10 @@ return [
             "module" => "Customer invoices",
             "operation" => ["list", "create", "update", "delete"]
         ],
+        "documents" => [
+            "module" => "Documents",
+            "operation" => ["list", "create", "update", "delete"]
+        ],
         "stats" => [
             "module" => "Stats",
             "operation" => ["list"]

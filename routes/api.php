@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerInvoicesController;
 use App\Http\Controllers\DictionaryController;
+use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\DocumentTemplateController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
@@ -40,6 +42,7 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'locale', 'subscription'])->gro
     $router->delete('/project/{id}', [ProjectController::class, "delete"])->where("id", "[0-9]+");
     $router->get('/projectsWithTasks', [ProjectController::class, "getProjectsWithOpenedTasks"]);
     $router->get('/projects/simple', [ProjectController::class, "listSimple"]);
+    $router->post('/project/validate', [ProjectController::class, "validateAfterCreate"]);
     
     // PRACOWNICY
     $router->get('/users', [UserController::class, "list"]);
@@ -134,6 +137,7 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'locale', 'subscription'])->gro
     $router->get('/customer/{id}', [CustomerController::class, "get"])->where("id", "[0-9]+");
     $router->put('/customer/{id}', [CustomerController::class, "update"])->where("id", "[0-9]+");
     $router->delete('/customer/{id}', [CustomerController::class, "delete"])->where("id", "[0-9]+");
+    $router->post('/customer/validate', [CustomerController::class, "validateAfterCreate"]);
     
     // FAKTURY
     $router->get('/customer-invoices', [CustomerInvoicesController::class, "list"]);
@@ -152,6 +156,25 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'locale', 'subscription'])->gro
     $router->get('/sms', [UserController::class, "sms"]);
     $router->post('/sms', [UserController::class, "smsSave"]);
     $router->get('/sms/history', [UserController::class, "smsHistory"]);
+    
+    // SZABLONY DOKUMENTÓW
+    $router->get('/documents/templates', [DocumentTemplateController::class, "list"])->where("id", "[0-9]+");
+    $router->get('/documents/templates/group', [DocumentTemplateController::class, "listGroupByType"])->where("id", "[0-9]+");
+    $router->put('/documents/template', [DocumentTemplateController::class, "create"]);
+    $router->get('/documents/template/{id}', [DocumentTemplateController::class, "get"])->where("id", "[0-9]+");
+    $router->put('/documents/template/{id}', [DocumentTemplateController::class, "update"])->where("id", "[0-9]+");
+    $router->delete('/documents/template/{id}', [DocumentTemplateController::class, "delete"])->where("id", "[0-9]+");
+    
+    // DOKUMENTY
+    $router->get('/documents', [DocumentController::class, "list"])->where("id", "[0-9]+");
+    $router->post('/document/generateTemplate', [DocumentController::class, "generateTemplateDocument"]);
+    $router->put('/document', [DocumentController::class, "create"])->where("id", "[0-9]+");
+    $router->put('/document/{id}', [DocumentController::class, "update"])->where("id", "[0-9]+");
+    $router->get('/document/{id}/pdf', [DocumentController::class, "getDocumentPdf"])->where("id", "[0-9]+");
+    $router->get('/document/{id}', [DocumentController::class, "get"])->where("id", "[0-9]+");
+    $router->delete('/document/{id}', [DocumentController::class, "delete"])->where("id", "[0-9]+");
+    $router->post('/document/{id}/signature', [DocumentController::class, "signature"])->where("id", "[0-9]+");
+    $router->delete('/document/{id}/signature', [DocumentController::class, "signatureDelete"])->where("id", "[0-9]+");
 });
 
 Route::prefix('v1')->middleware(['auth:sanctum', 'locale'])->group(function () use($router) {

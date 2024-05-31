@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rules\File as RuleFile;
+
+use Stevebauman\Purify\Facades\Purify;
+
 use App\Exceptions\AccessDenied;
 use App\Exceptions\InvalidStatus;
 use App\Exceptions\ObjectExist;
@@ -194,7 +197,7 @@ class TaskCommentController extends Controller
         $comment = new TaskComment;
         $comment->task_id = $task->id;
         $comment->user_id = Auth::user()->id;
-        $comment->comment = $request->input("comment");
+        $comment->comment = Purify::clean($request->input("comment"));
         $comment->save();
         
         if(!empty($request->input("attachments", [])))
@@ -250,7 +253,10 @@ class TaskCommentController extends Controller
         foreach($updateFields as $field)
         {
             if($request->has($field))
-                $comment->{$field} = $request->input($field);
+            {
+                $value = $field == "comment" ? Purify::clean($request->input($field)) : $request->input($field);
+                $comment->{$field} = $value;
+            }
         }
         $comment->save();
         

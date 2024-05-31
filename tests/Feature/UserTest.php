@@ -89,9 +89,9 @@ class UserTest extends TestCase
     public function test_login_with_firm_id_successfull(): void
     {
         $this->prepareMultipleUserAccount();
-        $user = User::where('email', 'arturpatura@gmail.com')->where('owner', 1)->first();
+        $user = User::where('email', 'arturpatura@ninjatask.pl')->where('owner', 1)->first();
         $data = [
-            'email' => 'arturpatura@gmail.com',
+            'email' => 'arturpatura@ninjatask.pl',
             'password' => $this->getAccount(0)['data']['password'],
             'device_name' => 'test',
             'firm_id' => $user->firm_id,
@@ -733,7 +733,7 @@ class UserTest extends TestCase
     {
         $token = $this->getOwnerLoginToken();
         
-        $data = ['email' => 'arturpatura@gmail.com'];
+        $data = ['email' => 'arturpatura@ninjatask.pl'];
         $response = $this->withToken($token)->postJson('/api/v1/invite', $data);
         $response->assertStatus(409);
         

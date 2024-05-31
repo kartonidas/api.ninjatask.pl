@@ -3,10 +3,12 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Libraries\Templates\Rental as TemplateRental;
+use App\Libraries\Templates\Customer as TemplateCustomer;
 use App\Libraries\Data;
 use App\Models\CustomerInvoice;
 use App\Models\Dictionary;
+use App\Models\DocumentTemplate;
+use App\Models\DocumentTemplateVariable;
 use App\Models\Numbering;
 use App\Models\Status;
 
@@ -61,6 +63,15 @@ class GenAppValues extends Command
             
             foreach(Status::getAllowedTaskStates() as $type => $name)    
                 $toJson[$lang]["task_states"][$type] = $name;
+                
+            foreach(DocumentTemplate::getTypes() as $type => $name)    
+                $toJson[$lang]["document_types"][$type] = $name;
+        
+            foreach(TemplateCustomer::getAvailableVars()["fields"] as $variable => $variableInfo)
+                $toJson[$lang]["templates"]["variables"][] = ["var" => "[" . $variable . "]", "label" => $variableInfo[0]];
+                
+            foreach(DocumentTemplateVariable::getAllowedTypes() as $type => $name)
+                $toJson[$lang]["templates"]["variable_type"][$type] = $name;
         }
         
         foreach(Data::getAllowedTimes() as $type => $name)

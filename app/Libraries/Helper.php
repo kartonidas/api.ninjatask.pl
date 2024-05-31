@@ -358,4 +358,28 @@ class Helper
             $date = new DateTime($date);
         return $timestamp ? strtotime($date->format("Y-m-d") . " " . $time) : $date->format("Y-m-d") . " " . $time;
     }
+    
+    public static function generateAddress($object, $separator = " ")
+    {
+        $addres = [];
+        if(!empty($object->street))
+        {
+            $line = $object->street;
+            if(!empty($object->house_no))
+                $line .= " " . $object->house_no;
+                
+            if(!empty($object->apartment_no))
+                $line .= (!empty($object->house_no) ? "/" : " ") . $object->apartment_no;
+                
+            $addres[] = $line;
+        }
+        
+        if(!empty($object->zip) || !empty($object->city))
+            $addres[] = ($object->zip ?? "") . " " . ($object->city ?? "");
+        
+        if(!empty($object->country))
+            $addres[] = $object->country;
+        
+        return implode($separator, $addres);
+    }
 }

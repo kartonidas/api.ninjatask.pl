@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Libraries\Templates\Rental as TemplateRental;
 use App\Models\Task;
 use App\Models\TaskCalendar;
 
