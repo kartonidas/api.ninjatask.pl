@@ -41,6 +41,7 @@ class TaskStoreRequest extends FormRequest
             "project" => "required_without:project_id|array",
             "project_id" => "required_without:project|integer",
             "customer" => "nullable|array",
+            "customer_id" => "nullable|integer",
             "name" => "required|max:250",
             "description" => "nullable|max:5000",
             "users" => ["nullable", "array", Rule::in(Task::getAllowedUserIds())],
