@@ -359,9 +359,10 @@ class TaskController extends Controller
             throw new ObjectNotExist(__("Task does not exist"));
         
         $validated = $request->validated();
+        
         $task = DB::transaction(function () use($task, $validated) {
             $customerId = $task->customer_id;
-            if(!empty($validated["customer"]["new_customer"]) || !empty($validated["customer"]["id"]))
+            if(!empty($validated["customer"]["new_customer"]) || (!empty($validated["customer"]["id"]) || !empty($validated["customer_id"])))
             {
                 $customer = self::getOrCreateCustomer($validated);
                 $customerId = $customer ? $customer->id : null;
@@ -369,7 +370,7 @@ class TaskController extends Controller
                 
             $projectId = $task->project_id;
             $project = Project::find($projectId);
-            if(!empty($validated["project"]["new_project"]) || !empty($validated["project"]["id"]))
+            if(!empty($validated["project"]["new_project"]) || (!empty($validated["project"]["id"]) || !empty($validated["project_id"])))
             {
                 $project = self::getOrCreateProject($validated, $customerId);
                 $projectId = $project ? $project->id : null;
@@ -887,12 +888,10 @@ class TaskController extends Controller
     
     private static function getOrCreateCustomer($data) : Customer|null
     {
-        $customerId = null;
         if(empty($data["customer"]["new_customer"]))
         {
-            if(!empty($data["customer"]["id"]))
-            {
-                $customer = Customer::find($data["customer"]["id"]);
+            if(!empty($data["customer_id"]) || !empty($data["customer"]["id"])) {
+                $customer = Customer::find(!empty($data["customer_id"]) ? $data["customer_id"] : $data["customer"]["id"]);
                 if(!$customer)
                     throw new ObjectNotExist(__("Customer not exist"));
                 
