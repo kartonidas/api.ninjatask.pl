@@ -75,6 +75,11 @@ class CustomerController extends Controller
         return $out;
     }
     
+    public function validateAfterCreate(StoreCustomerRequest $request)
+    {
+        return true;
+    }
+    
     public function create(StoreCustomerRequest $request)
     {
         User::checkAccess("customer:create");

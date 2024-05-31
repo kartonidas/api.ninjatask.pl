@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\File as RuleFile;
@@ -18,6 +20,8 @@ use App\Exceptions\InvalidStatus;
 use App\Exceptions\ObjectExist;
 use App\Exceptions\ObjectNotExist;
 use App\Http\Requests\CalendarRequest;
+use App\Http\Requests\TaskStoreRequest;
+use App\Http\Requests\TaskUpdateRequest;
 use App\Libraries\Data;
 use App\Models\Customer;
 use App\Models\CustomerInvoice;
@@ -127,7 +131,7 @@ class TaskController extends Controller
             $tasks->whereIn("project_id", $projectIds);
         }
             
-        if($searchStatus)
+        if($searchStatus && $searchStatus != "all")
         {
             if($searchStatus == "opened")
             {
@@ -213,6 +217,7 @@ class TaskController extends Controller
             $tasks[$k]->timer = $task->getActiveTaskTime();
             $tasks[$k]->status = $task->getStatusName();
             $tasks[$k]->place = $task->getProject();
+            $tasks[$k]->customer = $task->getCustomer();
         }
         
         $out = [
@@ -250,6 +255,7 @@ class TaskController extends Controller
         $task->timer = $task->getActiveTaskTime();
         $task->status = $task->getStatusName();
         $task->place = $task->getProject();
+        $task->customer = $task->getCustomer();
         $task->customer_id = $task->place ? $task->place->customer_id : null;
         $task->can_start = $task->canStart();
         $task->can_stop = $task->canStop();
@@ -282,54 +288,42 @@ class TaskController extends Controller
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
     */
-    public function create(Request $request)
+    public function create(TaskStoreRequest $request)
     {
         User::checkAccess("task:create");
         
-        self::prepareSelfAssignedId($request);
-        
-        $request->validate([
-            "project_id" => "required|integer",
-            "name" => "required|max:250",
-            "description" => "nullable|max:5000",
-            "users" => ["nullable", "array", Rule::in($this->getAllowedUserIds())],
-            "attachments" => ["nullable", "array", new Attachment],
-            "priority" => ["nullable", Rule::in(array_keys(Task::getAllowedPriorities()))],
-            "status_id" => ["nullable", "numeric", Rule::in($this->getAllowedStatuses())],
-            "start_date" => ["nullable", "date_format:Y-m-d"],
-            "start_date_time" => ["nullable", Rule::in(Data::getAllowedTimes())],
-            "end_date" => ["nullable", "date_format:Y-m-d"],
-            "end_date_time" => ["nullable", Rule::in(Data::getAllowedTimes())],
-            "due_date" => ["nullable", "date_format:Y-m-d"],
-            "cost_gross" => ["nullable", "numeric", "gte:0"],
-        ]);
-        
-        $project = Project::find($request->input("project_id"));
-        if(!$project)
-            throw new ObjectNotExist(__("Project not exist"));
-        
-        
-        $task = new Task;
-        $task->project_id = $project->id;
-        $task->name = $request->input("name");
-        $task->description = Purify::clean($request->input("description", ""));
-        $task->created_user_id = Auth::user()->id;
-        $task->priority = intval($request->input("priority", 2));
-        $task->status_id = intval($request->input("status_id"));
-        $task->start_date = $request->input("start_date");
-        $task->start_date_time = $request->input("start_date_time");
-        $task->end_date = $request->input("end_date");
-        $task->end_date_time = $request->input("end_date_time");
-        $task->due_date = $request->input("due_date");
-        $task->cost_gross = $request->input("cost_gross", null);
-        $this->validateDates($task);
-        $task->save();
-        
-        if(!empty($request->input("attachments", [])))
-            $task->upload($request->input("attachments"));
-        
-        if($request->input("users"))
-            $task->assignUsers($request->input("users"));
+        $validated = $request->validated();
+        $task = DB::transaction(function () use($validated) {
+            $customer = self::getOrCreateCustomer($validated);
+            $project = self::getOrCreateProject($validated, $customer ? $customer->id : null);
+            if(!$project)
+                throw new ObjectNotExist(__("Project does not exist"));
+            
+            $task = new Task;
+            $task->project_id = $project->id;
+            $task->customer_id = $customer ? $customer->id : null;
+            $task->name = $validated["name"];
+            $task->description = Purify::clean($validated["description"] ?? "");
+            $task->created_user_id = Auth::user()->id;
+            $task->priority = intval($validated["priority"] ?? 2);
+            $task->status_id = intval($validated["status_id"] ?? null);
+            $task->start_date = $validated["start_date"] ?? null;
+            $task->start_date_time = $validated["start_date_time"] ?? null;
+            $task->end_date = $validated["end_date"] ?? null;
+            $task->end_date_time = $validated["end_date_time"] ?? null;
+            $task->due_date = $validated["due_date"] ?? null;
+            $task->cost_gross = $validated["cost_gross"] ?? null;
+            $this->validateDates($task);
+            $task->save();
+            
+            if(!empty($validated["attachments"]))
+                $task->upload($validated["attachments"]);
+            
+            if(!empty($validated["users"]))
+                $task->assignUsers($validated["users"]);
+                
+            return $task;
+        });
         
         return $task->id;
     }
@@ -353,7 +347,7 @@ class TaskController extends Controller
     * @header Authorization: Bearer {TOKEN}
     * @group Tasks
     */
-    public function update(Request $request, $id)
+    public function update(TaskUpdateRequest $request, $id)
     {
         User::checkAccess("task:update");
         
@@ -361,55 +355,51 @@ class TaskController extends Controller
         if(!$task || !$task->hasAccess())
             throw new ObjectNotExist(__("Task does not exist"));
         
-        self::prepareSelfAssignedId($request);
-        
         if(!$task)
             throw new ObjectNotExist(__("Task does not exist"));
         
-        $rules = [
-            "name" => "required|max:250",
-            "description" => "nullable|max:5000",
-            "users" => ["nullable", "array", Rule::in($this->getAllowedUserIds($id))],
-            "priority" => ["nullable", Rule::in(array_keys(Task::getAllowedPriorities()))],
-            "status_id" => ["nullable", "numeric", Rule::in($this->getAllowedStatuses())],
-            "start_date" => ["nullable", "date_format:Y-m-d"],
-            "start_date_time" => ["nullable", Rule::in(Data::getAllowedTimes())],
-            "end_date" => ["nullable", "date_format:Y-m-d"],
-            "end_date_time" => ["nullable", Rule::in(Data::getAllowedTimes())],
-            "due_date" => ["nullable", "date_format:Y-m-d"],
-            "cost_gross" => ["nullable", "numeric", "gte:0"],
-        ];
-        
-        $validate = [];
-        $updateFields = ["name", "description", "priority", "status_id", "start_date", "start_date_time", "end_date", "end_date_time", "due_date", "cost_gross"];
-        foreach($updateFields as $field)
-        {
-            if($request->has($field))
+        $validated = $request->validated();
+        $task = DB::transaction(function () use($task, $validated) {
+            $customerId = $task->customer_id;
+            if(!empty($validated["customer"]["new_customer"]) || !empty($validated["customer"]["id"]))
             {
-                if(!empty($rules[$field]))
-                    $validate[$field] = $rules[$field];
+                $customer = self::getOrCreateCustomer($validated);
+                $customerId = $customer ? $customer->id : null;
             }
-        }
-        
-        if($request->has("users"))
-            $validate["users"] = $rules["users"];
-            
-        if(!empty($validate))
-            $request->validate($validate);
-        
-        foreach($updateFields as $field)
-        {
-            if($request->has($field))
+                
+            $projectId = $task->project_id;
+            $project = Project::find($projectId);
+            if(!empty($validated["project"]["new_project"]) || !empty($validated["project"]["id"]))
             {
-                $value = $field == "description" ? Purify::clean($request->input($field)) : $request->input($field);
+                $project = self::getOrCreateProject($validated, $customerId);
+                $projectId = $project ? $project->id : null;
+            }
+                
+            if(!$project)
+                throw new ObjectNotExist(__("Project does not exist"));
+            
+            if($project->customer_id != $customerId)
+                throw new ObjectNotExist(__("Invalid customer ID"));
+            
+            $task->project_id = $projectId;
+            $task->customer_id = $customerId;
+            
+            foreach($validated as $field => $value)
+            {
+                if(!Schema::hasColumn($task->getTable(), $field))
+                    continue;
+                
+                $value = $field == "description" ? Purify::clean($value) : $value;
                 $task->{$field} = $value;
             }
-        }
-        $this->validateDates($task);
-        $task->save();
-        
-        if($request->has("users"))
-            $task->assignUsers($request->input("users", []));
+            $this->validateDates($task);
+            $task->save();
+            
+            if(!empty($validated["users"]))
+                $task->assignUsers($validated["users"]);
+                
+            return $task;
+        });
         
         return true;
     }
@@ -617,7 +607,7 @@ class TaskController extends Controller
     public function getAllowedUsers(Request $request, $taskId = 0)
     {
         User::checkAccess("task:list");
-        return $this->getAllowedUsersList($taskId, false);
+        return Task::getAllowedUsersList($taskId, false);
     }
     
     /**
@@ -635,16 +625,61 @@ class TaskController extends Controller
         $request->validate([
             "size" => "nullable|integer|gt:0",
             "page" => "nullable|integer|gt:0",
+            "query" => "nullable|max:200",
+            "status" => ["nullable"],
+            "priority" => ["nullable", "integer", Rule::in([1,2,3])],
+            "created_from" => "nullable|date_format:Y-m-d",
+            "created_to" => "nullable|date_format:Y-m-d",
+            "start_date_from" => "nullable|date_format:Y-m-d",
+            "start_date_to" => "nullable|date_format:Y-m-d",
         ]);
         
         $size = $request->input("size", config("api.list.size"));
         $page = $request->input("page", 1);
         
+        $searchQuery = $request->input("query", null);
+        $searchStatus = $request->input("status", null);
+        $searchPriority = $request->input("priority", null);
+        $searchCreatedAtFrom = $request->input("created_from", null);
+        $searchCreatedAtTo = $request->input("created_to", null);
+        $searchStartDateFrom = $request->input("start_date_from", null);
+        $searchStartDateTo = $request->input("start_date_to", null);
+        
         $tasks = Task
             ::apiFields()
             ->assignedList(true)
             ->where("state", "!=", Task::STATE_CLOSED);
-            
+        
+        
+        if($searchQuery)
+        {
+            $tasks->where(function($q) use($searchQuery) {
+                $q
+                    ->where("name", "LIKE", "%" . $searchQuery . "%")
+                    ->orWhere("description", "LIKE", "%" . $searchQuery . "%");
+            });
+        }
+        if($searchStatus && $searchStatus != "all")
+        {
+            if($searchStatus == "opened")
+            {
+                $openedStatuses = Status::where("task_state", "!=", Status::TASK_STATE_IN_CLOSED)->pluck("id")->all();
+                $tasks->whereIn("status_id", $openedStatuses);
+            }
+            else
+                $tasks->where("status_id", $searchStatus);
+        }
+        if($searchPriority)
+            $tasks->where("priority", $searchPriority);
+        if($searchCreatedAtFrom)
+            $tasks->whereDate("created_at", ">=", $searchCreatedAtFrom);
+        if($searchCreatedAtTo)
+            $tasks->whereDate("created_at", "<=", $searchCreatedAtTo);
+        if($searchStartDateFrom)
+            $tasks->whereDate("start_date", ">=", $searchStartDateFrom);
+        if($searchStartDateTo)
+            $tasks->whereDate("start_date", "<=", $searchStartDateTo);
+        
         $total = $tasks->count();
         
         $tasks = $tasks->take($size)->skip(($page-1)*$size);
@@ -698,71 +733,6 @@ class TaskController extends Controller
             throw new ObjectNotExist(__("Task does not exist"));
         
         return $task->total;
-    }
-    
-    private function getAllowedUserIds($taskId = null)
-    {
-        $users = self::getAllowedUsersList($taskId);
-        foreach($users as $user)
-            $userIds[] = $user["id"];
-        return $userIds;
-    }
-    
-    private function getAllowedUsersList($taskId = null, $skipDeleted = true)
-    {
-        $currentAssignedUsers = [];
-        if($taskId)
-        {
-            $task = Task::find($taskId);
-            if($task)
-                $currentAssignedUsers = $task->getAssignedUserIds();
-        }
-        
-        $out = [];
-        $users = User::withTrashed()->byFirm()->where("activated", 1)->orderBy("lastname", "ASC")->orderBy("firstname", "ASC")->get();
-        foreach($users as $user)
-        {
-            if($skipDeleted && !in_array($user->id, $currentAssignedUsers) && $user->trashed())
-                continue;
-            
-            $out[] = [
-                "id" => $user->id,
-                "firstname" => $user->firstname,
-                "lastname" => $user->lastname,
-                "email" => $user->email,
-                "_me" => $user->id == Auth::user()->id,
-                "_allowed" => !$user->trashed(),
-                "_check" => in_array($user->id, $currentAssignedUsers),
-            ];
-        }
-        
-        return $out;
-    }
-    
-    private function getAllowedStatuses()
-    {
-        $ids = [];
-        $statuses = Status::all();
-        if(!$statuses->isEmpty())
-        {
-            foreach($statuses as $status)
-                $ids[] = $status->id;
-        }
-        return $ids;
-    }
-    
-    // user_id=-1 oznacza przypisanie zadania na siebie
-    private static function prepareSelfAssignedId(Request $request) {
-        if($request->has("users") && is_array($request->input("users"))) {
-            $users = $request->input("users");
-            foreach($users as $i => $user) {
-                if($user == -1)
-                    $users[$i] = Auth::user()->id;
-            }
-            
-            $users = array_unique($users);
-            $request->merge(["users" => $users]);
-        }
     }
     
     public function calendar(CalendarRequest $request)
@@ -822,7 +792,7 @@ class TaskController extends Controller
                     "title" => $task->name,
                     "description" => $task->description,
                     "place" => $placeInfo,
-                    "assigned" => self::getAllowedUsersList($task->id)
+                    "assigned" => $task->getAssignedUsers()
                 ];
             }
         }
@@ -853,7 +823,7 @@ class TaskController extends Controller
             throw new ObjectNotExist(__("Task does not exist"));
         
         $request->validate([
-            "status_id" => ["required", "numeric", Rule::in($this->getAllowedStatuses())],
+            "status_id" => ["required", "numeric", Rule::in(Status::getAllowedStatuses())],
         ]);
         
         $task->status_id = $request->input("status_id");
@@ -913,5 +883,85 @@ class TaskController extends Controller
             if(strtotime($startDate) > strtotime($endDate))
                 throw new Exception(__("The end date must be greater than or equal to the start date"));
         }
+    }
+    
+    private static function getOrCreateCustomer($data) : Customer|null
+    {
+        $customerId = null;
+        if(empty($data["customer"]["new_customer"]))
+        {
+            if(!empty($data["customer"]["id"]))
+            {
+                $customer = Customer::find($data["customer"]["id"]);
+                if(!$customer)
+                    throw new ObjectNotExist(__("Customer not exist"));
+                
+                return $customer;
+            }
+        }
+        else
+        {
+            $customer = new Customer;
+            $customer->type = $data["customer"]["type"];
+            $customer->name = $data["customer"]["name"];
+            $customer->street = $data["customer"]["street"] ?? "";
+            $customer->house_no = $data["customer"]["house_no"] ?? "";
+            $customer->apartment_no = $data["customer"]["apartment_no"] ?? "";
+            $customer->city = $data["customer"]["city"] ?? "";
+            $customer->zip = $data["customer"]["zip"] ?? "";
+            $customer->country = $data["customer"]["country"] ?? "";
+            $customer->nip = $data["customer"]["nip"] ?? "";
+            $customer->save();
+            
+            if(!empty($data["contacts"]))
+                $customer->updateContact($data["contacts"]);
+            
+            return $customer;
+        }
+        
+        return null;
+    }
+    
+    private static function getOrCreateProject($data, $customerId = null) : Project|null
+    {
+        $projectId = null;
+        if(empty($data["project"]["new_project"]))
+        {
+            $project = null;
+            if(!empty($data["project_id"]))
+                $project = Project::find($data["project_id"]);
+            else
+            {
+                if(!empty($data["project"]["id"]))
+                    $project = Project::find($data["project"]["id"]);
+            }
+            
+            if(!$project || ($project->customer_id && $project->customer_id != $customerId))
+                throw new ObjectNotExist(__("Project not exist"));
+            
+            if(!$project->customer_id && $customerId)
+            {
+                $project->customer_id = $customerId;
+                $project->save();
+            }
+            
+            return $project;
+        }
+        else
+        {
+            $project = new Project;
+            $project->customer_id = $customerId;
+            $project->name = $data["project"]["name"];
+            $project->address = $data["project"]["address"] ?? "";
+            $project->description = $data["project"]["description"] ?? "";
+            $project->location = $data["project"]["location"] ?? "";
+            $project->lat = $data["project"]["lat"] ?? null;
+            $project->lon = $data["project"]["lon"] ?? null;
+            $project->save();
+            
+            return $project;
+        }
+        
+        return null;
     }
 }

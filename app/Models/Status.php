@@ -90,4 +90,16 @@ class Status extends Model
             }
         }
     }
+    
+    public static function getAllowedStatuses()
+    {
+        $ids = [];
+        $statuses = self::all();
+        if(!$statuses->isEmpty())
+        {
+            foreach($statuses as $status)
+                $ids[] = $status->id;
+        }
+        return $ids;
+    }
 }

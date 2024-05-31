@@ -310,6 +310,19 @@ class ProjectController extends Controller
     public function listSimple(Request $request)
     {
         User::checkAccess("task:list");
-        return Project::select("id", "name")->orderBy("name", "ASC")->get();
+        return Project::select("id", "name", "customer_id")->orderBy("name", "ASC")->get();
+    }
+    
+    public function validateAfterCreate(Request $request)
+    {
+        $request->validate([
+            "name" => "required|max:250",
+            "location" => "nullable|max:5000",
+            "description" => "nullable|max:5000",
+            "owner" => "nullable|max:5000",
+            "address" => "nullable|string|max:500",
+            "lat" => "nullable|numeric",
+            "lon" => "nullable|numeric",
+        ]);
     }
 }

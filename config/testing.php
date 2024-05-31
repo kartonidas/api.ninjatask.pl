@@ -3,7 +3,7 @@
 return [
     'accounts' => [
         [
-            'email' => 'arturpatura@gmail.com',
+            'email' => 'arturpatura@ninjatask.pl',
             'data' => [
                 'firstname' => 'Artur',
                 'lastname' => 'Patura',
@@ -16,7 +16,7 @@ return [
                 [
                     'firstname' => 'Jan',
                     'lastname' => 'Kowalski',
-                    'email' => 'jan-kowalski@gmail.com',
+                    'email' => 'jan-kowalski@ninjatask.pl',
                     'phone' => '879546254',
                     'superuser' => false,
                     'password' => 'Pass102@',
@@ -25,7 +25,7 @@ return [
                 [
                     'firstname' => 'Grzegorz',
                     'lastname' => 'Wąs',
-                    'email' => 'grzegorz-was@gmail.com',
+                    'email' => 'grzegorz-was@ninjatask.pl',
                     'phone' => '125963544',
                     'superuser' => true,
                     'password' => 'Pass102@',
@@ -34,7 +34,7 @@ return [
                 [
                     'firstname' => 'Zbigniew',
                     'lastname' => 'Nowak',
-                    'email' => 'zbigniew-nowak@gmail.com',
+                    'email' => 'zbigniew-nowak@ninjatask.pl',
                     'phone' => '878555415',
                     'superuser' => false,
                     'password' => 'Pass102@',
@@ -43,7 +43,7 @@ return [
                 [
                     'firstname' => 'Jan',
                     'lastname' => 'Byk',
-                    'email' => 'a.rturpatura@gmail.com',
+                    'email' => 'a.rturpatura@ninjatask.pl',
                     'phone' => '878555415',
                     'superuser' => false,
                     'password' => 'Pass102@',
@@ -85,7 +85,7 @@ return [
             ]
         ],
         [
-            'email' => 'a.rturpatura@gmail.com',
+            'email' => 'a.rturpatura@ninjatask.pl',
             'data' => [
                 'firstname' => 'Jan',
                 'lastname' => 'Kowalski',
@@ -98,7 +98,7 @@ return [
                 [
                     'firstname' => 'Błażej',
                     'lastname' => 'Wąsik',
-                    'email' => 'blazej-wasik@gmail.com',
+                    'email' => 'blazej-wasik@ninjatask.pl',
                     'phone' => '879546267',
                     'superuser' => false,
                     'password' => 'Pass102@',
@@ -107,7 +107,7 @@ return [
                 [
                     'firstname' => 'Krystyna',
                     'lastname' => 'Nowak',
-                    'email' => 'nowak-krystyna@gmail.com',
+                    'email' => 'nowak-krystyna@ninjatask.pl',
                     'phone' => '125962345',
                     'superuser' => true,
                     'password' => 'Pass102@',
@@ -116,7 +116,7 @@ return [
                 [
                     'firstname' => 'Artur',
                     'lastname' => 'Patura - pracownik',
-                    'email' => 'arturpatura@gmail.com',
+                    'email' => 'arturpatura@ninjatask.pl',
                     'phone' => '125962345',
                     'superuser' => false,
                     'password' => 'Pass102@',
@@ -155,7 +155,7 @@ return [
             ]
         ],
         [
-            'email' => 'ar.turpatura@gmail.com',
+            'email' => 'ar.turpatura@ninjatask.pl',
             'data' => [
                 'firstname' => 'Mariusz',
                 'lastname' => 'Bąk',
@@ -168,7 +168,7 @@ return [
                 [
                     'firstname' => 'Artur',
                     'lastname' => 'Patura - pracownik',
-                    'email' => 'arturpatura@gmail.com',
+                    'email' => 'arturpatura@ninjatask.pl',
                     'phone' => '125962345',
                     'superuser' => false,
                     'password' => 'Pass102@',
@@ -177,7 +177,7 @@ return [
                 [
                     'firstname' => 'Artur',
                     'lastname' => 'Patura - pracownik do sprawdzania uprawnień',
-                    'email' => 'art.urpa.tura@gmail.com',
+                    'email' => 'art.urpa.tura@ninjatask.pl',
                     'phone' => '125962345',
                     'superuser' => false,
                     'password' => 'Pass102@',
